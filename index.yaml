@@ -3,12 +3,12 @@ entries:
   flux2:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2021-04-11T11:22:37.34613+03:00"
+    created: "2021-04-11T12:12:35.285258+03:00"
     description: A Helm chart for Kubernetes
-    digest: d3f7e5ce3e7f0a66b3cc78c0999834c29093f0bf4ecde56755591afda067ada7
+    digest: d17129167fb531dcd898f3eb3bd2730ed73c6778d589c82456ca2d747e3ed4e5
     name: flux2
     type: application
     urls:
     - https://wiz-sec.github.io/charts/flux2-0.10.0.tgz
     version: 0.10.0
-generated: "2021-04-11T11:22:37.34423+03:00"
+generated: "2021-04-11T12:12:35.284112+03:00"
