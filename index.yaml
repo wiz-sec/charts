@@ -3,7 +3,7 @@ entries:
   flux2:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2021-04-11T17:09:51.679736+03:00"
+    created: "2021-04-11T17:18:04.470636+03:00"
     description: A Helm chart for Kubernetes
     digest: fa97b40c2cc00832834e4eb396886457ddb2df1856f5a223e75cbf9875be3841
     name: flux2
@@ -11,4 +11,15 @@ entries:
     urls:
     - https://wiz-sec.github.io/charts/flux2-0.10.0.tgz
     version: 0.10.0
-generated: "2021-04-11T17:09:51.678752+03:00"
+  git-proxy:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2021-04-11T17:18:04.471477+03:00"
+    description: A Helm chart for Kubernetes
+    digest: 129b87410c51092058eb71747c858ea463c48990a09d30baea6342033291585c
+    name: git-proxy
+    type: application
+    urls:
+    - https://wiz-sec.github.io/charts/git-proxy-0.0.1.tgz
+    version: 0.0.1
+generated: "2021-04-11T17:18:04.468792+03:00"
