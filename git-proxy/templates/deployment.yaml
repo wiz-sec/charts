@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "git-proxy.fullname" . }}
+  labels:
+    {{- include "git-proxy.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "git-proxy.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "git-proxy.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repositoryBase }}-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- if eq .Values.storageService "s3" }}
+          - name: AWS_REGION
+            value: {{ required "s3.region is required" .Values.s3.region | quote }}
+          {{- end }}
+          args: [
+            {{- if eq .Values.storageService "blob" }}
+            "--resourceGroupName", {{ required "blob.resourceGroupName is required" .Values.blob.resourceGroupName | quote }},
+            "--storageAccountName", {{ required "blob.storageAccountName is required" .Values.blob.storageAccountName | quote }},
+            "--containerName", {{ required "blob.containerName is required" .Values.blob.containerName | quote }},
+            {{- end }}
+            {{- if eq .Values.storageService "gcs" }}
+            "--bucketName", {{ required "gcs.bucketName is required" .Values.gcs.bucketName | quote }},
+            {{- end }}
+            {{- if eq .Values.storageService "s3" }}
+            "--bucketName", {{ required "s3.bucketName is required" .Values.s3.bucketName | quote }},
+            {{- end }}
+            "--port", "{{ .Values.service.port }}",
+          ]
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- if eq .Values.storageService "blob" }}
+            - mountPath: /etc/kubernetes/
+              name: azure-cred
+              readOnly: true
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- if eq .Values.storageService "blob" }}
+          {{- if .Values.blob.azureCredsSecretName }}
+          - name: azure-cred
+            secret:
+              secretName: {{ .Values.blob.azureCredsSecretName }}
+          {{- else }}
+          - name: azure-cred
+            hostPath:
+              path: /etc/kubernetes/
+              type: Directory
+          {{- end }}
+          {{- end }}
