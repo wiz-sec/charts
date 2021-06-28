@@ -20,7 +20,7 @@ blob:
 
 
 image:
-  repositoryBase: wiziopublic.azurecr.io/git-proxy
+  repo_url: wiziopublic.azurecr.io
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
