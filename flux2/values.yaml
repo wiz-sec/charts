@@ -3,4 +3,5 @@ git:
   branch: master
   path: #./replaceme/
 
-repo_url: ghcr.io
+image:
+  repo_url: ghcr.io
