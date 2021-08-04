@@ -8,7 +8,7 @@ orbs:
 executors:
   ops:
     docker:
-      - image: wizsec/ops:913f8d9
+      - image: alpine/helm
 
 triggers: &triggers '[
     {
