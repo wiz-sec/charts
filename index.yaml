@@ -3,7 +3,7 @@ entries:
   flux2:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2021-06-28T13:27:48.124013555Z"
+    created: "2021-08-04T13:36:37.301845156Z"
     description: A Helm chart for Kubernetes
     digest: 26cbac1757434e3655eade1ae94626435c7674679a23609599fa542eb7e8541d
     name: flux2
@@ -13,7 +13,7 @@ entries:
     version: 0.30.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2021-06-28T13:27:48.123242026Z"
+    created: "2021-08-04T13:36:37.300758958Z"
     description: A Helm chart for Kubernetes
     digest: ef45d44c8ef712bd79aabe2167de191a40adb667b043d80b4adc40a61c657cb5
     name: flux2
@@ -23,7 +23,7 @@ entries:
     version: 0.20.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2021-06-28T13:27:48.122472163Z"
+    created: "2021-08-04T13:36:37.299656624Z"
     description: A Helm chart for Kubernetes
     digest: ecad7b37a7ee94ef9cbfc9a3f4ced3a7d04ade419e388d65506f0372825c9332
     name: flux2
@@ -34,7 +34,17 @@ entries:
   git-proxy:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2021-06-28T13:27:48.124661481Z"
+    created: "2021-08-04T13:36:37.30349369Z"
+    description: A Helm chart for Kubernetes
+    digest: 8d942684d72e03fd72f2d3159605e4050cf13e74ef6bc15aa42627f959d44e6e
+    name: git-proxy
+    type: application
+    urls:
+    - https://wiz-sec.github.io/charts/git-proxy-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2021-08-04T13:36:37.302948898Z"
     description: A Helm chart for Kubernetes
     digest: 7ba28a785c7972e04c2ce7741ec9f6915a6f7bfded5f15c11de4522b09d78879
     name: git-proxy
@@ -44,7 +54,7 @@ entries:
     version: 0.0.2
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2021-06-28T13:27:48.12434216Z"
+    created: "2021-08-04T13:36:37.302393145Z"
     description: A Helm chart for Kubernetes
     digest: 129b87410c51092058eb71747c858ea463c48990a09d30baea6342033291585c
     name: git-proxy
@@ -52,4 +62,4 @@ entries:
     urls:
     - https://wiz-sec.github.io/charts/git-proxy-0.0.1.tgz
     version: 0.0.1
-generated: "2021-06-28T13:27:48.121571654Z"
+generated: "2021-08-04T13:36:37.298365662Z"
