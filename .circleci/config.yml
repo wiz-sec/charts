@@ -8,7 +8,7 @@ orbs:
 executors:
   ops:
     docker:
-      - image: alpine/helm
+      - image: dtzar/helm-kubectl
 
 triggers: &triggers '[
     {
