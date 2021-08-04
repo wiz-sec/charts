@@ -24,7 +24,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repo_url }}/git-proxy-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repo_url }}/wiz-git-proxy-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           {{- if eq .Values.storageService "s3" }}
