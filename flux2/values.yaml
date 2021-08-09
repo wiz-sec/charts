@@ -4,4 +4,4 @@ git:
   path: #./replaceme/
 
 image:
-  repo_url: ghcr.io
+  repo_url: wiziopublic.azurecr.io
