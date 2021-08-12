@@ -40,6 +40,10 @@ spec:
       labels:
         app: source-controller
     spec:
+      {{- if .Values.affinity }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
       containers:
         - args:
             - --events-addr=

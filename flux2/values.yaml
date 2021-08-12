@@ -5,3 +5,4 @@ git:
 
 image:
   repo_url: wiziopublic.azurecr.io
+affinity: {}
