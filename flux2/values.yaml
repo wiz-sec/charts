@@ -3,5 +3,16 @@ git:
   branch: master
   path: #./replaceme/
 
+imagePullSecrets: []
 image:
-  repo_url: wiziopublic.azurecr.io
+  repository: wiziopublic.azurecr.io
+  helmController:
+    name: wiz-helm-controller
+    tag: v0.11.1
+  sourceController:
+    name: wiz-source-controller
+    tag: v0.15.3
+  kustomizeController:
+    name: wiz-kustomize-controller
+    tag: v0.13.2
+affinity: {}

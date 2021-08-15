@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-storageService: s3 # s3/gcs/blob
+storageService: # s3/gcs/blob
 s3:
   bucketName:
   region:
@@ -12,18 +12,24 @@ gcs:
 blob:
   # credentials JSON containing the service principal, secret must contain azure.json key
   # leave empty if you're using the system assigned identity for the node
-  # (existing in /etc/kubernetes/azure.json
-  azureCredsSecretName:
+  # (existing in /etc/kubernetes/azure.json)
+  azureCreds:
+#    tenantId:
+#    aadClientId:
+#    aadClientSecret:
+#    subscriptionId:
+#    environment:
   resourceGroup:
   storageAccountName:
   containerName:
 
 
 image:
-  repo_url: wiziopublic.azurecr.io
+  repository: wiziopublic.azurecr.io
+  namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "9f2f04d"
 
 imagePullSecrets: []
 nameOverride: ""

@@ -18,13 +18,17 @@ spec:
       labels:
         {{- include "git-proxy.selectorLabels" . | nindent 8 }}
     spec:
+      {{- if .Values.affinity }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repo_url }}/wiz-git-proxy-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           {{- if eq .Values.storageService "s3" }}
@@ -33,8 +37,8 @@ spec:
           {{- end }}
           args: [
             {{- if eq .Values.storageService "blob" }}
-            "--resourceGroupName", {{ required "blob.resourceGroupName is required" .Values.blob.resourceGroupName | quote }},
-            "--storageAccountName", {{ required "blob.storageAccountName is required" .Values.blob.storageAccountName | quote }},
+            "--resourceGroup", {{ required "blob.resourceGroupName is required" .Values.blob.resourceGroupName | quote }},
+            "--storageAccount", {{ required "blob.storageAccountName is required" .Values.blob.storageAccountName | quote }},
             "--containerName", {{ required "blob.containerName is required" .Values.blob.containerName | quote }},
             {{- end }}
             {{- if eq .Values.storageService "gcs" }}
@@ -61,20 +65,16 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
         {{- if eq .Values.storageService "blob" }}
-          {{- if .Values.blob.azureCredsSecretName }}
+          {{- if .Values.blob.azureCreds }}
           - name: azure-cred
             secret:
-              secretName: {{ .Values.blob.azureCredsSecretName }}
+              secretName: azure-creds
           {{- else }}
           - name: azure-cred
             hostPath:
