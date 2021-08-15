@@ -2,8 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: {{ .Chart.Version }}
+    {{- include "flux2.labels" . | nindent 4 }}
     control-plane: controller
   name: kustomize-controller
 spec:
