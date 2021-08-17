@@ -2,7 +2,7 @@ git:
   url: http://git-proxy.default.svc.cluster.local
   branch: master
   path: #./replaceme/
-
+createNamespace: false
 imagePullSecrets: []
 image:
   repository: wiziopublic.azurecr.io
