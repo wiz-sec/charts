@@ -31,6 +31,10 @@ spec:
           image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+          {{- if eq .Values.storageService "objectstorage" }}
+          - name: OCI_CREDENTIAL_FILE
+            value: "/.oci/oci.json"
+          {{- end }}
           {{- if eq .Values.storageService "s3" }}
           - name: AWS_REGION
             value: {{ required "s3.region is required" .Values.s3.region | quote }}
@@ -47,6 +51,11 @@ spec:
             {{- if eq .Values.storageService "s3" }}
             "--bucketName", {{ required "s3.bucketName is required" .Values.s3.bucketName | quote }},
             {{- end }}
+            {{- if eq .Values.storageService "objectstorage" }}
+            "--region", {{ required "objectstorage.region is required" .Values.objectstorage.region | quote }},
+            "--namespaceName", {{ required "objectstorage.namespaceName is required" .Values.objectstorage.namespaceName | quote }},
+            "--bucketName", {{ required "objectstorage.bucketName is required" .Values.objectstorage.bucketName | quote }},
+            {{- end }}
             "--port", "{{ .Values.service.port }}",
           ]
           ports:
@@ -61,6 +70,11 @@ spec:
               name: azure-cred
               readOnly: true
             {{- end }}
+            {{- if eq .Values.storageService "objectstorage" }}
+            - mountPath: /.oci/
+              name: oci-creds
+              readOnly: true
+            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -70,6 +84,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        {{- if eq .Values.storageService "objectstorage" }}
+        - name: oci-creds
+          secret:
+            secretName: oci-creds
+        {{- end }}
         {{- if eq .Values.storageService "blob" }}
           {{- if .Values.blob.azureCreds }}
           - name: azure-cred
