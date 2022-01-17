@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-storageService: # s3/gcs/blob
+storageService: # s3/gcs/blob/objectstorage
 s3:
   bucketName:
   region:
@@ -23,13 +23,23 @@ blob:
   storageAccountName:
   containerName: gitops-state
 
+objectstorage:
+  ociCreds:
+    # tenancyOCID:
+    # userOCID:
+    # fingerprint:
+    # privateKey:
+  region:
+  namespaceName:
+  bucketName:
+
 
 image:
   repository: wiziopublic.azurecr.io
   namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "b6ea151"
+  tag: "157274e"
 
 imagePullSecrets: []
 nameOverride: ""
