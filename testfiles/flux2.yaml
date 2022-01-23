@@ -1,0 +1,10 @@
+values:
+  imagePullSecrets:
+    - name: test-secret
+  podAnnotations:
+    test: testington
+    test1: testington2
+  git:
+    url: http://git-proxy.default.svc.cluster.local
+    branch: master
+    path: test
