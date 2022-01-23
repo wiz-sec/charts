@@ -16,3 +16,5 @@ image:
     name: wiz-kustomize-controller
     tag: v0.13.2
 affinity: {}
+
+podAnnotaitons: {}
