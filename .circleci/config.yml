@@ -9,6 +9,9 @@ executors:
   ops:
     docker:
       - image: dtzar/helm-kubectl
+  golang:
+    docker:
+      - image: golang:1.17
 
 triggers: &triggers '[
     {
@@ -18,11 +21,18 @@ triggers: &triggers '[
     {
         "regex": "^(git-proxy)/.*",
         "param_name": "git-proxy"
+    },
+    {
+        "regex": "^(.)/.*",
+        "param_name": "run_chart_validation_test"
     }
 ]'
 
 parameters:
   run_trigger_workflow:
+    default: true
+    type: boolean
+  run_chart_validation_test:
     default: true
     type: boolean
   flux2:
@@ -58,6 +68,22 @@ jobs:
           additional-param-map: '{"run_trigger_workflow": false}'
           use-swissknife-sha: true
           wait-for-workflows: true
+
+  run-chart-validation-test:
+    executor: golang
+    working_directory: ~/project/
+    steps:
+      - checkout:
+          path: ~/project
+      - run:
+          name: 'Creating directory for GOPATH and override it to be /go'
+          command: |
+            go env -w GOPATH=/go
+            go mod tidy
+      - run:
+          name: Run chart validation tests
+          command: |
+            go test -v .
 
   upload_new_chart:
     executor: ops
@@ -99,6 +125,12 @@ workflows:
       << pipeline.parameters.run_trigger_workflow >>
     jobs:
       - trigger-needed-workflows
+
+  run-chart-validation-test:
+    when:
+      << pipeline.parameters.run_chart_validation_test >>
+    jobs:
+      - run-chart-validation-test
 
   flux2:
     when:
