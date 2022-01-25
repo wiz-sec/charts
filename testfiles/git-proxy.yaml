@@ -1,7 +1,6 @@
-values:
-  imagePullSecrets:
-    - name: test-secret
-  podAnnotations:
-    test: testington
-    test1: testington2
-  storageService: test.test.com
+imagePullSecrets:
+  - name: test-secret
+podAnnotations:
+  test: testington
+  test1: testington2
+storageService: test.test.com

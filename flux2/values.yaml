@@ -1,7 +1,7 @@
 git:
   url: http://git-proxy.default.svc.cluster.local
   branch: master
-  path: "" #./replaceme/
+  path: #./replaceme/
 createNamespace: false
 imagePullSecrets: []
 image:
@@ -18,3 +18,8 @@ image:
 affinity: {}
 
 podAnnotaitons: {}
+
+defaultPodAnnotations:
+  prometheus.io/port: "8080"
+  prometheus.io/scrape: "true"
+

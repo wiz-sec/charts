@@ -109,14 +109,6 @@ func TestChartsWithGeneratedValues(t *testing.T) {
 
 			realValuesPath := path.Join("testfiles", chartName+".yaml")
 			values, err := chartutil.ReadValuesFile(realValuesPath)
-
-			if len(values.AsMap()) == 0 {
-				fmt.Println("No values")
-				return
-			}
-
-			require.NoError(t, err)
-			values, err = values.Table("values")
 			require.NoError(t, err)
 			linter := lint.All(chartDir, values.AsMap(), "", true)
 			for _, supportMessage := range linter.Messages {
