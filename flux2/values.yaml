@@ -16,3 +16,10 @@ image:
     name: wiz-kustomize-controller
     tag: v0.13.2
 affinity: {}
+
+podAnnotaitons: {}
+
+defaultPodAnnotations:
+  prometheus.io/port: "8080"
+  prometheus.io/scrape: "true"
+
