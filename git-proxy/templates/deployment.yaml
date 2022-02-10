@@ -34,10 +34,6 @@ spec:
           image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          {{- if eq .Values.storageService "objectstorage" }}
-          - name: OCI_CREDENTIAL_FILE
-            value: "/.oci/oci.json"
-          {{- end }}
           {{- if eq .Values.storageService "s3" }}
           - name: AWS_REGION
             value: {{ required "s3.region is required" .Values.s3.region | quote }}
@@ -73,11 +69,6 @@ spec:
               name: azure-cred
               readOnly: true
             {{- end }}
-            {{- if eq .Values.storageService "objectstorage" }}
-            - mountPath: /.oci/
-              name: oci-creds
-              readOnly: true
-            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -87,11 +78,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-        {{- if eq .Values.storageService "objectstorage" }}
-        - name: oci-creds
-          secret:
-            secretName: oci-creds
-        {{- end }}
         {{- if eq .Values.storageService "blob" }}
           {{- if .Values.blob.azureCreds }}
           - name: azure-cred
