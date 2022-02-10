@@ -24,22 +24,16 @@ blob:
   containerName: gitops-state
 
 objectstorage:
-  ociCreds:
-    # tenancyOCID:
-    # userOCID:
-    # fingerprint:
-    # privateKey:
   region:
   namespaceName:
   bucketName:
-
 
 image:
   repository: wiziopublic.azurecr.io
   namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "157274e"
+  tag: "81413b4"
 
 imagePullSecrets: []
 nameOverride: ""
