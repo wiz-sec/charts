@@ -23,6 +23,10 @@ triggers: &triggers '[
         "param_name": "git-proxy"
     },
     {
+        "regex": "^(wiz-broker)/.*",
+        "param_name": "wiz-broker"
+    },
+    {
         "regex": "^(.)/.*",
         "param_name": "run_chart_validation_test"
     }
@@ -39,6 +43,9 @@ parameters:
     default: false
     type: boolean
   git-proxy:
+    default: false
+    type: boolean
+  wiz-broker:
     default: false
     type: boolean
   swissknife_sha:
@@ -149,6 +156,17 @@ workflows:
     jobs:
       - upload_new_chart:
           package: git-proxy
+          filters:
+            branches:
+              only:
+                - master
+
+  wiz-broker:
+    when:
+      << pipeline.parameters.wiz-broker >>
+    jobs:
+      - upload_new_chart:
+          package: wiz-broker
           filters:
             branches:
               only:
