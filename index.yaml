@@ -3,7 +3,7 @@ entries:
   flux2:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.294236431Z"
+    created: "2022-02-20T12:35:07.402624163Z"
     description: A Helm chart for Kubernetes
     digest: 2f5330a35915edb17f3484ba56d80d7e332510c9c912a34ad12bf1cdd9cd14d5
     name: flux2
@@ -13,7 +13,7 @@ entries:
     version: 0.60.3
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.293536965Z"
+    created: "2022-02-20T12:35:07.40187488Z"
     description: A Helm chart for Kubernetes
     digest: 67e4c0412e2a562557c94198fe26b19b805ea3c9be6fb07ea1c091a2a587f55f
     name: flux2
@@ -23,7 +23,7 @@ entries:
     version: 0.60.2
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.292839034Z"
+    created: "2022-02-20T12:35:07.401187276Z"
     description: A Helm chart for Kubernetes
     digest: c61bfb6e18a6d877f39218287ea75a2acfe90a8dc15e3815d5cc370433148b1a
     name: flux2
@@ -33,7 +33,7 @@ entries:
     version: 0.60.1
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.292147049Z"
+    created: "2022-02-20T12:35:07.400488184Z"
     description: A Helm chart for Kubernetes
     digest: 10461060828d6d2b44dcf90de855bbe773ac3bd038e2f37ab16fad5d7973a3f2
     name: flux2
@@ -43,7 +43,7 @@ entries:
     version: 0.60.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.291466382Z"
+    created: "2022-02-20T12:35:07.399691223Z"
     description: A Helm chart for Kubernetes
     digest: a4fbac3ceb5b2b831053907fa294b2d73652d5f3dd05fa9878aad2f6061b416c
     name: flux2
@@ -53,7 +53,7 @@ entries:
     version: 0.50.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.290151705Z"
+    created: "2022-02-20T12:35:07.398703362Z"
     description: A Helm chart for Kubernetes
     digest: aeadd4881469910f0ad9ab9fe9ae54ae3bb9189ea04e7208786f4e5cb5017152
     name: flux2
@@ -63,7 +63,7 @@ entries:
     version: 0.40.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.289417496Z"
+    created: "2022-02-20T12:35:07.397661221Z"
     description: A Helm chart for Kubernetes
     digest: 26cbac1757434e3655eade1ae94626435c7674679a23609599fa542eb7e8541d
     name: flux2
@@ -73,7 +73,7 @@ entries:
     version: 0.30.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.288720773Z"
+    created: "2022-02-20T12:35:07.396906273Z"
     description: A Helm chart for Kubernetes
     digest: ef45d44c8ef712bd79aabe2167de191a40adb667b043d80b4adc40a61c657cb5
     name: flux2
@@ -83,7 +83,7 @@ entries:
     version: 0.20.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.28804732Z"
+    created: "2022-02-20T12:35:07.396195668Z"
     description: A Helm chart for Kubernetes
     digest: ecad7b37a7ee94ef9cbfc9a3f4ced3a7d04ade419e388d65506f0372825c9332
     name: flux2
@@ -94,7 +94,17 @@ entries:
   git-proxy:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2022-02-20T12:34:58.297076744Z"
+    created: "2022-02-20T12:35:07.406184078Z"
+    description: A Helm chart for Kubernetes
+    digest: b03a81a22c44c45c4a041b132d26646e0ac54e236986e08f1a9476debe6298a9
+    name: git-proxy
+    type: application
+    urls:
+    - https://wiz-sec.github.io/charts/git-proxy-0.0.9.tgz
+    version: 0.0.9
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2022-02-20T12:35:07.405484335Z"
     description: A Helm chart for Kubernetes
     digest: fc9562e7d09e4386abcacee3509616ebfc0a4827eeb143cedb5007d6fc8fb9f2
     name: git-proxy
@@ -104,7 +114,7 @@ entries:
     version: 0.0.8
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2022-02-20T12:34:58.296701916Z"
+    created: "2022-02-20T12:35:07.404850519Z"
     description: A Helm chart for Kubernetes
     digest: b4d8523f4d21fe7eb9df52e520d9f7749438dab8215058a08b4f6cfef06be22d
     name: git-proxy
@@ -114,7 +124,7 @@ entries:
     version: 0.0.7
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2022-02-20T12:34:58.296321459Z"
+    created: "2022-02-20T12:35:07.404508587Z"
     description: A Helm chart for Kubernetes
     digest: e39c4adda474eb21c4de53c02443f6d19f5a2d791b21552bbb92cfdbf8dbd182
     name: git-proxy
@@ -124,7 +134,7 @@ entries:
     version: 0.0.6
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2022-02-20T12:34:58.295942394Z"
+    created: "2022-02-20T12:35:07.404160349Z"
     description: A Helm chart for Kubernetes
     digest: 1535042e9ea94ec4b6ba8958fba421015d9104118fee83fb3c206a491886bd36
     name: git-proxy
@@ -134,7 +144,7 @@ entries:
     version: 0.0.5
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2022-02-20T12:34:58.295568076Z"
+    created: "2022-02-20T12:35:07.403841317Z"
     description: A Helm chart for Kubernetes
     digest: 1258a03c03379abfbaf4a78d9b29b13a483fcb5dc945f37f58eedb445126a686
     name: git-proxy
@@ -144,7 +154,7 @@ entries:
     version: 0.0.4
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2022-02-20T12:34:58.295224201Z"
+    created: "2022-02-20T12:35:07.403536237Z"
     description: A Helm chart for Kubernetes
     digest: 8d942684d72e03fd72f2d3159605e4050cf13e74ef6bc15aa42627f959d44e6e
     name: git-proxy
@@ -154,7 +164,7 @@ entries:
     version: 0.0.3
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2022-02-20T12:34:58.294917277Z"
+    created: "2022-02-20T12:35:07.403226318Z"
     description: A Helm chart for Kubernetes
     digest: 7ba28a785c7972e04c2ce7741ec9f6915a6f7bfded5f15c11de4522b09d78879
     name: git-proxy
@@ -164,7 +174,7 @@ entries:
     version: 0.0.2
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2022-02-20T12:34:58.294606903Z"
+    created: "2022-02-20T12:35:07.402934667Z"
     description: A Helm chart for Kubernetes
     digest: 129b87410c51092058eb71747c858ea463c48990a09d30baea6342033291585c
     name: git-proxy
@@ -175,7 +185,7 @@ entries:
   wiz-broker:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-02-20T12:34:58.297395796Z"
+    created: "2022-02-20T12:35:07.406479183Z"
     description: A Helm chart for Kubernetes
     digest: 9f1c07b12950105745587962a75f13adcd818400abe1ef9afe307c0317a9e943
     name: wiz-broker
@@ -183,4 +193,4 @@ entries:
     urls:
     - https://wiz-sec.github.io/charts/wiz-broker-0.1.0.tgz
     version: 0.1.0
-generated: "2022-02-20T12:34:58.287214611Z"
+generated: "2022-02-20T12:35:07.39539059Z"
