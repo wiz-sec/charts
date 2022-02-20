@@ -19,6 +19,16 @@ const (
 	chartsRootDir = "."
 )
 
+var defaultNamespace = map[string]string{
+	"flux2":     "flux-system",
+	"git-proxy": "default",
+}
+
+var generatedNamespace = map[string]string{
+	"flux2":     "wiz-flux-system",
+	"git-proxy": "wiz-default",
+}
+
 var defaultValuesKnownIssues = []string{
 	"Missing required value: git.path is required",
 	"Missing required value: storageService is required",
@@ -51,7 +61,8 @@ func TestChartsWithDefaultValues(t *testing.T) {
 		if !fileInfo.IsDir() {
 			continue
 		}
-		chartDir := path.Join(chartsRootDir, fileInfo.Name())
+		chartName := fileInfo.Name()
+		chartDir := path.Join(chartsRootDir, chartName)
 		chartFilePath := path.Join(chartDir, "Chart.yaml")
 		if _, err := os.Stat(chartFilePath); os.IsNotExist(err) {
 			continue
@@ -70,7 +81,7 @@ func TestChartsWithDefaultValues(t *testing.T) {
 			defaultValuesFilePath := path.Join(chartDir, "values.yaml")
 			values, err := chartutil.ReadValuesFile(defaultValuesFilePath)
 			require.NoError(t, err)
-			linter := lint.All(chartDir, values.AsMap(), "", true)
+			linter := lint.All(chartDir, values.AsMap(), defaultNamespace[chartName], true)
 			fmt.Println(linter.Messages)
 
 			for _, supportMessage := range linter.Messages {
@@ -88,8 +99,8 @@ func TestChartsWithGeneratedValues(t *testing.T) {
 		if !fileInfo.IsDir() {
 			continue
 		}
-		chartDir := path.Join(chartsRootDir, fileInfo.Name())
 		chartName := fileInfo.Name()
+		chartDir := path.Join(chartsRootDir, chartName)
 		chartFilePath := path.Join(chartDir, "Chart.yaml")
 		if _, err := os.Stat(chartFilePath); os.IsNotExist(err) {
 			continue
@@ -110,7 +121,7 @@ func TestChartsWithGeneratedValues(t *testing.T) {
 			realValuesPath := path.Join("testfiles", chartName+".yaml")
 			values, err := chartutil.ReadValuesFile(realValuesPath)
 			require.NoError(t, err)
-			linter := lint.All(chartDir, values.AsMap(), "", true)
+			linter := lint.All(chartDir, values.AsMap(), generatedNamespace[chartName], true)
 			for _, supportMessage := range linter.Messages {
 				fmt.Println(supportMessage)
 			}
