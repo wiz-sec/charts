@@ -44,3 +44,4 @@ wizConnector:
   targetPort: ""
   tunnelServerAddress: ""
   tunnelServerPort: ""
+  httpProxy: ""
