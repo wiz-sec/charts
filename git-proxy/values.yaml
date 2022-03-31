@@ -33,7 +33,7 @@ image:
   namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "81413b4"
+  tag: "9d6c977"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -43,7 +43,7 @@ podAnnotations: {}
 
 service:
   type: ClusterIP
-  port: 80
+  port: 8080
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -62,3 +62,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+hostpathCopier:
+  image:
+    repository: docker.io/library/busybox
+    tag: 1.33.1
