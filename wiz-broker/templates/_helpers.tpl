@@ -54,6 +54,7 @@ TARGET_IP: {{ required "A valid .Values.wizConnector.targetIp entry required!" .
 TARGET_PORT: {{ required "A valid .Values.wizConnector.targetPort entry required!" .Values.wizConnector.targetPort | quote }}
 TUNNEL_SERVER_ADDR: {{ required "A valid .Values.wizConnector.tunnelServerAddress entry required!" .Values.wizConnector.tunnelServerAddress | quote }}
 TUNNEL_SERVER_PORT: {{ required "A valid .Values.wizConnector.tunnelServerPort entry required!" .Values.wizConnector.tunnelServerPort | quote }}
+DISABLE_CUSTOM_TLS_FIRST_BYTE: "true"
 {{- if .Values.wizConnector.httpProxy }}
 HTTP_PROXY: {{ .Values.wizConnector.httpProxy | quote}}
 {{- end }}
