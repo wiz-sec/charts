@@ -64,5 +64,5 @@ tolerations: []
 affinity: {}
 hostpathCopier:
   image:
-    repository: docker.io/library/busybox
+    repository: wiziopublic.azurecr.io/wiz-busybox
     tag: 1.33.1
