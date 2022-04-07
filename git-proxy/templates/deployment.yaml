@@ -25,12 +25,39 @@ spec:
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
       {{- end }}
+      {{- if and (eq .Values.storageService "blob") (not .Values.blob.azureCreds) }}
+      {{/* since the main container is running in non-root we need to change the azure.json file permissions to allow
+      us to read it */}}
+      initContainers:
+        - name: hostpath-copier
+          image: "{{ .Values.hostpathCopier.image.repository }}:{{ .Values.hostpathCopier.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          command: ["/bin/sh", "-c"]
+          args: ["cp /etc/kubernetes/azure.json /target/azure.json; chmod 444 /target/azure.json"]
+          volumeMounts:
+            - mountPath: /etc/kubernetes/
+              readOnly: true
+              name: azure-creds-hostpath
+            - name: azure-creds
+              mountPath: /target
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      securityContext:
+        fsGroup: 1000
+        supplementalGroups:
+          - 1000
       containers:
         - name: {{ .Chart.Name }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            privileged: false
+            allowPrivilegeEscalation: false
           image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
@@ -64,9 +91,11 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
+            - mountPath: /tmp
+              name: tmp-dir
             {{- if eq .Values.storageService "blob" }}
             - mountPath: /etc/kubernetes/
-              name: azure-cred
+              name: azure-creds
               readOnly: true
             {{- end }}
       {{- with .Values.nodeSelector }}
@@ -78,15 +107,20 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        - name: tmp-dir
+          emptyDir: {}
         {{- if eq .Values.storageService "blob" }}
-          {{- if .Values.blob.azureCreds }}
-          - name: azure-cred
-            secret:
-              secretName: azure-creds
-          {{- else }}
-          - name: azure-cred
-            hostPath:
-              path: /etc/kubernetes/
-              type: Directory
-          {{- end }}
+        {{- if .Values.blob.azureCreds }}
+        - name: azure-creds
+          secret:
+            secretName: azure-creds
+        {{- else }}
+        - name: azure-creds
+          emptyDir:
+            medium: Memory
+        - name: azure-creds-hostpath
+          hostPath:
+            path: /etc/kubernetes/
+            type: Directory
+        {{- end }}
         {{- end }}
