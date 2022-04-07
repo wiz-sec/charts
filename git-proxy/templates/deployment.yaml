@@ -25,7 +25,7 @@ spec:
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
       {{- end }}
-      {{- if and .Values.storageService "blob" (not .Values.blob.azureCreds) }}
+      {{- if and (eq .Values.storageService "blob") (not .Values.blob.azureCreds) }}
       {{/* since the main container is running in non-root we need to change the azure.json file permissions to allow
       us to read it */}}
       initContainers:
@@ -95,7 +95,7 @@ spec:
               name: tmp-dir
             {{- if eq .Values.storageService "blob" }}
             - mountPath: /etc/kubernetes/
-              name: azure-cred
+              name: azure-creds
               readOnly: true
             {{- end }}
       {{- with .Values.nodeSelector }}
@@ -110,17 +110,17 @@ spec:
         - name: tmp-dir
           emptyDir: {}
         {{- if eq .Values.storageService "blob" }}
-          {{- if .Values.blob.azureCreds }}
-          - name: azure-cred
-            secret:
-              secretName: azure-creds
-          {{- else }}
-          - name: azure-creds
-            emptyDir:
-              medium: Memory
-          - name: azure-cred-hostpath
-            hostPath:
-              path: /etc/kubernetes/
-              type: Directory
-          {{- end }}
+        {{- if .Values.blob.azureCreds }}
+        - name: azure-creds
+          secret:
+            secretName: azure-creds
+        {{- else }}
+        - name: azure-creds
+          emptyDir:
+            medium: Memory
+        - name: azure-creds-hostpath
+          hostPath:
+            path: /etc/kubernetes/
+            type: Directory
+        {{- end }}
         {{- end }}
