@@ -43,3 +43,6 @@ wizConnector:
   tunnelServerAddress: ""
   tunnelServerPort: ""
   httpProxy: ""
+
+# optional arguments
+secretName:
