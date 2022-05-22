@@ -43,7 +43,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
           image: "{{ .Values.image.repository }}/{{ .Values.image.kustomizeController.name }}:{{ .Values.image.kustomizeController.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           livenessProbe:
             httpGet:
               path: /healthz
