@@ -66,7 +66,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
           image: "{{ .Values.image.repository }}/{{ .Values.image.sourceController.name }}:{{ .Values.image.sourceController.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           livenessProbe:
             httpGet:
               path: /healthz
