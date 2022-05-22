@@ -54,8 +54,7 @@ spec:
       {{- end }}
       containers:
         - args:
-            - --events-addr=
-            - --watch-all-namespaces=true
+            - --watch-all-namespaces
             - --log-level=info
             - --log-encoding=json
             - --enable-leader-election
@@ -73,6 +72,14 @@ spec:
               path: /healthz
               port: healthz
           name: manager
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop: [ "ALL" ]
+            seccompProfile:
+              type: RuntimeDefault
           ports:
             - containerPort: 9090
               name: http

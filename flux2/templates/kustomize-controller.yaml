@@ -33,8 +33,7 @@ spec:
       {{- end }}
       containers:
         - args:
-            - --events-addr=
-            - --watch-all-namespaces=true
+            - --watch-all-namespaces
             - --log-level=info
             - --log-encoding=json
             - --enable-leader-election
@@ -70,6 +69,11 @@ spec:
           securityContext:
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            capabilities:
+              drop: [ "ALL" ]
+            seccompProfile:
+              type: RuntimeDefault
           volumeMounts:
             - mountPath: /tmp
               name: temp
