@@ -34,7 +34,7 @@ spec:
       containers:
         - args:
             - --watch-all-namespaces
-            - --log-level=info
+            - --log-level=warn
             - --log-encoding=json
             - --enable-leader-election
           env:
