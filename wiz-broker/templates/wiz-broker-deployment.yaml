@@ -30,8 +30,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:  
           - secretRef:
-              name: wiz-tunnel-client-{{ include "wiz-broker.wizConnectorID" . }}-cfg
+              name: {{ .Values.secretName | default (printf "wiz-tunnel-client-%s-cfg" (include "wiz-broker.wizConnectorID" .))  }}
 
+{{- if not .Values.secretName }}
 ---
 apiVersion: v1
 kind: Secret
@@ -41,4 +42,5 @@ metadata:
 type: Opaque
 stringData:
   {{- include "wiz-broker.wizConnectorSecretData" . | nindent 2 }}
+{{- end }}
 {{- end }}
