@@ -11,6 +11,17 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ include "wiz-broker.serviceAccountName" . }}-token
+  labels:
+    {{- include "wiz-broker.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/service-account.name: {{ include "wiz-broker.serviceAccountName" . }}
+type: kubernetes.io/service-account-token
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
