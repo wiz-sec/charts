@@ -19,7 +19,7 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-opaWebhookRules:
+opaWebhook:
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
     - operations:
       - CREATE
@@ -30,7 +30,16 @@ opaWebhookRules:
       resources:
       - "*"
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
-  sideEffects: None
+  sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
+
+  errorEnforcementMethod: AUDIT  # AUDIT/ BLOCK
+  policyEnforcementMethod: BLOCK # AUDIT/ BLOCK 
+  policies: {}
+    # - policy1
+    # - policy2
+  clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
+
+
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -55,8 +64,8 @@ securityContext:
 
 service:
   type: ClusterIP
-  port: 80
-  targetPort: 8443
+  port: 443
+  targetPort: 10000
 
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values

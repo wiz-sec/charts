@@ -31,7 +31,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: 8443
+          - containerPort: {{ .Values.service.targetPort }}
           volumeMounts:
           - mountPath: /var/server-certs
             name: server-certs
@@ -48,11 +48,17 @@ spec:
               scheme: HTTPS
           command:
           - "/usr/bin/wiz-admission-controller-server"
-          - "--port=8443"
+          - "--port={{ .Values.service.targetPort }}"
           - "--tls-private-key-file=/var/server-certs/tls.key"
           - "--tls-cert-file=/var/server-certs/tls.crt"
-          - "--error-enforcement-method=BLOCK"
-          - "--policy=bar-ac-fw"
+          - "--error-enforcement-method={{ .Values.opaWebhook.errorEnforcementMethod }}"
+          - "--policy-enforcement-method={{ .Values.opaWebhook.policyEnforcementMethod }}"
+          {{- if .Values.opaWebhook.policies }}
+          - {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | quote }}
+          {{- end }}
+          {{- if .Values.opaWebhook.clusterExternalId }}
+          - "--cluster-external-id={{ .Values.opaWebhook.clusterExternalId }}"
+          {{- end }}
           env:
           - name: WIZ_ADMISSION_CONTROLLER_CLIENT_ID
             valueFrom:
@@ -77,7 +83,7 @@ spec:
       volumes:
         - name: server-certs
           secret:
-            defaultMode: 400
+            defaultMode: 444
             secretName: {{ include "wiz-admission-controller.fullname" . }}-cert
       {{- with .Values.nodeSelector }}
       nodeSelector:

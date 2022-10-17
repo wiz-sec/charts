@@ -62,15 +62,18 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-Check required wiz api tokens
-*/}}
-{{- define "wiz-admission-controller.secretApiToken" -}}
-{{ include "wiz-admission-controller.fullname" . }}-api-token
-{{- end }}
-
-{{/*
 Selector labels
 */}}
 {{- define "wiz-admission-controller.certificate" -}}
 {{ .Values.tlsCertificate.tlsCertificate }}
+{{- end }}
+
+{{- define "wiz-admission-controller.secretApiToken" -}}
+{{ include "wiz-admission-controller.fullname" . }}-api-token
+{{- end }}
+
+{{- define "wiz-admission-controller.opaCliParams.policies" -}}
+{{- if .Values.opaWebhook.policies }}
+--policy={{ join " --policy=" .Values.opaWebhook.policies }}
+{{- end }}
 {{- end }}

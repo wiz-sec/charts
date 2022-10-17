@@ -22,13 +22,14 @@ webhooks:
       namespace: {{ .Release.Namespace }}
       name: {{ include "wiz-admission-controller.name" . }}
       path: /opa-validator
+      port: {{ .Values.service.port }}
     caBundle: {{ $tlsCrt }}
-  {{- with .Values.opaWebhookRules.rules }}
+  {{- with .Values.opaWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-  failurePolicy: {{ .Values.opaWebhookRules.failurePolicy }}
-  sideEffects: {{ .Values.opaWebhookRules.sideEffects }}
+  failurePolicy: {{ .Values.opaWebhook.failurePolicy }}
+  sideEffects: {{ .Values.opaWebhook.sideEffects }}
 ---
 apiVersion: v1
 kind: Secret
