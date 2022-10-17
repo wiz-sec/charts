@@ -1,0 +1,82 @@
+# Default values for wiz-admission-controller.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+wizApiToken:
+  clientId: ""
+  clientToken: ""
+  env: "prod" # (prod/ gov)
+
+replicaCount: 2
+
+image:
+  repository: docker.io/library/wiz-admission-controller-server
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose defalt is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+opaWebhookRules:
+  rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
+    - operations:
+      - CREATE
+      apiGroups:
+      - "*"
+      apiVersions:
+      - "*"
+      resources:
+      - "*"
+  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
+  sideEffects: None
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8443
+
+tlsCertificate:
+  # For using generated custom certificate set create to false and set the values
+  create: true
+  tlsCertificate: ""
+  tlsKey: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
