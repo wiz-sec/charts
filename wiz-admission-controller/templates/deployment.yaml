@@ -72,12 +72,10 @@ spec:
                 name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
                 key: clientToken
                 optional: false
+          {{- if .Values.wizApiToken.clientEndpoint }}
           - name: WIZ_ADMISSION_CONTROLLER_ENV
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-                key: clientEndpoint
-                optional: false
+            value: {{ .Values.wizApiToken.clientEndpoint }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:

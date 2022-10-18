@@ -5,7 +5,7 @@
 wizApiToken:
   clientId: ""
   clientToken: ""
-  endpoint: "app" # (app/ gov)
+  clientEndpoint: "" # Set custom endpoint (gov for example)
 
 replicaCount: 2
 
@@ -52,7 +52,7 @@ serviceAccount:
 
 secret:
   # Specifies whether a api token secret should be created
-  # If create is false you need to create it with clientId, clientToken and clientEnv
+  # If create is false you need to create it with clientId, clientToken
   create: true
   # The name of the service account to use.
   # If not set, a name is generated using the fullname template
