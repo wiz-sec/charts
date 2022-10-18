@@ -35,7 +35,7 @@ apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
 metadata:
-  name: {{ include "wiz-admission-controller.fullname" . }}-cert
+  name: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
   annotations:
     # Using helm hook to create certs only for chart install
     "helm.sh/hook": "pre-install, pre-upgrade"

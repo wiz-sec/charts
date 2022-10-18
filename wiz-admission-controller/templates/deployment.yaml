@@ -28,7 +28,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
           - containerPort: {{ .Values.service.targetPort }}
@@ -63,20 +63,20 @@ spec:
           - name: WIZ_ADMISSION_CONTROLLER_CLIENT_ID
             valueFrom:
               secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiToken" . }}
+                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
                 key: clientId
                 optional: false
           - name: WIZ_ADMISSION_CONTROLLER_CLIENT_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiToken" . }}
+                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
                 key: clientToken
                 optional: false
           - name: WIZ_ADMISSION_CONTROLLER_ENV
             valueFrom:
               secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiToken" . }}
-                key: clientEnv
+                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
+                key: clientEndpoint
                 optional: false
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -84,7 +84,7 @@ spec:
         - name: server-certs
           secret:
             defaultMode: 444
-            secretName: {{ include "wiz-admission-controller.fullname" . }}-cert
+            secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -5,15 +5,16 @@
 wizApiToken:
   clientId: ""
   clientToken: ""
-  env: "prod" # (prod/ gov)
+  endpoint: "app" # (app/ gov)
 
 replicaCount: 2
 
 image:
-  repository: docker.io/library/wiz-admission-controller-server
+  registry: docker.io/library
+  repository: wiz-admission-controller-server
   pullPolicy: IfNotPresent
   # Overrides the image tag whose defalt is the chart appVersion.
-  tag: "latest"
+  tag: "latest" # TODO: fix after publish image
 
 imagePullSecrets: []
 nameOverride: ""
@@ -23,6 +24,7 @@ opaWebhook:
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
     - operations:
       - CREATE
+      - UPDATE
       apiGroups:
       - "*"
       apiVersions:
@@ -34,12 +36,10 @@ opaWebhook:
 
   errorEnforcementMethod: AUDIT  # AUDIT/ BLOCK
   policyEnforcementMethod: BLOCK # AUDIT/ BLOCK 
-  policies: {}
+  policies: []
     # - policy1
     # - policy2
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
-
-
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -47,7 +47,15 @@ serviceAccount:
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If empty, a name is generated using the fullname template
+  name: ""
+
+secret:
+  # Specifies whether a api token secret should be created
+  # If create is false you need to create it with clientId, clientToken and clientEnv
+  create: true
+  # The name of the service account to use.
+  # If not set, a name is generated using the fullname template
   name: ""
 
 podAnnotations: {}

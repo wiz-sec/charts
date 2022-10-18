@@ -37,13 +37,13 @@ Common labels
 helm.sh/chart: {{ include "wiz-admission-controller.chart" . }}
 {{ include "wiz-admission-controller.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector labels
+Wiz admission controller webhook server selector labels
 */}}
 {{- define "wiz-admission-controller.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "wiz-admission-controller.name" . }}
@@ -61,15 +61,16 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-{{/*
-Selector labels
-*/}}
-{{- define "wiz-admission-controller.certificate" -}}
-{{ .Values.tlsCertificate.tlsCertificate }}
+{{- define "wiz-admission-controller.secretApiTokenName" -}}
+{{- if .Values.serviceAccount.name }}
+{{ .Values.secret.name }}
+{{- else }}
+{{ printf "%s-%s" .Release.Name "api-token"  }}
+{{- end }}
 {{- end }}
 
-{{- define "wiz-admission-controller.secretApiToken" -}}
-{{ include "wiz-admission-controller.fullname" . }}-api-token
+{{- define "wiz-admission-controller.secretServerCert" -}}
+{{ include "wiz-admission-controller.fullname" . }}-cert
 {{- end }}
 
 {{- define "wiz-admission-controller.opaCliParams.policies" -}}
