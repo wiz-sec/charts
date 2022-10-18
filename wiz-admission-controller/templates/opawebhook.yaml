@@ -1,16 +1,16 @@
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
-{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller.name" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) -}}
+{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) -}}
 {{- $ca := genCA "wiz-admission-controller-ca" 3650 -}}
-{{- $cert := genSignedCert ( include "wiz-admission-controller.name" . ) nil $altNames 3650 $ca -}}
+{{- $cert := genSignedCert ( include "wiz-admission-controller.fullname" . ) nil $altNames 3650 $ca -}}
 {{- $tlsCrt = $cert.Cert | b64enc -}}
 {{- $tlsKey = $cert.Key | b64enc -}}
 {{- end -}}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: wizadmissionvalidator.wiz.io
+  name: {{ include "wiz-admission-controller.fullname" . }}
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
@@ -20,7 +20,7 @@ webhooks:
   clientConfig:
     service:
       namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller.name" . }}
+      name: {{ include "wiz-admission-controller.fullname" . }}
       path: /opa-validator
       port: {{ .Values.service.port }}
     caBundle: {{ $tlsCrt }}
