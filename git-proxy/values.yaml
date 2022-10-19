@@ -66,3 +66,6 @@ hostpathCopier:
   image:
     repository: wiziopublic.azurecr.io/wiz-busybox
     tag: 1.33.1
+
+internetAccessCertificates:
+  skipSslValidation: false

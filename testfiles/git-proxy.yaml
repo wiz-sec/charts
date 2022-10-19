@@ -3,4 +3,9 @@ imagePullSecrets:
 podAnnotations:
   test: testington
   test1: testington2
-storageService: test.test.com
+storageService: "s3"
+s3:
+  bucketName: "test-bucket"
+  region: "test-region"
+internetAccessCertificates:
+  skipSslValidation: false

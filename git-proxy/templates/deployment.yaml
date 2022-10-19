@@ -83,6 +83,9 @@ spec:
             "--bucketName", {{ required "objectstorage.bucketName is required" .Values.objectstorage.bucketName | quote }},
             {{- end }}
             "--port", "{{ .Values.service.port }}",
+            {{- if and (eq .Values.storageService "s3") .Values.internetAccessCertificates.skipSslValidation }}
+            "--skipSslValidation",
+            {{- end }}
           ]
           ports:
             - name: http
