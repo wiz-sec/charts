@@ -11,7 +11,7 @@ replicaCount: 2
 
 image:
   registry: docker.io/library
-  repository: wiz-admission-controller-server
+  repository: wiz-admission-controller
   pullPolicy: IfNotPresent
   # Overrides the image tag whose defalt is the chart appVersion.
   tag: "latest" # TODO: fix after publish image
@@ -30,7 +30,15 @@ opaWebhook:
       apiVersions:
       - "*"
       resources:
-      - "*"
+      - "secrets"
+      - "namespaces"
+      - "pods"
+      - "deployments"
+      - "jobs"
+      - "cronjobs"
+      - "replicasets"
+      - "statefulsets"
+      - "daemonsets"
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
