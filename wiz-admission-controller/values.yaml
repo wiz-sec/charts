@@ -1,0 +1,108 @@
+# Default values for wiz-admission-controller.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+wizApiToken:
+  clientId: ""
+  clientToken: ""
+  clientEndpoint: "" # Set custom endpoint (gov for example)
+
+replicaCount: 2
+
+image:
+  registry: docker.io/library
+  repository: wiz-admission-controller
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose defalt is the chart appVersion.
+  tag: "latest" # TODO: fix after publish image
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+opaWebhook:
+  rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
+    - operations:
+      - CREATE
+      - UPDATE
+      apiGroups:
+      - "*"
+      apiVersions:
+      - "*"
+      resources:
+      - "secrets"
+      - "namespaces"
+      - "pods"
+      - "deployments"
+      - "jobs"
+      - "cronjobs"
+      - "replicasets"
+      - "statefulsets"
+      - "daemonsets"
+  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
+  sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
+
+  errorEnforcementMethod: AUDIT  # AUDIT/ BLOCK
+  policyEnforcementMethod: BLOCK # AUDIT/ BLOCK 
+  policies: []
+    # - policy1
+    # - policy2
+  clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If empty, a name is generated using the fullname template
+  name: ""
+
+secret:
+  # Specifies whether a api token secret should be created
+  # If create is false you need to create it with clientId, clientToken
+  create: true
+  # The name of the service account to use.
+  # If not set, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 10000
+
+tlsCertificate:
+  # For using generated custom certificate set create to false and set the values
+  create: true
+  tlsCertificate: ""
+  tlsKey: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

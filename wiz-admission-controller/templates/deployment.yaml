@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiz-admission-controller.fullname" . }}
+  labels:
+    {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "wiz-admission-controller.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "wiz-admission-controller.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.service.targetPort }}
+          volumeMounts:
+          - mountPath: /var/server-certs
+            name: server-certs
+            readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+              scheme: HTTPS
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8000
+              scheme: HTTPS
+          command:
+          - "/usr/bin/wiz-admission-controller-server"
+          - "--port={{ .Values.service.targetPort }}"
+          - "--tls-private-key-file=/var/server-certs/tls.key"
+          - "--tls-cert-file=/var/server-certs/tls.crt"
+          - "--error-enforcement-method={{ .Values.opaWebhook.errorEnforcementMethod }}"
+          - "--policy-enforcement-method={{ .Values.opaWebhook.policyEnforcementMethod }}"
+          {{- if .Values.opaWebhook.policies }}
+          - {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | quote }}
+          {{- end }}
+          {{- if .Values.opaWebhook.clusterExternalId }}
+          - "--cluster-external-id={{ .Values.opaWebhook.clusterExternalId }}"
+          {{- end }}
+          env:
+          - name: WIZ_ADMISSION_CONTROLLER_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
+                key: clientId
+                optional: false
+          - name: WIZ_ADMISSION_CONTROLLER_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
+                key: clientToken
+                optional: false
+          {{- if .Values.wizApiToken.clientEndpoint }}
+          - name: WIZ_ADMISSION_CONTROLLER_ENV
+            value: {{ .Values.wizApiToken.clientEndpoint }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: server-certs
+          secret:
+            defaultMode: 444
+            secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
