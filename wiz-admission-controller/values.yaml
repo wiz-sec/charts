@@ -62,7 +62,7 @@ secret:
   # Specifies whether a api token secret should be created
   # If create is false you need to create it with clientId, clientToken
   create: true
-  # The name of the service account to use.
+  # The name of the secret to use.
   # If not set, a name is generated using the fullname template
   name: ""
 
