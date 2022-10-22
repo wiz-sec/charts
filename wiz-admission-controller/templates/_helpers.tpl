@@ -62,7 +62,7 @@ Create the name of the service account to use
 {{- end }}
 
 {{- define "wiz-admission-controller.secretApiTokenName" -}}
-{{- if .Values.serviceAccount.name }}
+{{- if .Values.secret.name }}
 {{ .Values.secret.name }}
 {{- else }}
 {{ printf "%s-%s" .Release.Name "api-token"  }}
