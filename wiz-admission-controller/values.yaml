@@ -10,11 +10,11 @@ wizApiToken:
 replicaCount: 2
 
 image:
-  registry: docker.io/library
+  registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-admission-controller
   pullPolicy: IfNotPresent
   # Overrides the image tag whose defalt is the chart appVersion.
-  tag: "latest" # TODO: fix after publish image
+  tag: "0.1.112572" # TODO: fix after publish image
 
 imagePullSecrets: []
 nameOverride: ""
@@ -30,8 +30,16 @@ opaWebhook:
       apiVersions:
       - "*"
       resources:
-      - "secrets"
       - "namespaces"
+      - "secrets"
+      - "configmaps"
+      - "storageclasses"
+      - "persistentvolumes"
+      - "persistentvolumeclaims"
+      - "controllerrevisions"
+      - "ingresses"
+      - "services"
+      - "networkpolicies"
       - "pods"
       - "deployments"
       - "jobs"
