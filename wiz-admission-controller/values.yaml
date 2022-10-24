@@ -21,6 +21,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 opaWebhook:
+  # Override to run admission controller on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
     - operations:
       - CREATE
