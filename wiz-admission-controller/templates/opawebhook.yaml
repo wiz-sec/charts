@@ -28,6 +28,10 @@ webhooks:
   rules:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.opaWebhook.namespaceSelector }}
+  namespaceSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   failurePolicy: {{ .Values.opaWebhook.failurePolicy }}
   sideEffects: {{ .Values.opaWebhook.sideEffects }}
 ---
