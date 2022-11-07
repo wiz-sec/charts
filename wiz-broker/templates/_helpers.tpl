@@ -33,7 +33,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create the name of the service account to use
+Create the name of the broker service account to use
+*/}}
+{{- define "wiz-broker.brokerServiceAccountName" -}}
+{{- default (include "wiz-broker.name" .) .Values.brokerServiceAccount.name }}
+{{- end }}
+
+{{/*
+Create the name of the connector service account to use
 */}}
 {{- define "wiz-broker.serviceAccountName" -}}
 {{- default (include "wiz-broker.name" .) .Values.serviceAccount.name }}
