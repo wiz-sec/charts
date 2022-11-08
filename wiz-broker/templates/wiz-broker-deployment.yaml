@@ -1,16 +1,4 @@
 {{- if .Values.installBroker }}
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: {{ include "wiz-broker.brokerServiceAccountName" . }}
-  namespace: {{ .Values.namespace }}
-  labels:
-    {{- include "wiz-broker.labels" . | nindent 4 }}
-  {{- with .Values.brokersa.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,7 +22,6 @@ spec:
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      serviceAccountName: {{ include "wiz-broker.brokerServiceAccountName" . | nindent 6 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
