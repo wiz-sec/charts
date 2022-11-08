@@ -14,7 +14,7 @@ image:
   repository: wiz-admission-controller
   pullPolicy: IfNotPresent
   # Overrides the image tag whose defalt is the chart appVersion.
-  tag: "0.1.112793"
+  tag: "0.1.116330"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -48,6 +48,13 @@ opaWebhook:
       - "replicasets"
       - "statefulsets"
       - "daemonsets"
+  namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+    matchExpressions:
+    - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
+      operator: NotIn
+      values:
+      - kube-system
+
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
