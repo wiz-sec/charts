@@ -5,19 +5,13 @@
 nameOverride: "wiz-broker"
 namespace: "kube-system"
 
-brokerServiceAccount: 
-  # Annotations to add to the broker service account
-  annotations: {}
-  # The name of broker service account to use
-  name: "wiz-broker"
-
 installRbac: false
 installBroker: false
 
 serviceAccount:
-  # Annotations to add to the connector service account
+  # Annotations to add to the service account
   annotations: {}
-  # The name of the connector service account to use.
+  # The name of the service account to use.
   name: "wiz-kube-connector"
 
 image:
