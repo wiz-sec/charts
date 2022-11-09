@@ -1,0 +1,13 @@
+{{- if .Values.httpProxyConfiguration.enabled }}
+{{- if .Values.httpProxyConfiguration.create }}
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
+data:
+  http-proxy: {{ .Values.httpProxyConfiguration.httpProxy | b64enc | quote }}
+  https-proxy: {{ .Values.httpProxyConfiguration.httpsProxy | b64enc | quote }}
+  no-proxy-address: {{ .Values.httpProxyConfiguration.noProxyAddress | b64enc | quote }}
+{{- end }}
+{{- end }}
