@@ -76,6 +76,10 @@ spec:
           - name: WIZ_ADMISSION_CONTROLLER_ENV
             value: {{ .Values.wizApiToken.clientEndpoint }}
           {{- end }}
+          {{- if .Values.HTTPS_PROXY }}
+          - name: HTTPS_PROXY
+            value: {{ .Values.HTTPS_PROXY | trim | quote }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
