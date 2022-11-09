@@ -54,19 +54,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create the name of the service account to use
 */}}
 {{- define "wiz-admission-controller.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "wiz-admission-controller.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
+{{ coalesce (.Values.serviceAccount.name) (include "wiz-admission-controller.fullname" .) }}
 {{- end }}
 
 {{- define "wiz-admission-controller.secretApiTokenName" -}}
-{{- if .Values.secret.name }}
-{{ .Values.secret.name }}
-{{- else }}
-{{ printf "%s-%s" .Release.Name "api-token"  }}
-{{- end }}
+{{ coalesce (.Values.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
 {{- end }}
 
 {{- define "wiz-admission-controller.secretServerCert" -}}
@@ -77,4 +69,8 @@ Create the name of the service account to use
 {{- if .Values.opaWebhook.policies }}
 --policy={{ join " --policy=" .Values.opaWebhook.policies }}
 {{- end }}
+{{- end }}
+
+{{- define "wiz-admission-controller.proxySecretName" -}}
+{{ coalesce (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "-proxy-configuration") }}
 {{- end }}
