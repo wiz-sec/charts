@@ -33,7 +33,7 @@ image:
   namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "851f811"
+  tag: "bc3517e-multiarch"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -65,7 +65,7 @@ affinity: {}
 hostpathCopier:
   image:
     repository: wiziopublic.azurecr.io/wiz-busybox
-    tag: 1.33.1
+    tag: 1.35.0-multiarch
 
 internetAccessCertificates:
   skipSslValidation: false
