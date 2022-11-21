@@ -28,7 +28,7 @@ image:
   repository: wiz-admission-controller
   pullPolicy: IfNotPresent
   # Overrides the image tag whose defalt is the chart appVersion.
-  tag: "0.1.116330"
+  tag: "0.2.119420"
 
 imagePullSecrets: []
 nameOverride: ""
