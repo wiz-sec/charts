@@ -14,7 +14,7 @@ image:
     tag: v0.29.0-multiarch
   kustomizeController:
     name: wiz-kustomize-controller
-    tag: v0.28.0-multiarch
+    tag: v0.31.0
 affinity: {}
 
 podAnnotaitons: {}
