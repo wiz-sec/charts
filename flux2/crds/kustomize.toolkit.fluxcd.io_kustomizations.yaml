@@ -1,11 +1,12 @@
 
 ---
 # based on: https://github.com/fluxcd/kustomize-controller/blob/main/config/crd/bases/kustomize.toolkit.fluxcd.io_kustomizations.yaml
+---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.7.0
+    controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: kustomizations.kustomize.toolkit.fluxcd.io
 spec:
@@ -442,14 +443,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    \n \ttype FooStatus struct{ \t    // Represents the observations
-                    of a foo's current state. \t    // Known .status.conditions.type
-                    are: \"Available\", \"Progressing\", and \"Degraded\" \t    //
-                    +patchMergeKey=type \t    // +patchStrategy=merge \t    // +listType=map
-                    \t    // +listMapKey=type \t    Conditions []metav1.Condition
+                    \n type FooStatus struct{ // Represents the observations of a
+                    foo's current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
                     `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
-                    protobuf:\"bytes,1,rep,name=conditions\"` \n \t    // other fields
-                    \t}"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
@@ -690,6 +689,7 @@ spec:
                 type: array
               interval:
                 description: The interval at which to reconcile the Kustomization.
+                pattern: ^([0-9]+(\.[0-9]+)?(ms|s|m|h))+$
                 type: string
               kubeConfig:
                 description: The KubeConfig for reconciling the Kustomization on a
@@ -702,12 +702,12 @@ spec:
                   secretRef:
                     description: SecretRef holds the name of a secret that contains
                       a key with the kubeconfig file as the value. If no key is set,
-                      the key will default to 'value'. The secret must be in the same
-                      namespace as the Kustomization. It is recommended that the kubeconfig
-                      is self-contained, and the secret is regularly updated if credentials
-                      such as a cloud-access-token expire. Cloud specific `cmd-path`
-                      auth helpers will not function without adding binaries and credentials
-                      to the Pod that is responsible for reconciling the Kustomization.
+                      the key will default to 'value'. It is recommended that the
+                      kubeconfig is self-contained, and the secret is regularly updated
+                      if credentials such as a cloud-access-token expire. Cloud specific
+                      `cmd-path` auth helpers will not function without adding binaries
+                      and credentials to the Pod that is responsible for reconciling
+                      Kubernetes resources.
                     properties:
                       key:
                         description: Key in the Secret, when not specified an implementation-specific
@@ -719,6 +719,8 @@ spec:
                     required:
                     - name
                     type: object
+                required:
+                - secretRef
                 type: object
               patches:
                 description: Strategic merge and JSON patches, defined as inline YAML
@@ -929,6 +931,7 @@ spec:
                 description: The interval at which to retry a previously failed reconciliation.
                   When not specified, the controller uses the KustomizationSpec.Interval
                   value to retry failures.
+                pattern: ^([0-9]+(\.[0-9]+)?(ms|s|m|h))+$
                 type: string
               serviceAccountName:
                 description: The name of the Kubernetes service account to impersonate
@@ -973,6 +976,7 @@ spec:
               timeout:
                 description: Timeout for validation, apply and health checking operations.
                   Defaults to 'Interval' duration.
+                pattern: ^([0-9]+(\.[0-9]+)?(ms|s|m|h))+$
                 type: string
               validation:
                 description: 'Deprecated: Not used in v1beta2.'
@@ -1001,14 +1005,12 @@ spec:
                   description: "Condition contains details for one aspect of the current
                     state of this API Resource. --- This struct is intended for direct
                     use as an array at the field path .status.conditions.  For example,
-                    \n \ttype FooStatus struct{ \t    // Represents the observations
-                    of a foo's current state. \t    // Known .status.conditions.type
-                    are: \"Available\", \"Progressing\", and \"Degraded\" \t    //
-                    +patchMergeKey=type \t    // +patchStrategy=merge \t    // +listType=map
-                    \t    // +listMapKey=type \t    Conditions []metav1.Condition
+                    \n type FooStatus struct{ // Represents the observations of a
+                    foo's current state. // Known .status.conditions.type are: \"Available\",
+                    \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge
+                    // +listType=map // +listMapKey=type Conditions []metav1.Condition
                     `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\"
-                    protobuf:\"bytes,1,rep,name=conditions\"` \n \t    // other fields
-                    \t}"
+                    protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
                   properties:
                     lastTransitionTime:
                       description: lastTransitionTime is the last time the condition
