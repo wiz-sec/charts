@@ -65,6 +65,14 @@ spec:
           - name: AWS_REGION
             value: {{ required "s3.region is required" .Values.s3.region | quote }}
           {{- end }}
+          {{- if eq .Values.storageService "oss" }}
+          - name: ALICLOUD_OIDC_PROVIDER_ARN
+            value: {{ .Values.oss.oidcProviderARN }}
+          - name: ALICLOUD_OIDC_TOKEN_FILE_PATH
+            value: "/var/run/secrets/tokens/oidc-token"
+          - name: ALICLOUD_ROLE_ARN
+            value: {{ .Values.oss.roleARN }}
+          {{- end }}
           args: [
             {{- if eq .Values.storageService "blob" }}
             "--resourceGroup", {{ required "blob.resourceGroupName is required" .Values.blob.resourceGroupName | quote }},
@@ -81,6 +89,10 @@ spec:
             "--region", {{ required "objectstorage.region is required" .Values.objectstorage.region | quote }},
             "--namespaceName", {{ required "objectstorage.namespaceName is required" .Values.objectstorage.namespaceName | quote }},
             "--bucketName", {{ required "objectstorage.bucketName is required" .Values.objectstorage.bucketName | quote }},
+            {{- end }}
+            {{- if eq .Values.storageService "oss" }}
+            "--region", {{ required "oss.region is required" .Values.oss.region | quote }},
+            "--bucketName", {{ required "oss.bucketName is required" .Values.oss.bucketName | quote }},
             {{- end }}
             "--port", "{{ .Values.service.port }}",
             {{- if and (eq .Values.storageService "s3") .Values.internetAccessCertificates.skipSslValidation }}
@@ -100,6 +112,10 @@ spec:
             - mountPath: /etc/kubernetes/
               name: azure-creds
               readOnly: true
+            {{- end }}
+            {{- if eq .Values.storageService "oss" }}
+            - name: oidc-token
+              mountPath: /var/run/secrets/tokens
             {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -126,4 +142,13 @@ spec:
             path: /etc/kubernetes/
             type: Directory
         {{- end }}
+        {{- end }}
+        {{- if eq .Values.storageService "oss" }}
+        - name: oidc-token
+          projected:
+            sources:
+            - serviceAccountToken:
+                path: oidc-token
+                expirationSeconds: 7200    # The validity period of the OIDC token in seconds.
+                audience: "sts.aliyuncs.com"
         {{- end }}
