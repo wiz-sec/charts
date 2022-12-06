@@ -1,191 +1,83 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
 orbs:
-  swissknife: wiz-sec/swissknife@0.4.0
-  welcome: circleci/welcome-orb@0.4.1
+  path-filtering: circleci/path-filtering@0.1.3
+  continuation: circleci/continuation@0.2.0
 
 executors:
-  ops:
+  python:
     docker:
-      - image: dtzar/helm-kubectl
-  golang:
-    docker:
-      - image: golang:1.17
+      - image: cimg/python:3.10
 
-triggers: &triggers '[
-    {
-        "regex": "^(flux2)/.*",
-        "param_name": "flux2"
-    },
-    {
-        "regex": "^(git-proxy)/.*",
-        "param_name": "git-proxy"
-    },
-    {
-        "regex": "^(wiz-broker)/.*",
-        "param_name": "wiz-broker"
-    },
-    {
-        "regex": "^(wiz-admission-controller)/.*",
-        "param_name": "wiz-admission-controller"
-    },
-    {
-        "regex": "^(.)/.*",
-        "param_name": "run_chart_validation_test"
-    }
-]'
+setup: true
 
 parameters:
   run_trigger_workflow:
     default: true
     type: boolean
-  run_chart_validation_test:
-    default: true
-    type: boolean
-  flux2:
-    default: false
-    type: boolean
-  git-proxy:
-    default: false
-    type: boolean
-  wiz-broker:
-    default: false
-    type: boolean
-  wiz-admission-controller:
-    default: false
-    type: boolean
-  swissknife_sha:
-    default: ""
-    type: string
-
-commands:
-  test:
-    steps:
-      - run:
-          when: always
-          name: test
-          command: |
-            echo test
 
 jobs:
-  trigger-needed-workflows:
-    executor: ops
-    working_directory: ~/project/
+  trigger-builds:
+    description: Continues a pipeline in the `setup` state based with static config and a set of pipeline parameters based on the changes in this push.
+    executor:
+      name: python
+    parameters:
+      base-revision:
+        default: origin/master
+        description: The revision to compare the current one against for the purpose of determining changed files.
+        type: string
+      circleci_domain:
+        default: circleci.com
+        description: The domain of the CircleCI installation - defaults to circleci.com. (Only necessary for CircleCI Server users)
+        type: string
+      config-path:
+        default: .circleci/continue_config.yml
+        description: The location of the config to continue the pipeline with.
+        type: string
+      mapping:
+        default: ""
+        description: Mapping of path regular expressions to pipeline parameters and values. One mapping per line, whitespace-delimited.
+        type: string
+      resource_class:
+        default: small
+        type: string
+      parameters-output-path:
+        default: /tmp/pipeline-parameters.json
+        type: string
+    resource_class: << parameters.resource_class >>
     steps:
       - checkout
-      - swissknife/trigger-workflows-for-all-modified:
-          base-branch: << pipeline.git.branch >>
-          run-mode-for-base-branch: run_for_last_commit
-          use-divergence-point: true
-          code-param-name-map: *triggers
-          additional-param-map: '{"run_trigger_workflow": false}'
-          use-swissknife-sha: true
-          wait-for-workflows: true
-
-  run-chart-validation-test:
-    executor: golang
-    working_directory: ~/project/
-    steps:
-      - checkout:
-          path: ~/project
-      - run:
-          name: 'Creating directory for GOPATH and override it to be /go'
-          command: |
-            go env -w GOPATH=/go
-            go mod tidy
-      - run:
-          name: Run chart validation tests
-          command: |
-            go test -v .
-
-  upload_new_chart:
-    executor: ops
-    parameters:
-      package:
-        type: string
-    working_directory: ~/project/
-    steps:
-      - checkout:
-          path: ~/project
-      - add_ssh_keys:
-          fingerprints:
-            - "65:8f:74:1a:d8:40:bd:db:1d:ca:09:16:46:3b:7b:36"
-      - run:
-          name: Read-Write checkout
-          command: |
-            mkdir -pm0700 ~/.ssh
-            ssh-keyscan github.com > ~/.ssh/known_hosts
-            echo 'Host gitops
-              Hostname github.com
-              IdentityFile ~/.ssh/id_rsa_658f741ad840bddb1dca0916463b7b36
-              IdentitiesOnly yes' > ~/.ssh/config
-            git clone -b master git@gitops:wiz-sec/charts.git
-      - run:
-          name: push new package
-          command: |
-            cd charts
-            helm package ./<< parameters.package >>
-            helm repo index --url https://wiz-sec.github.io/charts/ .
-            git config user.email "circleci@wiz.io"
-            git config user.name "CircleCI"
-            git add .
-            git commit -a -m "CircleCI: Upload << parameters.package >> chart"
-            git push
+      - when:
+          condition: << pipeline.parameters.run_trigger_workflow >>
+          steps:
+            - path-filtering/set-parameters:
+                base-revision: << parameters.base-revision >>
+                mapping: << parameters.mapping >>
+                output-path: << parameters.parameters-output-path >>
+      - when:
+          condition: 
+            not: << pipeline.parameters.run_trigger_workflow >>
+          steps:
+            - run:
+                name: Produce empty parameters.json
+                command: echo "{}" > << parameters.parameters-output-path >>
+      - continuation/continue:
+          circleci_domain: << parameters.circleci_domain >>
+          configuration_path: << parameters.config-path >>
+          parameters: << parameters.parameters-output-path >>
 
 workflows:
-  trigger-needed-workflows:
-    when:
-      << pipeline.parameters.run_trigger_workflow >>
+  setup-and-trigger:
     jobs:
-      - trigger-needed-workflows
-
-  run-chart-validation-test:
-    when:
-      << pipeline.parameters.run_chart_validation_test >>
-    jobs:
-      - run-chart-validation-test
-
-  flux2:
-    when:
-      << pipeline.parameters.flux2 >>
-    jobs:
-      - upload_new_chart:
-          package: flux2
+      - trigger-builds:
+          name: generate config and trigger
+          mapping: |
+            ^flux2/.* flux2 true
+            ^git-proxy/.* git-proxy true
+            ^wiz-broker/.* wiz-broker true
+            ^wiz-admission-controller/.* wiz-admission-controller true
+            ^uri-test-chart/.* uri-test-chart true
+          base-revision: << pipeline.git.branch >>
           filters:
             branches:
-              only:
-                - master
-
-  git-proxy:
-    when:
-      << pipeline.parameters.git-proxy >>
-    jobs:
-      - upload_new_chart:
-          package: git-proxy
-          filters:
-            branches:
-              only:
-                - master
-
-  wiz-broker:
-    when:
-      << pipeline.parameters.wiz-broker >>
-    jobs:
-      - upload_new_chart:
-          package: wiz-broker
-          filters:
-            branches:
-              only:
-                - master
-
-  wiz-admission-controller:
-    when:
-      << pipeline.parameters.wiz-admission-controller >>
-    jobs:
-      - upload_new_chart:
-          package: wiz-admission-controller
-          filters:
-            branches:
-              only:
-                - master
+              ignore:
+                - gh-pages

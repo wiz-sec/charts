@@ -1,0 +1,123 @@
+
+version: 2.1
+
+parameters:
+  run_chart_validation_test:
+    default: true
+    type: boolean
+  flux2:
+    default: false
+    type: boolean
+  git-proxy:
+    default: false
+    type: boolean
+  wiz-broker:
+    default: false
+    type: boolean
+  wiz-admission-controller:
+    default: false
+    type: boolean
+
+executors:
+  ops:
+    docker:
+      - image: dtzar/helm-kubectl:3.10.2
+  golang:
+    docker:
+      - image: golang:1.17
+
+commands:
+  upload_new_chart:
+    parameters:
+      package:
+        type: string
+    steps:
+      - checkout:
+          path: ~/project
+      - add_ssh_keys:
+          fingerprints:
+            - "65:8f:74:1a:d8:40:bd:db:1d:ca:09:16:46:3b:7b:36"
+      - run:
+          name: Read-Write checkout
+          command: |
+            mkdir -pm0700 ~/.ssh
+            ssh-keyscan github.com > ~/.ssh/known_hosts
+            echo 'Host gitops
+              Hostname github.com
+              IdentityFile ~/.ssh/id_rsa_658f741ad840bddb1dca0916463b7b36
+              IdentitiesOnly yes' > ~/.ssh/config
+            git clone -b master git@gitops:wiz-sec/charts.git
+      - run:
+          name: Push new package << parameters.package >>
+          command: |
+            cd charts
+            helm package ./<< parameters.package >>
+            git checkout gh-pages
+            rm -f ./<< parameters.package >> # Make sure github pages serving branch is clean
+            helm repo index --url https://wiz-sec.github.io/charts/ .
+            git config user.email "circleci@wiz.io"
+            git config user.name "CircleCI"
+            git add .
+            git commit -a -m "CircleCI: Upload << parameters.package >> chart"
+            git push -u origin gh-pages
+
+jobs:
+  run-chart-validation-test:
+    executor: golang
+    working_directory: ~/project/.circleci/tests/
+    steps:
+      - checkout:
+          path: ~/project
+      - run:
+          name: 'Creating directory for GOPATH and override it to be /go'
+          command: |
+            go env -w GOPATH=/go
+            go mod tidy
+      - run:
+          name: Run chart validation tests
+          command: |
+            go test -v .
+
+  package_and_index_charts:
+    executor:
+      name: ops
+    steps:
+      - when:
+          condition: << pipeline.parameters.flux2 >>
+          steps:
+            - upload_new_chart:
+                package: flux2
+      - when:
+          condition: << pipeline.parameters.git-proxy >>
+          steps:
+            - upload_new_chart:
+                package: git-proxy
+      - when:
+          condition: << pipeline.parameters.wiz-broker >>
+          steps:
+            - upload_new_chart:
+                package: wiz-broker
+      - when:
+          condition: << pipeline.parameters.wiz-admission-controller >>
+          steps:
+            - upload_new_chart:
+                package: wiz-admission-controller
+      - run:
+          name: Run always
+          command: echo "Done!" # Hack for empty runs
+
+workflows:
+  run-chart-validation-test:
+    when: << pipeline.parameters.run_chart_validation_test >>
+    jobs:
+      - run-chart-validation-test:
+          name: Validate chart
+
+  package_and_index_charts:
+    jobs:
+      - package_and_index_charts:
+          name: Package and index charts
+          filters:
+            branches:
+              only:
+                - master
