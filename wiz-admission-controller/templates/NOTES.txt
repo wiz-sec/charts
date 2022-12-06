@@ -1,8 +1,0 @@
-For uninstalling the wiz admission controller you need to delete helm hooks resources manually:
-1. Delete validating webhook configuration - kubectl delete validatingwebhookconfiguration {{ include "wiz-admission-controller.fullname" . }}
-2. Delete certificates secret - kubectl delete -n {{ .Release.Namespace }} secret  {{ include "wiz-admission-controller.secretServerCert" . | trim }}
-{{- if eq .Values.opaWebhook.failurePolicy "Fail" }}
-
-WARNING!!!
-opaWebhook.failurePolicy is Fail, You need to delete validatingwebhookconfiguration before uninstall, if webhook exists without chart resources you can’t create resources in your cluster!
-{{- end }}

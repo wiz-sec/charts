@@ -1,9 +1,0 @@
-{{- if and (ne .Release.Namespace "default") .Values.createNamespace }}
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: {{ .Chart.Version }}
-  name: {{ .Release.Namespace }}
-{{- end }}
