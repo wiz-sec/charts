@@ -17,4 +17,4 @@ You can then run `helm search repo wiz-sec` to see the charts.
 
 ## Helm charts build status
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/wiz-sec/charts/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/wiz-sec/charts/tree/master)
+[![wiz-sec](https://dl.circleci.com/status-badge/img/gh/wiz-sec/charts/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/img/gh/wiz-sec/charts/tree/master.svg?style=shield)
