@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	chartsRootDir = "."
+	chartsRootDir = "../../."
 )
 
 var defaultNamespace = map[string]string{
