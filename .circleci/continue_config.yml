@@ -17,6 +17,9 @@ parameters:
   wiz-admission-controller:
     default: false
     type: boolean
+  wiz-sensor:
+    default: false
+    type: boolean
 
 executors:
   ops:
@@ -62,7 +65,7 @@ commands:
             git push -u origin gh-pages
 
 jobs:
-  run-chart-validation-test:
+  run_chart_validation_test:
     executor: golang
     working_directory: ~/project/.circleci/tests/
     steps:
@@ -102,21 +105,24 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-admission-controller
+      - when:
+          condition: << pipeline.parameters.wiz-sensor >>
+          steps:
+            - upload_new_chart:
+                package: wiz-sensor
       - run:
           name: Run always
           command: echo "Done!" # Hack for empty runs
 
 workflows:
-  run-chart-validation-test:
-    when: << pipeline.parameters.run_chart_validation_test >>
+  validate_and_package:
     jobs:
-      - run-chart-validation-test:
+      - run_chart_validation_test:
           name: Validate chart
-
-  package_and_index_charts:
-    jobs:
       - package_and_index_charts:
           name: Package and index charts
+          requires:
+            - "Validate chart"
           filters:
             branches:
               only:
