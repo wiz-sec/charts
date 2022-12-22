@@ -1,0 +1,83 @@
+version: 2.1
+orbs:
+  path-filtering: circleci/path-filtering@0.1.3
+  continuation: circleci/continuation@0.2.0
+
+executors:
+  python:
+    docker:
+      - image: cimg/python:3.10
+
+setup: true
+
+parameters:
+  run_trigger_workflow:
+    default: true
+    type: boolean
+
+jobs:
+  trigger-builds:
+    description: Continues a pipeline in the `setup` state based with static config and a set of pipeline parameters based on the changes in this push.
+    executor:
+      name: python
+    parameters:
+      base-revision:
+        default: origin/master
+        description: The revision to compare the current one against for the purpose of determining changed files.
+        type: string
+      circleci_domain:
+        default: circleci.com
+        description: The domain of the CircleCI installation - defaults to circleci.com. (Only necessary for CircleCI Server users)
+        type: string
+      config-path:
+        default: .circleci/continue_config.yml
+        description: The location of the config to continue the pipeline with.
+        type: string
+      mapping:
+        default: ""
+        description: Mapping of path regular expressions to pipeline parameters and values. One mapping per line, whitespace-delimited.
+        type: string
+      resource_class:
+        default: small
+        type: string
+      parameters-output-path:
+        default: /tmp/pipeline-parameters.json
+        type: string
+    resource_class: << parameters.resource_class >>
+    steps:
+      - checkout
+      - when:
+          condition: << pipeline.parameters.run_trigger_workflow >>
+          steps:
+            - path-filtering/set-parameters:
+                base-revision: << parameters.base-revision >>
+                mapping: << parameters.mapping >>
+                output-path: << parameters.parameters-output-path >>
+      - when:
+          condition: 
+            not: << pipeline.parameters.run_trigger_workflow >>
+          steps:
+            - run:
+                name: Produce empty parameters.json
+                command: echo "{}" > << parameters.parameters-output-path >>
+      - continuation/continue:
+          circleci_domain: << parameters.circleci_domain >>
+          configuration_path: << parameters.config-path >>
+          parameters: << parameters.parameters-output-path >>
+
+workflows:
+  setup-and-trigger:
+    jobs:
+      - trigger-builds:
+          name: generate config and trigger
+          mapping: |
+            ^flux2/.* flux2 true
+            ^git-proxy/.* git-proxy true
+            ^wiz-broker/.* wiz-broker true
+            ^wiz-admission-controller/.* wiz-admission-controller true
+            ^wiz-sensor/.* wiz-sensor true
+          base-revision: << pipeline.git.branch >>
+          filters:
+            branches:
+              ignore:
+                - gh-pages
