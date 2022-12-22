@@ -75,6 +75,7 @@ workflows:
             ^git-proxy/.* git-proxy true
             ^wiz-broker/.* wiz-broker true
             ^wiz-admission-controller/.* wiz-admission-controller true
+            ^wiz-sensor/.* wiz-sensor true
           base-revision: << pipeline.git.branch >>
           filters:
             branches:
