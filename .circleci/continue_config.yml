@@ -2,9 +2,6 @@
 version: 2.1
 
 parameters:
-  run_chart_validation_test:
-    default: true
-    type: boolean
   flux2:
     default: false
     type: boolean
