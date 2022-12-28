@@ -1,17 +1,5 @@
 {{- if .Values.installRbac }}
 apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: {{ include "wiz-broker.serviceAccountName" . }}
-  namespace: {{ .Values.namespace }}
-  labels:
-    {{- include "wiz-broker.labels" . | nindent 4 }}
-  {{- with .Values.serviceAccount.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
----
-apiVersion: v1
 kind: Secret
 metadata:
   namespace: {{ .Values.namespace }}
