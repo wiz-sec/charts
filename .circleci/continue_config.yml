@@ -50,16 +50,9 @@ commands:
       - run:
           name: Push new package << parameters.package >>
           command: |
+            export PACKAGE="<< parameters.package >>"
             cd charts
-            helm package ./<< parameters.package >>
-            git checkout gh-pages
-            rm -f ./<< parameters.package >> # Make sure github pages serving branch is clean
-            helm repo index --url https://wiz-sec.github.io/charts/ .
-            git config user.email "circleci@wiz.io"
-            git config user.name "CircleCI"
-            git add .
-            git commit -a -m "CircleCI: Upload << parameters.package >> chart"
-            git push -u origin gh-pages
+            bash .circleci/package_index.sh
 
 jobs:
   run_chart_validation_test:
