@@ -1,5 +1,5 @@
 {{- if .Values.installRbac }}
-{{- $rbacServiceAccountName := .Values.rbacServiceAccount.name -}}
+{{- $rbacServiceAccountName := include "wiz-broker.rbacServiceAccountName" . -}}
 
 apiVersion: v1
 kind: ServiceAccount
