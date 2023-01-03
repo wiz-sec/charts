@@ -17,7 +17,7 @@ serviceAccount:
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
-  - name: wiz-broker
+  name: wiz-broker
 
 image:
   repository: wizsec/tunnel-client
