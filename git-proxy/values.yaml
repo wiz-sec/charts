@@ -76,3 +76,4 @@ hostpathCopier:
 internetAccessCertificates:
   skipSslValidation: false
 
+extraEnv: {}
