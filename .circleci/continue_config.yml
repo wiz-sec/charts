@@ -36,7 +36,7 @@ commands:
           path: ~/project
       - add_ssh_keys:
           fingerprints:
-            - "65:8f:74:1a:d8:40:bd:db:1d:ca:09:16:46:3b:7b:36"
+            - "46:88:b6:e7:04:9e:f2:cf:cf:4f:03:09:e5:58:1b:f2"
       - run:
           name: Read-Write checkout
           command: |
