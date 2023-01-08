@@ -44,7 +44,7 @@ commands:
             ssh-keyscan github.com > ~/.ssh/known_hosts
             echo 'Host gitops
               Hostname github.com
-              IdentityFile ~/.ssh/id_rsa_658f741ad840bddb1dca0916463b7b36
+              IdentityFile ~/.ssh/id_rsa_4688b6e7049ef2cfcf4f0309e5581bf2
               IdentitiesOnly yes' > ~/.ssh/config
             git clone -b master git@gitops:wiz-sec/charts.git
       - run:
