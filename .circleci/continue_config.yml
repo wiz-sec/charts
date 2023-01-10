@@ -17,6 +17,10 @@ parameters:
   wiz-sensor:
     default: false
     type: boolean
+  wiz-kubernetes-connector:
+    default: false
+    type: boolean
+
 
 executors:
   ops:
@@ -100,6 +104,11 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-sensor
+      - when:
+          condition: << pipeline.parameters.wiz-kubernetes-connector >>
+          steps:
+            - upload_new_chart:
+                package: wiz-kubernetes-connector
       - run:
           name: Run always
           command: echo "Done!" # Hack for empty runs
