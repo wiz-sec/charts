@@ -10,10 +10,13 @@ spec:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        rollme.proxy: {{ include (print $.Template.BasePath "/proxy.yaml") . | sha256sum }}
+        rollme.apiToken: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        rollme.webhookCert: {{ include (print $.Template.BasePath "/opawebhook.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         {{- include "wiz-admission-controller.selectorLabels" . | nindent 8 }}
     spec:
