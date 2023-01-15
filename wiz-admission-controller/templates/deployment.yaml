@@ -11,7 +11,9 @@ spec:
   template:
     metadata:
       annotations:
-        rollme: {{ randAlphaNum 5 | quote }}
+        rollme.proxy: {{ include (print $.Template.BasePath "/proxy.yaml") . | sha256sum }}
+        rollme.apiToken: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        rollme.webhookCert: {{ include (print $.Template.BasePath "/opawebhook.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
