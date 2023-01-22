@@ -1,0 +1,91 @@
+{{- if .Values.autoCreateConnector.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "wiz-kubernetes-connector.name" . }}-create-connector-{{ randNumeric 5  }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-kubernetes-connector.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+  
+spec:
+  manualSelector: true
+  selector:
+    matchLabels:
+      {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 6 }}
+  backoffLimit: 5
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ .Values.autoCreateConnector.serviceAccount.name }}
+      restartPolicy: "Never"
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: wiz-connector-creator
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: IfNotPresent
+          command: ["wiz-broker"]
+          args: [
+            "create-kubernetes-connector",
+            "--api-server-endpoint", 
+            {{ include "wiz-kubernetes-connector.apiServerEndpoint" . | trim | quote }},
+            "--secrets-namespace", 
+            {{ .Release.Namespace | quote }},
+            "--service-account-token-secret-name",
+            {{ include "wiz-kubernetes-connector.clusterReaderToken" . | quote }},
+            {{- if .Values.broker.enabled }}
+            "--output-secret-name",
+            {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
+            {{- end }}
+            "--is-on-prem={{ .Values.broker.enabled }}",
+            {{ with .Values.autoCreateConnector.connectorName }}
+            "--connector-name",
+            {{ . | quote }},
+            {{ end }}
+            {{ with .Values.autoCreateConnector.clusterFlavor }}
+            "--service-type",
+            {{ . | quote }},
+            {{ end }}
+            ]
+          env:
+          - name: CREATE_KUBERNETES_CONNECTOR_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                key: clientId
+          - name: CREATE_KUBERNETES_CONNECTOR_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                key: clientToken
+          - name: CREATE_KUBERNETES_CONNECTOR_ENV
+            value: {{ .Values.wizApiToken.clientEndpoint | quote }}
+          {{- if .Values.httpProxyConfiguration.enabled }}
+          - name: HTTP_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+                key: httpProxy
+          - name: HTTPS_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+                key: httpsProxy
+          - name: NO_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+                key: noProxyAddress
+          {{- end }}
+{{- end }}

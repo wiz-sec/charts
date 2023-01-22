@@ -1,0 +1,32 @@
+{{- if not .Values.autoCreateConnector.enabled }}
+0. Install a service account with read permissions using .Values.clusterReader.installRbac flag
+1. Get the service account connector properties by running these commands:
+   SECRET_NAME=$(kubectl get serviceaccount "{{ .Values.clusterReader.serviceAccount.name }}" -n "{{ .Values.namespace }}" -o jsonpath="{.secrets[0].name}")
+   echo "Service account CA certificate:"
+   kubectl get secrets -n "{{ .Values.namespace }}" "$SECRET_NAME" -o go-template='{{ "{{" }} index .data "ca.crt" }}'
+   echo "\nService account token:"
+   kubectl get secrets -n "{{ .Values.namespace }}" "$SECRET_NAME" -o go-template="{{ "{{" }} .data.token | base64decode }}"
+2. Create a Wiz Kubernetes connector using the web portal or the Wiz Terraform provider
+3. Install Wiz broker deployment using .Values.broker.enabled flag
+{{- end }}
+
+For uninstalling the wiz kubernetes connector you need to delete helm hooks resources manually.
+Please run the following commands:
+helm uninstall {{ .Release.Name | quote }} -n {{ .Release.Namespace | quote }}
+{{- if .Values.broker.enabled }}
+{{- if .Values.wizConnector.createSecret }}
+kubectl delete secret {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim }} -n {{ .Release.Namespace | quote }}
+{{- end }}
+{{- end }}
+{{- if and .Values.wizApiToken.createSecret .Values.autoCreateConnector.enabled }}
+kubectl delete secret {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }} -n {{ .Release.Namespace | quote }}
+{{- end }}
+{{- if .Values.clusterReader.installRbac }}
+kubectl delete secret {{ .Values.clusterReader.serviceAccount.name }}-token -n {{ .Release.Namespace | quote }}
+kubectl delete serviceaccount {{ .Values.clusterReader.serviceAccount.name }} -n {{ .Release.Namespace | quote }}
+{{- end }}
+{{- if .Values.autoCreateConnector.enabled }}
+kubectl delete serviceaccount {{ .Values.autoCreateConnector.serviceAccount.name }} -n {{ .Release.Namespace | quote }}
+kubectl delete role {{ .Values.autoCreateConnector.serviceAccount.name }}
+kubectl delete rolebinding {{ .Values.autoCreateConnector.serviceAccount.name }}
+{{- end }}
