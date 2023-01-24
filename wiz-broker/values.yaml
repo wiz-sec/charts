@@ -8,11 +8,16 @@ namespace: "kube-system"
 installRbac: false
 installBroker: false
 
+rbacServiceAccount:
+  name: "wiz-kube-connector"
+  annotations: {}
+
 serviceAccount:
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
-  name: "wiz-kube-connector"
+  name: wiz-broker
 
 image:
   repository: wizsec/tunnel-client

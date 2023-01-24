@@ -40,6 +40,13 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
+Create the name of the service account to use for rbac
+*/}}
+{{- define "wiz-broker.rbacServiceAccountName" -}}
+{{- default (printf "%s-%s" (include "wiz-broker.name" .) "rbac") .Values.rbacServiceAccount.name }}
+{{- end }}
+
+{{/*
 Create Wiz connector properties to use
 */}}
 {{- define "wiz-broker.wizConnectorID" -}}
