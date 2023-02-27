@@ -1,0 +1,13 @@
+autoCreateConnector:
+  connectorName: "test"
+  clusterFlavor: "eks"
+broker:
+  enabled: true
+  
+wizApiToken:
+  clientId: "abcd"
+  clientToken: "abcd"
+
+httpProxyConfiguration:
+  enabled: true
+  httpsProxy: "https://test.com"

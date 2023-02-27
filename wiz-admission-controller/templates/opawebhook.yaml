@@ -11,6 +11,8 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   name: {{ include "wiz-admission-controller.fullname" . }}
+  labels:
+    {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
