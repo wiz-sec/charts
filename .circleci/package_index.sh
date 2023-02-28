@@ -22,4 +22,4 @@ git add .
 git commit -a -m "CircleCI: Upload ${PACKAGE} chart"
 git push -u origin gh-pages
 
-git checkout master
+git checkout WZ-21833-fix-pipeline
