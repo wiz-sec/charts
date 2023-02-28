@@ -40,8 +40,9 @@ commands:
           name: Push new package << parameters.package >>
           command: |
             export PACKAGE="<< parameters.package >>"
-            cd charts
+            pushd charts
             bash .circleci/package_index.sh
+            popd
 
 jobs:
   run_chart_validation_test:
