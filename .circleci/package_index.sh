@@ -21,3 +21,5 @@ helm repo index --url https://wiz-sec.github.io/charts/ .
 git add .
 git commit -a -m "CircleCI: Upload ${PACKAGE} chart"
 git push -u origin gh-pages
+
+git checkout master

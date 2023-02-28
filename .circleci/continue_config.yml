@@ -40,7 +40,7 @@ commands:
           name: Push new package << parameters.package >>
           command: |
             export PACKAGE="<< parameters.package >>"
-            pushd charts
+            pushd ~/project/charts
             bash .circleci/package_index.sh
             popd
 
