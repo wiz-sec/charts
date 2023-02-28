@@ -41,7 +41,7 @@ commands:
           command: |
             export PACKAGE="<< parameters.package >>"
             cd charts
-            bash .circleci/package_index.sh
+            # bash .circleci/package_index.sh
 
 jobs:
   run_chart_validation_test:
@@ -136,3 +136,4 @@ workflows:
             branches:
               only:
                 - master
+                - WZ-21833-fix-pipeline
