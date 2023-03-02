@@ -96,6 +96,9 @@ spec:
                 name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
                 key: no-proxy-address
           {{- end }}
+          {{- with .Values.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
