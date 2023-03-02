@@ -5,6 +5,7 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
