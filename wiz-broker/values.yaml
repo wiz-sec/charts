@@ -5,6 +5,9 @@
 nameOverride: "wiz-broker"
 namespace: "kube-system"
 
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
+
 installRbac: false
 installBroker: false
 
