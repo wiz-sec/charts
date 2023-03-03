@@ -47,6 +47,8 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  labels:
+    {{- include "wiz-broker.labels" . | nindent 4 }}
 type: Opaque
 stringData:
   {{- include "wiz-broker.wizConnectorSecretData" . | nindent 2 }}
