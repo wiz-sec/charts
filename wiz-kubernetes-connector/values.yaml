@@ -4,6 +4,9 @@
 
 nameOverride: "wiz-kubernetes-connector"
 
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
+
 image:
   registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-broker
