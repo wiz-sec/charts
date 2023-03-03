@@ -43,6 +43,8 @@ kind: Secret
 metadata:
   name: wiz-tunnel-client-{{ include "wiz-broker.wizConnectorID" . }}-cfg
   namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "wiz-broker.labels" . | nindent 4 }}
 type: Opaque
 stringData:
   {{- include "wiz-broker.wizConnectorSecretData" . | nindent 2 }}
