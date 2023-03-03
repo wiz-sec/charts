@@ -42,6 +42,8 @@ kind: Secret
 type: kubernetes.io/tls
 metadata:
   name: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+  labels:
+    {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
     # Using helm hook to create certs only for chart install
     "helm.sh/hook": "pre-install, pre-upgrade"
