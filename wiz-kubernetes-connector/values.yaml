@@ -19,7 +19,10 @@ clusterReader:
     annotations: {}
     # The name of the service account to use.
     name: "wiz-cluster-reader"
-  
+  secret:
+    # Annotations to add to the secret
+    annotations: {}
+
 autoCreateConnector:
   enabled: true
 
@@ -39,6 +42,8 @@ wizApiToken:
   # Specifies whether an api token secret should be created
   # If create is false you need to create it with clientId, clientToken
   createSecret: true
+  # Annotations to add to the secret
+  annotations: {}
   # The name of the secret to use.
   # If not set, a name is generated using the fullname template
   name: ""
@@ -54,6 +59,8 @@ wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = 
   #     CONNECTOR_ID, CONNECTOR_TOKEN, TARGET_DOMAIN, TARGET_IP, TARGET_PORT
   #  2. Set secretName to reference your secret
   createSecret: true
+  # Annotations to add to the secret
+  annotations: {}
   secretName: ""
 
   # Required arguments for autoCreateConnector = false
@@ -92,6 +99,7 @@ httpProxyConfiguration:
   #  1. Create secret with httpProxy, httpsProxy and noProxyAddress.
   #  2. Set secretName to reference your secret
   create: true
+  annotations: {}
   secretName: "" # Overriding default name for proxy secret name (.Release.Name + "-proxy-configuration" by default)
   
   httpProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
