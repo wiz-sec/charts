@@ -12,6 +12,9 @@ rbacServiceAccount:
   name: "wiz-kube-connector"
   annotations: {}
 
+rbacSecret:
+  annotations: {}
+
 serviceAccount:
   create: true
   # Annotations to add to the service account
@@ -48,6 +51,9 @@ wizConnector:
   tunnelServerAddress: ""
   tunnelServerPort: ""
   httpProxy: ""
+  # Annotation to be set on the secret created
+  secret:
+    annotations: {}
 
 # optional arguments
 secretName:
