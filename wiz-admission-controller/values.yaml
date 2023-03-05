@@ -74,9 +74,8 @@ opaWebhook:
 
   errorEnforcementMethod: AUDIT  # AUDIT/ BLOCK
   policyEnforcementMethod: BLOCK # AUDIT/ BLOCK 
-  policies: []
-    # - policy1
-    # - policy2
+  policies: 
+    - "Default IaC policy"
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
 
 serviceAccount:
