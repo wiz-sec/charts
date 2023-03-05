@@ -16,7 +16,8 @@ httpProxyConfiguration:
   #  2. Set secretName to reference your secret
   create: true
   secretName: "" # Overriding default name for proxy secret name (.Release.Name + "-proxy-configuration" by default)
-  
+  # Annotations to be set on the secret
+  annotations: {}
   httpProxy: ""
   httpsProxy: ""
   noProxyAddress: ""
@@ -78,6 +79,9 @@ opaWebhook:
     - "Default IaC policy"
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
 
+  secret:
+    annotations: {}
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -94,6 +98,8 @@ secret:
   # The name of the secret to use.
   # If not set, a name is generated using the fullname template
   name: ""
+  # Annotations to be set on the secret
+  annotations: {}
 
 podAnnotations: {}
 
