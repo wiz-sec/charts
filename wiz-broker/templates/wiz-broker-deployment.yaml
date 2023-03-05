@@ -40,6 +40,10 @@ kind: Secret
 metadata:
   name: wiz-tunnel-client-{{ include "wiz-broker.wizConnectorID" . }}-cfg
   namespace: {{ .Values.namespace }}
+  {{- with .Values.wizConnector.secret.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 type: Opaque
 stringData:
   {{- include "wiz-broker.wizConnectorSecretData" . | nindent 2 }}
