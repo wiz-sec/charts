@@ -7,6 +7,10 @@ metadata:
   name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+  {{- with .Values.httpProxyConfiguration.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 data:
   http-proxy: {{ .Values.httpProxyConfiguration.httpProxy | b64enc | quote }}
   https-proxy: {{ .Values.httpProxyConfiguration.httpsProxy | b64enc | quote }}
