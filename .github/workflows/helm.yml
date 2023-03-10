@@ -1,0 +1,44 @@
+name: Helm chart
+
+on:
+  push:
+    branches:
+      - master-bm
+
+env:
+  HELM_VERSION: 3.10.3
+
+jobs:
+  helm:
+    name: Helm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: azure/setup-helm@v3
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      # - name: Lint Helm charts
+      #   run: |
+      #     find -H 'charts/.' \
+      #       -maxdepth 2 \
+      #       -name 'Chart.yaml' \
+      #       -printf '%h\n' \
+      #         | xargs helm lint
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.5.0
+        with:
+          charts_dir: .
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
