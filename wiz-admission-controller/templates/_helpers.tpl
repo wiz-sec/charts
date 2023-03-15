@@ -67,7 +67,9 @@ Create the name of the service account to use
 
 {{- define "wiz-admission-controller.opaCliParams.policies" -}}
 {{- if .Values.opaWebhook.policies }}
-- "--policy={{ join "\"\n- \"--policy=" .Values.opaWebhook.policies }}"
+{{- range .Values.opaWebhook.policies }}
+- "--policy={{ . }}"
+{{- end }}
 {{- end }}
 {{- end }}
 
