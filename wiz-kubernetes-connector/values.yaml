@@ -73,6 +73,9 @@ broker:
     # The name of the service account to use.
     name: "wiz-broker"
 
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
+
 podAnnotations: {}
 
 podSecurityContext:

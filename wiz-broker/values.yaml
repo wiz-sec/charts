@@ -27,6 +27,9 @@ image:
 
 replicaCount: 1
 
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
+
 podAnnotations: {}
 
 podSecurityContext:
