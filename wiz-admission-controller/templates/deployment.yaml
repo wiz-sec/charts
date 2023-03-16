@@ -19,7 +19,10 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "wiz-admission-controller.selectorLabels" . | nindent 8 }}
+        {{/*
+        `labels` includes `selectorLabels`
+        */}}
+        {{- include "wiz-admission-controller.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -58,7 +61,7 @@ spec:
           - "--error-enforcement-method={{ .Values.opaWebhook.errorEnforcementMethod }}"
           - "--policy-enforcement-method={{ .Values.opaWebhook.policyEnforcementMethod }}"
           {{- if .Values.opaWebhook.policies }}
-          - {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | quote }}
+          {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}
           {{- end }}
           {{- if .Values.opaWebhook.clusterExternalId }}
           - "--cluster-external-id={{ .Values.opaWebhook.clusterExternalId }}"

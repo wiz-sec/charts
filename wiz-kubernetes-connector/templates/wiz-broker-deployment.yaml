@@ -22,7 +22,10 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 8 }}
+        {{/*
+        `labels` includes `selectorLabels`
+        */}}
+        {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ .Values.broker.serviceAccount.name }}
       securityContext:

@@ -40,6 +40,11 @@ helm.sh/chart: {{ include "wiz-admission-controller.chart" . }}
 app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.commonLabels }}
+{{- range $index, $content := .Values.commonLabels }}
+{{ $index }}: {{ tpl $content $ }}
+{{- end }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -67,7 +72,9 @@ Create the name of the service account to use
 
 {{- define "wiz-admission-controller.opaCliParams.policies" -}}
 {{- if .Values.opaWebhook.policies }}
---policy={{ join " --policy=" .Values.opaWebhook.policies }}
+{{- range .Values.opaWebhook.policies }}
+- "--policy={{ . }}"
+{{- end }}
 {{- end }}
 {{- end }}
 

@@ -101,6 +101,9 @@ secret:
   # Annotations to be set on the secret
   annotations: {}
 
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
+
 podAnnotations: {}
 
 podSecurityContext: {}
