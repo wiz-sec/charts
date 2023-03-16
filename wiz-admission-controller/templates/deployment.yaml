@@ -61,7 +61,7 @@ spec:
           - "--error-enforcement-method={{ .Values.opaWebhook.errorEnforcementMethod }}"
           - "--policy-enforcement-method={{ .Values.opaWebhook.policyEnforcementMethod }}"
           {{- if .Values.opaWebhook.policies }}
-          - {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | quote }}
+          {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}
           {{- end }}
           {{- if .Values.opaWebhook.clusterExternalId }}
           - "--cluster-external-id={{ .Values.opaWebhook.clusterExternalId }}"
