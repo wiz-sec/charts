@@ -95,6 +95,9 @@ secret:
   # If not set, a name is generated using the fullname template
   name: ""
 
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
+
 podAnnotations: {}
 
 podSecurityContext: {}
