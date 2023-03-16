@@ -5,9 +5,6 @@
 nameOverride: "wiz-broker"
 namespace: "kube-system"
 
-# Labels applied on all the resources (not used for selection)
-commonLabels: {}
-
 installRbac: false
 installBroker: false
 
@@ -29,6 +26,9 @@ image:
   tag: "latest"
 
 replicaCount: 1
+
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
 
 podAnnotations: {}
 

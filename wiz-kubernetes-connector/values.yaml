@@ -4,9 +4,6 @@
 
 nameOverride: "wiz-kubernetes-connector"
 
-# Labels applied on all the resources (not used for selection)
-commonLabels: {}
-
 image:
   registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-broker
@@ -75,6 +72,9 @@ broker:
     annotations: {}
     # The name of the service account to use.
     name: "wiz-broker"
+
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
 
 podAnnotations: {}
 
