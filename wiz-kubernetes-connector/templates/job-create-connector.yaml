@@ -28,6 +28,10 @@ spec:
         */}}
         {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ .Values.autoCreateConnector.serviceAccount.name }}
       restartPolicy: "Never"
       securityContext:

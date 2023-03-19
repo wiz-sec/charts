@@ -9,7 +9,8 @@ image:
   repository: wiz-broker
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "" 
+  tag: ""
+  imagePullSecrets: []
 
 clusterReader:
   installRbac: true
