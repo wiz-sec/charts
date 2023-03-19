@@ -45,6 +45,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "git-proxy.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
         supplementalGroups:
