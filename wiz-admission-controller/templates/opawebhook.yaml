@@ -11,6 +11,7 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   name: {{ include "wiz-admission-controller.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
@@ -42,6 +43,7 @@ kind: Secret
 type: kubernetes.io/tls
 metadata:
   name: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
