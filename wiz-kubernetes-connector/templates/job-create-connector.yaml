@@ -95,4 +95,6 @@ spec:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: noProxyAddress
           {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
 {{- end }}
