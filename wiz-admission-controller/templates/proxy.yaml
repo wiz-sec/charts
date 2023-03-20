@@ -5,6 +5,7 @@ kind: Secret
 type: Opaque
 metadata:
   name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   {{- with .Values.httpProxyConfiguration.annotations }}
