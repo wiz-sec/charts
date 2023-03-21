@@ -121,7 +121,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 443
-  targetPort: 10000
+  targetPort: 10250 # The port 10250 has been selected to bypass the private GKE firewall between the API server and the pods (https://cloud.google.com/kubernetes-engine/docs/how-to/private-clusters#api_request_that_triggers_admission_webhook_timing_out) 
 
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values
