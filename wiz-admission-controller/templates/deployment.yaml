@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "wiz-admission-controller.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
 spec:
@@ -19,7 +20,10 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "wiz-admission-controller.selectorLabels" . | nindent 8 }}
+        {{/*
+        `labels` includes `selectorLabels`
+        */}}
+        {{- include "wiz-admission-controller.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

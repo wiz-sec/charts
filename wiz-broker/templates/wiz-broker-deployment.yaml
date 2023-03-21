@@ -18,7 +18,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "wiz-broker.selectorLabels" . | nindent 8 }}
+        {{/*
+        `labels` includes `selectorLabels`
+        */}}
+        {{- include "wiz-broker.labels" . | nindent 8 }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -40,6 +43,12 @@ kind: Secret
 metadata:
   name: wiz-tunnel-client-{{ include "wiz-broker.wizConnectorID" . }}-cfg
   namespace: {{ .Values.namespace }}
+  {{- with .Values.wizConnector.secret.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "wiz-broker.labels" . | nindent 4 }}
 type: Opaque
 stringData:
   {{- include "wiz-broker.wizConnectorSecretData" . | nindent 2 }}

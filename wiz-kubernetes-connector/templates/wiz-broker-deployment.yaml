@@ -22,8 +22,15 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 8 }}
+        {{/*
+        `labels` includes `selectorLabels`
+        */}}
+        {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ .Values.broker.serviceAccount.name }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -57,4 +64,18 @@ spec:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: httpsProxy # The frp project supports only HTTP_PROXY, it uses it for both http and https.  Our broker always uses https, so we're using the httpsProxy value here (See: https://github.com/fatedier/frp/#connecting-to-frps-via-http-proxy)
           {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}

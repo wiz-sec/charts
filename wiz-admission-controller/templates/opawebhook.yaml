@@ -11,6 +11,7 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   name: {{ include "wiz-admission-controller.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
@@ -42,10 +43,16 @@ kind: Secret
 type: kubernetes.io/tls
 metadata:
   name: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
     # Using helm hook to create certs only for chart install
     "helm.sh/hook": "pre-install, pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+    {{- with .Values.opaWebhook.secret.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 data:
   tls.crt: {{ $tlsCrt }}
   tls.key: {{ $tlsKey }}
