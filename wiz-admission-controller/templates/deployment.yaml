@@ -44,6 +44,9 @@ spec:
           - mountPath: /var/server-certs
             name: server-certs
             readOnly: true
+          {{- with .Values.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           readinessProbe:
             httpGet:
               path: /ready
@@ -68,20 +71,22 @@ spec:
           - "--cluster-external-id={{ .Values.opaWebhook.clusterExternalId }}"
           {{- end }}
           env:
-          - name: WIZ_ADMISSION_CONTROLLER_CLIENT_ID
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+          - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
                 key: clientId
                 optional: false
-          - name: WIZ_ADMISSION_CONTROLLER_CLIENT_TOKEN
+          - name: WIZ_CLIENT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
                 key: clientToken
                 optional: false
+          {{- end }}
           {{- if .Values.wizApiToken.clientEndpoint }}
-          - name: WIZ_ADMISSION_CONTROLLER_ENV
+          - name: WIZ_ENV
             value: {{ .Values.wizApiToken.clientEndpoint }}
           {{- end }}
           {{- if .Values.httpProxyConfiguration.enabled }}
@@ -104,6 +109,12 @@ spec:
           {{- with .Values.podCustomEnvironmentVariables }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
+          {{- if .Values.podCustomEnvironmentVariablesFile }}
+          - name: CLI_ENV_FILE
+            value: {{ .Values.podCustomEnvironmentVariablesFile }}
+          - name: USE_CLI_ENV_FILE
+            value: "true"
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -111,6 +122,9 @@ spec:
           secret:
             defaultMode: 444
             secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+      {{- with .Values.customVolumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
