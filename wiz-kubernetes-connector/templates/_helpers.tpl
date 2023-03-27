@@ -79,7 +79,8 @@ Input parameters
     {{- required "A valid .Values.autoCreateConnector.apiServerEndpoint entry required!" .Values.autoCreateConnector.apiServerEndpoint -}}
   {{- else -}}
     {{ if .Values.autoCreateConnector.apiServerEndpoint }}
-      {{- if not (regexMatch "^https?://[^\\s/$.?#].[^\\s]*$" .Values.autoCreateConnector.apiServerEndpoint) }}
+      {{- $url := urlParse .Values.autoCreateConnector.apiServerEndpoint}}
+      {{- if not (and $url.host $url.scheme) }}
         {{- fail "Invalid URL format for .Values.autoCreateConnector.apiServerEndpoint" }}
       {{- else }}
         {{ printf "%s" .Values.autoCreateConnector.apiServerEndpoint }}
