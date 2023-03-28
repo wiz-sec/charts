@@ -55,6 +55,18 @@ spec:
             {{ $connectorDataFilePath }}
           ]
           env:
+          - name: RUN_ENV
+            value: {{ .Values.wizApiToken.clientEndpoint | quote }}
+          - name: RUN_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                key: clientId
+          - name: RUN_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                key: clientToken
           - name: TARGET_IP
             value: {{ .Values.broker.targetIp }}
           {{- if .Values.httpProxyConfiguration.enabled }}
