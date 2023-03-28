@@ -22,7 +22,7 @@ wizApiToken:
 
 httpProxyConfiguration:
   enabled: false
-  
+
   # Specifies whether a proxy secret should be created
   # If create is false you need to:
   #  1. Create secret with httpProxy, httpsProxy and noProxyAddress.
@@ -87,8 +87,8 @@ opaWebhook:
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
   errorEnforcementMethod: AUDIT  # AUDIT/ BLOCK
-  policyEnforcementMethod: BLOCK # AUDIT/ BLOCK 
-  policies: 
+  policyEnforcementMethod: BLOCK # AUDIT/ BLOCK
+  policies:
     - "Default IaC policy"
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
 
@@ -127,7 +127,18 @@ securityContext:
 service:
   type: ClusterIP
   port: 443
-  targetPort: 10250 # The port 10250 has been selected to bypass the private GKE firewall between the API server and the pods (https://cloud.google.com/kubernetes-engine/docs/how-to/private-clusters#api_request_that_triggers_admission_webhook_timing_out) 
+  targetPort: 10250 # The port 10250 has been selected to bypass the private GKE firewall between the API server and the pods (https://cloud.google.com/kubernetes-engine/docs/how-to/private-clusters#api_request_that_triggers_admission_webhook_timing_out)
+
+# Specifies if the webhook should be started in hostNetwork mode.
+#
+# Required for use in some managed kubernetes clusters (such as AWS EKS) with custom
+# CNI (such as calico), because control-plane managed by AWS cannot communicate
+# with pods' IP CIDR and admission webhooks are not working
+#
+# Since the default port for the webhook conflicts with kubelet on the host
+# network, `service.targetPort` should be changed to an available port if
+# running in hostNetwork mode.
+hostNetwork: false
 
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values
