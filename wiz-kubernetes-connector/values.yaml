@@ -27,7 +27,7 @@ clusterReader:
 autoCreateConnector:
   enabled: true
 
-  connectorName: "" # optional 
+  connectorName: "" # optional
   clusterFlavor: "" # optional (EKS, AKS, GKE, OKE, OpenShift, Kubernetes)
   # Required arguments for broker.enabled = false
   apiServerEndpoint: ""
@@ -48,7 +48,7 @@ wizApiToken:
   # The name of the secret to use.
   # If not set, a name is generated using the fullname template
   name: ""
-  
+
   clientId: ""
   clientToken: ""
   clientEndpoint: "" # Set custom endpoint (gov for example)
@@ -95,17 +95,17 @@ securityContext:
   runAsUser: 1000
   allowPrivilegeEscalation: false
 
-resources: 
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #   cpu: 300m
+  #   memory: 256Mi
   # requests:
   #   cpu: 100m
-  #   memory: 128Mi
+  #   memory: 64Mi
 
 nodeSelector: {}
 
@@ -115,7 +115,7 @@ affinity: {}
 
 httpProxyConfiguration:
   enabled: false
-  
+
   # Specifies whether a proxy secret should be created
   # If create is false you need to:
   #  1. Create secret with httpProxy, httpsProxy and noProxyAddress.
@@ -123,7 +123,7 @@ httpProxyConfiguration:
   create: true
   annotations: {}
   secretName: "" # Overriding default name for proxy secret name (.Release.Name + "-proxy-configuration" by default)
-  
+
   httpProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
   httpsProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
   noProxyAddress: "" # comma or space separated list of machine or domain names
