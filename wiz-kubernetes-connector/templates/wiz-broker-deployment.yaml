@@ -55,14 +55,14 @@ spec:
             {{ $connectorDataFilePath }}
           ]
           env:
-          - name: RUN_ENV
+          - name: WIZ_ENV
             value: {{ .Values.wizApiToken.clientEndpoint | quote }}
-          - name: RUN_CLIENT_ID
+          - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientId
-          - name: RUN_CLIENT_TOKEN
+          - name: WIZ_CLIENT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
