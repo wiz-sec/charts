@@ -61,6 +61,18 @@ spec:
             {{ $connectorDataFilePath }}
           ]
           env:
+          - name: WIZ_ENV
+            value: {{ .Values.wizApiToken.clientEndpoint | quote }}
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                key: clientId
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                key: clientToken
           {{- if .Values.broker.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
             value: {{ .Values.broker.podCustomEnvironmentVariablesFile }}
