@@ -18,7 +18,7 @@ helm uninstall {{ .Release.Name | quote }} -n {{ .Release.Namespace | quote }}
 kubectl delete secret {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim }} -n {{ .Release.Namespace | quote }}
 {{- end }}
 {{- end }}
-{{- if and .Values.wizApiToken.createSecret .Values.autoCreateConnector.enabled }}
+{{- if and .Values.wizApiToken.secret.create .Values.autoCreateConnector.enabled }}
 kubectl delete secret {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }} -n {{ .Release.Namespace | quote }}
 {{- end }}
 {{- if .Values.clusterReader.installRbac }}

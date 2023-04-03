@@ -6,6 +6,19 @@ wizApiToken:
   clientId: ""
   clientToken: ""
   clientEndpoint: "" # Set custom endpoint (gov for example)
+  
+  secret:
+    # Specifies whether an api token secret should be created
+    # If create is false you need to create it with clientId, clientToken
+    create: true
+    # Annotations to add to the secret
+    annotations: {}
+    # The name of the secret to use.
+    # If not set, a name is generated using the fullname template
+    name: ""
+  
+  # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  usePodCustomEnvironmentVariablesFile: false
 
 httpProxyConfiguration:
   enabled: false
@@ -91,15 +104,7 @@ serviceAccount:
   # If empty, a name is generated using the fullname template
   name: ""
 
-secret:
-  # Specifies whether a api token secret should be created
-  # If create is false you need to create it with clientId, clientToken
-  create: true
-  # The name of the secret to use.
-  # If not set, a name is generated using the fullname template
-  name: ""
-  # Annotations to be set on the secret
-  annotations: {}
+
 
 # Labels applied on all the resources (not used for selection)
 commonLabels: {}
@@ -109,6 +114,7 @@ podAnnotations: {}
 podSecurityContext: {}
 
 podCustomEnvironmentVariables: {}
+podCustomEnvironmentVariablesFile: ""
 
 securityContext:
   capabilities:
@@ -152,8 +158,9 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+customVolumes: []
+customVolumeMounts: []
+
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}

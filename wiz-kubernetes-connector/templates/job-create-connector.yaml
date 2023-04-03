@@ -15,7 +15,7 @@ spec:
   selector:
     matchLabels:
       {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 6 }}
-  backoffLimit: 5
+  backoffLimit: 1
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -36,6 +36,10 @@ spec:
       restartPolicy: "Never"
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.autoCreateConnector.customVolumes }}
+      volumes:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
         - name: wiz-connector-creator
           securityContext:
@@ -66,17 +70,25 @@ spec:
             {{ end }}
             ]
           env:
-          - name: CREATE_KUBERNETES_CONNECTOR_CLIENT_ID
+          {{- if .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+          - name: CLI_ENV_FILE
+            value: {{ .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+          - name: USE_CLI_ENV_FILE
+            value: "true"
+          {{- end }}
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+          - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientId
-          - name: CREATE_KUBERNETES_CONNECTOR_CLIENT_TOKEN
+          - name: WIZ_CLIENT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientToken
-          - name: CREATE_KUBERNETES_CONNECTOR_ENV
+          {{- end }}
+          - name: WIZ_ENV
             value: {{ .Values.wizApiToken.clientEndpoint | quote }}
           {{- if .Values.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
@@ -97,6 +109,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.autoCreateConnector.customVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}            
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

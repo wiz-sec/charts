@@ -63,7 +63,7 @@ Create the name of the service account to use
 {{- end }}
 
 {{- define "wiz-admission-controller.secretApiTokenName" -}}
-{{ coalesce (.Values.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
+{{ coalesce (.Values.wizApiToken.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
 {{- end }}
 
 {{- define "wiz-admission-controller.secretServerCert" -}}
