@@ -34,24 +34,34 @@ autoCreateConnector:
 
   serviceAccount:
     create: true
+    createRbac: true
     # Annotations to add to the service account
     annotations: {}
     # The name of the service account to use.
     name: "wiz-auto-create-connector"
+  
+  podCustomEnvironmentVariablesFile: ""
+  
+  customVolumes: []
+  customVolumeMounts: []
 
 wizApiToken:
-  # Specifies whether an api token secret should be created
-  # If create is false you need to create it with clientId, clientToken
-  createSecret: true
-  # Annotations to add to the secret
-  annotations: {}
-  # The name of the secret to use.
-  # If not set, a name is generated using the fullname template
-  name: ""
-  
   clientId: ""
   clientToken: ""
   clientEndpoint: "" # Set custom endpoint (gov for example)
+
+  secret:
+    # Specifies whether an api token secret should be created
+    # If create is false you need to create it with clientId, clientToken
+    create: true
+    # Annotations to add to the secret
+    annotations: {}
+    # The name of the secret to use.
+    # If not set, a name is generated using the fullname template
+    name: ""
+  
+  # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  usePodCustomEnvironmentVariablesFile: false
 
 wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = false
   # Specifies whether a proxy secret should be created
@@ -80,6 +90,12 @@ broker:
     annotations: {}
     # The name of the service account to use.
     name: "wiz-broker"
+
+  podCustomEnvironmentVariablesFile: ""
+
+  customVolumes: []
+  customVolumeMounts: []
+  
 
 # Labels applied on all the resources (not used for selection)
 commonLabels: {}

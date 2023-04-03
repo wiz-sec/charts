@@ -41,6 +41,9 @@ spec:
             items:
             - key: connectorData
               path: {{ $connectorDataFileName }}
+        {{- with .Values.broker.customVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -51,6 +54,9 @@ spec:
           - name: connector-data
             mountPath: {{ $mountPath }}
             readOnly: true
+          {{- with .Values.broker.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           args: [
             {{ $connectorDataFilePath }}
           ]
@@ -67,6 +73,12 @@ spec:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientToken
+          {{- if .Values.broker.podCustomEnvironmentVariablesFile }}
+          - name: CLI_ENV_FILE
+            value: {{ .Values.broker.podCustomEnvironmentVariablesFile }}
+          - name: USE_CLI_ENV_FILE
+            value: "true"
+          {{- end }}
           - name: TARGET_IP
             value: {{ .Values.broker.targetIp }}
           {{- if .Values.httpProxyConfiguration.enabled }}
