@@ -167,6 +167,9 @@ spec:
                   checksum:
                     description: Checksum is the SHA256 checksum of the artifact.
                     type: string
+                  digest:
+                    description: Digest is the digest of the file in the form of ‘:’.
+                    type: string
                   lastUpdateTime:
                     description: LastUpdateTime is the timestamp corresponding to
                       the last update of this artifact.
@@ -428,6 +431,9 @@ spec:
                 properties:
                   checksum:
                     description: Checksum is the SHA256 checksum of the Artifact file.
+                    type: string
+                  digest:
+                    description: Digest is the digest of the file in the form of ':'.
                     type: string
                   lastUpdateTime:
                     description: LastUpdateTime is the timestamp corresponding to
