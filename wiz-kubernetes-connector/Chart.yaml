@@ -22,3 +22,11 @@ version: 2.0.1
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "2.0.162274"
+
+# Add wiz-broker dependency to the chart
+dependencies:
+  - name: "wiz-broker-v2"
+    version: "1.0.0"
+#    repository: "https://wiz-sec.github.io/charts"
+    repository: "file://../wiz-broker-v2"
+    condition: broker.enabled

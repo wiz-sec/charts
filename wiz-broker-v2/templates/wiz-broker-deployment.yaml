@@ -5,42 +5,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiz-kubernetes-connector.name" . }}-broker
+  name: {{ include "wiz-broker.name" . }}-broker
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    {{- include "wiz-kubernetes-connector.labels" . | nindent 4 }}
+    {{- include "wiz-broker.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 6 }}
+      {{- include "wiz-broker.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         rollme: {{ randAlphaNum 5 | quote }}
         {{- with .Values.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
         {{/*
-        `labels` includes `selectorLabels`
-        */}}
-        {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
+          `labels` includes `selectorLabels`
+          */}}
+          {{- include "wiz-broker.labels" . | nindent 8 }}
     spec:
       {{- with .Values.image.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.broker.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
         - name: connector-data
           secret:
-            secretName: {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim }}
+            secretName: {{ include "wiz-broker.connectorSecretName" . | trim }}
             items:
-            - key: connectorData
-              path: {{ $connectorDataFileName }}
+              - key: connectorData
+                path: {{ $connectorDataFileName }}
         {{- with .Values.broker.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -62,17 +62,17 @@ spec:
           ]
           env:
           - name: WIZ_ENV
-            value: {{ .Values.wizApiToken.clientEndpoint | quote }}
-          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+            value: {{ .Values.global.wizApiToken.clientEndpoint | quote }}
+          {{- if not .Values.global.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
-                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
                 key: clientId
           - name: WIZ_CLIENT_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
                 key: clientToken
           {{- end }}
           {{- if .Values.broker.podCustomEnvironmentVariablesFile }}
@@ -83,11 +83,11 @@ spec:
           {{- end }}
           - name: TARGET_IP
             value: {{ .Values.broker.targetIp }}
-          {{- if .Values.httpProxyConfiguration.enabled }}
+          {{- if .Values.global.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
               secretKeyRef:
-                name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+                name: {{ include "wiz-broker.proxySecretName" . | trim }}
                 key: httpsProxy # The frp project supports only HTTP_PROXY, it uses it for both http and https.  Our broker always uses https, so we're using the httpsProxy value here (See: https://github.com/fatedier/frp/#connecting-to-frps-via-http-proxy)
           {{- end }}
           resources:

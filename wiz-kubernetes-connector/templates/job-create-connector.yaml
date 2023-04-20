@@ -1,4 +1,4 @@
-{{- if .Values.autoCreateConnector.enabled }}
+{{- if .Values.global.autoCreateConnector }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -76,7 +76,7 @@ spec:
           - name: USE_CLI_ENV_FILE
             value: "true"
           {{- end }}
-          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+          {{- if not .Values.global.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -89,8 +89,8 @@ spec:
                 key: clientToken
           {{- end }}
           - name: WIZ_ENV
-            value: {{ .Values.wizApiToken.clientEndpoint | quote }}
-          {{- if .Values.httpProxyConfiguration.enabled }}
+            value: {{ .Values.global.wizApiToken.clientEndpoint | quote }}
+          {{- if .Values.global.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
               secretKeyRef:
