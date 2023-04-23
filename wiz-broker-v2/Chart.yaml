@@ -1,8 +1,0 @@
-apiVersion: v2
-name: "wiz-broker-v2"
-description: Wiz Broker for tunneling http traffic to Wiz backend
-
-type: application
-
-version: 1.0.0
-appVersion: "2.0.162274"

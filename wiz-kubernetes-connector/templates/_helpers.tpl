@@ -42,7 +42,7 @@ Create Wiz connector properties to use
 */}}
 
 {{- define "wiz-kubernetes-connector.wizConnectorSecretData" -}}
-{{- if not .Values.global.autoCreateConnector }}
+{{- if not .Values.autoCreateConnector.enabled }}
 CONNECTOR_ID: {{ required "A valid .Values.global.wizConnector.connectorId entry required!" .Values.global.wizConnector.connectorId | quote}}
 CONNECTOR_TOKEN: {{ required "A valid .Values.global.wizConnector.connectorToken entry required!" .Values.global.wizConnector.connectorToken | quote }}
 TARGET_DOMAIN: {{ required "A valid .Values.global.wizConnector.targetDomain entry required!" .Values.global.wizConnector.targetDomain | quote }}
@@ -75,7 +75,7 @@ Secrets names
 Input parameters
 */}}
 {{- define "wiz-kubernetes-connector.apiServerEndpoint" -}}
-  {{- if and .Values.global.autoCreateConnector (not .Values.broker.enabled) }}
+  {{- if and .Values.autoCreateConnector.enabled (not .Values.global.broker.enabled) }}
     {{- required "A valid .Values.autoCreateConnector.apiServerEndpoint entry required!" .Values.autoCreateConnector.apiServerEndpoint -}}
   {{- else -}}
     {{ if .Values.autoCreateConnector.apiServerEndpoint }}

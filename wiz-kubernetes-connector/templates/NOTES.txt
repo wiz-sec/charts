@@ -7,13 +7,13 @@
    echo "\nService account token:"
    kubectl get secrets -n "{{ .Values.namespace }}" "$SECRET_NAME" -o go-template="{{ "{{" }} .data.token | base64decode }}"
 2. Create a Wiz Kubernetes connector using the web portal or the Wiz Terraform provider
-3. Install Wiz broker deployment using .Values.broker.enabled flag
+3. Install Wiz broker deployment using .Values.global.broker.enabled flag
 {{- end }}
 
 For uninstalling the wiz kubernetes connector you need to delete helm hooks resources manually.
 Please run the following commands:
 helm uninstall {{ .Release.Name | quote }} -n {{ .Release.Namespace | quote }}
-{{- if .Values.broker.enabled }}
+{{- if .Values.global.broker.enabled }}
 {{- if .Values.global.wizConnector.createSecret }}
 kubectl delete secret {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim }} -n {{ .Release.Namespace | quote }}
 {{- end }}

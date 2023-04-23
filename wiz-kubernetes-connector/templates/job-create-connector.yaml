@@ -1,4 +1,4 @@
-{{- if .Values.global.autoCreateConnector }}
+{{- if .Values.autoCreateConnector.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -55,11 +55,11 @@ spec:
             {{ .Release.Namespace | quote }},
             "--service-account-token-secret-name",
             {{ include "wiz-kubernetes-connector.clusterReaderToken" . | quote }},
-            {{- if .Values.broker.enabled }}
+            {{- if .Values.global.broker.enabled }}
             "--output-secret-name",
             {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
             {{- end }}
-            "--is-on-prem={{ .Values.broker.enabled }}",
+            "--is-on-prem={{ .Values.global.broker.enabled }}",
             {{ with .Values.autoCreateConnector.connectorName }}
             "--connector-name",
             {{ . | quote }},

@@ -38,37 +38,31 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create the name of the service account to use
+Create Wiz broker properties to use
 */}}
-{{- define "wiz-broker.serviceAccountName" -}}
-{{- default (include "wiz-broker.name" .) .Values.serviceAccount.name }}
-{{- end }}
-
-{{/*
-Create the name of the service account to use for rbac
-*/}}
-{{- define "wiz-broker.rbacServiceAccountName" -}}
-{{- default (printf "%s-%s" (include "wiz-broker.name" .) "rbac") .Values.rbacServiceAccount.name }}
-{{- end }}
-
-{{/*
-Create Wiz connector properties to use
-*/}}
-{{- define "wiz-broker.wizConnectorID" -}}
-{{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId }}
-{{- end }}
 
 {{- define "wiz-broker.wizConnectorSecretData" -}}
-CONNECTOR_ID: {{ include "wiz-broker.wizConnectorID" . | quote}}
-CONNECTOR_TOKEN: {{ required "A valid .Values.wizConnector.connectorToken entry required!" .Values.wizConnector.connectorToken | quote }}
-TARGET_DOMAIN: {{ required "A valid .Values.wizConnector.targetDomain entry required!" .Values.wizConnector.targetDomain | quote }}
-TARGET_IP: {{ required "A valid .Values.wizConnector.targetIp entry required!" .Values.wizConnector.targetIp | quote }}
-TARGET_PORT: {{ required "A valid .Values.wizConnector.targetPort entry required!" .Values.wizConnector.targetPort | quote }}
-TUNNEL_SERVER_ADDR: {{ required "A valid .Values.wizConnector.tunnelServerAddress entry required!" .Values.wizConnector.tunnelServerAddress | quote }}
-TUNNEL_SERVER_PORT: {{ required "A valid .Values.wizConnector.tunnelServerPort entry required!" .Values.wizConnector.tunnelServerPort | quote }}
-DISABLE_CUSTOM_TLS_FIRST_BYTE: "true"
-{{- if .Values.wizConnector.httpProxy }}
-HTTP_PROXY: {{ .Values.wizConnector.httpProxy | quote}}
+{{- if .Values.global.broker.createSecret }}
+CONNECTOR_ID: {{ required "A valid .Values.global.wizConnector.connectorId entry required!" .Values.global.wizConnector.connectorId | quote}}
+CONNECTOR_TOKEN: {{ required "A valid .Values.global.wizConnector.connectorToken entry required!" .Values.global.wizConnector.connectorToken | quote }}
+TARGET_DOMAIN: {{ required "A valid .Values.global.wizConnector.targetDomain entry required!" .Values.global.wizConnector.targetDomain | quote }}
+TARGET_IP: {{ required "A valid .Values.global.wizConnector.targetIp entry required!" .Values.global.wizConnector.targetIp | quote }}
+TARGET_PORT: {{ required "A valid .Values.global.wizConnector.targetPort entry required!" .Values.global.wizConnector.targetPort | quote }}
+{{- end }}
 {{- end }}
 
+{{/*
+Secrets names
+*/}}
+
+{{- define "wiz-broker.apiTokenSecretName" -}}
+{{ coalesce (.Values.global.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
+{{- end }}
+
+{{- define "wiz-broker.proxySecretName" -}}
+{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
+{{- end }}
+
+{{- define "wiz-broker.connectorSecretName" -}}
+{{ coalesce (.Values.global.wizConnector.secretName) (printf "%s-connector" .Release.Name) }}
 {{- end }}

@@ -25,6 +25,7 @@ clusterReader:
     annotations: {}
 
 autoCreateConnector:
+  enabled: true
 
   connectorName: "" # optional
   clusterFlavor: "" # optional (EKS, AKS, GKE, OKE, OpenShift, Kubernetes)
@@ -38,21 +39,6 @@ autoCreateConnector:
     annotations: {}
     # The name of the service account to use.
     name: "wiz-auto-create-connector"
-
-  podCustomEnvironmentVariablesFile: ""
-
-  customVolumes: []
-  customVolumeMounts: []
-
-broker:
-  enabled: true
-  targetIp: "kubernetes.default.svc.cluster.local"
-  serviceAccount:
-    create: true
-    # Annotations to add to the service account
-    annotations: {}
-    # The name of the service account to use.
-    name: "wiz-broker"
 
   podCustomEnvironmentVariablesFile: ""
 
@@ -93,10 +79,26 @@ affinity: {}
 
 global:
 
-  autoCreateConnector: true
+  broker:
+    enabled: true
+    # Specifies whether the connector/api-token secrets should be created by the sub-chart
+    createSecret: false
+    targetIp: "kubernetes.default.svc.cluster.local"
+    serviceAccount:
+      create: true
+      # Annotations to add to the service account
+      annotations: {}
+      # The name of the service account to use.
+      name: "wiz-broker"
+
+    podCustomEnvironmentVariablesFile: ""
+
+    customVolumes: []
+    customVolumeMounts: []
 
   # The API key identifying this installation (for comm with Wiz portal)
   wizApiToken:
+
     clientId: ""
     clientToken: ""
     clientEndpoint: "" # Set custom endpoint (gov for example)
