@@ -95,16 +95,15 @@ opaWebhook:
   secret:
     annotations: {}
 
+# K8s service account to be used by the pod(s)
 serviceAccount:
-  # Specifies whether a service account should be created
+  # If `create` is set to `false`` an existing service account will be used
   create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
   # If empty, a name is generated using the fullname template
   name: ""
-
-
 
 # Labels applied on all the resources (not used for selection)
 commonLabels: {}
@@ -115,6 +114,9 @@ podSecurityContext: {}
 
 podCustomEnvironmentVariables: {}
 podCustomEnvironmentVariablesFile: ""
+
+# Set the log level. This can be any level supported by https://pkg.go.dev/go.uber.org/zap
+logLevel: "info"
 
 securityContext:
   capabilities:
