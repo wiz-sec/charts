@@ -2,36 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# override default application name
 nameOverride: "wiz-broker"
-namespace: "kube-system"
-
-installRbac: false
-installBroker: false
-
-rbacServiceAccount:
-  name: "wiz-kube-connector"
-  annotations: {}
-
-rbacSecret:
-  annotations: {}
-
-serviceAccount:
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  name: wiz-broker
-
-image:
-  repository: wizsec/tunnel-client
-  pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
-
-replicaCount: 1
-
-# Labels applied on all the resources (not used for selection)
-commonLabels: {}
 
 podAnnotations: {}
 
@@ -39,24 +11,80 @@ podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1000
 
-securityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-  allowPrivilegeEscalation: false
+global:
 
-# required arguments
-wizConnector:
-  connectorId: ""
-  connectorToken: ""
-  targetDomain: ""
-  targetIp: ""
-  targetPort: ""
-  tunnelServerAddress: ""
-  tunnelServerPort: ""
-  httpProxy: ""
-  # Annotation to be set on the secret created
-  secret:
+  image:
+    registry: wiziopublic.azurecr.io/wiz-app
+    repository: wiz-broker
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+    imagePullSecrets: []
+
+  broker:
+    enabled: true
+    # Specifies whether the connector/api-token secrets should be created by the chart
+    createSecret: true
+    targetIp: ""
+    serviceAccount:
+      create: true
+      # Annotations to add to the service account
+      annotations: { }
+      # The name of the service account to use.
+      name: "wiz-broker"
+
+    podCustomEnvironmentVariablesFile: ""
+
+    customVolumes: [ ]
+    customVolumeMounts: [ ]
+
+  httpProxyConfiguration:
+    enabled: false
+
+    # Specifies whether a proxy secret should be created
+    # If create is false you need to:
+    #  1. Create secret with httpProxy, httpsProxy and noProxyAddress.
+    #  2. Set secretName to reference your secret
+    create: true
     annotations: {}
+    secretName: "" # Overriding default name for proxy secret name (.Release.Name + "-proxy-configuration" by default)
 
-# optional arguments
-secretName:
+    httpProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
+    httpsProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
+    noProxyAddress: "" # comma or space separated list of machine or domain names
+
+  wizApiToken:
+    clientId: ""
+    clientToken: ""
+    clientEndpoint: "" # Set custom endpoint (gov for example)
+
+    secret:
+      # Specifies whether an api token secret should be created
+      # If create is false you need to create it with clientId, clientToken
+      create: true
+      # Annotations to add to the secret
+      annotations: {}
+      # The name of the secret to use.
+      # If not set, a name is generated using the fullname template
+      name: ""
+
+    # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+    usePodCustomEnvironmentVariablesFile: false
+
+  wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = false
+    # Specifies whether a proxy secret should be created
+    # If createSecret is false you need to:
+    #  1. Create secret with this keys:
+    #     CONNECTOR_ID, CONNECTOR_TOKEN, TARGET_DOMAIN, TARGET_IP, TARGET_PORT
+    #  2. Set secretName to reference your secret
+    createSecret: true
+    # Annotations to add to the secret
+    annotations: {}
+    secretName: ""
+
+    # Required arguments for autoCreateConnector = false
+    connectorId: ""
+    connectorToken: ""
+    targetDomain: ""
+    targetIp: ""
+    targetPort: ""
