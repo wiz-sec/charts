@@ -115,7 +115,8 @@ podSecurityContext: {}
 podCustomEnvironmentVariables: {}
 podCustomEnvironmentVariablesFile: ""
 
-# Set the log level. This can be any level supported by https://pkg.go.dev/go.uber.org/zap
+# Set the log level. Can be one of "debug", "info", "warn", or "error".
+# Warning: Do not set to `debug` in production environments, or sensitive data may be written to the logs.
 logLevel: "info"
 
 securityContext:
