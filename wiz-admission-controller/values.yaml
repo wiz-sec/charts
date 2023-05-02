@@ -40,7 +40,7 @@ replicaCount: 2
 image:
   registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-admission-controller
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose defalt is the chart appVersion.
   tag: ""
 

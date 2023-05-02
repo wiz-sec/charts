@@ -7,7 +7,7 @@ nameOverride: "wiz-kubernetes-connector"
 image:
   registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-broker
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
   imagePullSecrets: []
