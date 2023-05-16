@@ -43,11 +43,11 @@ Create Wiz broker properties to use
 
 {{- define "wiz-broker.wizConnectorSecretData" -}}
 {{- if .Values.global.broker.createSecret }}
-CONNECTOR_ID: {{ required "A valid .Values.global.wizConnector.connectorId entry required!" .Values.global.wizConnector.connectorId | quote}}
-CONNECTOR_TOKEN: {{ required "A valid .Values.global.wizConnector.connectorToken entry required!" .Values.global.wizConnector.connectorToken | quote }}
-TARGET_DOMAIN: {{ required "A valid .Values.global.wizConnector.targetDomain entry required!" .Values.global.wizConnector.targetDomain | quote }}
-TARGET_IP: {{ required "A valid .Values.global.wizConnector.targetIp entry required!" .Values.global.wizConnector.targetIp | quote }}
-TARGET_PORT: {{ required "A valid .Values.global.wizConnector.targetPort entry required!" .Values.global.wizConnector.targetPort | quote }}
+ConnectorId: {{ required "A valid .Values.global.wizConnector.connectorId entry required!" .Values.global.wizConnector.connectorId | quote}}
+TunnelToken: {{ required "A valid .Values.global.wizConnector.connectorToken entry required!" .Values.global.wizConnector.connectorToken | quote }}
+TunnelDomain: {{ required "A valid .Values.global.wizConnector.targetDomain entry required!" .Values.global.wizConnector.targetDomain | quote }}
+TunnelServerDomain: {{ required "A valid .Values.global.wizConnector.tunnelServerDomain entry required!" .Values.global.wizConnector.tunnelServerDomain | quote }}
+TunnelServerPort: {{ required "A valid .Values.global.wizConnector.tunnelServerPort entry required!" .Values.global.wizConnector.tunnelServerPort | quote }}
 {{- end }}
 {{- end }}
 
