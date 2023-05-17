@@ -87,7 +87,7 @@ opaWebhook:
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
   errorEnforcementMethod: AUDIT  # AUDIT/ BLOCK
-  policyEnforcementMethod: BLOCK # AUDIT/ BLOCK
+  policyEnforcementMethod: "" # AUDIT/ BLOCK (Set for overriding ci/cd policy admission controller action)
   policies:
     - "Default IaC policy"
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)

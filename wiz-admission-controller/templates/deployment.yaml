@@ -66,7 +66,9 @@ spec:
           - "--tls-private-key-file=/var/server-certs/tls.key"
           - "--tls-cert-file=/var/server-certs/tls.crt"
           - "--error-enforcement-method={{ .Values.opaWebhook.errorEnforcementMethod }}"
+          {{- if .Values.opaWebhook.policyEnforcementMethod }}
           - "--policy-enforcement-method={{ .Values.opaWebhook.policyEnforcementMethod }}"
+          {{- end }}
           {{- if .Values.opaWebhook.policies }}
           {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}
           {{- end }}
