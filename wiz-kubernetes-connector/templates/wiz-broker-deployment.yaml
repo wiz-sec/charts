@@ -69,11 +69,13 @@ spec:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientId
+                optional: false
           - name: WIZ_CLIENT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientToken
+                optional: false
           {{- end }}
           {{- if .Values.broker.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
@@ -89,6 +91,7 @@ spec:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: httpsProxy # The frp project supports only HTTP_PROXY, it uses it for both http and https.  Our broker always uses https, so we're using the httpsProxy value here (See: https://github.com/fatedier/frp/#connecting-to-frps-via-http-proxy)
+                optional: false
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
