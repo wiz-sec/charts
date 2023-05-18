@@ -100,16 +100,19 @@ spec:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
                 key: http-proxy
+                optional: false
           - name: HTTPS_PROXY
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
                 key: https-proxy
+                optional: false
           - name: NO_PROXY
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
                 key: no-proxy-address
+                optional: false
           {{- end }}
           {{- if .Values.logLevel }}
           - name: LOG_LEVEL
