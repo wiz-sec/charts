@@ -143,6 +143,11 @@ service:
 # running in hostNetwork mode.
 hostNetwork: false
 
+# Configuration options for NetworkPolicy
+networkPolicy:
+  ingress:
+    enabled: true # Deny all incoming traffic 
+
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values
   create: true
