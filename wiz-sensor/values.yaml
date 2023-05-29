@@ -1,0 +1,138 @@
+# Default values for wiz-sensor.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# override default application name
+nameOverride: ""
+
+# create a SecurityContextConstraints CRD for our service-account - used when installing on OpenShift clusters
+openshift: false
+
+# the API key identifying this installation (for comm with Wiz portal)
+wizApiToken:
+  # Specifies whether an api token secret should be created
+  # If create is false you need to create it with clientId, clientToken
+  createSecret: true
+  # Annotations to add to the secret
+  annotations: {}
+  # The name of the secret to use.
+  # If not set, a name is generated using the fullname template
+  name: ""
+
+  # The chart will refuse to install unless these are set to valid values
+  clientId: ""
+  clientToken: ""
+  clientEndpoint: "" # Set custom endpoint (gov for example)
+
+imagePullSecret:
+  # Set to false if image is retrieved from a registry that doesn't require pull secret
+  # When set to false - all other attributes are meaningless
+  required: true
+
+  # When set to true - it will create a pull secret using username and password bellow
+  # When set to false - it will expect a secret with given name below to be available within the cluster
+  create: true
+
+  # This value is a must in order to pull the image from a private repository. We use helm
+  # to create a docker formatted json, encoded in base64.
+  # In case you want use an existing value (perhaps created via "kubectl create secret docker-registry ...")
+  # please mark "create" above as false
+  username: ""
+  password: ""
+
+  # override the default name of the pull secret
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+
+  # Annotations to add to the service account
+  annotations: {}
+
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+  # Create RBAC resources for our service account.
+  # Needed to fetch kubernetes metadata from the api-server
+  rbac: true
+
+image:
+  # set registry to an empty string if the image is local
+  registry: wizio.azurecr.io
+  repository: sensor
+  tag: "1.0.2002"
+  pullPolicy: Always
+  args: {}
+
+daemonset:
+  # cache folder on the node
+  sensorHostCacheCreate: true
+  sensorHostCacheFolder: "/var/lib/wiz/"
+
+  # customize nodes matched
+  nodeSelector: {}
+
+  tolerations:
+  # Makes pods run on ARM64 as well
+  - key: kubernetes.io/arch
+    operator: Equal
+    value: arm64
+    effect: NoSchedule
+  # Make pods run on GKE spot an preemptible nodes
+  - key: "cloud.google.com/gke-spot"
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
+  - key: "cloud.google.com/gke-preemptible"
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
+  # Uncomment to make pods run on control-plane nodes. Relevant for OpenShift and other self-hosted clusters
+  #- key: node-role.kubernetes.io/infra
+  #  effect: NoSchedule
+  #- key: node-role.kubernetes.io/infra
+  #  effect: NoExecute
+  #- key: node-role.kubernetes.io/master
+  #  effect: NoSchedule
+  #- key: node.ocs.openshift.io/storage
+  #  value: "true"
+  #  effect: NoSchedule
+
+  podAnnotations:
+    container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
+
+  # Default strategy to update the daemonset
+  updateStrategy:
+    type: RollingUpdate
+
+  # Time for which kubernetes waits for the sensor pod to terminate gracefully.
+  terminationGracePeriodSeconds: 90
+
+  # resource values for the wiz sensor
+  resources:
+    limits:
+      cpu: "300m"
+      memory: "300Mi"
+    requests:
+      cpu: "10m"
+      memory: "50Mi"
+
+  # If a non-standard path is used please specify it here. Usually not required.
+  criSocketPath: ""
+
+  # proxy support (optional)
+
+  # a URL of the form: http://127.0.0.1:8080
+  httpProxyUrl: ""
+
+  # Proxy credentials for HTTP basic authentication (optional)
+  httpProxyUsername: ""
+  httpProxyPassword: ""
+
+  # Proxy CA certificate in PEM format. This is required for TLS intercept proxies
+  # The PEM file data must be base64 encoded. Here's an example to helm:
+  # --set-file daemonset.httpProxyCaCert=/my_cert_dir/mycert.pem
+  httpProxyCaCert: ""
