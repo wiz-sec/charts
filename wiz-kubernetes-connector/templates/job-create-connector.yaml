@@ -112,6 +112,9 @@ spec:
                 key: noProxyAddress
                 optional: false
           {{- end }}
+          {{- with .Values.autoCreateConnector.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.autoCreateConnector.customVolumeMounts }}

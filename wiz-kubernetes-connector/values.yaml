@@ -41,6 +41,7 @@ autoCreateConnector:
     name: "wiz-auto-create-connector"
   
   podCustomEnvironmentVariablesFile: ""
+  podCustomEnvironmentVariables: {}
   
   customVolumes: []
   customVolumeMounts: []
@@ -92,6 +93,7 @@ broker:
     name: "wiz-broker"
 
   podCustomEnvironmentVariablesFile: ""
+  podCustomEnvironmentVariables: {}
 
   customVolumes: []
   customVolumeMounts: []
