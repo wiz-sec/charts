@@ -1,25 +1,38 @@
-imagePullSecrets:
-  - name: test-secret
-podAnnotations:
-  test: testington
-  test1: testington2
-storageService: "blob"
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: wiz.io/node-group-type
+          operator: In
+          values:
+          - control-plane
 blob:
   azureCreds:
     environment: "AZUREPUBLIC"
-    useInstanceMetadata: true
+    subscriptionId: pasten
+    tenantId: pasten
+    useFederatedToken: true
+  containerName: state-container-name
   resourceGroupName: "test-rg"
   storageAccountName: "test-sa"
-  containerName: gitops-state
-
-internetAccessCertificates:
-  skipSslValidation: false
-
+hostpathCopier:
+  repository: wizpublic/wiz-busybox
+  tag: 1.36.0
+image:
+  name: wiz-git-proxy-blob
+  repository: wizpublic
+  tag: 2c74eaf-multiarch
+labels:
+  azure.workload.identity/use: "true"
+podAnnotations:
+  test: testington
 serviceAccount:
-  # Specifies whether a service account should be created
+  annotations:
+    azure.workload.identity/client-id: b5039e79-efab-4452-af5c-f4a44dd4ebe6
+    azure.workload.identity/tenant-id: pasten
   create: true
-  # Annotations to add to the service account
-  annotations: {}
-  labels: 
-  name: "workload-identity-sa"
-  azureWorkloadIdentityClientID: "00000000-0000-0000-0000-000000000000"
+  extraLabels:
+    azure.workload.identity/use: "true"
+  name: wiz-git-proxy-sa
+storageService: blob

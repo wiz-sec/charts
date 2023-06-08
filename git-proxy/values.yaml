@@ -20,6 +20,7 @@ blob:
 #    subscriptionId:
 #    environment:
 #    useInstanceMetadata:
+#    useFederatedToken:
   resourceGroupName:
   storageAccountName:
   containerName: gitops-state
@@ -29,11 +30,9 @@ serviceAccount:
   create: false
   # Annotations to add to the service account
   annotations: {}
-  labels: 
   # The name of the service account to use.
   # If empty, a name is generated using the fullname template
   name: ""
-  # azureWorkloadIdentityClientID: ""
 
 objectstorage:
   region:
