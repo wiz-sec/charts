@@ -20,6 +20,9 @@ spec:
         {{- with .Values.labels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- if .Values.serviceAccount.azureWorkloadIdentityClientID }}
+        azure.workload.identity/use: "true"
+        {{- end }}
     spec:
       {{- if .Values.affinity }}
       affinity:
@@ -45,6 +48,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "git-proxy.serviceAccountName" . }}
       securityContext:
         fsGroup: 1000
         supplementalGroups:
