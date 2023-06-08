@@ -8,13 +8,13 @@ image:
   repository: wiziopublic.azurecr.io
   helmController:
     name: wiz-helm-controller
-    tag: v0.24.0-multiarch
+    tag: v0.32.2
   sourceController:
     name: wiz-source-controller
-    tag: v0.29.0-multiarch
+    tag: v1.0.0-rc.1
   kustomizeController:
     name: wiz-kustomize-controller
-    tag: v0.31.0
+    tag: v1.0.0-rc.1
 affinity: {}
 
 podAnnotaitons: {}

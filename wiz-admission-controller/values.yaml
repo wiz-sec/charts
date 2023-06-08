@@ -6,17 +6,31 @@ wizApiToken:
   clientId: ""
   clientToken: ""
   clientEndpoint: "" # Set custom endpoint (gov for example)
+  
+  secret:
+    # Specifies whether an api token secret should be created
+    # If create is false you need to create it with clientId, clientToken
+    create: true
+    # Annotations to add to the secret
+    annotations: {}
+    # The name of the secret to use.
+    # If not set, a name is generated using the fullname template
+    name: ""
+  
+  # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  usePodCustomEnvironmentVariablesFile: false
 
 httpProxyConfiguration:
   enabled: false
-  
+
   # Specifies whether a proxy secret should be created
   # If create is false you need to:
   #  1. Create secret with httpProxy, httpsProxy and noProxyAddress.
   #  2. Set secretName to reference your secret
   create: true
   secretName: "" # Overriding default name for proxy secret name (.Release.Name + "-proxy-configuration" by default)
-  
+  # Annotations to be set on the secret
+  annotations: {}
   httpProxy: ""
   httpsProxy: ""
   noProxyAddress: ""
@@ -26,9 +40,9 @@ replicaCount: 2
 image:
   registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-admission-controller
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose defalt is the chart appVersion.
-  tag: "0.2.119420"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -73,14 +87,17 @@ opaWebhook:
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
   errorEnforcementMethod: AUDIT  # AUDIT/ BLOCK
-  policyEnforcementMethod: BLOCK # AUDIT/ BLOCK 
-  policies: []
-    # - policy1
-    # - policy2
+  policyEnforcementMethod: "" # AUDIT/ BLOCK (Set this to override any admission policy action)
+  policies:
+    - "Default IaC policy"
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
 
+  secret:
+    annotations: {}
+
+# K8s service account to be used by the pod(s)
 serviceAccount:
-  # Specifies whether a service account should be created
+  # If `create` is set to `false`` an existing service account will be used
   create: true
   # Annotations to add to the service account
   annotations: {}
@@ -88,17 +105,19 @@ serviceAccount:
   # If empty, a name is generated using the fullname template
   name: ""
 
-secret:
-  # Specifies whether a api token secret should be created
-  # If create is false you need to create it with clientId, clientToken
-  create: true
-  # The name of the secret to use.
-  # If not set, a name is generated using the fullname template
-  name: ""
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
 
 podAnnotations: {}
 
 podSecurityContext: {}
+
+podCustomEnvironmentVariables: {}
+podCustomEnvironmentVariablesFile: ""
+
+# Set the log level. Can be one of "debug", "info", "warn", or "error".
+# Warning: Do not set to `debug` in production environments, or sensitive data may be written to the logs.
+logLevel: "info"
 
 securityContext:
   capabilities:
@@ -111,7 +130,23 @@ securityContext:
 service:
   type: ClusterIP
   port: 443
-  targetPort: 10000
+  targetPort: 10250 # The port 10250 has been selected to bypass the private GKE firewall between the API server and the pods (https://cloud.google.com/kubernetes-engine/docs/how-to/private-clusters#api_request_that_triggers_admission_webhook_timing_out)
+
+# Specifies if the webhook should be started in hostNetwork mode.
+#
+# Required for use in some managed kubernetes clusters (such as AWS EKS) with custom
+# CNI (such as calico), because control-plane managed by AWS cannot communicate
+# with pods' IP CIDR and admission webhooks are not working
+#
+# Since the default port for the webhook conflicts with kubelet on the host
+# network, `service.targetPort` should be changed to an available port if
+# running in hostNetwork mode.
+hostNetwork: false
+
+# Configuration options for NetworkPolicy
+networkPolicy:
+  ingress:
+    enabled: true # Deny all incoming traffic 
 
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values
@@ -120,19 +155,18 @@ tlsCertificate:
   tlsKey: ""
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  # The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
+  # To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
   # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #   cpu: 0.5
+  #   memory: 256M
+  # limits:
+  #   cpu: 1
+  #   memory: 512M
+
+customVolumes: []
+customVolumeMounts: []
 
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}

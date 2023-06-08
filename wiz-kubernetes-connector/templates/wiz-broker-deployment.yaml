@@ -22,8 +22,15 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 8 }}
+        {{/*
+        `labels` includes `selectorLabels`
+        */}}
+        {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ .Values.broker.serviceAccount.name }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -34,6 +41,9 @@ spec:
             items:
             - key: connectorData
               path: {{ $connectorDataFileName }}
+        {{- with .Values.broker.customVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -44,10 +54,38 @@ spec:
           - name: connector-data
             mountPath: {{ $mountPath }}
             readOnly: true
+          {{- with .Values.broker.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           args: [
             {{ $connectorDataFilePath }}
           ]
           env:
+          - name: WIZ_ENV
+            value: {{ .Values.wizApiToken.clientEndpoint | quote }}
+          {{- with .Values.broker.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                key: clientId
+                optional: false
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                key: clientToken
+                optional: false
+          {{- end }}
+          {{- if .Values.broker.podCustomEnvironmentVariablesFile }}
+          - name: CLI_ENV_FILE
+            value: {{ .Values.broker.podCustomEnvironmentVariablesFile }}
+          - name: USE_CLI_ENV_FILE
+            value: "true"
+          {{- end }}
           - name: TARGET_IP
             value: {{ .Values.broker.targetIp }}
           {{- if .Values.httpProxyConfiguration.enabled }}
@@ -56,5 +94,32 @@ spec:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: httpsProxy # The frp project supports only HTTP_PROXY, it uses it for both http and https.  Our broker always uses https, so we're using the httpsProxy value here (See: https://github.com/fatedier/frp/#connecting-to-frps-via-http-proxy)
+                optional: false
+          - name: HTTPS_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+                key: httpsProxy
+                optional: false
+          - name: NO_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+                key: noProxyAddress
+                optional: false
           {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}

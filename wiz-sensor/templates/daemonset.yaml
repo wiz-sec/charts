@@ -1,0 +1,205 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "wiz-sensor.fullname" . }}
+  labels: {{- include "wiz-sensor.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+
+spec:
+  selector:
+    matchLabels: {{- include "wiz-sensor.selectorLabels" . | nindent 6 }}
+
+  updateStrategy:
+{{ toYaml .Values.daemonset.updateStrategy | indent 4 }}
+
+  template:
+    metadata:
+      labels: {{- include "wiz-sensor.labels" . | nindent 8 }}
+
+      annotations:
+        {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+
+    spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "wiz-sensor.serviceAccountName" . }}
+      {{- end }}
+
+      {{- with .Values.daemonset.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - arm64
+                - amd64
+
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      hostPID: true
+      hostIPC: true
+
+      {{- with .Values.daemonset.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      restartPolicy: Always
+
+      containers:
+      - name: wiz-sensor
+        {{- if .Values.image.registry }}
+        image: {{ printf "%s/%s:%s" .Values.image.registry .Values.image.repository .Values.image.tag }}
+        {{- else }}
+        image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.image.args }}
+        args:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        securityContext:
+          capabilities:
+            add:
+            - SYS_ADMIN # for kernels <5.8 (CAP_BPF and CAP_PERFMON)
+            - SYS_CHROOT # setns (file hash)
+            - SYS_RESOURCE # eBPF
+            - SYS_RAWIO # file hashing
+            - DAC_OVERRIDE # file hashing
+            - DAC_READ_SEARCH # file hashing
+            - NET_ADMIN # network events
+            - NET_RAW # network events
+            - IPC_LOCK # eBPF
+            - FOWNER # file hashing
+            - SYS_PTRACE # eBPF
+            - KILL # forensics
+
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 2202
+          runAsGroup: 2202
+          seccompProfile:
+            type: Unconfined
+          seLinuxOptions:
+            user: "system_u"
+            role: "system_r"
+            type: "spc_t"
+            level: "s0"
+
+        env:
+        - name: WIZ_TMP_STORE
+          value: "/wiz-sensor-store/"
+        - name: WIZ_HOST_STORE
+        {{- if .Values.daemonset.sensorHostCacheCreate }}
+          value: "/wiz-host-cache/"
+        {{- else }}
+          value: "/wiz-sensor-store/"
+        {{- end }}
+        - name: WIZ_RAMFS_STORE
+          value: "/tmp/"
+        - name: LOG_FILE
+          value: "/wiz-sensor-store/sensor.log"
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_APIKEY_SECRET_NAME
+          value: {{ include "wiz-sensor.secretName" . }}
+        - name: AWS_EC2_METADATA_DISABLED
+          value: "true"
+        - name: RUST_BACKTRACE
+          value: "full"
+        - name: CRI_SOCKET_CUSTOM_PATH
+          value: {{ .Values.daemonset.criSocketPath }}
+        - name: HTTP_PROXY_URL
+          value: {{ .Values.daemonset.httpProxyUrl }}
+        - name: HTTP_PROXY_USERNAME
+          value: {{ .Values.daemonset.httpProxyUsername }}
+        - name: HTTP_PROXY_PASSWORD
+          value: {{ .Values.daemonset.httpProxyPassword }}
+        - name: HTTP_PROXY_CERT
+          value: {{ .Values.daemonset.httpProxyCaCert }}
+        - name: BACKEND_ENV
+        {{- if .Values.backendEnv }} # TODO: remove backward compability soon
+          value: {{ default "prod" .Values.backendEnv }}
+        {{- else }}
+          value: {{ default "prod" .Values.wizApiToken.clientEndpoint }}
+        {{- end }}
+
+        {{- if .Values.tenantSuffix }}
+        - name: TENANT_SUFFIX
+          value: {{ .Values.tenantSuffix }}
+        {{- end }}
+
+        - name: RUST_LOG
+          value: {{ include "wiz-sensor.fileLogLevel" . }}
+        - name: STDOUT_LOG
+          value: {{ include "wiz-sensor.stdoutLogLevel" . }}
+
+        volumeMounts:
+        {{- if .Values.daemonset.sensorHostCacheCreate }}
+        - name: sensor-host-cache
+          mountPath: /wiz-host-cache/
+        {{- end }}
+
+        - name: sensor-store
+          mountPath: /wiz-sensor-store/
+        - name: tmp-store
+          mountPath: /tmp/
+        - name: api-client-secret
+          mountPath: /api-client/
+
+        resources:
+{{ toYaml .Values.daemonset.resources | indent 10 }}
+
+      terminationGracePeriodSeconds: {{ .Values.daemonset.terminationGracePeriodSeconds }}
+      {{- if .Values.imagePullSecret.required }}
+      imagePullSecrets:
+      - name: {{ include "wiz-sensor.imagePullSecretName" . }}
+      {{- end }}
+      volumes:
+      {{- if .Values.daemonset.sensorHostCacheCreate }}
+      - name: sensor-host-cache
+        hostPath:
+          path: {{ .Values.daemonset.sensorHostCacheFolder }}
+          type: DirectoryOrCreate
+      {{- end }}
+      - name: api-client-secret
+        secret:
+          secretName: {{ include "wiz-sensor.secretName" . }}
+          items:
+            - key: clientId
+              path: clientId
+            - key: clientToken
+              path: clientToken
+      - name: sensor-store
+        emptyDir:
+          sizeLimit: "1Gi"
+      - name: tmp-store
+        emptyDir:
+          sizeLimit: "100Mi"
+          medium: "Memory"

@@ -15,7 +15,7 @@ spec:
   selector:
     matchLabels:
       {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 6 }}
-  backoffLimit: 5
+  backoffLimit: 1
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -23,12 +23,23 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 8 }}
+        {{/*
+        `labels` includes `selectorLabels`
+        */}}
+        {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ .Values.autoCreateConnector.serviceAccount.name }}
       restartPolicy: "Never"
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.autoCreateConnector.customVolumes }}
+      volumes:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
       containers:
         - name: wiz-connector-creator
           securityContext:
@@ -59,17 +70,30 @@ spec:
             {{ end }}
             ]
           env:
-          - name: CREATE_KUBERNETES_CONNECTOR_CLIENT_ID
+          {{- with .Values.autoCreateConnector.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- if .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+          - name: CLI_ENV_FILE
+            value: {{ .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+          - name: USE_CLI_ENV_FILE
+            value: "true"
+          {{- end }}
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+          - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientId
-          - name: CREATE_KUBERNETES_CONNECTOR_CLIENT_TOKEN
+                optional: false
+          - name: WIZ_CLIENT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientToken
-          - name: CREATE_KUBERNETES_CONNECTOR_ENV
+                optional: false
+          {{- end }}
+          - name: WIZ_ENV
             value: {{ .Values.wizApiToken.clientEndpoint | quote }}
           {{- if .Values.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
@@ -77,15 +101,36 @@ spec:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: httpProxy
+                optional: false
           - name: HTTPS_PROXY
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: httpsProxy
+                optional: false
           - name: NO_PROXY
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: noProxyAddress
+                optional: false
           {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.autoCreateConnector.customVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}            
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}

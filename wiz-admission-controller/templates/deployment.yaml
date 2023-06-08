@@ -2,9 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "wiz-admission-controller.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
 spec:
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
@@ -18,7 +20,10 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "wiz-admission-controller.selectorLabels" . | nindent 8 }}
+        {{/*
+        `labels` includes `selectorLabels`
+        */}}
+        {{- include "wiz-admission-controller.labels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -27,6 +32,9 @@ spec:
       serviceAccountName: {{ include "wiz-admission-controller.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -39,6 +47,9 @@ spec:
           - mountPath: /var/server-certs
             name: server-certs
             readOnly: true
+          {{- with .Values.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           readinessProbe:
             httpGet:
               path: /ready
@@ -55,28 +66,32 @@ spec:
           - "--tls-private-key-file=/var/server-certs/tls.key"
           - "--tls-cert-file=/var/server-certs/tls.crt"
           - "--error-enforcement-method={{ .Values.opaWebhook.errorEnforcementMethod }}"
+          {{- if .Values.opaWebhook.policyEnforcementMethod }}
           - "--policy-enforcement-method={{ .Values.opaWebhook.policyEnforcementMethod }}"
+          {{- end }}
           {{- if .Values.opaWebhook.policies }}
-          - {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | quote }}
+          {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}
           {{- end }}
           {{- if .Values.opaWebhook.clusterExternalId }}
           - "--cluster-external-id={{ .Values.opaWebhook.clusterExternalId }}"
           {{- end }}
           env:
-          - name: WIZ_ADMISSION_CONTROLLER_CLIENT_ID
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+          - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
                 key: clientId
                 optional: false
-          - name: WIZ_ADMISSION_CONTROLLER_CLIENT_TOKEN
+          - name: WIZ_CLIENT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
                 key: clientToken
                 optional: false
+          {{- end }}
           {{- if .Values.wizApiToken.clientEndpoint }}
-          - name: WIZ_ADMISSION_CONTROLLER_ENV
+          - name: WIZ_ENV
             value: {{ .Values.wizApiToken.clientEndpoint }}
           {{- end }}
           {{- if .Values.httpProxyConfiguration.enabled }}
@@ -85,16 +100,32 @@ spec:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
                 key: http-proxy
+                optional: false
           - name: HTTPS_PROXY
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
                 key: https-proxy
+                optional: false
           - name: NO_PROXY
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
                 key: no-proxy-address
+                optional: false
+          {{- end }}
+          {{- if .Values.logLevel }}
+          - name: LOG_LEVEL
+            value: {{ .Values.logLevel }}
+          {{- end }}
+          {{- with .Values.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- if .Values.podCustomEnvironmentVariablesFile }}
+          - name: CLI_ENV_FILE
+            value: {{ .Values.podCustomEnvironmentVariablesFile }}
+          - name: USE_CLI_ENV_FILE
+            value: "true"
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -103,6 +134,9 @@ spec:
           secret:
             defaultMode: 444
             secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+      {{- with .Values.customVolumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

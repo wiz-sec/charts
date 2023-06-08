@@ -1,47 +1,119 @@
-{{- if .Values.installBroker }}
+{{- if .Values.global.broker.enabled }}
+{{ $mountPath := "/etc/connectorData" }}
+{{ $connectorDataFileName := "data" }}
+{{ $connectorDataFilePath := printf "%s/%s" $mountPath "data" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiz-broker.name" . }}
-  namespace: {{ .Values.namespace }}
+  name: {{ include "wiz-broker.name" . }}-broker
+  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-broker.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "wiz-broker.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{/*
+          `labels` includes `selectorLabels`
+          */}}
+          {{- include "wiz-broker.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.global.image.imagePullSecrets }}
+      imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      labels:
-        {{- include "wiz-broker.selectorLabels" . | nindent 8 }}
-    spec:
+      serviceAccountName: {{ .Values.global.broker.serviceAccount.name }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      serviceAccountName: {{ include "wiz-broker.serviceAccountName" . }}
+      volumes:
+        - name: connector-data
+          secret:
+            secretName: {{ include "wiz-broker.connectorSecretName" . | trim }}
+            items:
+              - key: connectorData
+                path: {{ $connectorDataFileName }}
+        {{- with .Values.global.broker.customVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          envFrom:  
-          - secretRef:
-              name: {{ .Values.secretName | default (printf "wiz-tunnel-client-%s-cfg" (include "wiz-broker.wizConnectorID" .))  }}
-
-{{- if not .Values.secretName }}
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: wiz-tunnel-client-{{ include "wiz-broker.wizConnectorID" . }}-cfg
-  namespace: {{ .Values.namespace }}
-type: Opaque
-stringData:
-  {{- include "wiz-broker.wizConnectorSecretData" . | nindent 2 }}
-{{- end }}
+          image: "{{ .Values.global.image.registry }}/{{ .Values.global.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+          volumeMounts:
+          - name: connector-data
+            mountPath: {{ $mountPath }}
+            readOnly: true
+          {{- with .Values.global.broker.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          args: [
+            {{ $connectorDataFilePath }}
+          ]
+          env:
+          - name: WIZ_ENV
+            value: {{ .Values.global.wizApiToken.clientEndpoint | quote }}
+          {{- if not .Values.global.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
+                key: clientId
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
+                key: clientToken
+          {{- end }}
+          {{- if .Values.global.broker.podCustomEnvironmentVariablesFile }}
+          - name: CLI_ENV_FILE
+            value: {{ .Values.global.broker.podCustomEnvironmentVariablesFile }}
+          - name: USE_CLI_ENV_FILE
+            value: "true"
+          {{- end }}
+          - name: TARGET_IP
+            value: {{ .Values.global.broker.targetIp }}
+          {{- if .Values.global.httpProxyConfiguration.enabled }}
+          - name: HTTP_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-broker.proxySecretName" . | trim }}
+                key: httpsProxy # The frp project supports only HTTP_PROXY, it uses it for both http and https.  Our broker always uses https, so we're using the httpsProxy value here (See: https://github.com/fatedier/frp/#connecting-to-frps-via-http-proxy)
+          - name: HTTPS_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-broker.proxySecretName" . | trim }}
+                key: httpsProxy
+                optional: false
+          - name: NO_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-broker.proxySecretName" . | trim }}
+                key: noProxyAddress
+                optional: false
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end }}

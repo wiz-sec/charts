@@ -7,9 +7,10 @@ nameOverride: "wiz-kubernetes-connector"
 image:
   registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-broker
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "" 
+  tag: ""
+  imagePullSecrets: []
 
 clusterReader:
   installRbac: true
@@ -19,7 +20,10 @@ clusterReader:
     annotations: {}
     # The name of the service account to use.
     name: "wiz-cluster-reader"
-  
+  secret:
+    # Annotations to add to the secret
+    annotations: {}
+
 autoCreateConnector:
   enabled: true
 
@@ -30,22 +34,35 @@ autoCreateConnector:
 
   serviceAccount:
     create: true
+    createRbac: true
     # Annotations to add to the service account
     annotations: {}
     # The name of the service account to use.
     name: "wiz-auto-create-connector"
+  
+  podCustomEnvironmentVariables: {}
+  podCustomEnvironmentVariablesFile: ""
+  
+  customVolumes: []
+  customVolumeMounts: []
 
 wizApiToken:
-  # Specifies whether an api token secret should be created
-  # If create is false you need to create it with clientId, clientToken
-  createSecret: true
-  # The name of the secret to use.
-  # If not set, a name is generated using the fullname template
-  name: ""
-  
   clientId: ""
   clientToken: ""
   clientEndpoint: "" # Set custom endpoint (gov for example)
+
+  secret:
+    # Specifies whether an api token secret should be created
+    # If create is false you need to create it with clientId, clientToken
+    create: true
+    # Annotations to add to the secret
+    annotations: {}
+    # The name of the secret to use.
+    # If not set, a name is generated using the fullname template
+    name: ""
+  
+  # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  usePodCustomEnvironmentVariablesFile: false
 
 wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = false
   # Specifies whether a proxy secret should be created
@@ -54,6 +71,8 @@ wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = 
   #     CONNECTOR_ID, CONNECTOR_TOKEN, TARGET_DOMAIN, TARGET_IP, TARGET_PORT
   #  2. Set secretName to reference your secret
   createSecret: true
+  # Annotations to add to the secret
+  annotations: {}
   secretName: ""
 
   # Required arguments for autoCreateConnector = false
@@ -73,6 +92,16 @@ broker:
     # The name of the service account to use.
     name: "wiz-broker"
 
+  podCustomEnvironmentVariables: {}
+  podCustomEnvironmentVariablesFile: ""
+
+  customVolumes: []
+  customVolumeMounts: []
+  
+
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
+
 podAnnotations: {}
 
 podSecurityContext:
@@ -84,6 +113,24 @@ securityContext:
   runAsUser: 1000
   allowPrivilegeEscalation: false
 
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
 httpProxyConfiguration:
   enabled: false
   
@@ -92,6 +139,7 @@ httpProxyConfiguration:
   #  1. Create secret with httpProxy, httpsProxy and noProxyAddress.
   #  2. Set secretName to reference your secret
   create: true
+  annotations: {}
   secretName: "" # Overriding default name for proxy secret name (.Release.Name + "-proxy-configuration" by default)
   
   httpProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)

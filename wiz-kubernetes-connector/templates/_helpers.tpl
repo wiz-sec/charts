@@ -22,6 +22,11 @@ helm.sh/chart: {{ include "wiz-kubernetes-connector.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.commonLabels }}
+{{- range $index, $content := .Values.commonLabels }}
+{{ $index }}: {{ tpl $content $ }}
+{{- end }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -51,7 +56,7 @@ Secrets names
 */}}
 
 {{- define "wiz-kubernetes-connector.apiTokenSecretName" -}}
-{{ coalesce (.Values.wizApiToken.name) (printf "%s-api-token" .Release.Name) }}
+{{ coalesce (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxySecretName" -}}
@@ -70,9 +75,18 @@ Secrets names
 Input parameters
 */}}
 {{- define "wiz-kubernetes-connector.apiServerEndpoint" -}}
-{{- if and .Values.autoCreateConnector.enabled (not .Values.broker.enabled) }}
-{{- required "A valid .Values.autoCreateConnector.apiServerEndpoint entry required!" .Values.autoCreateConnector.apiServerEndpoint -}}
-{{- else -}}
-{{ coalesce .Values.autoCreateConnector.apiServerEndpoint "https://kubernetes.default.svc.cluster.local" }}
-{{- end -}}
+  {{- if and .Values.autoCreateConnector.enabled (not .Values.broker.enabled) }}
+    {{- required "A valid .Values.autoCreateConnector.apiServerEndpoint entry required!" .Values.autoCreateConnector.apiServerEndpoint -}}
+  {{- else -}}
+    {{ if .Values.autoCreateConnector.apiServerEndpoint }}
+      {{- $url := urlParse .Values.autoCreateConnector.apiServerEndpoint}}
+      {{- if not (and $url.host $url.scheme) }}
+        {{- fail "Invalid URL format for .Values.autoCreateConnector.apiServerEndpoint" }}
+      {{- else }}
+        {{ printf "%s" .Values.autoCreateConnector.apiServerEndpoint }}
+      {{- end }}
+    {{ else }}
+      {{ printf "https://kubernetes.default.svc.cluster.local" }}
+    {{- end -}}
+  {{- end -}}
 {{- end }}

@@ -36,27 +36,13 @@ commands:
       package:
         type: string
     steps:
-      - checkout:
-          path: ~/project
-      - add_ssh_keys:
-          fingerprints:
-            - "46:88:b6:e7:04:9e:f2:cf:cf:4f:03:09:e5:58:1b:f2"
-      - run:
-          name: Read-Write checkout
-          command: |
-            mkdir -pm0700 ~/.ssh
-            ssh-keyscan github.com > ~/.ssh/known_hosts
-            echo 'Host gitops
-              Hostname github.com
-              IdentityFile ~/.ssh/id_rsa_4688b6e7049ef2cfcf4f0309e5581bf2
-              IdentitiesOnly yes' > ~/.ssh/config
-            git clone -b master git@gitops:wiz-sec/charts.git
       - run:
           name: Push new package << parameters.package >>
           command: |
             export PACKAGE="<< parameters.package >>"
-            cd charts
+            pushd ~/project/charts
             bash .circleci/package_index.sh
+            popd
 
 jobs:
   run_chart_validation_test:
@@ -79,6 +65,31 @@ jobs:
     executor:
       name: ops
     steps:
+      - when:
+          condition:
+            or:
+            - << pipeline.parameters.flux2 >>
+            - << pipeline.parameters.git-proxy >>
+            - << pipeline.parameters.wiz-broker >>
+            - << pipeline.parameters.wiz-admission-controller >>
+            - << pipeline.parameters.wiz-sensor >>
+            - << pipeline.parameters.wiz-kubernetes-connector >>
+          steps:
+            - checkout:
+                path: ~/project
+            - add_ssh_keys:
+                fingerprints:
+                  - "46:88:b6:e7:04:9e:f2:cf:cf:4f:03:09:e5:58:1b:f2"
+            - run:
+                name: Read-Write checkout
+                command: |
+                  mkdir -pm0700 ~/.ssh
+                  ssh-keyscan github.com > ~/.ssh/known_hosts
+                  echo 'Host gitops
+                    Hostname github.com
+                    IdentityFile ~/.ssh/id_rsa_4688b6e7049ef2cfcf4f0309e5581bf2
+                    IdentitiesOnly yes' > ~/.ssh/config
+                  git clone -b master git@gitops:wiz-sec/charts.git
       - when:
           condition: << pipeline.parameters.flux2 >>
           steps:

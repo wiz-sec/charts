@@ -1,0 +1,47 @@
+{{- if .Values.openshift -}}
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: {{ include "wiz-sensor.fullname" . }}-scc
+  labels: {{- include "wiz-sensor.labels" . | nindent 4 }}
+allowHostDirVolumePlugin: true
+allowPrivilegedContainer: true
+allowHostIPC: true
+allowHostNetwork: true
+allowHostPID: true
+allowHostPorts: true
+allowedCapabilities:
+  - SYS_ADMIN # for kernels <5.8 (CAP_BPF and CAP_PERFMON)
+  - SYS_CHROOT # setns (file hash)
+  - SYS_RESOURCE # eBPF
+  - SYS_RAWIO # file hashing
+  - DAC_OVERRIDE # file hashing
+  - DAC_READ_SEARCH # file hashing
+  - NET_ADMIN # network events
+  - NET_RAW # network events
+  - IPC_LOCK # eBPF
+  - FOWNER # file hashing
+  - SYS_PTRACE # eBPF
+  - KILL # forensics
+requiredDropCapabilities: null
+fsGroup:
+  type: RunAsAny
+groups: []
+priority: 0
+readOnlyRootFilesystem: true
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: RunAsAny
+supplementalGroups:
+  type: RunAsAny
+seccompProfiles:
+  - "*"
+users:
+  - system:serviceaccount:{{ .Release.Namespace }}:{{ include "wiz-sensor.serviceAccountName" . }}
+volumes:
+  - hostPath
+  - emptyDir
+  - secret
+  - downwardAPI
+{{- end }}
