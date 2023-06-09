@@ -52,7 +52,7 @@ wizApiToken:
   clientEndpoint: "" # Set custom endpoint (gov for example)
 
   secret:
-    # Specifies whether an api token secret should be created
+    # Specifies whether an api token secret should be created locally
     # If create is false you need to create it with clientId, clientToken
     create: true
     # Annotations to add to the secret
@@ -60,6 +60,16 @@ wizApiToken:
     # The name of the secret to use.
     # If not set, a name is generated using the fullname template
     name: ""
+
+    # Relevant only if using an external secret
+    external:
+      enabled: false
+      # Possible values are SecretStore and ClusterSecretStore
+      kind: ""
+      # The name of the external secret store
+      name: ""
+      # The indentifier for the secret
+      secretIdentifier: ""
   
   # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
   usePodCustomEnvironmentVariablesFile: false
