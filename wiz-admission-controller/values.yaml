@@ -112,7 +112,7 @@ podAnnotations: {}
 
 podSecurityContext: {}
 
-podCustomEnvironmentVariables: {}
+podCustomEnvironmentVariables: []
 podCustomEnvironmentVariablesFile: ""
 
 # Set the log level. Can be one of "debug", "info", "warn", or "error".

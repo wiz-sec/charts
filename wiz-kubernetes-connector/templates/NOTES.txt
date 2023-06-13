@@ -30,3 +30,6 @@ kubectl delete serviceaccount {{ .Values.autoCreateConnector.serviceAccount.name
 kubectl delete role {{ .Values.autoCreateConnector.serviceAccount.name }}
 kubectl delete rolebinding {{ .Values.autoCreateConnector.serviceAccount.name }}
 {{- end }}
+{{- if and .Values.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.create }}
+kubectl delete secret {{ include "wiz-kubernetes-connector.proxySecretName" . }} -n {{ .Release.Namespace | quote }}
+{{- end }}
