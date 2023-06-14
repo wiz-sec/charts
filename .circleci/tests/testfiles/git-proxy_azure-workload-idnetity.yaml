@@ -1,0 +1,38 @@
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: wiz.io/node-group-type
+          operator: In
+          values:
+          - control-plane
+blob:
+  azureCreds:
+    environment: "AZUREPUBLIC"
+    subscriptionId: pasten
+    tenantId: pasten
+    useFederatedToken: true
+  containerName: state-container-name
+  resourceGroupName: "test-rg"
+  storageAccountName: "test-sa"
+hostpathCopier:
+  repository: wizpublic/wiz-busybox
+  tag: 1.36.0
+image:
+  name: wiz-git-proxy-blob
+  repository: wizpublic
+  tag: 2c74eaf-multiarch
+labels:
+  azure.workload.identity/use: "true"
+podAnnotations:
+  test: testington
+serviceAccount:
+  annotations:
+    azure.workload.identity/client-id: b5039e79-efab-4452-af5c-f4a44dd4ebe6
+    azure.workload.identity/tenant-id: pasten
+  create: true
+  extraLabels:
+    azure.workload.identity/use: "true"
+  name: wiz-git-proxy-sa
+storageService: blob

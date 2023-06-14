@@ -40,6 +40,7 @@ autoCreateConnector:
     # The name of the service account to use.
     name: "wiz-auto-create-connector"
   
+  podCustomEnvironmentVariables: []
   podCustomEnvironmentVariablesFile: ""
   
   customVolumes: []
@@ -97,6 +98,7 @@ broker:
     # The name of the service account to use.
     name: "wiz-broker"
 
+  podCustomEnvironmentVariables: []
   podCustomEnvironmentVariablesFile: ""
 
   customVolumes: []

@@ -92,14 +92,11 @@ func TestChartsWithDefaultValues(t *testing.T) {
 }
 
 func TestChartsWithGeneratedValues(t *testing.T) {
-	files, err := ioutil.ReadDir(chartsRootDir)
+	testFiles, err := ioutil.ReadDir("testfiles")
 	require.NoError(t, err)
 
-	for _, fileInfo := range files {
-		if !fileInfo.IsDir() {
-			continue
-		}
-		chartName := fileInfo.Name()
+	for _, testFile := range testFiles {
+		chartName := strings.Split(strings.Split(testFile.Name(), ".")[0], "_")[0]
 		chartDir := path.Join(chartsRootDir, chartName)
 		chartFilePath := path.Join(chartDir, "Chart.yaml")
 		if _, err := os.Stat(chartFilePath); os.IsNotExist(err) {
@@ -108,17 +105,14 @@ func TestChartsWithGeneratedValues(t *testing.T) {
 
 		_, err := chartutil.IsChartDir(chartDir)
 		require.NoError(t, err)
-
-		chartDirFullPath, err := filepath.Abs(chartDir)
-		require.NoError(t, err)
-		t.Run(chartDirFullPath, func(t *testing.T) {
-			fmt.Println(chartDirFullPath)
+		t.Run(testFile.Name(), func(t *testing.T) {
+			fmt.Println(testFile.Name())
 			chartFilePath := path.Join(chartDir, "Chart.yaml")
 			chart, err := chartutil.LoadChartfile(chartFilePath)
 			require.NoError(t, err)
 			require.NoError(t, chart.Validate())
 
-			realValuesPath := path.Join("testfiles", chartName+".yaml")
+			realValuesPath := path.Join("testfiles", testFile.Name())
 			values, err := chartutil.ReadValuesFile(realValuesPath)
 			require.NoError(t, err)
 			linter := lint.All(chartDir, values.AsMap(), generatedNamespace[chartName], true)

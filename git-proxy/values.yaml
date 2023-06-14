@@ -19,9 +19,20 @@ blob:
 #    aadClientSecret:
 #    subscriptionId:
 #    environment:
+#    useInstanceMetadata:
+#    useFederatedToken:
   resourceGroupName:
   storageAccountName:
   containerName: gitops-state
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If empty, a name is generated using the fullname template
+  name: ""
 
 objectstorage:
   region:

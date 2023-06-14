@@ -112,7 +112,7 @@ podAnnotations: {}
 
 podSecurityContext: {}
 
-podCustomEnvironmentVariables: {}
+podCustomEnvironmentVariables: []
 podCustomEnvironmentVariablesFile: ""
 
 # Set the log level. Can be one of "debug", "info", "warn", or "error".
@@ -143,6 +143,11 @@ service:
 # running in hostNetwork mode.
 hostNetwork: false
 
+# Configuration options for NetworkPolicy
+networkPolicy:
+  ingress:
+    enabled: true # Deny all incoming traffic 
+
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values
   create: true
@@ -150,16 +155,14 @@ tlsCertificate:
   tlsKey: ""
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+  # The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
+  # To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
   # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #   cpu: 0.5
+  #   memory: 256M
+  # limits:
+  #   cpu: 1
+  #   memory: 512M
 
 customVolumes: []
 customVolumeMounts: []
