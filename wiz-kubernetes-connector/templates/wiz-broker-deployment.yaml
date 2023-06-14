@@ -61,13 +61,6 @@ spec:
             {{ $connectorDataFilePath }}
           ]
           env:
-          - name: TUNNEL_SERVER_ADDR # todo: delete me
-            value: "host.minikube.internal"
-          - name: TUNNEL_SERVER_PORT # todo: delete me
-            value: "3104"
-          - name: DISABLE_TLS_VALIDATION
-            value: "true"
-          - name: WIZ_ENV
             value: {{ .Values.wizApiToken.clientEndpoint | quote }}
           {{- with .Values.broker.podCustomEnvironmentVariables }}
             {{- toYaml . | nindent 10 }}

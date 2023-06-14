@@ -23,7 +23,7 @@ clusterReader:
   secret:
     # Annotations to add to the secret
     annotations: {}
-
+  
 autoCreateConnector:
   enabled: true
 
@@ -38,7 +38,7 @@ autoCreateConnector:
     # Annotations to add to the service account
     annotations: {}
     # The name of the service account to use.
-    name: "wiz-auto-create-connector"
+    name: "wiz-auto-modify-connector"
   
   podCustomEnvironmentVariables: []
   podCustomEnvironmentVariablesFile: ""
@@ -50,7 +50,6 @@ autoDeleteConnector:
   enabled: true
   
   podCustomEnvironmentVariablesFile: ""
-
 
 wizApiToken:
   clientId: ""
