@@ -68,6 +68,9 @@ spec:
             {{ end }}
             ]
           env:
+          {{- with .Values.autoCreateConnector.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           {{- if .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
             value: {{ .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
