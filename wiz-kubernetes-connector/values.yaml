@@ -27,6 +27,8 @@ clusterReader:
 autoCreateConnector:
   enabled: true
 
+  autoDeleteConnectorEnabled: true
+
   connectorName: "" # optional 
   clusterFlavor: "" # optional (EKS, AKS, GKE, OKE, OpenShift, Kubernetes)
   # Required arguments for broker.enabled = false
@@ -45,11 +47,6 @@ autoCreateConnector:
   
   customVolumes: []
   customVolumeMounts: []
-
-autoDeleteConnector:
-  enabled: true
-  
-  podCustomEnvironmentVariablesFile: ""
 
 wizApiToken:
   clientId: ""

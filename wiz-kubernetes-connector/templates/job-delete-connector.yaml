@@ -1,4 +1,4 @@
-{{- if .Values.autoDeleteConnector.enabled }}
+{{- if .Values.autoCreateConnector.autoDeleteConnectorEnabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -51,15 +51,13 @@ spec:
             "delete-kubernetes-connector",
             "--secrets-namespace", 
             {{ .Release.Namespace | quote }},
-            {{- if .Values.broker.enabled }}
             "--output-secret-name",
             {{- include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
-            {{- end }}
             ]
           env:
-          {{- if .Values.autoDeleteConnector.podCustomEnvironmentVariablesFile }}
+          {{- if .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
-            value: {{ .Values.autoDeleteConnector.podCustomEnvironmentVariablesFile }}
+            value: {{ .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
           - name: USE_CLI_ENV_FILE
             value: "true"
           {{- end }}
