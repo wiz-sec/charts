@@ -45,6 +45,12 @@ autoCreateConnector:
   customVolumes: []
   customVolumeMounts: []
 
+autoDeleteConnector:
+  enabled: true
+  
+  podCustomEnvironmentVariablesFile: ""
+
+
 wizApiToken:
   clientId: ""
   clientToken: ""

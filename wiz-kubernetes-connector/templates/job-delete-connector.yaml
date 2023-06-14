@@ -1,15 +1,15 @@
-{{- if .Values.autoCreateConnector.enabled }}
+{{- if .Values.autoDeleteConnector.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "wiz-kubernetes-connector.name" . }}-create-connector-{{ randNumeric 5  }}
+  name: {{ include "wiz-kubernetes-connector.name" . }}-delete-connector-{{ randNumeric 5  }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-kubernetes-connector.labels" . | nindent 4 }}
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-  
+
 spec:
   manualSelector: true
   selector:
@@ -30,7 +30,7 @@ spec:
     spec:
       hostAliases:  # delete me!
       - ip: "192.168.65.2" # check minikube host ip!
-        hostnames:  # delete me!
+        hostnames: # delete me!
           - "auth" # delete me!
           - "agent-gateway" # delete me!
       {{- with .Values.image.imagePullSecrets }}
@@ -46,31 +46,20 @@ spec:
       {{- toYaml . | nindent 6 }}
       {{- end }}
       containers:
-        - name: wiz-connector-creator
+        - name: wiz-connector-delete
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: IfNotPresent
           command: ["wiz-broker"]
           args: [
-            "create-kubernetes-connector",
-            "--api-server-endpoint", 
-            {{ include "wiz-kubernetes-connector.apiServerEndpoint" . | trim | quote }},
+            "delete-kubernetes-connector",
             "--secrets-namespace", 
             {{ .Release.Namespace | quote }},
-            "--service-account-token-secret-name",
-            {{ include "wiz-kubernetes-connector.clusterReaderToken" . | quote }},
+            {{- if .Values.broker.enabled }}
             "--output-secret-name",
             {{- include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
-            "--is-on-prem={{ .Values.broker.enabled }}",
-            {{ with .Values.autoCreateConnector.connectorName }}
-            "--connector-name",
-            {{ . | quote }},
-            {{ end }}
-            {{ with .Values.autoCreateConnector.clusterFlavor }}
-            "--service-type",
-            {{ . | quote }},
-            {{ end }}
+            {{- end }}
             ]
           env:
           - name: DEV # todo: delete me
@@ -81,9 +70,9 @@ spec:
             value: "host.minikube.internal"
           - name: WIZ_API_PORT # todo: delete me
             value: "3103"
-          {{- if .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+          {{- if .Values.autoDeleteConnector.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
-            value: {{ .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+            value: {{ .Values.autoDeleteConnector.podCustomEnvironmentVariablesFile }}
           - name: USE_CLI_ENV_FILE
             value: "true"
           {{- end }}
@@ -140,5 +129,6 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- end }}        
+
 {{- end }}
