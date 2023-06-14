@@ -23,7 +23,7 @@ clusterReader:
   secret:
     # Annotations to add to the secret
     annotations: {}
-  
+
 autoCreateConnector:
   enabled: true
 
