@@ -49,9 +49,9 @@ spec:
           command: ["wiz-broker"]
           args: [
             "delete-kubernetes-connector",
-            "--secrets-namespace", 
+            "--input-secrets-namespace", 
             {{ .Release.Namespace | quote }},
-            "--output-secret-name",
+            "--input-secret-name",
             {{- include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
             ]
           env:
