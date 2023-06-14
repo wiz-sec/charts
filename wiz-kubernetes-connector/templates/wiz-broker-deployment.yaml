@@ -61,6 +61,7 @@ spec:
             {{ $connectorDataFilePath }}
           ]
           env:
+          - name: WIZ_ENV
             value: {{ .Values.wizApiToken.clientEndpoint | quote }}
           {{- with .Values.broker.podCustomEnvironmentVariables }}
             {{- toYaml . | nindent 10 }}
