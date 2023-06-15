@@ -75,6 +75,9 @@ daemonset:
   # customize nodes matched
   nodeSelector: {}
 
+  # customize priority class
+  priorityClassName: ""
+
   tolerations:
   # Makes pods run on ARM64 as well
   - key: kubernetes.io/arch
@@ -89,6 +92,11 @@ daemonset:
   - key: "cloud.google.com/gke-preemptible"
     operator: Equal
     value: "true"
+    effect: NoSchedule
+  # Make pods run on Azure spot nodes
+  - key: kubernetes.azure.com/scalesetpriority
+    operator: Equal
+    value: spot
     effect: NoSchedule
   # Uncomment to make pods run on control-plane nodes. Relevant for OpenShift and other self-hosted clusters
   #- key: node-role.kubernetes.io/infra
