@@ -1,0 +1,12 @@
+{{- if (index .Values "wiz-kubernetes-connector" "enabled") }}
+{{- if or (and .Values.global.httpProxyConfiguration.enabled .Values.global.httpProxyConfiguration.create) .Values.global.wizApiToken.secret.create }}
+Some secrets used by helm pre-install hooks.
+Please delete them manually when you uninstall this chart.
+{{- if and .Values.global.httpProxyConfiguration.enabled .Values.global.httpProxyConfiguration.create }}
+kubectl delete secret {{ include "wiz-kubernetes-integration.secretApiTokenName" . | trim }} -n {{ .Release.Namespace | quote }}
+{{- end }}
+{{- if and .Values.global.wizApiToken.secret.create (index .Values "wiz-kubernetes-connector" "enabled") }}
+kubectl delete secret {{ include "wiz-kubernetes-integration.proxySecretName" . | trim }} -n {{ .Release.Namespace | quote }}
+{{- end }}
+{{- end }}
+{{- end }}

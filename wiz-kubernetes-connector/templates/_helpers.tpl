@@ -2,7 +2,8 @@
 Expand the name of the chart.
 */}}
 {{- define "wiz-kubernetes-connector.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- $nameOverride := coalesce .Values.global.nameOverride .Values.nameOverride }}
+{{- default .Chart.Name $nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -24,6 +25,11 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.commonLabels }}
 {{- range $index, $content := .Values.commonLabels }}
+{{ $index }}: {{ tpl $content $ }}
+{{- end }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- range $index, $content := .Values.global.commonLabels }}
 {{ $index }}: {{ tpl $content $ }}
 {{- end }}
 {{- end }}
@@ -56,11 +62,12 @@ Secrets names
 */}}
 
 {{- define "wiz-kubernetes-connector.apiTokenSecretName" -}}
-{{ coalesce (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
+{{- $nameOverride := coalesce .Values.global.nameOverride .Values.nameOverride }}
+{{- default .Chart.Name $nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxySecretName" -}}
-{{ coalesce (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
+{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.connectorSecretName" -}}
@@ -90,3 +97,11 @@ Input parameters
     {{- end -}}
   {{- end -}}
 {{- end }}
+
+{{/*
+This function dump the value of a variable and fail the template execution.
+Use for debug purpose only.
+*/}}
+{{- define "helpers.var_dump" -}}
+{{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
+{{- end -}}

@@ -1,0 +1,83 @@
+# Wiz Kubernetes Integration
+
+# Global values to override all chart values from external sources.
+global:
+  nameOverride: "" # Override the release’s name.
+  fullnameOverride: "" # Override the release’s full name.
+  commonLabels: {} # Labels applied on all the resources (not used for selection)
+
+  # Wiz Service Account used to authenticate to Wiz.
+  wizApiToken:
+    clientId: "" # Client ID of the Wiz Service Account.
+    clientToken: "" # Client secret of the Wiz Service Account.
+    clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
+    
+    secret:
+      # Should a Secret be created by the chart or not.
+      #  Set this to false if you wish to create the Secret yourself or using another tool.
+      # The Secret should contain clientId for the ID and clientToken for the token.
+      create: true
+      # Annotations to add to the secret.
+      annotations: {}
+      # The name of the Wiz Service Account Secret.
+      name: ""
+
+  # Redirect HTTP and/or HTTPS traffic through a proxy.
+  httpProxyConfiguration:
+    enabled: false # Should the components use a proxy.
+
+    # Should a Secret be created by the chart or not.
+    #  Set this to false if you wish to create the Secret yourself or using another tool.
+    # The Secret should contain httpProxy, httpsProxy and noProxyAddress.
+    create: true
+    secretName: "" # The name of the proxy Secret.
+    annotations: {} # Annotations to be set on the secret
+    httpProxy: "" # URL to use as a proxy for ourbound HTTP traffic.
+    httpsProxy: "" # URL to use as a proxy for ourbound HTTPS traffic.
+    noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
+
+  image:
+    registry: "" # Registry to get the container images from.
+    pullPolicy: "" # Container image pull policy. One of Always, Never, IfNotPresent.
+  imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
+
+  podAnnotations: {} # Annotations to add to the components Pods.
+
+  podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+  customVolumes: [] # Additional volumes to add to the components Pods
+  customVolumeMounts: [] # Additional volume mounts to add to the components Pods
+
+# Wiz Kubernetes Connector
+# Configuration values for the wiz-kubernetes-connector dependency
+# ref: https://github.com/wiz-sec/charts/blob/master/wiz-kubernetes-connector/values.yaml
+#
+wiz-kubernetes-connector:
+  enabled: true
+  wizApiToken:
+    secret:
+      create: false # Secret created by wiz-kubernetes-integration.
+  httpProxyConfiguration:
+    create: false # Secret created by wiz-kubernetes-integration.
+
+# Wiz Admission Controller
+# Configuration values for the wiz-admission-controller dependency
+# ref: https://github.com/wiz-sec/charts/blob/master/wiz-admission-controller/values.yaml
+#
+wiz-admission-controller:
+  enabled: false
+  wizApiToken:
+    secret:
+      create: false # Secret created by wiz-kubernetes-integration.
+  httpProxyConfiguration:
+    create: false # Secret created by wiz-kubernetes-integration.
+
+# Wiz Sensor
+# Configuration values for the wiz-sensor dependency
+# ref: https://github.com/wiz-sec/charts/blob/master/wiz-sensor/values.yaml
+#
+wiz-sensor:
+  enabled: false
+  wizApiToken:
+    createSecret: false # Secret created by wiz-kubernetes-integration.
+  httpProxyConfiguration:
+    create: false # Secret created by wiz-kubernetes-integration.
