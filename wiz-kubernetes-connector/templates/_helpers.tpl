@@ -25,7 +25,7 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.commonLabels }}
 {{- range $index, $content := .Values.commonLabels }}
-{{ $index }}: {{ tpl $content $ }}
+{{ $index }}: {{ tpl $content $ | quote }}
 {{- end }}
 {{- end }}
 {{- if .Values.global.commonLabels }}

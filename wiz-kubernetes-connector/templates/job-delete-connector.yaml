@@ -1,15 +1,16 @@
 {{- if .Values.autoCreateConnector.enabled }}
+{{- if .Values.autoCreateConnector.autoDeleteConnectorEnabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "wiz-kubernetes-connector.name" . }}-create-connector-{{ randNumeric 5  }}
+  name: {{ include "wiz-kubernetes-connector.name" . }}-delete-connector-{{ randNumeric 5  }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-kubernetes-connector.labels" . | nindent 4 }}
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-  
+
 spec:
   manualSelector: true
   selector:
@@ -18,7 +19,7 @@ spec:
   backoffLimit: 1
   template:
     metadata:
-      {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
+      {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -28,7 +29,7 @@ spec:
         */}}
         {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
     spec:
-      {{- with (coalesce .Values.global.imagePullSecrets .Values.image.imagePullSecrets) }}
+      {{- with .Values.image.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -36,49 +37,25 @@ spec:
       restartPolicy: "Never"
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if or .Values.autoCreateConnector.customVolumes  .Values.global.customVolumes}}
+      {{- with .Values.autoCreateConnector.customVolumes }}
       volumes:
-      {{ with .Values.global.customVolumes }}
-        {{- toYaml . | nindent 6 }}
-      {{- end }}
-      {{ with .Values.autoCreateConnector.customVolumes }}
-        {{- toYaml . | nindent 6 }}
-      {{- end }}
+      {{- toYaml . | nindent 6 }}
       {{- end }}
       containers:
-        - name: wiz-connector-creator
+        - name: wiz-connector-delete
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: IfNotPresent
           command: ["wiz-broker"]
           args: [
-            "create-kubernetes-connector",
-            "--api-server-endpoint", 
-            {{ include "wiz-kubernetes-connector.apiServerEndpoint" . | trim | quote }},
-            "--secrets-namespace", 
+            "delete-kubernetes-connector",
+            "--input-secrets-namespace", 
             {{ .Release.Namespace | quote }},
-            "--service-account-token-secret-name",
-            {{ include "wiz-kubernetes-connector.clusterReaderToken" . | quote }},
-            "--output-secret-name",
+            "--input-secret-name",
             {{- include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
-            "--is-on-prem={{ .Values.broker.enabled }}",
-            {{ with .Values.autoCreateConnector.connectorName }}
-            "--connector-name",
-            {{ . | quote }},
-            {{ end }}
-            {{ with .Values.autoCreateConnector.clusterFlavor }}
-            "--service-type",
-            {{ . | quote }},
-            {{ end }}
             ]
           env:
-          {{- with .Values.global.podCustomEnvironmentVariables }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
-          {{- with .Values.autoCreateConnector.podCustomEnvironmentVariables }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
           {{- if .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
             value: {{ .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
@@ -100,8 +77,8 @@ spec:
                 optional: false
           {{- end }}
           - name: WIZ_ENV
-            value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
-          {{- if (coalesce .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+            value: {{ .Values.wizApiToken.clientEndpoint | quote }}
+          {{- if .Values.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
               secretKeyRef:
@@ -123,14 +100,9 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or .Values.autoCreateConnector.customVolumeMounts .Values.global.customVolumeMounts }}
-          volumeMounts:
           {{- with .Values.autoCreateConnector.customVolumeMounts }}
+          volumeMounts:
             {{- toYaml . | nindent 12 }}
-          {{- end -}}
-          {{- with .Values.global.customVolumeMounts }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           {{- end }}            
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -143,5 +115,6 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- end }}        
+{{- end }}
 {{- end }}

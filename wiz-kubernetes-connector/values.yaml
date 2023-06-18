@@ -28,6 +28,8 @@ clusterReader:
 autoCreateConnector:
   enabled: true
 
+  autoDeleteConnectorEnabled: true
+
   connectorName: "" # optional 
   clusterFlavor: "" # optional (EKS, AKS, GKE, OKE, OpenShift, Kubernetes)
   # Required arguments for broker.enabled = false
@@ -39,7 +41,7 @@ autoCreateConnector:
     # Annotations to add to the service account
     annotations: {}
     # The name of the service account to use.
-    name: "wiz-auto-create-connector"
+    name: "wiz-auto-modify-connector"
   
   podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
   podCustomEnvironmentVariablesFile: ""
