@@ -14,7 +14,7 @@ global:
     
     secret:
       # Should a Secret be created by the chart or not.
-      #  Set this to false if you wish to create the Secret yourself or using another tool.
+      # Set this to false if you wish to create the Secret yourself or using another tool.
       # The Secret should contain clientId for the ID and clientToken for the token.
       create: true
       # Annotations to add to the secret.
@@ -27,11 +27,12 @@ global:
     enabled: false # Should the components use a proxy.
 
     # Should a Secret be created by the chart or not.
-    #  Set this to false if you wish to create the Secret yourself or using another tool.
+    # Set this to false if you wish to create the Secret yourself or using another tool.
     # The Secret should contain httpProxy, httpsProxy and noProxyAddress.
     create: true
     secretName: "" # The name of the proxy Secret.
     annotations: {} # Annotations to be set on the secret
+    
     httpProxy: "" # URL to use as a proxy for ourbound HTTP traffic.
     httpsProxy: "" # URL to use as a proxy for ourbound HTTPS traffic.
     noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.

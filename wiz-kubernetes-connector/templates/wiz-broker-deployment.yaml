@@ -98,7 +98,7 @@ spec:
           - name: TARGET_IP
             value: {{ .Values.broker.targetIp }}
           {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-          - name: HTTP_PROXY_BROKER
+          - name: HTTP_PROXY
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
