@@ -66,6 +66,7 @@ spec:
             "--service-type",
             {{ . | quote }},
             {{ end }}
+            "--wait={{ .Values.broker.enabled }}",
             ]
           env:
           {{- with .Values.autoCreateConnector.podCustomEnvironmentVariables }}
