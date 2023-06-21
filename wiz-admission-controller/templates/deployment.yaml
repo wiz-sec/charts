@@ -13,8 +13,8 @@ spec:
   template:
     metadata:
       annotations:
-        rollme.proxy: {{ include (print $.Template.BasePath "/proxy.yaml") . | sha256sum }}
-        rollme.apiToken: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        rollme.proxyHash: {{ include "wiz-admission-controller.proxyHash" . }}
+        rollme.wizApiTokenHash: {{ include "wiz-admission-controller.wizApiTokenHash" . }}
         rollme.webhookCert: {{ include (print $.Template.BasePath "/opawebhook.yaml") . | sha256sum }}
         {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
           {{- toYaml . | nindent 8 }}

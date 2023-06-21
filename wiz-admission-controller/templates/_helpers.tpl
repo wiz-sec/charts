@@ -90,6 +90,21 @@ Create the name of the service account to use
 {{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "-proxy-configuration") }}
 {{- end }}
 
+{{- define "helpers.calculateHash" -}}
+{{- $list := . -}}
+{{- $hash := printf "%s" $list | sha256sum -}}
+{{- $hash := $hash | trimSuffix "\n" -}}
+{{- $hash -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.proxyHash" -}}
+{{ include "helpers.calculateHash" (list .Values.global.httpProxyConfiguration.httpProxy .Values.global.httpProxyConfiguration.httpsProxy .Values.global.httpProxyConfiguration.noProxyAddress .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
+{{- end }}
+
+{{- define "wiz-admission-controller.wizApiTokenHash" -}}
+{{ include "helpers.calculateHash" (list .Values.global.wizApiToken.clientId .Values.global.wizApiToken.clientToken .Values.global.wizApiToken.secret.name .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
+{{- end }}
+
 {{/*
 This function dump the value of a variable and fail the template execution.
 Use for debug purpose only.

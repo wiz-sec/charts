@@ -178,6 +178,8 @@ global:
 
   # Wiz Service Account used to authenticate to Wiz.
   wizApiToken:
+    clientId: ""
+    clientToken: ""
     clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
     
     secret:
@@ -188,6 +190,10 @@ global:
   httpProxyConfiguration:
     enabled: false # Should the components use a proxy.
     secretName: "" # The name of the proxy Secret.
+    
+    httpProxy: ""
+    httpsProxy: ""
+    noProxyAddress: ""
 
   image:
     registry: "" # Registry to get the container images from.
