@@ -132,7 +132,7 @@ jobs:
       - when:
           condition:
             and:
-              - << pipeline.parameters.wiz-kubernetes-integration >> # Skipping auto update wiz-kubernetes-integration chart if user update it manually
+              - not << pipeline.parameters.wiz-kubernetes-integration >> # Skipping auto update wiz-kubernetes-integration chart if user update it manually
               - or:
                 - << pipeline.parameters.wiz-admission-controller >>
                 - << pipeline.parameters.wiz-sensor >>
