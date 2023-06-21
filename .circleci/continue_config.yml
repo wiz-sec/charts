@@ -93,7 +93,7 @@ jobs:
                     Hostname github.com
                     IdentityFile ~/.ssh/id_rsa_4688b6e7049ef2cfcf4f0309e5581bf2
                     IdentitiesOnly yes' > ~/.ssh/config
-                  git clone -b master git@gitops:wiz-sec/charts.git
+                  git clone -b wz-22077-wiz-kubernetes-integration git@gitops:wiz-sec/charts.git
       - when:
           condition: << pipeline.parameters.flux2 >>
           steps:
@@ -144,9 +144,6 @@ jobs:
                 command: |
                   pushd ~/project/charts/wiz-kubernetes-integration
                   bash  ~/project/charts/.circleci/update_chart_version.sh
-                  git add .
-                  git commit -m "CircleCI: Update wiz kubernetes integration chart dependencies"
-                  echo git push // TODO: revert me
                   popd
       - run:
           name: Run always

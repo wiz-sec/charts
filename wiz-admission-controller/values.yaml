@@ -178,7 +178,7 @@ global:
 
   # Wiz Service Account used to authenticate to Wiz.
   wizApiToken:
-    clientId: ""
+    clientId: "" 
     clientToken: ""
     clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
     

@@ -1,10 +1,13 @@
 #!/bin/bash
 
+git config user.email "circleci@wiz.io"
+git config user.name "CircleCI"
+
 # Path to the Chart.yaml file
 CHART_FILE="Chart.yaml"
 
 # Read the current version from Chart.yaml
-CURRENT_VERSION=$(grep -oP 'version: \K(.*)' $CHART_FILE)
+CURRENT_VERSION=$(helm show chart . | grep version | cut -d " " -f 2 | tr -d '[:space:]')
 
 # Extract major, minor, and patch versions
 MAJOR_VERSION=$(echo $CURRENT_VERSION | cut -d'.' -f1)
@@ -18,6 +21,10 @@ NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
 NEW_VERSION="${MAJOR_VERSION}.${MINOR_VERSION}.${NEW_PATCH_VERSION}"
 
 # Replace the version in Chart.yaml
-sed -i "s/version: ${CURRENT_VERSION}/version: ${NEW_VERSION}/" $CHART_FILE
-
+awk '{gsub("version: '${CURRENT_VERSION}'", "version: '${NEW_VERSION}'"); print}' $CHART_FILE > tmp && mv tmp $CHART_FILE
+cat $CHART_FILE # todo: delete me
 echo "Chart version updated from ${CURRENT_VERSION} to ${NEW_VERSION}"
+
+git add $CHART_FILE
+git commit -m "CircleCI: Update $(basename "$PWD") chart patch version from ${CURRENT_VERSION} to ${NEW_VERSION}"
+echo git push // TODO: revert me
