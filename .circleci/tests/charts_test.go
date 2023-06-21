@@ -37,6 +37,7 @@ var defaultValuesKnownIssues = []string{
 
 var generatedValuesKnownIssues = []string{
 	"icon is recommended",
+	"chart directory is missing these dependencies",
 }
 
 func isLinterIssue(supportMessage support.Message, knownIssues []string) bool {

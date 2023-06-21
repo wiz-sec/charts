@@ -20,6 +20,9 @@ parameters:
   wiz-kubernetes-connector:
     default: false
     type: boolean
+  wiz-kubernetes-intergration:
+    default: false
+    type: boolean
 
 
 executors:
