@@ -77,6 +77,7 @@ jobs:
             - << pipeline.parameters.wiz-admission-controller >>
             - << pipeline.parameters.wiz-sensor >>
             - << pipeline.parameters.wiz-kubernetes-connector >>
+            - << pipeline.parameters.wiz-kubernetes-integration >>
           steps:
             - checkout:
                 path: ~/project
@@ -123,6 +124,31 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-kubernetes-connector
+      - when:
+          condition: << pipeline.parameters.wiz-kubernetes-integration >>
+          steps:
+            - upload_new_chart:
+                package: wiz-kubernetes-integration
+      - when:
+          condition:
+            and:
+              - << pipeline.parameters.wiz-kubernetes-integration >> # Skipping auto update wiz-kubernetes-integration chart if user update it manually
+              - or:
+                - << pipeline.parameters.wiz-admission-controller >>
+                - << pipeline.parameters.wiz-sensor >>
+                - << pipeline.parameters.wiz-kubernetes-connector >>
+              
+          steps:
+            - run:
+                name: Trigger update for wiz kubernetes integration chart
+                command: |
+                  export PACKAGE="wiz-kubernetes-integration"
+                  pushd ~/project/charts/wiz-kubernetes-integration
+                  bash .circleci/update_chart_version.sh
+                  git add .
+                  git commit -m "CircleCI: Update wiz kubernetes integration chart dependencies"
+                  git push
+                  popd
       - run:
           name: Run always
           command: echo "Done!" # Hack for empty runs
