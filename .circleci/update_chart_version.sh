@@ -22,9 +22,8 @@ NEW_VERSION="${MAJOR_VERSION}.${MINOR_VERSION}.${NEW_PATCH_VERSION}"
 
 # Replace the version in Chart.yaml
 awk '{gsub("version: '${CURRENT_VERSION}'", "version: '${NEW_VERSION}'"); print}' $CHART_FILE > tmp && mv tmp $CHART_FILE
-cat $CHART_FILE # todo: delete me
 echo "Chart version updated from ${CURRENT_VERSION} to ${NEW_VERSION}"
 
 git add $CHART_FILE
 git commit -m "CircleCI: Update $(basename "$PWD") chart patch version from ${CURRENT_VERSION} to ${NEW_VERSION}"
-echo git push // TODO: revert me
+git push

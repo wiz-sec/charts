@@ -44,7 +44,7 @@ commands:
           command: |
             export PACKAGE="<< parameters.package >>"
             pushd ~/project/charts
-            echo bash .circleci/package_index.sh // TODO: revert me
+            bash .circleci/package_index.sh
             popd
 
 jobs:
@@ -93,7 +93,7 @@ jobs:
                     Hostname github.com
                     IdentityFile ~/.ssh/id_rsa_4688b6e7049ef2cfcf4f0309e5581bf2
                     IdentitiesOnly yes' > ~/.ssh/config
-                  git clone -b wz-22077-wiz-kubernetes-integration git@gitops:wiz-sec/charts.git
+                  git clone -b master git@gitops:wiz-sec/charts.git
       - when:
           condition: << pipeline.parameters.flux2 >>
           steps:
@@ -162,4 +162,3 @@ workflows:
             branches:
               only:
                 - master
-                - wz-22077-wiz-kubernetes-integration
