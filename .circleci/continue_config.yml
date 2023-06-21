@@ -142,9 +142,8 @@ jobs:
             - run:
                 name: Trigger update for wiz kubernetes integration chart
                 command: |
-                  export PACKAGE="wiz-kubernetes-integration"
                   pushd ~/project/charts/wiz-kubernetes-integration
-                  bash .circleci/update_chart_version.sh
+                  bash  ~/project/charts/.circleci/update_chart_version.sh
                   git add .
                   git commit -m "CircleCI: Update wiz kubernetes integration chart dependencies"
                   echo git push // TODO: revert me

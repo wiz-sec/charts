@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to the Chart.yaml file
-CHART_FILE="${PACKAGE}/Chart.yaml"
+CHART_FILE="Chart.yaml"
 
 # Read the current version from Chart.yaml
 CURRENT_VERSION=$(grep -oP 'version: \K(.*)' $CHART_FILE)
