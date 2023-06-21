@@ -33,6 +33,7 @@ var defaultValuesKnownIssues = []string{
 	"Missing required value: git.path is required",
 	"Missing required value: storageService is required",
 	"icon is recommended",
+	"chart directory is missing these dependencies",
 }
 
 var generatedValuesKnownIssues = []string{
