@@ -144,7 +144,7 @@ httpProxyConfiguration:
   
   httpProxy: "" # URL to use as a proxy for ourbound HTTP traffic.
   httpsProxy: "" # URL to use as a proxy for ourbound HTTPS traffic.
-  noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
+  noProxyAddress: "" # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
 
 # Global values to override chart values.
 global:
