@@ -44,7 +44,7 @@ commands:
           command: |
             export PACKAGE="<< parameters.package >>"
             pushd ~/project/charts
-            bash .circleci/package_index.sh
+            echo bash .circleci/package_index.sh // TODO: revert me
             popd
 
 jobs:
@@ -147,7 +147,7 @@ jobs:
                   bash .circleci/update_chart_version.sh
                   git add .
                   git commit -m "CircleCI: Update wiz kubernetes integration chart dependencies"
-                  git push
+                  echo git push // TODO: revert me
                   popd
       - run:
           name: Run always
@@ -166,3 +166,4 @@ workflows:
             branches:
               only:
                 - master
+                - wz-22077-wiz-kubernetes-integration
