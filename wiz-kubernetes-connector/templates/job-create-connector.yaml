@@ -50,7 +50,7 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["wiz-broker"]
           args: [
             "create-kubernetes-connector",
@@ -71,6 +71,7 @@ spec:
             "--service-type",
             {{ . | quote }},
             {{ end }}
+            "--wait={{ .Values.broker.enabled }}",
             ]
           env:
           {{- with .Values.global.podCustomEnvironmentVariables }}
