@@ -36,6 +36,12 @@ global:
     httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
     httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
     noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
+    
+    # Proxy CA certificate in PEM format. This is required for TLS intercept proxies
+    # The PEM file data must be base64 encoded. Here's an example to helm:
+    # --set-file daemonset.httpProxyCaCert=/my_cert_dir/mycert.pem
+    # This value currenlty only applies to the wiz sensor.
+    caCertificate: ""
 
   image:
     registry: "" # Registry to get the container images from.
