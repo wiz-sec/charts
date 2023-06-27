@@ -28,7 +28,7 @@ global:
 
     # Should a Secret be created by the chart or not.
     # Set this to false if you wish to create the Secret yourself or using another tool.
-    # The Secret should contain httpProxy, httpsProxy and noProxyAddress.
+    # The Secret should contain httpProxy, httpsProxy, noProxyAddress and caCertificate.
     create: true
     secretName: "" # The name of the proxy Secret.
     annotations: {} # Annotations to be set on the secret
