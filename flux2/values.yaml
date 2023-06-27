@@ -8,7 +8,7 @@ image:
   repository: wiziopublic.azurecr.io
   helmController:
     name: wiz-helm-controller
-    tag: v0.34.1
+    tag: v0.34.2
   sourceController:
     name: wiz-source-controller
     tag: v1.0.0-rc.5
@@ -22,4 +22,3 @@ podAnnotaitons: {}
 defaultPodAnnotations:
   prometheus.io/port: "8080"
   prometheus.io/scrape: "true"
-
