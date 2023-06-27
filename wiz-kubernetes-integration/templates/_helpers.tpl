@@ -57,5 +57,5 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "wiz-kubernetes-integration.proxySecretName" -}}
-{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "-proxy-configuration") }}
+{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}

@@ -35,8 +35,8 @@ httpProxyConfiguration:
   create: true
   secretName: "" # The name of the proxy Secret.
   annotations: {} # Annotations to be set on the secret
-  httpProxy: "" # URL to use as a proxy for ourbound HTTP traffic.
-  httpsProxy: "" # URL to use as a proxy for ourbound HTTPS traffic.
+  httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
+  httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
   noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
 
 replicaCount: 2

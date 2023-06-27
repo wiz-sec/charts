@@ -87,7 +87,7 @@ Create the name of the service account to use
 {{- end }}
 
 {{- define "wiz-admission-controller.proxySecretName" -}}
-{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "-proxy-configuration") }}
+{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}
 
 {{- define "helpers.calculateHash" -}}
