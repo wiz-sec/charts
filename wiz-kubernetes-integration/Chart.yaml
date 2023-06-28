@@ -13,7 +13,7 @@ dependencies:
   condition: wiz-kubernetes-connector.enabled
 - name: "wiz-admission-controller"
   repository: file://../wiz-admission-controller
-  version:  ">2.0.0"
+  version:  ">=3.0.0"
   condition: wiz-admission-controller.enabled
 #   - name: wiz-sensor
 #     repository: https://wiz-sec.github.io/charts
