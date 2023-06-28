@@ -5,6 +5,9 @@ PACKAGE_FULL_NAME="${PACKAGE}-${PACKAGE_VERSION}.tgz"
 git config user.email "circleci@wiz.io"
 git config user.name "CircleCI"
 
+# Update package dependencies
+helm dependency update
+
 # Package the chart with diffs
 helm package $PACKAGE
 
