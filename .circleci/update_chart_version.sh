@@ -13,12 +13,17 @@ CURRENT_VERSION=$(helm show chart . | grep version | cut -d " " -f 2 | tr -d '[:
 MAJOR_VERSION=$(echo $CURRENT_VERSION | cut -d'.' -f1)
 MINOR_VERSION=$(echo $CURRENT_VERSION | cut -d'.' -f2)
 PATCH_VERSION=$(echo $CURRENT_VERSION | cut -d'.' -f3 | cut -d'-' -f1)
+if [[ $CURRENT_VERSION == *-* ]]; then
+    SUFFIX_VERSION="-$(echo $CURRENT_VERSION | cut -d'.' -f3 | cut -d'-' -f2)"
+else
+    SUFFIX_VERSION=""
+fi
 
 # Increment the patch version by one
 NEW_PATCH_VERSION=$((PATCH_VERSION + 1))
 
 # Construct the new version string
-NEW_VERSION="${MAJOR_VERSION}.${MINOR_VERSION}.${NEW_PATCH_VERSION}"
+NEW_VERSION="${MAJOR_VERSION}.${MINOR_VERSION}.${NEW_PATCH_VERSION}${SUFFIX_VERSION}"
 
 # Replace the version in Chart.yaml
 awk '{gsub("version: '${CURRENT_VERSION}'", "version: '${NEW_VERSION}'"); print}' $CHART_FILE > tmp && mv tmp $CHART_FILE
