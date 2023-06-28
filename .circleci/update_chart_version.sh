@@ -12,7 +12,7 @@ CURRENT_VERSION=$(helm show chart . | grep version | cut -d " " -f 2 | tr -d '[:
 # Extract major, minor, and patch versions
 MAJOR_VERSION=$(echo $CURRENT_VERSION | cut -d'.' -f1)
 MINOR_VERSION=$(echo $CURRENT_VERSION | cut -d'.' -f2)
-PATCH_VERSION=$(echo $CURRENT_VERSION | cut -d'.' -f3)
+PATCH_VERSION=$(echo $CURRENT_VERSION | cut -d'.' -f3 | cut -d'-' -f1)
 
 # Increment the patch version by one
 NEW_PATCH_VERSION=$((PATCH_VERSION + 1))

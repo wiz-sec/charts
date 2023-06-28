@@ -125,6 +125,7 @@ jobs:
             - upload_new_chart:
                 package: wiz-kubernetes-connector
       - when:
+          # Should be after all dependencies charts!
           condition: << pipeline.parameters.wiz-kubernetes-integration >>
           steps:
             - upload_new_chart:
