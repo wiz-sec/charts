@@ -59,7 +59,7 @@ global:
 # ref: https://github.com/wiz-sec/charts/blob/master/wiz-kubernetes-connector/values.yaml
 #
 wiz-kubernetes-connector:
-  enabled: true
+  enabled: false
   wizApiToken:
     secret:
       create: false # Secret created by wiz-kubernetes-integration.
@@ -71,7 +71,7 @@ wiz-kubernetes-connector:
 # ref: https://github.com/wiz-sec/charts/blob/master/wiz-admission-controller/values.yaml
 #
 wiz-admission-controller:
-  enabled: true
+  enabled: false
   wizApiToken:
     secret:
       create: false # Secret created by wiz-kubernetes-integration.
