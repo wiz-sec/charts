@@ -20,7 +20,7 @@ global:
       # Annotations to add to the secret.
       annotations: {}
       # The name of the Wiz Service Account Secret.
-      name: ""
+      name: "wiz-api-token"
 
   # Redirect HTTP and/or HTTPS traffic through a proxy.
   httpProxyConfiguration:
@@ -30,7 +30,7 @@ global:
     # Set this to false if you wish to create the Secret yourself or using another tool.
     # The Secret should contain httpProxy, httpsProxy, noProxyAddress and caCertificate.
     create: true
-    secretName: "" # The name of the proxy Secret.
+    secretName: "wiz-proxy" # The name of the proxy Secret.
     annotations: {} # Annotations to be set on the secret
     
     httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
@@ -71,7 +71,7 @@ wiz-kubernetes-connector:
 # ref: https://github.com/wiz-sec/charts/blob/master/wiz-admission-controller/values.yaml
 #
 wiz-admission-controller:
-  enabled: false
+  enabled: true
   wizApiToken:
     secret:
       create: false # Secret created by wiz-kubernetes-integration.
