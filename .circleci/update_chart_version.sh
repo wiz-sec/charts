@@ -3,6 +3,10 @@
 git config user.email "circleci@wiz.io"
 git config user.name "CircleCI"
 
+# Reset all changes from another jobs
+git checkout master
+git reset --hard origin/master
+
 # Path to the Chart.yaml file
 CHART_FILE="Chart.yaml"
 
