@@ -12,5 +12,14 @@ spec:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
   policyTypes:
     - Ingress
-  ingress: []
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system
+      ports:
+      - protocol: TCP
+        port: {{ .Values.service.targetPort }}
+      - protocol: TCP
+        port: 8000
 {{- end }}
