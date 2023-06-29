@@ -12,9 +12,9 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-data:
-  http-proxy: {{ .Values.httpProxyConfiguration.httpProxy | b64enc | quote }}
-  https-proxy: {{ .Values.httpProxyConfiguration.httpsProxy | b64enc | quote }}
-  no-proxy-address: {{ .Values.httpProxyConfiguration.noProxyAddress | b64enc | quote }}
+stringData:
+  httpProxy: {{ .Values.httpProxyConfiguration.httpProxy | quote }}
+  httpsProxy: {{ .Values.httpProxyConfiguration.httpsProxy | quote }}
+  noProxyAddress: {{ .Values.httpProxyConfiguration.noProxyAddress | quote }}
 {{- end }}
 {{- end }}
