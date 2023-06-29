@@ -79,13 +79,13 @@ spec:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientId
-                optional: false
+                optional: true
           - name: WIZ_CLIENT_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
                 key: clientToken
-                optional: false
+                optional: true
           {{- end }}
           - name: WIZ_ENV
             value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
@@ -95,19 +95,19 @@ spec:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: httpProxy
-                optional: false
+                optional: true
           - name: HTTPS_PROXY
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: httpsProxy
-                optional: false
+                optional: true
           - name: NO_PROXY
             valueFrom:
               secretKeyRef:
                 name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
                 key: noProxyAddress
-                optional: false
+                optional: true
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
