@@ -2,42 +2,38 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-nameOverride: "" # Override the release’s name.
-fullnameOverride: "" # Override the release’s full name.
-commonLabels: {} # Labels applied on all the resources (not used for selection)
-
-# Wiz Service Account used to authenticate to Wiz.
 wizApiToken:
-  clientId: "" # Client ID of the Wiz Service Account.
-  clientToken: "" # Client secret of the Wiz Service Account.
-  clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
+  clientId: ""
+  clientToken: ""
+  clientEndpoint: "" # Set custom endpoint (gov for example)
   
   secret:
-    # Should a Secret be created by the chart or not.
-    # Set this to false if you wish to create the Secret yourself or using another tool.
-    # The Secret should contain clientId for the ID and clientToken for the token.
+    # Specifies whether an api token secret should be created
+    # If create is false you need to create it with clientId, clientToken
     create: true
-    # Annotations to add to the secret.
+    # Annotations to add to the secret
     annotations: {}
-    # The name of the Wiz Service Account Secret.
+    # The name of the secret to use.
+    # If not set, a name is generated using the fullname template
     name: ""
   
   # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
   usePodCustomEnvironmentVariablesFile: false
 
-# Redirect HTTP and/or HTTPS traffic through a proxy.
 httpProxyConfiguration:
-  enabled: false # Should the components use a proxy.
+  enabled: false
 
-  # Should a Secret be created by the chart or not.
-  # Set this to false if you wish to create the Secret yourself or using another tool.
-  # The Secret should contain httpProxy, httpsProxy and noProxyAddress.
+  # Specifies whether a proxy secret should be created
+  # If create is false you need to:
+  #  1. Create secret with httpProxy, httpsProxy and noProxyAddress.
+  #  2. Set secretName to reference your secret
   create: true
-  secretName: "" # The name of the proxy Secret.
-  annotations: {} # Annotations to be set on the secret
-  httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
-  httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
-  noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
+  secretName: "" # Overriding default name for proxy secret name (.Release.Name + "-proxy-configuration" by default)
+  # Annotations to be set on the secret
+  annotations: {}
+  httpProxy: ""
+  httpsProxy: ""
+  noProxyAddress: ""
 
 replicaCount: 2
 
@@ -47,8 +43,10 @@ image:
   pullPolicy: Always
   # Overrides the image tag whose defalt is the chart appVersion.
   tag: ""
-imagePullSecrets: []
 
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
 
 opaWebhook:
   # Override to run admission controller on specific resources.
@@ -107,11 +105,14 @@ serviceAccount:
   # If empty, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {} # Annotations to add to the components Pods.
+# Labels applied on all the resources (not used for selection)
+commonLabels: {}
+
+podAnnotations: {}
 
 podSecurityContext: {}
 
-podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+podCustomEnvironmentVariables: []
 podCustomEnvironmentVariablesFile: ""
 
 # Set the log level. Can be one of "debug", "info", "warn", or "error".
@@ -169,39 +170,3 @@ customVolumeMounts: []
 nodeSelector: {}
 tolerations: []
 affinity: {}
-
-# Global values to override chart values.
-global:
-  nameOverride: "" # Override the release’s name.
-  fullnameOverride: "" # Override the full name of the release.
-  commonLabels: {} # Labels applied on all the resources (not used for selection)
-
-  # Wiz Service Account used to authenticate to Wiz.
-  wizApiToken:
-    clientId: "" 
-    clientToken: ""
-    clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
-    
-    secret:
-      # The name of the Wiz Service Account Secret.
-      name: ""
-
-  # Redirect HTTP and/or HTTPS traffic through a proxy.
-  httpProxyConfiguration:
-    enabled: false # Should the components use a proxy.
-    secretName: "" # The name of the proxy Secret.
-    
-    httpProxy: ""
-    httpsProxy: ""
-    noProxyAddress: ""
-
-  image:
-    registry: "" # Registry to get the container images from.
-    pullPolicy: "" # Container image pull policy. One of Always, Never, IfNotPresent.
-  imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
-
-  podAnnotations: {} # Annotations to add to the components Pods.
-
-  podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
-  customVolumes: [] # Additional volumes to add to the components Pods
-  customVolumeMounts: [] # Additional volume mounts to add to the components Pods
