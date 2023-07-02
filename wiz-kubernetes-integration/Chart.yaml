@@ -9,7 +9,7 @@ appVersion: ""
 dependencies:
 - name: wiz-kubernetes-connector
   repository: https://wiz-sec.github.io/charts
-  version: "2.2.7-alpha" # TODO: change to ">2.2.7"
+  version: "2.2.8-alpha" # TODO: change to ">2.2.8"
   condition: wiz-kubernetes-connector.enabled
 - name: "wiz-admission-controller"
   repository: https://wiz-sec.github.io/charts
