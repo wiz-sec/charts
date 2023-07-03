@@ -41,6 +41,11 @@ image/tag: {{ .Values.image.tag }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.daemonset.commonLabels }}
+{{- range $key, $value := .Values.daemonset.commonLabels }}
+{{ $key }}: {{ tpl $value $ | quote }}
+{{- end }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -71,6 +76,10 @@ Secrets
 {{- else -}}
 {{- default (printf "%s-apikey" (include "wiz-sensor.fullname" .)) .Values.wizApiToken.name }}
 {{- end -}}
+{{- end }}
+
+{{- define "wiz-sensor.proxySecretName" -}}
+{{ coalesce (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}
 
 

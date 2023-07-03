@@ -12,7 +12,7 @@ rules:
   - apiGroups: ["", "apps", "batch"]
     resources: [
       "namespaces", "nodes", "daemonsets", "replicasets", "deployments",
-      "jobs", "cronjobs", "statefulsets", "replicationcontrollers",
+      "jobs", "cronjobs", "statefulsets", "replicationcontrollers", "serviceaccounts",
     ]
     verbs: ["get"]
 {{- end -}}

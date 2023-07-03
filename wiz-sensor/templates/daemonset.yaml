@@ -147,22 +147,35 @@ spec:
           value: {{ .Values.daemonset.httpProxyPassword }}
         - name: HTTP_PROXY_CERT
           value: {{ .Values.daemonset.httpProxyCaCert }}
-        - name: BACKEND_ENV
-        {{- if .Values.backendEnv }} # TODO: remove backward compability soon
-          value: {{ default "prod" .Values.backendEnv }}
-        {{- else }}
-          value: {{ default "prod" .Values.wizApiToken.clientEndpoint }}
+        {{- if .Values.ciMode }}
+        - name: CI_MODE
+          value: "enable"
         {{- end }}
-
+        - name: BACKEND_ENV
+          value: {{ coalesce .Values.backendEnv .Values.wizApiToken.clientEndpoint "prod" }}
         {{- if .Values.tenantSuffix }}
         - name: TENANT_SUFFIX
           value: {{ .Values.tenantSuffix }}
         {{- end }}
+        - name: SENSOR_CLUSTER_NAME
+          value: {{ .Values.sensorClusterName }}
 
         - name: RUST_LOG
           value: {{ include "wiz-sensor.fileLogLevel" . }}
         - name: STDOUT_LOG
           value: {{ include "wiz-sensor.stdoutLogLevel" . }}
+        - name: POD_MEM_LIMITS
+          valueFrom:
+            resourceFieldRef:
+              containerName: wiz-sensor
+              resource: limits.memory
+              divisor: "1Mi"
+        - name: POD_CPU_LIMITS
+          valueFrom:
+            resourceFieldRef:
+              containerName: wiz-sensor
+              resource: limits.cpu
+              divisor: "1m"
 
         volumeMounts:
         {{- if .Values.daemonset.sensorHostCacheCreate }}
@@ -176,9 +189,22 @@ spec:
           mountPath: /tmp/
         - name: api-client-secret
           mountPath: /api-client/
+        {{- if .Values.httpProxyConfiguration.enabled }}
+        - name: proxy-secret
+          mountPath: /proxy-config/
+        {{- end }}
 
+        {{- if .Values.daemonset.resources }}
         resources:
-{{ toYaml .Values.daemonset.resources | indent 10 }}
+          {{- if .Values.daemonset.resources.limits }}
+          limits:
+{{ toYaml .Values.daemonset.resources.limits | indent 12 }}
+          {{- end }}
+          {{- if and (not .Values.gkeAutopilot) .Values.daemonset.resources.requests }}
+          requests:
+{{ toYaml .Values.daemonset.resources.requests | indent 12 }}
+          {{- end }}
+        {{- end }}
 
       terminationGracePeriodSeconds: {{ .Values.daemonset.terminationGracePeriodSeconds }}
       {{- if .Values.imagePullSecret.required }}
@@ -200,6 +226,16 @@ spec:
               path: clientId
             - key: clientToken
               path: clientToken
+      {{- if .Values.httpProxyConfiguration.enabled }}
+      - name: proxy-secret
+        secret:
+          secretName: {{ include "wiz-sensor.proxySecretName" . }}
+          items:
+            - key: httpsProxy
+              path: https-proxy
+            - key: caCertificate
+              path: ca-cert
+      {{- end }}
       - name: sensor-store
         emptyDir:
           sizeLimit: "1Gi"
