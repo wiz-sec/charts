@@ -38,9 +38,7 @@ global:
     noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
     
     # Proxy CA certificate in PEM format. This is required for TLS intercept proxies
-    # The PEM file data must be base64 encoded. Here's an example to helm:
-    # --set-file daemonset.httpProxyCaCert=/my_cert_dir/mycert.pem
-    # This value currenlty only applies to the wiz sensor.
+    # This value is currently only used by the wiz sensor.
     caCertificate: ""
 
   image:
@@ -85,6 +83,20 @@ wiz-admission-controller:
 wiz-sensor:
   enabled: false
   wizApiToken:
-    createSecret: false # Secret created by wiz-kubernetes-integration.
+    secret:
+      create: false # Secret created by wiz-kubernetes-integration.
   httpProxyConfiguration:
     create: false # Secret created by wiz-kubernetes-integration.
+  imagePullSecret:
+    # The default sensor registry requires a pull secret. Set to false
+    # if mirroring the image.
+    required: true
+    # set to false when using an existing secret
+    create: true
+
+    # This value is a must in order to pull the image from a private repository. We use helm
+    # to create a docker formatted json, encoded in base64.
+    # In case you want use an existing value (perhaps created via "kubectl create secret docker-registry ...")
+    # please mark "create" above as false
+    username: ""
+    password: ""
