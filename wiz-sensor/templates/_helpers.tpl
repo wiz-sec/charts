@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "wiz-sensor.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- coalesce .Values.global.nameOverride .Values.nameOverride .Chart.Name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -11,10 +11,12 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "wiz-sensor.fullname" -}}
-{{- if .Values.fullnameOverride }}
+{{- if .Values.global.fullnameOverride }}
+{{- .Values.global.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- $name := coalesce .Values.global.nameOverride .Values.nameOverride .Chart.Name }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -41,8 +43,8 @@ image/tag: {{ .Values.image.tag }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- if .Values.daemonset.commonLabels }}
-{{- range $key, $value := .Values.daemonset.commonLabels }}
+{{- if (coalesce .Values.global.commonLabels .Values.commonLabels .Values.daemonset.commonLabels) }}
+{{- range $key, $value := (coalesce .Values.global.commonLabels .Values.commonLabels .Values.daemonset.commonLabels) }}
 {{ $key }}: {{ tpl $value $ | quote }}
 {{- end }}
 {{- end }}
@@ -70,16 +72,24 @@ Secrets
 {{- default (printf "%s-imagepullkey" (include "wiz-sensor.fullname" .)) .Values.imagePullSecret.name }}
 {{- end }}
 
+{{- define "wiz-sensor.imagePullSecretList" -}}
+{{- if .Values.global.imagePullSecrets -}}
+{{- .Values.global.imagePullSecrets | toYaml | nindent 8 }}
+{{- else -}}
+- name: {{ include "wiz-sensor.imagePullSecretName" . }}
+{{- end -}}
+{{- end }}
+
 {{- define "wiz-sensor.secretName" -}}
 {{- if .Values.apikey -}}
 {{- default (printf "%s-apikey" (include "wiz-sensor.fullname" .)) .Values.apikey.name }}
 {{- else -}}
-{{- default (printf "%s-apikey" (include "wiz-sensor.fullname" .)) .Values.wizApiToken.name }}
+{{- coalesce .Values.global.wizApiToken.secret.name .Values.wizApiToken.secret.name .Values.wizApiToken.name (printf "%s-apikey" (include "wiz-sensor.fullname" .)) }}
 {{- end -}}
 {{- end }}
 
 {{- define "wiz-sensor.proxySecretName" -}}
-{{ coalesce (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "proxy-configuration") }}
+{{ coalesce .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.secretName (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}
 
 
@@ -89,16 +99,20 @@ TODO: Backward compatibility - remove
 {{- define "wiz-sensor.createSecret" -}}
 {{- if .Values.apikey -}}
 {{- default true .Values.apikey.create -}}
-{{- else -}}
+{{- else if (hasKey .Values.wizApiToken "createSecret") -}}
 {{- .Values.wizApiToken.createSecret -}}
+{{- else if (hasKey .Values.wizApiToken.secret "create") -}}
+{{- .Values.wizApiToken.secret.create -}}
+{{- else -}}
+true
 {{- end -}}
 {{- end -}}
 
 {{- define "wiz-sensor.imagePullSecretValue" -}}
-{{- if .Values.image.registry }}
-{{- printf "{\"auths\": {\"%s/%s\": {\"auth\": \"%s\"}}}" .Values.image.registry .Values.image.repository (printf "%s:%s" .Values.imagePullSecret.username .Values.imagePullSecret.password | b64enc) | b64enc }}
+{{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
+{{- printf "{\"auths\": {\"%s/%s\": {\"auth\": \"%s\"}}}" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository (printf "%s:%s" (required "A valid username for image pull secret required" .Values.imagePullSecret.username) .Values.imagePullSecret.password | b64enc) | b64enc }}
 {{- else }}
-{{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .Values.image.repository (printf "%s:%s" .Values.imagePullSecret.username .Values.imagePullSecret.password | b64enc) | b64enc }}
+{{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .Values.image.repository (printf "%s:%s" (required "A valid username for image pull secret required" .Values.imagePullSecret.username) .Values.imagePullSecret.password | b64enc) | b64enc }}
 {{- end }}
 {{- end }}
 

@@ -17,7 +17,13 @@ spec:
       labels: {{- include "wiz-sensor.labels" . | nindent 8 }}
 
       annotations:
-        {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+        container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
+        {{- with .Values.global.podAnnotations }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
+        {{- with (coalesce .Values.daemonset.podAnnotations .Values.podAnnotations) }}
+        {{- toYaml . | indent 8 }}
+        {{- end }}
 
     spec:
       {{- if .Values.serviceAccount.create }}
@@ -62,12 +68,12 @@ spec:
 
       containers:
       - name: wiz-sensor
-        {{- if .Values.image.registry }}
-        image: {{ printf "%s/%s:%s" .Values.image.registry .Values.image.repository .Values.image.tag }}
+        {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
+        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.tag }}
         {{- else }}
         image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
         {{- end }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
         {{- with .Values.image.args }}
         args:
           {{- toYaml . | nindent 8 }}
@@ -152,14 +158,13 @@ spec:
           value: "enable"
         {{- end }}
         - name: BACKEND_ENV
-          value: {{ coalesce .Values.backendEnv .Values.wizApiToken.clientEndpoint "prod" }}
+          value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint .Values.backendEnv "prod" }}
         {{- if .Values.tenantSuffix }}
         - name: TENANT_SUFFIX
           value: {{ .Values.tenantSuffix }}
         {{- end }}
         - name: SENSOR_CLUSTER_NAME
           value: {{ .Values.sensorClusterName }}
-
         - name: RUST_LOG
           value: {{ include "wiz-sensor.fileLogLevel" . }}
         - name: STDOUT_LOG
@@ -176,6 +181,12 @@ spec:
               containerName: wiz-sensor
               resource: limits.cpu
               divisor: "1m"
+        {{- with .Values.podCustomEnvironmentVariables }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.global.podCustomEnvironmentVariables }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
 
         volumeMounts:
         {{- if .Values.daemonset.sensorHostCacheCreate }}
@@ -189,7 +200,11 @@ spec:
           mountPath: /tmp/
         - name: api-client-secret
           mountPath: /api-client/
-        {{- if .Values.httpProxyConfiguration.enabled }}
+        {{- if not .Values.gkeAutopilot }}
+        - name: api-endpoint-name-secret
+          mountPath: /api-endpoint-name/
+        {{- end }}
+        {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
         - name: proxy-secret
           mountPath: /proxy-config/
         {{- end }}
@@ -209,7 +224,7 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.daemonset.terminationGracePeriodSeconds }}
       {{- if .Values.imagePullSecret.required }}
       imagePullSecrets:
-      - name: {{ include "wiz-sensor.imagePullSecretName" . }}
+        {{ include "wiz-sensor.imagePullSecretList" . }}
       {{- end }}
       volumes:
       {{- if .Values.daemonset.sensorHostCacheCreate }}
@@ -226,7 +241,16 @@ spec:
               path: clientId
             - key: clientToken
               path: clientToken
-      {{- if .Values.httpProxyConfiguration.enabled }}
+      {{- if not .Values.gkeAutopilot }}
+      - name: api-endpoint-name-secret
+        secret:
+          secretName: {{ include "wiz-sensor.secretName" . }}
+          optional: true
+          items:
+            - key: clientEndpoint
+              path: clientEndpoint
+      {{- end }}
+      {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
       - name: proxy-secret
         secret:
           secretName: {{ include "wiz-sensor.proxySecretName" . }}
