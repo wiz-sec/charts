@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 git config user.email "circleci@wiz.io"
 git config user.name "CircleCI"
