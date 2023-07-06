@@ -15,7 +15,7 @@ image:
 
 clusterReader:
   installRbac: true
-  installLeastPrivileged: true
+  installLeastPrivileged: true  # No access to read secrets
   serviceAccount:
     create: true
     # Annotations to add to the service account
