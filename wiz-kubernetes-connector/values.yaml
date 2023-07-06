@@ -15,6 +15,7 @@ image:
 
 clusterReader:
   installRbac: true
+  installLeastPrivileged: true
   serviceAccount:
     create: true
     # Annotations to add to the service account
@@ -104,14 +105,25 @@ broker:
 
 podAnnotations: {}
 
+# Pod - Adhere to PSS restricted
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1000
+  seccompProfile:
+    type: RuntimeDefault
 
+# Container - Adhere to PSS restricted
 securityContext:
   runAsNonRoot: true
   runAsUser: 1000
   allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: 
+      - all
+  seccompProfile:
+    type: RuntimeDefault
 
 resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
