@@ -62,7 +62,7 @@ Secrets names
 */}}
 
 {{- define "wiz-kubernetes-connector.apiTokenSecretName" -}}
-{{- $nameOverride := coalesce .Values.global.wizApiToken.secret.name  .Values.global.wizApiToken.secret.name .Values.global.nameOverride .Values.nameOverride }}
+{{- $nameOverride := coalesce .Values.global.wizApiToken.secret.name  .Values.wizApiToken.secret.name .Values.global.nameOverride .Values.nameOverride }}
 {{- default .Chart.Name $nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
