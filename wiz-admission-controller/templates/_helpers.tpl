@@ -60,6 +60,7 @@ Wiz admission controller webhook server selector labels
 */}}
 {{- define "wiz-admission-controller.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "wiz-admission-controller.name" . }}
+app.kubernetes.io/chartName: {{ .Chart.Name | trunc 63 }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
