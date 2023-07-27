@@ -105,8 +105,12 @@ spec:
           seLinuxOptions:
             user: "system_u"
             role: "system_r"
-            type: "spc_t"
             level: "s0"
+            {{- if .Values.flatcarLinuxNodes }}
+            type: "unconfined_t"
+            {{- else }}
+            type: "spc_t"
+            {{- end }}
 
         env:
         - name: WIZ_TMP_STORE
@@ -155,7 +159,7 @@ spec:
           value: {{ .Values.daemonset.httpProxyCaCert }}
         {{- if .Values.ciMode }}
         - name: CI_MODE
-          value: "enable"
+          value: "true"
         {{- end }}
         - name: BACKEND_ENV
           value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint .Values.backendEnv "prod" }}
@@ -189,6 +193,12 @@ spec:
         {{- end }}
 
         volumeMounts:
+        {{- with .Values.customVolumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.global.customVolumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- if .Values.daemonset.sensorHostCacheCreate }}
         - name: sensor-host-cache
           mountPath: /wiz-host-cache/
@@ -227,6 +237,12 @@ spec:
         {{ include "wiz-sensor.imagePullSecretList" . }}
       {{- end }}
       volumes:
+      {{- with .Values.customVolumes }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.global.customVolumes }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
       {{- if .Values.daemonset.sensorHostCacheCreate }}
       - name: sensor-host-cache
         hostPath:

@@ -22,8 +22,16 @@ openshift: false
 # there are also other small changes
 gkeAutopilot: false
 
+# use a custom SELinux type that is required by flatcar Linux nodes, but is incompatible with some
+# other node types (like AWS bottlerocket)
+flatcarLinuxNodes: false
+
 # Set the cluster name in the Wiz portal. Will override the native cloud name. (optional)
 sensorClusterName: ""
+
+# additional volumes to mount in the sensor pod (usually used for extra CA certificates)
+customVolumes: []
+customVolumeMounts: []
 
 # the API key identifying this installation (for comm with Wiz portal)
 wizApiToken:
@@ -187,3 +195,5 @@ global:
   imagePullSecrets: []
   podAnnotations: {}
   podCustomEnvironmentVariables: []
+  customVolumes: [] # Additional volumes to add to the components Pods
+  customVolumeMounts: [] # Additional volume mounts to add to the components Pods
