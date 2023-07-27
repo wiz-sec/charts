@@ -5,7 +5,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiz-broker.name" . }}-broker
+  name: {{ include "wiz-broker.deploymentName" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-broker.labels" . | nindent 4 }}
