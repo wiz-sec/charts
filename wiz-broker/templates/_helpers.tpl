@@ -13,6 +13,13 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+Deployment name.
+*/}}
+{{- define "wiz-broker.deploymentName" -}}
+{{ printf "%s-agent" .Release.Name }}
+{{- end }}
+
+{{/*
 Common labels
 */}}
 {{- define "wiz-broker.labels" -}}
