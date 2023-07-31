@@ -75,6 +75,10 @@ spec:
                 name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
                 key: clientToken
           {{- end }}
+          {{- if .Values.global.broker.wizManaged }}
+          - name: WIZ_MANAGED
+            value: "true"
+          {{- end}}
           {{- if .Values.global.broker.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
             value: {{ .Values.global.broker.podCustomEnvironmentVariablesFile }}
