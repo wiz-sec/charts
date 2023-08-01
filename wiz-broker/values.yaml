@@ -23,6 +23,9 @@ global:
 
   broker:
     enabled: true
+    # Specifies whether the broker is managed by Wiz or not.
+    # Do not edit manually.
+    wizManaged: false
     # Specifies whether the connector/api-token secrets should be created by the chart
     createSecret: true
     targetIp: ""
