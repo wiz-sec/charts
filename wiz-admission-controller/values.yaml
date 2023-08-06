@@ -49,8 +49,15 @@ image:
   tag: ""
 imagePullSecrets: []
 
+webhook:
+  errorEnforcementMethod: "AUDIT" # AUDIT/ BLOCK
+  policyEnforcementMethod: ""     # AUDIT/ BLOCK (Set this to override any admission policy action)
+  clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
+  secret: # Depricated use: .Values.webhook.secret
+    annotations: {} 
 
 opaWebhook:
+  enabled: true
   # Override to run admission controller on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
     - operations:
@@ -88,14 +95,55 @@ opaWebhook:
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
-  errorEnforcementMethod: AUDIT  # AUDIT/ BLOCK
-  policyEnforcementMethod: "" # AUDIT/ BLOCK (Set this to override any admission policy action)
   policies:
     - "Default IaC policy"
-  clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
+  
+  # Depricated, don't use!
+  errorEnforcementMethod: ""  # Depricated use: .Values.webhook.errorEnforcementMethod
+  policyEnforcementMethod: "" # Depricated use: .Values.webhook.policyEnforcementMethod
+  clusterExternalId: "" # Depricated use: .Values.webhook.clusterExternalId
+  secret: # Depricated use: .Values.webhook.secret
+    annotations: {} 
 
-  secret:
-    annotations: {}
+imageIntegrityWebhook: 
+  enabled: true
+  policies: [] # List of policies to enforce on the image integrity webhook.
+
+    # Override to run admission controller on specific resources.
+  rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
+    - operations:
+      - CREATE
+      - UPDATE
+      apiGroups:
+      - "*"
+      apiVersions:
+      - "*"
+      resources:
+      - "pods"
+      - "deployments"
+      - "jobs"
+      - "cronjobs"
+      - "replicasets"
+      - "statefulsets"
+      - "daemonsets"
+  namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+    matchExpressions:
+    - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
+      operator: NotIn
+      values:
+      - kube-system
+
+  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
+  sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
+
+  cacheImageDigestTTL: 1m # The TTL of the cache for the image digest. The cache is used to avoid querying the image registry for the same image digest multiple times.
+  cacheImageVerifyTTL: 5m # The TTL of the cache for the image verification. The cache is used to avoid verifying the same image multiple times.
+
+# The following values are used for image integrity webhook.
+imageRegistyClient:
+  createRole: true # Should a Role and RoleBinding be created by the chart or not.
+  pullSecrets: [] # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
+  secretsNamespace: "default" # Namespace of the pull secrets.
 
 # K8s service account to be used by the pod(s)
 serviceAccount:

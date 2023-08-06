@@ -18,7 +18,8 @@ metadata:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
 webhooks:
-- name: wizadmissionvalidator.wiz.io
+{{ if .Values.opaWebhook.enabled -}}
+- name: wizopaadmissionvalidator.wiz.io
   admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
     service:
@@ -37,6 +38,28 @@ webhooks:
   {{- end }}
   failurePolicy: {{ .Values.opaWebhook.failurePolicy }}
   sideEffects: {{ .Values.opaWebhook.sideEffects }}
+{{- end }}
+{{ if .Values.imageIntegrityWebhook.enabled -}}
+- name: wizimageintegrityadmissionvalidator.wiz.io
+  admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    service:
+      namespace: {{ .Release.Namespace }}
+      name: {{ include "wiz-admission-controller.fullname" . }}
+      path: /image-integrity-validator
+      port: {{ .Values.service.port }}
+    caBundle: {{ $tlsCrt }}
+  {{- with .Values.imageIntegrityWebhook.rules }}
+  rules:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.imageIntegrityWebhook.namespaceSelector }}
+  namespaceSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  failurePolicy: {{ .Values.imageIntegrityWebhook.failurePolicy }}
+  sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
+{{- end }}
 ---
 apiVersion: v1
 kind: Secret
@@ -50,7 +73,7 @@ metadata:
     # Using helm hook to create certs only for chart install
     "helm.sh/hook": "pre-install, pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-    {{- with .Values.opaWebhook.secret.annotations }}
+    {{- with (coalesce .Values.opaWebhook.secret.annotations .Values.webhook.secret.annotations) }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
 data:
