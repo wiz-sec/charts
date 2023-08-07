@@ -53,7 +53,7 @@ webhook:
   errorEnforcementMethod: "AUDIT" # AUDIT/ BLOCK
   policyEnforcementMethod: ""     # AUDIT/ BLOCK (Set this to override any admission policy action)
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
-  secret: # Depricated use: .Values.webhook.secret
+  secret:
     annotations: {} 
 
 opaWebhook:
@@ -98,11 +98,11 @@ opaWebhook:
   policies:
     - "Default IaC policy"
   
-  # Depricated, don't use!
-  errorEnforcementMethod: ""  # Depricated use: .Values.webhook.errorEnforcementMethod
-  policyEnforcementMethod: "" # Depricated use: .Values.webhook.policyEnforcementMethod
-  clusterExternalId: "" # Depricated use: .Values.webhook.clusterExternalId
-  secret: # Depricated use: .Values.webhook.secret
+  # Deprecated, don't use!
+  errorEnforcementMethod: ""  # Deprecated, use `webhook.errorEnforcementMethod` instead
+  policyEnforcementMethod: "" # Deprecated, use `webhook.policyEnforcementMethod` instead
+  clusterExternalId: "" # Deprecated, use `webhook.clusterExternalId` instead
+  secret: # Deprecated, use `webhook.secret` instead
     annotations: {} 
 
 imageIntegrityWebhook: 
