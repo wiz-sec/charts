@@ -65,18 +65,32 @@ spec:
               scheme: HTTPS
           command:
           - "/usr/bin/wiz-admission-controller"
+          # Server flags
           - "--port={{ .Values.service.targetPort }}"
           - "--tls-private-key-file=/var/server-certs/tls.key"
           - "--tls-cert-file=/var/server-certs/tls.crt"
-          - "--error-enforcement-method={{ .Values.opaWebhook.errorEnforcementMethod }}"
-          {{- if .Values.opaWebhook.policyEnforcementMethod }}
-          - "--policy-enforcement-method={{ .Values.opaWebhook.policyEnforcementMethod }}"
+          # Webhook flags
+          {{- with (coalesce .Values.opaWebhook.errorEnforcementMethod .Values.webhook.errorEnforcementMethod) }} # check opaWebhook for backward compatibility
+          - "--error-enforcement-method={{ . }}"
           {{- end }}
-          {{- if .Values.opaWebhook.policies }}
-          {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}
+          {{- with (coalesce .Values.webhook.policyEnforcementMethod .Values.opaWebhook.policyEnforcementMethod) }} # check opaWebhook for backward compatibility
+          - "--policy-enforcement-method={{ . }}"
           {{- end }}
-          {{- if .Values.opaWebhook.clusterExternalId }}
-          - "--cluster-external-id={{ .Values.opaWebhook.clusterExternalId }}"
+          {{- with (coalesce .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }} # check opaWebhook for backward compatibility
+          - "--cluster-external-id={{ . }}"
+          {{- end }}
+          # OPA webhook flags
+          - "--misconfiguration-enabled={{ .Values.opaWebhook.enabled }}"
+          {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}  
+          # Image integrity webhook flags
+          {{- if .Values.imageIntegrityWebhook.enabled }}
+          - "--image-integrity-enabled=true"
+          - "--image-integrity-cache-digest-ttl={{ .Values.imageIntegrityWebhook.cacheImageDigestTTL }}"
+          - "--image-integrity-cache-verify-ttl={{ .Values.imageIntegrityWebhook.cacheImageVerifyTTL }}"
+          {{ include "wiz-admission-controller.imageIntegrityCliParams.policies" . | trim | nindent 10 }}
+          ## Image registry client flags
+          - "--registry-image-pull-secret-namespace={{ .Values.imageRegistyClient.secretsNamespace }}"
+          {{ include "wiz-admission-controller.imageRegistyClient.pullSecrets" . | trim | nindent 10 }}
           {{- end }}
           env:
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}

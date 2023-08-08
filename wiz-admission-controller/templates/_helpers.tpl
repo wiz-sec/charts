@@ -87,6 +87,22 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller.imageIntegrityCliParams.policies" -}}
+{{- if .Values.imageIntegrityWebhook.policies }}
+{{- range .Values.imageIntegrityWebhook.policies }}
+- "--image-integrity-policy={{ . }}"
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-admission-controller.imageRegistyClient.pullSecrets" -}}
+{{- if .Values.imageRegistyClient.pullSecrets }}
+{{- range .Values.imageRegistyClient.pullSecrets }}
+- "--registry-image-pull-secret={{ . }}"
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{- define "wiz-admission-controller.proxySecretName" -}}
 {{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}
