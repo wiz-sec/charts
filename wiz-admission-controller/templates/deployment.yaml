@@ -73,10 +73,10 @@ spec:
           {{- with (coalesce .Values.opaWebhook.errorEnforcementMethod .Values.webhook.errorEnforcementMethod) }} # check opaWebhook for backward compatibility
           - "--error-enforcement-method={{ . }}"
           {{- end }}
-          {{- with (coalesce .Values.opaWebhook.policyEnforcementMethod .Values.webhook.policyEnforcementMethod) }} # check opaWebhook for backward compatibility
+          {{- with (coalesce .Values.webhook.policyEnforcementMethod .Values.opaWebhook.policyEnforcementMethod) }} # check opaWebhook for backward compatibility
           - "--policy-enforcement-method={{ . }}"
           {{- end }}
-          {{- with (coalesce .Values.opaWebhook.clusterExternalId .Values.webhook.clusterExternalId) }} # check opaWebhook for backward compatibility
+          {{- with (coalesce .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }} # check opaWebhook for backward compatibility
           - "--cluster-external-id={{ . }}"
           {{- end }}
           # OPA webhook flags

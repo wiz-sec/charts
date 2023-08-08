@@ -19,7 +19,7 @@ metadata:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
 webhooks:
-- name: wizmisconfigurationadmissionvalidator.wiz.io
+- name: misconfigurationsadmissionvalidator.wiz.io
   admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
     service:
@@ -52,7 +52,7 @@ metadata:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
 webhooks:
-- name: wizimageintegrityadmissionvalidator.wiz.io
+- name: imageintegrityadmissionvalidator.wiz.io
   admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
     service:
@@ -86,7 +86,7 @@ metadata:
     # Using helm hook to create certs only for chart install
     "helm.sh/hook": "pre-install, pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-    {{- with (coalesce .Values.opaWebhook.secret.annotations .Values.webhook.secret.annotations) }}
+    {{- with (coalesce .Values.webhook.secret.annotations .Values.opaWebhook.secret.annotations) }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
 data:
