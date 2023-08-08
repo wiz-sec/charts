@@ -7,10 +7,11 @@
 {{- $tlsCrt = $cert.Cert | b64enc -}}
 {{- $tlsKey = $cert.Key | b64enc -}}
 {{- end -}}
+{{ if .Values.opaWebhook.enabled -}}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: {{ include "wiz-admission-controller.fullname" . }}
+  name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "misconfigurations" }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
@@ -18,8 +19,7 @@ metadata:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
 webhooks:
-{{ if .Values.opaWebhook.enabled -}}
-- name: wizopaadmissionvalidator.wiz.io
+- name: wizmisconfigurationadmissionvalidator.wiz.io
   admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
     service:
@@ -40,6 +40,18 @@ webhooks:
   sideEffects: {{ .Values.opaWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.imageIntegrityWebhook.enabled -}}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "image-integrity" }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "post-install, post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+webhooks:
 - name: wizimageintegrityadmissionvalidator.wiz.io
   admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
@@ -60,6 +72,7 @@ webhooks:
   failurePolicy: {{ .Values.imageIntegrityWebhook.failurePolicy }}
   sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
+{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled }}
 ---
 apiVersion: v1
 kind: Secret
@@ -79,3 +92,4 @@ metadata:
 data:
   tls.crt: {{ $tlsCrt }}
   tls.key: {{ $tlsKey }}
+{{- end }}

@@ -83,7 +83,7 @@ spec:
           - "--misconfiguration-enabled={{ .Values.opaWebhook.enabled }}"
           {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}  
           # Image integrity webhook flags
-          {{- if .Values.imageIntegrityWebhook.enabled -}}
+          {{- if .Values.imageIntegrityWebhook.enabled }}
           - "--image-integrity-enabled=true"
           - "--image-integrity-cache-digest-ttl={{ .Values.imageIntegrityWebhook.cacheImageDigestTTL }}"
           - "--image-integrity-cache-verify-ttl={{ .Values.imageIntegrityWebhook.cacheImageVerifyTTL }}"
