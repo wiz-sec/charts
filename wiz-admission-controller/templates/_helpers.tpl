@@ -103,6 +103,15 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller.imageRegistyClient.credentialHelpersSecrets" -}}
+{{- if .Values.imageRegistyClient.credentialHelpers }}
+{{- range .Values.imageRegistyClient.credentialHelpers }}
+- "--registry-credential-helper={{ . }}"
+{{- end }}
+{{- end }}
+{{- end }}
+
+
 {{- define "wiz-admission-controller.proxySecretName" -}}
 {{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}
