@@ -91,6 +91,7 @@ spec:
           ## Image registry client flags
           - "--registry-image-pull-secret-namespace={{ .Values.imageRegistyClient.secretsNamespace }}"
           {{ include "wiz-admission-controller.imageRegistyClient.pullSecrets" . | trim | nindent 10 }}
+          {{ include "wiz-admission-controller.imageRegistyClient.credentialHelpersSecrets" . | trim | nindent 10 }}
           {{- end }}
           env:
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}

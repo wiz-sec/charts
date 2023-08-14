@@ -37,7 +37,7 @@ httpProxyConfiguration:
   annotations: {} # Annotations to be set on the secret
   httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
-  noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
+  noProxyAddress: # Comma or space-separated list of machine or domain names.
 
 replicaCount: 2
 
@@ -144,6 +144,7 @@ imageRegistyClient:
   createRole: true # Should a Role and RoleBinding be created by the chart or not.
   pullSecrets: [] # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
   secretsNamespace: "default" # Namespace of the pull secrets.
+  credentialHelpers: [] # List of credential helpers to use, Can be one of amazon, azure, google, github. 
 
 # K8s service account to be used by the pod(s)
 serviceAccount:
