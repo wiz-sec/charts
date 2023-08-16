@@ -71,6 +71,10 @@ spec:
             "--service-type",
             {{ . | quote }},
             {{ end }}
+            {{ with .Values.autoCreateConnector.clusterExternalId }}
+            "--cluster-external-id",
+            {{ . | quote }},
+            {{ end }}
             "--wait={{ .Values.broker.enabled }}",
             ]
           env:
