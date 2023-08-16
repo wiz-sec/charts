@@ -34,6 +34,7 @@ autoCreateConnector:
   clusterFlavor: "" # optional (EKS, AKS, GKE, OKE, OpenShift, Kubernetes)
   # Required arguments for broker.enabled = false
   apiServerEndpoint: ""
+  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
 
   serviceAccount:
     create: true
