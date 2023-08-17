@@ -1,3 +1,4 @@
+{{- if .Values.global.enabled }}
 {{- if .Values.autoCreateConnector.enabled }}
 {{- if .Values.autoCreateConnector.autoDeleteConnectorEnabled }}
 apiVersion: batch/v1
@@ -132,5 +133,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
