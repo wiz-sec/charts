@@ -140,7 +140,7 @@ imageIntegrityWebhook:
   cacheImageVerifyTTL: 5m # The TTL of the cache for the image verification. The cache is used to avoid verifying the same image multiple times.
 
 # The following values are used for image integrity webhook.
-imageRegistyClient:
+imageRegistryClient:
   createRole: true # Should a Role and RoleBinding be created by the chart or not.
   pullSecrets: [] # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
   secretsNamespace: "default" # Namespace of the pull secrets.
