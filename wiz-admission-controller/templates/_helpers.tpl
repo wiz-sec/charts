@@ -95,17 +95,17 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-{{- define "wiz-admission-controller.imageRegistyClient.pullSecrets" -}}
-{{- if .Values.imageRegistyClient.pullSecrets }}
-{{- range .Values.imageRegistyClient.pullSecrets }}
+{{- define "wiz-admission-controller.imageRegistryClient.pullSecrets" -}}
+{{- if .Values.imageRegistryClient.pullSecrets }}
+{{- range .Values.imageRegistryClient.pullSecrets }}
 - "--registry-image-pull-secret={{ . }}"
 {{- end }}
 {{- end }}
 {{- end }}
 
-{{- define "wiz-admission-controller.imageRegistyClient.credentialHelpersSecrets" -}}
-{{- if .Values.imageRegistyClient.credentialHelpers }}
-{{- range .Values.imageRegistyClient.credentialHelpers }}
+{{- define "wiz-admission-controller.imageRegistryClient.credentialHelpersSecrets" -}}
+{{- if .Values.imageRegistryClient.credentialHelpers }}
+{{- range .Values.imageRegistryClient.credentialHelpers }}
 - "--registry-credential-helper={{ . }}"
 {{- end }}
 {{- end }}
