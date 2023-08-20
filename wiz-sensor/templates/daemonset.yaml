@@ -39,20 +39,10 @@ spec:
       priorityClassName: {{ .Values.daemonset.priorityClassName }}
       {{- end }}
 
+      {{- with .Values.daemonset.affinity }}
       affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/os
-                operator: In
-                values:
-                - linux
-              - key: kubernetes.io/arch
-                operator: In
-                values:
-                - arm64
-                - amd64
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet

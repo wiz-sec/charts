@@ -81,8 +81,10 @@ imagePullSecret:
 
   # This value is a must in order to pull the image from a private repository. We use helm
   # to create a docker formatted json, encoded in base64.
-  # In case you want use an existing value (perhaps created via "kubectl create secret docker-registry ...")
-  # please mark "create" above as false
+  # In case you want use an existing value please mark "create" above as false.
+  # For general directions on how to pre-create this kind of secret please refer to:
+  # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#registry-secret-existing-credentials
+  # the default registry server URL to use in the secret is wizio.azurecr.io/sensor
   username: ""
   password: ""
 
@@ -123,6 +125,21 @@ daemonset:
 
   # customize priority class
   priorityClassName: ""
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/os
+            operator: In
+            values:
+            - linux
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+            - arm64
+            - amd64
 
   tolerations:
   # Makes pods run on ARM64 as well
