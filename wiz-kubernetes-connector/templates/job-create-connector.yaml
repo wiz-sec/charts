@@ -11,7 +11,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     rollme: {{ randAlphaNum 5 | quote }}
     {{- with (.Values.autoCreateConnector.createJobAnnotations) }}
-      {{- toYaml . | nindent 8 }}
+      {{- toYaml . | nindent 4 }}
     {{- end }}   
 
 spec:
