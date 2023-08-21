@@ -104,6 +104,8 @@ broker:
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
 
 podAnnotations: {}
+createJobAnnotations: {}
+deleteJobAnnotations: {}
 
 podSecurityContext:
   runAsNonRoot: true
