@@ -9,6 +9,10 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    rollme: {{ randAlphaNum 5 | quote }}
+    {{- with (.Values.autoCreateConnector.createJobAnnotations) }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}   
 
 spec:
   manualSelector: true
