@@ -97,9 +97,9 @@ spec:
           - "--image-integrity-cache-verify-ttl={{ .Values.imageIntegrityWebhook.cacheImageVerifyTTL }}"
           {{ include "wiz-admission-controller.imageIntegrityCliParams.policies" . | trim | nindent 10 }}
           ## Image registry client flags
-          - "--registry-image-pull-secret-namespace={{ .Values.imageRegistyClient.secretsNamespace }}"
-          {{ include "wiz-admission-controller.imageRegistyClient.pullSecrets" . | trim | nindent 10 }}
-          {{ include "wiz-admission-controller.imageRegistyClient.credentialHelpersSecrets" . | trim | nindent 10 }}
+          - "--registry-image-pull-secret-namespace={{ .Values.imageRegistryClient.secretsNamespace }}"
+          {{ include "wiz-admission-controller.imageRegistryClient.pullSecrets" . | trim | nindent 10 }}
+          {{ include "wiz-admission-controller.imageRegistryClient.credentialHelpersSecrets" . | trim | nindent 10 }}
           {{- end }}
           env:
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
