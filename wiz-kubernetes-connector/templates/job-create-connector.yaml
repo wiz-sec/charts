@@ -10,7 +10,7 @@ metadata:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     rollme: {{ randAlphaNum 5 | quote }}
-    {{- with (.Values.createJobAnnotations) }}
+    {{- with (.Values.autoCreateConnector.createJobAnnotations) }}
       {{- toYaml . | nindent 8 }}
     {{- end }}   
 
