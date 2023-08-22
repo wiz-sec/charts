@@ -17,8 +17,8 @@ spec:
   template:
     metadata:
       annotations:
-        rollme.proxyHash: {{ include "wiz-kubernetes-connector.proxyHash" . }}
         rollme.wizApiTokenHash: {{ include "wiz-kubernetes-connector.wizApiTokenHash" . }}
+        rollme.proxyHash: {{ include "wiz-kubernetes-connector.proxyHash" . }}
         rollme.brokerHash: {{ include "wiz-kubernetes-connector.brokerHash" . }}
         {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
           {{- toYaml . | nindent 8 }}

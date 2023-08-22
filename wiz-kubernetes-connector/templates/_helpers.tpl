@@ -113,7 +113,7 @@ Use for debug purpose only.
 {{- $hash -}}
 {{- end -}}
 
-{{- define "wiz-kubernetes-controller.wizApiTokenHash" -}}
+{{- define "wiz-kubernetes-connector.wizApiTokenHash" -}}
 {{ include "helpers.calculateHash" (list .Values.global.wizApiToken.clientId .Values.global.wizApiToken.clientToken .Values.global.wizApiToken.secret.name .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
 {{- end }}
 

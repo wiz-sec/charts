@@ -9,8 +9,8 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded 
-    rollme.proxyHash: {{ include "wiz-kubernetes-connector.proxyHash" . }}
     rollme.wizApiTokenHash: {{ include "wiz-kubernetes-connector.wizApiTokenHash" . }}
+    rollme.proxyHash: {{ include "wiz-kubernetes-connector.proxyHash" . }}
     rollme.brokerHash: {{ include "wiz-kubernetes-connector.brokerHash" . }}
     {{- with (.Values.autoCreateConnector.createJobAnnotations) }}
       {{- toYaml . | nindent 4 }}
