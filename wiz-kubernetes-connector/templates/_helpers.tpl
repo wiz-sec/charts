@@ -105,3 +105,22 @@ Use for debug purpose only.
 {{- define "helpers.var_dump" -}}
 {{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
 {{- end -}}
+
+{{- define "helpers.calculateHash" -}}
+{{- $list := . -}}
+{{- $hash := printf "%s" $list | sha256sum -}}
+{{- $hash := $hash | trimSuffix "\n" -}}
+{{- $hash -}}
+{{- end -}}
+
+{{- define "wiz-kubernetes-connector.wizApiTokenHash" -}}
+{{ include "helpers.calculateHash" (list .Values.global.wizApiToken.clientId .Values.global.wizApiToken.clientToken .Values.global.wizApiToken.secret.name .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.proxyHash" -}}
+{{ include "helpers.calculateHash" (list .Values.global.httpProxyConfiguration.httpProxy .Values.global.httpProxyConfiguration.httpsProxy .Values.global.httpProxyConfiguration.noProxyAddress .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.brokerHash" -}}
+{{ include "helpers.calculateHash" (list .Values.broker.enabled .Values.broker.targetIp ) }}
+{{- end }}
