@@ -105,8 +105,9 @@ opaWebhook:
   secret: # Deprecated, use `webhook.secret` instead
     annotations: {} 
 
-imageIntegrityWebhook: 
-  enabled: true
+# Image integrity webhook is currently in private preview.
+imageIntegrityWebhook:
+  enabled: false 
   policies: [] # List of policies to enforce on the image integrity webhook.
 
     # Override to run admission controller on specific resources.
