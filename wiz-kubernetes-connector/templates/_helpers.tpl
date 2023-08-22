@@ -122,5 +122,5 @@ Use for debug purpose only.
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.brokerHash" -}}
-{{ include "helpers.calculateHash" (list .Values.autoCreateConnector.enabled) }}
+{{ include "helpers.calculateHash" (list .Values.broker.enabled .Values.broker.targetIp ) }}
 {{- end }}
