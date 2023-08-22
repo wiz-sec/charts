@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "wiz-kubernetes-connector.name" . }}-delete-connector-{{ randNumeric 5  }}
+  name: {{ include "wiz-kubernetes-connector.name" . }}-delete-connector
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-kubernetes-connector.labels" . | nindent 4 }}
