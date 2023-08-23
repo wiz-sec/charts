@@ -58,7 +58,7 @@ spec:
       hostAliases:
         - ip: "{{.Values.blob.globalStorageAccountIP }}"
           hostnames:
-          - "{{.Values.blob.storageAccountName}}.blob.core.windows.net"
+          - "{{.Values.blob.storageAccountName}}.blob.{{.Values.blob.storageAccountDomain}}"
       {{- end}}
       {{- end}}
       containers:
