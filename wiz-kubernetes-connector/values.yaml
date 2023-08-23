@@ -51,6 +51,8 @@ autoCreateConnector:
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
   createJobAnnotations: {}
   deleteJobAnnotations: {}
+  roleAnnotations: {}
+  roleBindingAnnotations: {}
 
 wizApiToken:
   clientId: "" # Client ID of the Wiz Service Account.
