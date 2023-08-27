@@ -192,6 +192,9 @@ service:
 # running in hostNetwork mode.
 hostNetwork: false
 
+# Port of the health server used by the readiness and liveness probes
+healthPort: 8000
+
 # Configuration options for NetworkPolicy
 networkPolicy:
   ingress:
