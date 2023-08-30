@@ -53,6 +53,14 @@ spec:
         fsGroup: 1000
         supplementalGroups:
           - 1000
+      {{- if eq .Values.storageService "blob" }}
+      {{- if .Values.blob.globalStorageAccountIP }}
+      hostAliases:
+        - ip: "{{.Values.blob.globalStorageAccountIP }}"
+          hostnames:
+          - "{{.Values.blob.storageAccountName}}.blob.{{.Values.blob.storageAccountDomain}}"
+      {{- end}}
+      {{- end}}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

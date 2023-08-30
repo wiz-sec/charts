@@ -24,6 +24,8 @@ blob:
   resourceGroupName:
   storageAccountName:
   containerName: gitops-state
+  globalStorageAccountIP: ""
+  storageAccountDomain: core.windows.net
 
 serviceAccount:
   # Specifies whether a service account should be created
