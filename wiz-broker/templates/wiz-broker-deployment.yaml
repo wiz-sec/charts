@@ -78,6 +78,8 @@ spec:
           {{- if .Values.global.broker.wizManaged }}
           - name: WIZ_MANAGED
             value: "true"
+          - name: WIZ_OUTPOST_ID
+            value: .Values.global.broker.outpostId
           {{- end}}
           {{- if .Values.global.broker.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
