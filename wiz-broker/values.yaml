@@ -26,6 +26,8 @@ global:
     # Specifies whether the broker is managed by Wiz or not.
     # Do not edit manually.
     wizManaged: false
+    # Relevant only for wiz-managed brokers
+    outpostId: ""
     # Specifies whether the connector/api-token secrets should be created by the chart
     createSecret: true
     targetIp: ""
