@@ -43,16 +43,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
           - containerPort: {{ .Values.service.targetPort }}
-          volumeMounts:
-          - mountPath: /var/server-certs
-            name: server-certs
-            readOnly: true
-          {{- with .Values.customVolumeMounts }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
-          {{- with .Values.global.customVolumeMounts }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
           readinessProbe:
             httpGet:
               path: /ready
@@ -155,9 +145,28 @@ spec:
           - name: USE_CLI_ENV_FILE
             value: "true"
           {{- end }}
+          # For running pod with read only file system we write all the cache files to /var/cache volume mount
+          - name: TUF_ROOT
+            value: "/var/cache/.sigstore"
+          - name: AWS_ECR_CACHE_DIR
+            value: "/var/cache/.ecr"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - mountPath: /var/cache
+            name: cache
+          - mountPath: /var/server-certs
+            name: server-certs
+            readOnly: true
+          {{- with .Values.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.global.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
       volumes:
+        - name: cache
+          emptyDir: {}
         - name: server-certs
           secret:
             defaultMode: 444
