@@ -140,7 +140,7 @@ imageIntegrityWebhook:
   cacheImageDigestTTL: 1m # The TTL of the cache for the image digest. The cache is used to avoid querying the image registry for the same image digest multiple times.
   cacheImageVerifyTTL: 5m # The TTL of the cache for the image verification. The cache is used to avoid verifying the same image multiple times.
 
-  patchImageDigestAnnotation: true # Should add annotations to pod that mapping between tag->digest.
+  patchImageDigestAnnotation: true # If true, annotate the pod with mapping between tag->digest.
 
 # The following values are used for image integrity webhook.
 imageRegistryClient:
