@@ -200,7 +200,7 @@ healthPort: 8000
 # Configuration options for NetworkPolicy
 networkPolicy:
   ingress:
-    enabled: false # If true, deny all incoming traffic from all pods without kubernetes.io/metadata.name: kube-system label.
+    enabled: true # Deny all incoming traffic 
 
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values
