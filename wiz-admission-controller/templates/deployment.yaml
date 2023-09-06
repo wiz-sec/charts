@@ -109,6 +109,8 @@ spec:
           {{- end }}
           - name: WIZ_ENV
             value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+          - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
+            value: {{ .Values.imageIntegrityWebhook.patchImageDigestAnnotation | quote }}
           {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
