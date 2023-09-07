@@ -11,7 +11,7 @@ global:
     clientId: "" # Client ID of the Wiz Service Account.
     clientToken: "" # Client secret of the Wiz Service Account.
     clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
-    
+
     secret:
       # Should a Secret be created by the chart or not.
       # Set this to false if you wish to create the Secret yourself or using another tool.
@@ -32,11 +32,11 @@ global:
     create: true
     secretName: "wiz-proxy" # The name of the proxy Secret.
     annotations: {} # Annotations to be set on the secret
-    
+
     httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
     httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
     noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
-    
+
     # Proxy CA certificate in PEM format. This is required for TLS intercept proxies
     # This value is currently only used by the wiz sensor.
     caCertificate: ""
@@ -51,6 +51,24 @@ global:
   podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
   customVolumes: [] # Additional volumes to add to the components Pods
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
+
+  # -- Array of extra K8s manifests to deploy
+  ## Note: Supports use of custom Helm templates
+  extraObjects: []
+    # - apiVersion: external-secrets.io/v1beta1
+    #   kind: ExternalSecret
+    #   metadata:
+    #     name: wiz-sensor-api-token
+    #     namespace: wiz
+    #   spec:
+    #     secretStoreRef:
+    #       kind: ClusterSecretStore
+    #       name: cluster-secret-store
+    #     target:
+    #       name: wiz-api-token
+    #     dataFrom:
+    #     - extract:
+    #       key: wiz-sensor-api-token
 
 # Wiz Kubernetes Connector
 # Configuration values for the wiz-kubernetes-connector dependency
