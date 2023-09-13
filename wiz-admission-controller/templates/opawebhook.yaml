@@ -84,7 +84,6 @@ metadata:
 {{- end }}
 {{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled) (not $useCertManagerCerts) }}
 ---
-{{- if not $useCertManagerCerts }}
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
@@ -103,5 +102,4 @@ metadata:
 data:
   tls.crt: {{ $tlsCrt }}
   tls.key: {{ $tlsKey }}
-{{- end }}
 {{- end }}
