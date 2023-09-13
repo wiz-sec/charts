@@ -76,7 +76,11 @@ Create the name of the service account to use
 {{- end }}
 
 {{- define "wiz-admission-controller.secretServerCert" -}}
+{{- if and .Values.webhook.injectCaFrom .Values.webhook.tlsSecretName }}
+{{ .Values.webhook.tlsSecretName }}
+{{- else }}
 {{ include "wiz-admission-controller.fullname" . }}-cert
+{{- end }}
 {{- end }}
 
 {{- define "wiz-admission-controller.opaCliParams.policies" -}}

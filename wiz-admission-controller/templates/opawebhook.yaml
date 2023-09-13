@@ -1,3 +1,4 @@
+{{- $useCertManagerCerts := .Values.webhook.injectCaFrom -}}
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
@@ -18,6 +19,9 @@ metadata:
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- if .Values.webhook.injectCaFrom }}
+    cert-manager.io/inject-ca-from: {{ .Values.webhook.injectCaFrom }}
+  {{- end }}
 webhooks:
 - name: misconfigurationsadmissionvalidator.wiz.io
   admissionReviewVersions: ["v1", "v1beta1"]
@@ -27,7 +31,9 @@ webhooks:
       name: {{ include "wiz-admission-controller.fullname" . }}
       path: /opa-validator
       port: {{ .Values.service.port }}
+{{- if not $useCertManagerCerts }}
     caBundle: {{ $tlsCrt }}
+{{- end }}
   {{- with .Values.opaWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
@@ -51,7 +57,9 @@ metadata:
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-webhooks:
+  {{- if .Values.webhook.injectCaFrom }}
+    cert-manager.io/inject-ca-from: {{ .Values.webhook.injectCaFrom }}
+  {{- end }}
 - name: imageintegrityadmissionvalidator.wiz.io
   admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
@@ -60,7 +68,9 @@ webhooks:
       name: {{ include "wiz-admission-controller.fullname" . }}
       path: /image-integrity-validator
       port: {{ .Values.service.port }}
+{{- if not $useCertManagerCerts }}
     caBundle: {{ $tlsCrt }}
+{{- end }}
   {{- with .Values.imageIntegrityWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
@@ -72,8 +82,9 @@ webhooks:
   failurePolicy: {{ .Values.imageIntegrityWebhook.failurePolicy }}
   sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
-{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled }}
+{{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled) (not $useCertManagerCerts) }}
 ---
+{{- if not (or  .Values.webhook.tlsSecretName .Values.webhook.injectCaFrom) }}
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
@@ -92,4 +103,5 @@ metadata:
 data:
   tls.crt: {{ $tlsCrt }}
   tls.key: {{ $tlsKey }}
+{{- end }}
 {{- end }}
