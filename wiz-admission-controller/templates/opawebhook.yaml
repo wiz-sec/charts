@@ -19,7 +19,7 @@ metadata:
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-  {{- if .Values.webhook.injectCaFrom }}
+  {{- if $useCertManagerCerts }}
     cert-manager.io/inject-ca-from: {{ .Values.webhook.injectCaFrom }}
   {{- end }}
 webhooks:
@@ -57,7 +57,7 @@ metadata:
   annotations:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-  {{- if .Values.webhook.injectCaFrom }}
+  {{- if $useCertManagerCerts }}
     cert-manager.io/inject-ca-from: {{ .Values.webhook.injectCaFrom }}
   {{- end }}
 - name: imageintegrityadmissionvalidator.wiz.io
@@ -84,7 +84,7 @@ metadata:
 {{- end }}
 {{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled) (not $useCertManagerCerts) }}
 ---
-{{- if not (or  .Values.webhook.tlsSecretName .Values.webhook.injectCaFrom) }}
+{{- if not $useCertManagerCerts }}
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
