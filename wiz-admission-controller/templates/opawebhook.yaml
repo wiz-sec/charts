@@ -60,6 +60,7 @@ metadata:
   {{- if $useCertManagerCerts }}
     cert-manager.io/inject-ca-from: {{ .Values.webhook.injectCaFrom }}
   {{- end }}
+webhooks:
 - name: imageintegrityadmissionvalidator.wiz.io
   admissionReviewVersions: ["v1", "v1beta1"]
   clientConfig:
