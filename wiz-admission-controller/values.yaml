@@ -50,11 +50,15 @@ image:
 imagePullSecrets: []
 
 webhook:
+
   errorEnforcementMethod: "AUDIT" # AUDIT/ BLOCK
   policyEnforcementMethod: ""     # AUDIT/ BLOCK (Set this to override any admission policy action)
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
   secret:
+    name: "" # tls secret name
     annotations: {} 
+  # using cert and secret created by cert-manager
+  injectCaFrom: "" # namespace/certificate-name # https://cert-manager.io/docs/concepts/ca-injector/#injecting-ca-data-from-a-certificate-resource
 
 opaWebhook:
   enabled: true
