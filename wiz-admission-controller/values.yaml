@@ -50,11 +50,15 @@ image:
 imagePullSecrets: []
 
 webhook:
+
   errorEnforcementMethod: "AUDIT" # AUDIT/ BLOCK
   policyEnforcementMethod: ""     # AUDIT/ BLOCK (Set this to override any admission policy action)
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
   secret:
+    name: "" # tls secret name
     annotations: {} 
+  # using cert and secret created by cert-manager
+  injectCaFrom: "" # namespace/certificate-name # https://cert-manager.io/docs/concepts/ca-injector/#injecting-ca-data-from-a-certificate-resource
 
 opaWebhook:
   enabled: true
@@ -200,7 +204,7 @@ healthPort: 8000
 # Configuration options for NetworkPolicy
 networkPolicy:
   ingress:
-    enabled: true # Deny all incoming traffic 
+    enabled: false # If true, deny all incoming traffic from all pods without kubernetes.io/metadata.name: kube-system label.
 
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values
