@@ -57,6 +57,8 @@ global:
     httpProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
     httpsProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
     noProxyAddress: "" # comma or space separated list of machine or domain names
+    skipTlsVerify: "" # true indicates that the proxy's certificate should not be verified. DO NOT USE IN PRODUCTION!
+    caCertificate: "" # pem format CA certificate to use for proxy TLS verification.
 
   wizApiToken:
     clientId: ""
