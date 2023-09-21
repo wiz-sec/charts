@@ -105,6 +105,8 @@ spec:
           {{- end }}
           - name: TARGET_IP
             value: {{ .Values.global.broker.targetIp }}
+          - name: TARGET_PORT
+            value: {{ .Values.global.broker.targetPort }}
           {{- if .Values.global.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
