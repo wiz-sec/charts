@@ -145,16 +145,6 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
-{{- define "wiz-admission-controller.certManagerInject" -}}
-{{- if contains .Values.webhook.injectCaFrom "/" -}}
-{{- .Values.webhook.injectCaFrom -}}
-{{- else if .Values.webhook.injectCaFrom -}}
-{{- printf "%s/%s" .Release.Namespace .Values.webhook.injectCaFrom -}}
-{{- else -}}
-{{- printf "%s-cert" (include "wiz-admission-controller.fullname" .) -}}
-{{- end -}}
-{{- end -}}
-
 {{/*
 This function dump the value of a variable and fail the template execution.
 Use for debug purpose only.
