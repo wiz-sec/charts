@@ -1,4 +1,4 @@
-{{- $useCertManagerCerts := (or .Values.webhook.injectCaFrom .Values.webhook.selfSignedCert) -}}
+{{- $useCertManagerCerts := (or .Values.webhook.injectCaFrom .Values.webhook.createSelfSignedCert) -}}
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
