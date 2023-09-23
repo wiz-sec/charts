@@ -20,7 +20,7 @@ metadata:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   {{- if $useCertManagerCerts }}
-    cert-manager.io/inject-ca-from: {{ include "wiz-admission-controller.certManagerInject" }}
+    cert-manager.io/inject-ca-from: {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
 webhooks:
 - name: misconfigurationsadmissionvalidator.wiz.io
@@ -58,7 +58,7 @@ metadata:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   {{- if $useCertManagerCerts }}
-    cert-manager.io/inject-ca-from: {{ include "wiz-admission-controller.certManagerInject" }}
+    cert-manager.io/inject-ca-from: {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
 webhooks:
 - name: imageintegrityadmissionvalidator.wiz.io
