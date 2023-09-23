@@ -138,7 +138,7 @@ Create the name of the service account to use
 {{- define "wiz-admission-controller.certManagerInject" -}}
 {{- if contains .Values.webhook.injectCaFrom "/" -}}
 {{- .Values.webhook.injectCaFrom -}}
-{{- else -}}
+{{- else if .Values.webhook.injectCaFrom -}}
 {{- printf "%s/%s" .Release.Namespace .Values.webhook.injectCaFrom -}}
 {{- end -}}
 {{- end -}}
@@ -146,7 +146,7 @@ Create the name of the service account to use
 {{- define "wiz-admission-controller.certManagerName" -}}
 {{- if not .Values.webhook.injectCaFrom -}}
 {{- printf "%s-cert" (include "wiz-admission-controller.fullname" .) -}}
-{{- if contains .Values.webhook.injectCaFrom "/" -}}
+{{- else if contains .Values.webhook.injectCaFrom "/" -}}
 {{- regexFind ".*/(.*)" .Values.webhook.injectCaFrom -}}
 {{- else -}}
 {{- .Values.webhook.injectCaFrom -}}
