@@ -135,11 +135,9 @@ Create the name of the service account to use
 {{ include "helpers.calculateHash" (list .Values.global.wizApiToken.clientId .Values.global.wizApiToken.clientToken .Values.global.wizApiToken.secret.name .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
 {{- end }}
 
-{{- define "wiz-admission-controller.certManagerName" -}}
-{{- if not .Values.webhook.injectCaFrom -}}
-{{- printf "%s-cert" (include "wiz-admission-controller.fullname" .) -}}
-{{- else if contains .Values.webhook.injectCaFrom "/" -}}
-{{- regexFind ".*/(.*)" .Values.webhook.injectCaFrom -}}
+{{- define "wiz-admission-controller.certManagerInject" -}}
+{{- if .Values.webhook.createSelfSignedCert -}}
+{{- printf "%s/%s-cert" .Release.Namespace (include "wiz-admission-controller.fullname" .) -}}
 {{- else -}}
 {{- .Values.webhook.injectCaFrom -}}
 {{- end -}}

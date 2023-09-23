@@ -10,7 +10,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ include "wiz-admission-controller.certManagerName" . | quote }}
+  name: {{ printf "%s-cert" (include "wiz-admission-controller.fullname" .) | quote }}
   namespace: {{ .Release.Namespace | quote }}
 spec:
   dnsNames:
@@ -19,6 +19,11 @@ spec:
   duration: "8760h0m0s"
   renewBefore: "360h0m0s"
   secretName: {{ include "wiz-admission-controller.secretServerCert" . | quote }}
+  secretTemplate:
+    annotations:
+    {{- with (coalesce .Values.webhook.secret.annotations .Values.opaWebhook.secret.annotations) }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
   issuerRef:
     name: "selfsigned-issuer"
     kind: "Issuer"
