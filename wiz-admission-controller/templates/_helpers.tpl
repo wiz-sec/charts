@@ -135,6 +135,24 @@ Create the name of the service account to use
 {{ include "helpers.calculateHash" (list .Values.global.wizApiToken.clientId .Values.global.wizApiToken.clientToken .Values.global.wizApiToken.secret.name .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
 {{- end }}
 
+{{- define "wiz-admission-controller.certManagerInject" -}}
+{{- if contains .Values.webhook.injectCaFrom "/" -}}
+{{- .Values.webhook.injectCaFrom -}}
+{{- else -}}
+{{- printf "%s/%s" .Release.Namespace .Values.webhook.injectCaFrom -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.certManagerName" -}}
+{{- if not .Values.webhook.injectCaFrom -}}
+{{- printf "%s-cert" (include "wiz-admission-controller.fullname" .) -}}
+{{- if contains .Values.webhook.injectCaFrom "/" -}}
+{{- regexFind ".*/(.*)" .Values.webhook.injectCaFrom -}}
+{{- else -}}
+{{- .Values.webhook.injectCaFrom -}}
+{{- end -}}
+{{- end -}}
+
 {{/*
 This function dump the value of a variable and fail the template execution.
 Use for debug purpose only.

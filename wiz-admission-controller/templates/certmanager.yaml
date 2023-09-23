@@ -1,0 +1,26 @@
+{{ if .Values.webhook.selfSignedCert }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-issuer
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "wiz-admission-controller.certManagerName" . }}
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  dnsNames:
+  - {{ printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace }}
+  - {{ printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace }}
+  duration: 8760h0m0s
+  renewBefore: 360h0m0s
+  secretName: {{ include "wiz-admission-controller.secretServerCert" . }}
+  issuerRef:
+    name: selfsigned-issuer
+    kind: Issuer
+    group: cert-manager.io
+{{ end }}

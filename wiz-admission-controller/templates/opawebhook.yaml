@@ -1,4 +1,4 @@
-{{- $useCertManagerCerts := .Values.webhook.injectCaFrom -}}
+{{- $useCertManagerCerts := (or .Values.webhook.injectCaFrom .Values.webhook.selfSignedCert) -}}
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
@@ -20,7 +20,7 @@ metadata:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   {{- if $useCertManagerCerts }}
-    cert-manager.io/inject-ca-from: {{ .Values.webhook.injectCaFrom }}
+    cert-manager.io/inject-ca-from: {{ include "wiz-admission-controller.certManagerInject" }}
   {{- end }}
 webhooks:
 - name: misconfigurationsadmissionvalidator.wiz.io
@@ -58,7 +58,7 @@ metadata:
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   {{- if $useCertManagerCerts }}
-    cert-manager.io/inject-ca-from: {{ .Values.webhook.injectCaFrom }}
+    cert-manager.io/inject-ca-from: {{ include "wiz-admission-controller.certManagerInject" }}
   {{- end }}
 webhooks:
 - name: imageintegrityadmissionvalidator.wiz.io

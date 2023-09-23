@@ -54,11 +54,12 @@ webhook:
   errorEnforcementMethod: "AUDIT" # AUDIT/ BLOCK
   policyEnforcementMethod: ""     # AUDIT/ BLOCK (Set this to override any admission policy action)
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
+
+  injectCaFrom: "" # Name of the Certificate resource to use/create. Prerequisite - https://cert-manager.io/docs/installation.
+  selfSignedCert: false # Create and use a self-signed certificate using `cert-manager`. Prerequisite - https://cert-manager.io/docs/installation.
   secret:
-    name: "" # tls secret name
-    annotations: {} 
-  # using cert and secret created by cert-manager
-  injectCaFrom: "" # namespace/certificate-name # https://cert-manager.io/docs/concepts/ca-injector/#injecting-ca-data-from-a-certificate-resource
+    name: "" # Name of the Certificate secret used by the Admission Controller. 
+    annotations: {}
 
 opaWebhook:
   enabled: true
