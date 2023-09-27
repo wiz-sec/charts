@@ -49,6 +49,8 @@ image:
   tag: ""
 imagePullSecrets: []
 
+priorityClassName: ""
+
 webhook:
 
   errorEnforcementMethod: "AUDIT" # AUDIT/ BLOCK
