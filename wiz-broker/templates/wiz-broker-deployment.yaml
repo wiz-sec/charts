@@ -1,7 +1,10 @@
 {{- if .Values.global.broker.enabled }}
 {{ $mountPath := "/etc/connectorData" }}
+{{ $sslMountPath := "/etc/ssl/certs" }}
 {{ $connectorDataFileName := "data" }}
 {{ $connectorDataFilePath := printf "%s/%s" $mountPath "data" }}
+{{ $customCertificateFileName := "ca-certificates.crt" }}
+{{ $customCertificateFilePath := printf "%s/%s" $sslMountPath $customCertificateFileName }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,6 +44,14 @@ spec:
             items:
               - key: connectorData
                 path: {{ $connectorDataFileName }}
+        {{- if and .Values.global.httpProxyConfiguration.enabled .Values.global.httpProxyConfiguration.caCertificate }}
+        - name: ca-certificate
+          secret:
+            secretName: {{ include "wiz-broker.proxySecretName" . | trim }}
+            items:
+              - key: caCertificate
+                path: {{ $customCertificateFileName }}
+        {{- end }}
         {{- with .Values.global.broker.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -54,6 +65,11 @@ spec:
           - name: connector-data
             mountPath: {{ $mountPath }}
             readOnly: true
+          {{- if and .Values.global.httpProxyConfiguration.enabled .Values.global.httpProxyConfiguration.caCertificate }}
+          - name: ca-certificate
+            mountPath: {{ $sslMountPath }}
+            readOnly: true
+          {{- end }}
           {{- with .Values.global.broker.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
@@ -89,6 +105,8 @@ spec:
           {{- end }}
           - name: TARGET_IP
             value: {{ .Values.global.broker.targetIp }}
+          - name: TARGET_PORT
+            value: {{ .Values.global.broker.targetPort | quote }}
           {{- if .Values.global.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
@@ -107,6 +125,16 @@ spec:
                 name: {{ include "wiz-broker.proxySecretName" . | trim }}
                 key: noProxyAddress
                 optional: false
+          - name: DISABLE_TLS_VALIDATION
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-broker.proxySecretName" . | trim }}
+                key: skipTlsVerify
+                optional: false
+          {{- if .Values.global.httpProxyConfiguration.caCertificate }}
+          - name: CA_CERT_PATH
+            value: {{ $customCertificateFilePath }}
+          {{- end }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
