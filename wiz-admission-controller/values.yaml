@@ -49,6 +49,8 @@ image:
   tag: ""
 imagePullSecrets: []
 
+priorityClassName: "system-cluster-critical"
+
 webhook:
 
   errorEnforcementMethod: "AUDIT" # AUDIT/ BLOCK
