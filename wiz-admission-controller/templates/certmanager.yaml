@@ -13,10 +13,13 @@ metadata:
   name: {{ printf "%s-cert" (include "wiz-admission-controller.fullname" .) | quote }}
   namespace: {{ .Release.Namespace | quote }}
 spec:
+  subject:
+    organizations:
+    - wizselfsigned
   dnsNames:
   - {{ printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace | quote }}
   - {{ printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace | quote }}
-  duration: "8760h0m0s"
+  duration: "87600h0m0s" # AC doesn't currently detect changes to the certificate and must be restarted after renewal
   renewBefore: "360h0m0s"
   secretName: {{ include "wiz-admission-controller.secretServerCert" . | quote }}
   secretTemplate:
