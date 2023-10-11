@@ -14,5 +14,5 @@ rules:
       "namespaces", "nodes", "daemonsets", "replicasets", "deployments",
       "jobs", "cronjobs", "statefulsets", "replicationcontrollers", "serviceaccounts",
     ]
-    verbs: ["get"]
+    verbs: ["get", "list", "watch"]
 {{- end -}}
