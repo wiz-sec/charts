@@ -90,3 +90,11 @@ internetAccessCertificates:
   skipSslValidation: false
 
 extraEnv: {}
+
+httpProxyConfiguration:
+  name: http-proxy-configuraion
+  enabled: false
+  httpProxy: replaceme
+  httpsProxy: replaceme
+  noProxy: replaceme
+  noProxyCs: replaceme
