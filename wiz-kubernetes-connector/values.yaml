@@ -154,6 +154,7 @@ httpProxyConfiguration:
 
 # Global values to override chart values.
 global:
+  enabled: true
   nameOverride: "" # Override the release’s name.
   commonLabels: {} # Labels applied on all the resources (not used for selection)
 

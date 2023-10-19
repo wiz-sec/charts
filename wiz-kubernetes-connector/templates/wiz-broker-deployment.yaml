@@ -1,3 +1,4 @@
+{{- if .Values.global.enabled }}
 {{- if .Values.broker.enabled }}
 {{ $mountPath := "/etc/connectorData" }}
 {{ $connectorDataFileName := "data" }}
@@ -133,4 +134,5 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}
 {{- end }}
