@@ -19,11 +19,8 @@ spec:
       annotations:
         container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
         cluster-autoscaler.kubernetes.io/enable-ds-eviction: "true"
-        {{- with .Values.global.podAnnotations }}
-        {{- toYaml . | indent 8 }}
-        {{- end }}
-        {{- with (coalesce .Values.daemonset.podAnnotations .Values.podAnnotations) }}
-        {{- toYaml . | indent 8 }}
+        {{- with (coalesce .Values.global.podAnnotations (coalesce .Values.daemonset.podAnnotations .Values.podAnnotations)) }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
 
     spec:
