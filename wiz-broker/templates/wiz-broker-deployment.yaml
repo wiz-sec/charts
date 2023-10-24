@@ -125,7 +125,7 @@ spec:
           {{- end }}
           {{- if .Values.global.broker.skipTlsVerify }}
           - name: DISABLE_TLS_VALIDATION
-            value: true
+            value: "true"
           {{- end }}
           {{- if .Values.global.broker.caCertificate.enabled }}
           - name: CA_CERT_PATH
