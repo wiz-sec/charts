@@ -73,6 +73,10 @@ Secrets names
 {{ coalesce (.Values.global.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
+{{- define "wiz-broker.caCertificateSecretName" -}}
+{{ coalesce (.Values.global.broker.caCertificate.secretName) (printf "%s-ca-certificate" .Release.Name) }}
+{{- end }}
+
 {{- define "wiz-broker.proxySecretName" -}}
 {{ coalesce (.Values.global.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
 {{- end }}
