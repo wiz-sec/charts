@@ -92,5 +92,9 @@ internetAccessCertificates:
 extraEnv: {}
 
 httpProxyConfiguration:
-  name: wiz-http-proxy-configuration
+  name: http-proxy-configuraion
   enabled: false
+  httpProxy: replaceme
+  httpsProxy: replaceme
+  noProxy: replaceme
+  noProxyCs: replaceme

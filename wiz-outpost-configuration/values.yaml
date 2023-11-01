@@ -4,7 +4,7 @@
 
 httpProxyConfiguration:
   enabled: false
-  name: wiz-http-proxy-configuration
+  name: http-proxy-configuraion
   httpProxy: replaceme
   httpsProxy: replaceme
   noProxy:
