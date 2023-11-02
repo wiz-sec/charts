@@ -42,7 +42,7 @@ app.kubernetes.io/version: {{ .Values.global.image.tag | default .Chart.AppVersi
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.global.commonLabels }}
 {{- range $index, $content := .Values.global.commonLabels }}
-{{ $index }}: {{ tpl $content $ }}
+{{ $index }}: {{ tpl $content $ | quote }}
 {{- end }}
 {{- end }}
 {{- end }}
