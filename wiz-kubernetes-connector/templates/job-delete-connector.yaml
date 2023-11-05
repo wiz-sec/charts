@@ -33,11 +33,6 @@ spec:
         */}}
         {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
     spec:
-      hostAliases:  # delete me!
-      - ip: "192.168.65.2" # check minikube host ip!
-        hostnames:
-          - "auth"
-          - "agent-gateway"
       {{- with (coalesce .Values.global.imagePullSecrets .Values.image.imagePullSecrets) }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -70,14 +65,6 @@ spec:
             {{- include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
             ]
           env:
-          - name: DEV # todo: delete me
-            value: "true"
-          - name: LOG_DEBUG # todo: delete me
-            value: "true"
-          - name: WIZ_API_HOSTNAME # todo: delete me
-            value: "host.minikube.internal"
-          - name: WIZ_API_PORT # todo: delete me
-            value: "3103"
           {{- with .Values.global.podCustomEnvironmentVariables }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
