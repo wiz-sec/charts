@@ -38,7 +38,7 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.commonLabels }}
 {{- range $index, $content := .Values.commonLabels }}
-{{ $index }}: {{ tpl $content $ }}
+{{ $index }}: {{ tpl $content $ | quote }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -71,6 +71,10 @@ Secrets names
 
 {{- define "wiz-broker.apiTokenSecretName" -}}
 {{ coalesce (.Values.global.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
+{{- end }}
+
+{{- define "wiz-broker.caCertificateSecretName" -}}
+{{ coalesce (.Values.global.broker.caCertificate.secretName) (printf "%s-ca-certificate" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-broker.proxySecretName" -}}

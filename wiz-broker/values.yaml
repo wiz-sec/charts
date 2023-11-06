@@ -44,6 +44,15 @@ global:
     customVolumes: [ ]
     customVolumeMounts: [ ]
 
+    skipTlsVerify: false # true indicates that the proxy's certificate should not be verified. DO NOT USE IN PRODUCTION!
+
+    caCertificate:
+      enabled: false
+      createSecret: true # If false, need to create the secret manually and provide its name in secretName.
+      annotations: { }
+      secretName: ""
+      pem: "" # PEM format CA certificate to use for proxy TLS verification.
+
   httpProxyConfiguration:
     enabled: false
 
@@ -58,8 +67,6 @@ global:
     httpProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
     httpsProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
     noProxyAddress: "" # comma or space separated list of machine or domain names
-    skipTlsVerify: "" # true indicates that the proxy's certificate should not be verified. DO NOT USE IN PRODUCTION!
-    caCertificate: "" # pem format CA certificate to use for proxy TLS verification.
 
   wizApiToken:
     clientId: ""
@@ -79,8 +86,8 @@ global:
     # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
     usePodCustomEnvironmentVariablesFile: false
 
-  wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = false
-    # Specifies whether a proxy secret should be created
+  wizConnector: # Relevant only for broker.enabled = true
+    # Specifies whether a connector secret should be created
     # If createSecret is false you need to:
     #  1. Create secret with this keys:
     #     CONNECTOR_ID, CONNECTOR_TOKEN, TARGET_DOMAIN, TARGET_IP, TARGET_PORT
@@ -90,7 +97,6 @@ global:
     annotations: {}
     secretName: ""
 
-    # Required arguments for autoCreateConnector = false
     connectorId: ""
     connectorToken: ""
     targetDomain: ""
