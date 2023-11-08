@@ -77,6 +77,15 @@ Secrets names
 {{ coalesce (.Values.global.broker.caCertificate.secretName) (printf "%s-ca-certificate" .Release.Name) }}
 {{- end }}
 
+{{- define "wiz-broker.mtlsSecretName" -}}
+{{- with .Values.global.broker.mtls }}
+{{- if and .createSecret (not (and .certificate .privateKey)) }}
+  {{- fail "Both client certificate and private key must be provided" }}
+{{- end }}
+{{ coalesce (.secretName) (printf "%s-mtls" $.Release.Name) }}
+{{- end }}
+{{- end }}
+
 {{- define "wiz-broker.proxySecretName" -}}
 {{ coalesce (.Values.global.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
 {{- end }}
