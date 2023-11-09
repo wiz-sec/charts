@@ -2,8 +2,7 @@
 {{ $mountPath := "/etc/connectorData" }}
 {{ $connectorDataFileName := "data" }}
 {{ $connectorDataFilePath := printf "%s/%s" $mountPath "data" }}
-{{ $sslMountPath := "/etc/ssl/certs" }}
-{{ $customCertificateFileName := "ca-certificates.crt" }}
+{{ $mtlsPath := "/etc/mtls" }}
 {{ $clientCertificateFileName := "client.cert" }}
 {{ $clientPrivateKeyFileName := "client.key" }}
 apiVersion: apps/v1
@@ -49,7 +48,7 @@ spec:
             secretName: {{ include "wiz-broker.caCertificateSecretName" . | trim }}
             items:
               - key: caCertificate
-                path: {{ $customCertificateFileName }}
+                path: target.crt
         {{- end }}
         {{- if .Values.global.broker.mtls.enabled }}
         - name: mtls
@@ -76,12 +75,12 @@ spec:
             readOnly: true
           {{- if .Values.global.broker.caCertificate.enabled }}
           - name: ca-certificate
-            mountPath: {{ $sslMountPath }}
+            mountPath: /usr/local/share/ca-certificates
             readOnly: true
           {{- end }}
           {{- if .Values.global.broker.mtls.enabled }}
           - name: mtls
-            mountPath: {{ $sslMountPath }}
+            mountPath: {{ $mtlsPath }}
             readOnly: true
           {{- end }}
           {{- with .Values.global.broker.customVolumeMounts }}
@@ -144,15 +143,11 @@ spec:
           - name: DISABLE_TLS_VALIDATION
             value: "true"
           {{- end }}
-          {{- if .Values.global.broker.caCertificate.enabled }}
-          - name: CA_CERT_PATH
-            value: {{ printf "%s/%s" $sslMountPath $customCertificateFileName }}
-          {{- end }}
           {{- if .Values.global.broker.mtls.enabled }}
           - name: CLIENT_CERT_PATH
-            value: {{ printf "%s/%s" $sslMountPath $clientCertificateFileName }}
+            value: {{ printf "%s/%s" $mtlsPath $clientCertificateFileName }}
           - name: CLIENT_KEY_PATH
-            value: {{ printf "%s/%s" $sslMountPath $clientPrivateKeyFileName }}
+            value: {{ printf "%s/%s" $mtlsPath $clientPrivateKeyFileName }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
