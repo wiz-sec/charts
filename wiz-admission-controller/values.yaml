@@ -155,7 +155,7 @@ imageRegistryClient:
   secretsNamespace: "default" # Namespace of the pull secrets.
   credentialHelpers: [] # List of credential helpers to use, Can be one of amazon, azure, google, github. 
 
-k8sClient:
+kubernetesApiServer:
   cacheNamespaceLabelsTTL: 1m # The TTL of the cache for namespace labels. The cache is used to avoid querying cluster for the same namespace multiple times.
 
 # K8s service account to be used by the pod(s)
