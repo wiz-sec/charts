@@ -81,8 +81,8 @@ spec:
           {{- with (coalesce .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }} # check opaWebhook for backward compatibility
           - "--cluster-external-id={{ . }}"
           {{- end }}
-          # k8s client flags
-          - "--namespace-cache-ttl={{ .Values.k8sClient.cacheNamespaceLabelsTTL }}"
+          # auto enforcement flags
+          - "--namespace-cache-ttl={{ .Values.autoEnforcement.cacheNamespaceLabelsTTL }}"
           # OPA webhook flags
           - "--misconfiguration-enabled={{ .Values.opaWebhook.enabled }}"
           {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}  
