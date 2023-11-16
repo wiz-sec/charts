@@ -52,7 +52,6 @@ imagePullSecrets: []
 priorityClassName: ""
 
 webhook:
-
   errorEnforcementMethod: "AUDIT" # AUDIT/ BLOCK
   policyEnforcementMethod: ""     # AUDIT/ BLOCK (Set this to override any admission policy action)
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
@@ -102,8 +101,7 @@ opaWebhook:
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
-  policies:
-    - "Default IaC policy"
+  policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, by default AC will get policies from Wiz based on projects.
   
   # Deprecated, don't use!
   errorEnforcementMethod: ""  # Deprecated, use `webhook.errorEnforcementMethod` instead
@@ -115,7 +113,7 @@ opaWebhook:
 # Image integrity webhook is currently in private preview.
 imageIntegrityWebhook:
   enabled: false 
-  policies: [] # List of policies to enforce on the image integrity webhook.
+  policies: [] # List of policies to enforce on the image integrity webhook. If not set, by default AC will get policies from Wiz based on projects.
 
     # Override to run admission controller on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
@@ -140,6 +138,7 @@ imageIntegrityWebhook:
       operator: NotIn
       values:
       - kube-system
+      - kube-node-lease
 
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
@@ -155,6 +154,9 @@ imageRegistryClient:
   pullSecrets: [] # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
   secretsNamespace: "default" # Namespace of the pull secrets.
   credentialHelpers: [] # List of credential helpers to use, Can be one of amazon, azure, google, github. 
+
+kubernetesApiServer:
+  cacheNamespaceLabelsTTL: 1m # The TTL of the cache for namespace labels. The cache is used to avoid querying cluster for the same namespace multiple times.
 
 # K8s service account to be used by the pod(s)
 serviceAccount:

@@ -38,7 +38,7 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.commonLabels }}
 {{- range $index, $content := .Values.commonLabels }}
-{{ $index }}: {{ tpl $content $ }}
+{{ $index }}: {{ tpl $content $ | quote }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -75,6 +75,15 @@ Secrets names
 
 {{- define "wiz-broker.caCertificateSecretName" -}}
 {{ coalesce (.Values.global.broker.caCertificate.secretName) (printf "%s-ca-certificate" .Release.Name) }}
+{{- end }}
+
+{{- define "wiz-broker.mtlsSecretName" -}}
+{{- with .Values.global.broker.mtls }}
+{{- if and .createSecret (not (and .certificate .privateKey)) }}
+  {{- fail "Both client certificate and private key must be provided" }}
+{{- end }}
+{{ coalesce (.secretName) (printf "%s-mtls" $.Release.Name) }}
+{{- end }}
 {{- end }}
 
 {{- define "wiz-broker.proxySecretName" -}}
