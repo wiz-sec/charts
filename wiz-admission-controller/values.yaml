@@ -101,9 +101,8 @@ opaWebhook:
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
-  policies: # List of policies to enforce on the misconfiguration webhook. If not set, Default IaC policy will be used.
-    - "Default IaC policy"
-
+  policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, Default IaC policy will be used.
+  
   # Deprecated, don't use!
   errorEnforcementMethod: ""  # Deprecated, use `webhook.errorEnforcementMethod` instead
   policyEnforcementMethod: "" # Deprecated, use `webhook.policyEnforcementMethod` instead
@@ -155,6 +154,9 @@ imageRegistryClient:
   pullSecrets: [] # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
   secretsNamespace: "default" # Namespace of the pull secrets.
   credentialHelpers: [] # List of credential helpers to use, Can be one of amazon, azure, google, github. 
+
+kubernetesApiServer:
+  cacheNamespaceLabelsTTL: 1m # The TTL of the cache for namespace labels. The cache is used to avoid querying cluster for the same namespace multiple times.
 
 # K8s service account to be used by the pod(s)
 serviceAccount:
