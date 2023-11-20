@@ -89,38 +89,42 @@ spec:
           - name: ALICLOUD_ROLE_ARN
             value: {{ .Values.oss.roleARN }}
           {{- end }}
-          {{- if .Values.httpProxyConfiguration.enabled }}
           - name: http_proxy
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "http-proxy"
+                optional: true
           - name: HTTP_PROXY
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "http-proxy"
+                optional: true
           - name: https_proxy
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "https-proxy"
+                optional: true
           - name: HTTPS_PROXY
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "https-proxy"
+                optional: true
           - name: no_proxy
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "no-proxy-address-cs"
+                optional: true
           - name: NO_PROXY
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "no-proxy-address-cs"
-          {{- end }}
+                optional: true
           args: [
             {{- if eq .Values.storageService "blob" }}
             "--resourceGroup", {{ required "blob.resourceGroupName is required" .Values.blob.resourceGroupName | quote }},
