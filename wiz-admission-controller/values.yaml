@@ -101,7 +101,7 @@ opaWebhook:
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
-  policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, by default AC will get policies from Wiz based on projects.
+  policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, Default IaC policy will be used.
   
   # Deprecated, don't use!
   errorEnforcementMethod: ""  # Deprecated, use `webhook.errorEnforcementMethod` instead
@@ -113,7 +113,7 @@ opaWebhook:
 # Image integrity webhook is currently in private preview.
 imageIntegrityWebhook:
   enabled: false 
-  policies: [] # List of policies to enforce on the image integrity webhook. If not set, by default AC will get policies from Wiz based on projects.
+  policies: [] # List of policies to enforce on the image integrity webhook.
 
     # Override to run admission controller on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
