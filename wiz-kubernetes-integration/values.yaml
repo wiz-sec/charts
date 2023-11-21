@@ -52,6 +52,10 @@ global:
   customVolumes: [] # Additional volumes to add to the components Pods
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
 
+  nodeSelector: {} # custom assignment to nodes
+  affinity: {} # custom affinity rules for node assignment
+  tolerations: [] # custom tolerations
+
 # Wiz Kubernetes Connector
 # Configuration values for the wiz-kubernetes-connector dependency
 # ref: https://github.com/wiz-sec/charts/blob/master/wiz-kubernetes-connector/values.yaml
