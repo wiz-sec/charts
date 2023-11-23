@@ -28,7 +28,7 @@ spec:
       serviceAccountName: {{ include "wiz-sensor.serviceAccountName" . }}
       {{- end }}
 
-      {{- with .Values.daemonset.nodeSelector }}
+      {{- with (coalesce .Values.global.nodeSelector .Values.daemonset.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -37,7 +37,7 @@ spec:
       priorityClassName: {{ .Values.daemonset.priorityClassName }}
       {{- end }}
 
-      {{- with .Values.daemonset.affinity }}
+      {{- with (coalesce .Values.global.affinity .Values.daemonset.affinity) }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -47,7 +47,7 @@ spec:
       hostPID: true
       hostIPC: true
 
-      {{- with .Values.daemonset.tolerations }}
+      {{- with (coalesce .Values.global.tolerations .Values.daemonset.tolerations) }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
