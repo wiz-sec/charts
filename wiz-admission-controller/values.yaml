@@ -102,6 +102,7 @@ opaWebhook:
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
   policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, by default AC will get policies from Wiz based on projects.  
+  
   # Deprecated, don't use!
   errorEnforcementMethod: ""  # Deprecated, use `webhook.errorEnforcementMethod` instead
   policyEnforcementMethod: "" # Deprecated, use `webhook.policyEnforcementMethod` instead
