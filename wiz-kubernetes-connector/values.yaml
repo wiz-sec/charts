@@ -32,8 +32,7 @@ autoCreateConnector:
 
   connectorName: "" # optional 
   clusterFlavor: "" # optional (EKS, AKS, GKE, OKE, OpenShift, Kubernetes)
-  # Required arguments for broker.enabled = false
-  apiServerEndpoint: ""
+  apiServerEndpoint: "" # If not set, defaults to "https://kubernetes.default.svc.cluster.local" for use with a Wiz Broker
   clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
 
   serviceAccount:
@@ -93,7 +92,7 @@ wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = 
 
 broker:
   enabled: true
-  targetIp: "kubernetes.default.svc.cluster.local"
+  targetIp: "kubernetes.default.svc.cluster.local" # If the API server is not accessible at this domain name, change this value, and also change `autoCreateConnector.apiServerEndpoint` (they should match).
   serviceAccount:
     create: true
     # Annotations to add to the service account
