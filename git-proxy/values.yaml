@@ -93,3 +93,4 @@ extraEnv: {}
 
 httpProxyConfiguration:
   name: wiz-http-proxy-configuration
+  addEnvVars: true
