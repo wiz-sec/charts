@@ -26,15 +26,15 @@ clusterReader:
     annotations: {}
 
 autoCreateConnector:
-  enabled: true
+  enabled: true # Connect to Wiz to create a connector
 
-  autoDeleteConnectorEnabled: true
+  autoDeleteConnectorEnabled: true # Delete the connector on `helm uninstall``
 
-  connectorName: "" # optional 
-  clusterFlavor: "" # optional (EKS, AKS, GKE, OKE, OpenShift, Kubernetes)
-  # Required arguments for broker.enabled = false
-  apiServerEndpoint: ""
+  connectorName: "" # Recommended for self-managed clusters to easily identify the connector 
+  clusterFlavor: "" # Possible values: EKS, AKS, GKE, OKE, OpenShift, Kubernetes (defaults to Kubernetes)
+  apiServerEndpoint: "" # Defaults to https://kubernetes.default.svc.cluster.local
   clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  waitUntilInitialized: true # `true` is recommended for most cases. Only evaluated if using Wiz Broker.  
 
   serviceAccount:
     create: true
