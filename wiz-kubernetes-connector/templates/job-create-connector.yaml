@@ -81,7 +81,7 @@ spec:
             "--cluster-external-id",
             {{ . | quote }},
             {{ end }}
-            "--wait={{ .Values.broker.enabled }}",
+            "--wait={{ and .Values.broker.enabled .Values.autoCreateConnector.waitUntilInitialized }}",
             ]
           env:
           {{- with .Values.global.podCustomEnvironmentVariables }}
