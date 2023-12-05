@@ -53,6 +53,14 @@ global:
       secretName: ""
       pem: "" # PEM format CA certificate to use for proxy TLS verification.
 
+    mtls:
+      enabled: false
+      createSecret: true # If false, need to create the secret manually and provide its name in secretName.
+      annotations: { }
+      secretName: ""
+      certificate: "" # PEM format client certificate to use for proxy TLS verification.
+      privateKey: "" # PEM format private key to use for proxy TLS verification.
+
   httpProxyConfiguration:
     enabled: false
 

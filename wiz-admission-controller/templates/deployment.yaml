@@ -81,6 +81,8 @@ spec:
           {{- with (coalesce .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }} # check opaWebhook for backward compatibility
           - "--cluster-external-id={{ . }}"
           {{- end }}
+          # Kubernetes API server flags
+          - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
           # OPA webhook flags
           - "--misconfiguration-enabled={{ .Values.opaWebhook.enabled }}"
           {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}  
@@ -182,15 +184,15 @@ spec:
         {{- with .Values.global.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with .Values.nodeSelector }}
+      {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with (coalesce .Values.global.affinity .Values.affinity) }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with (coalesce .Values.global.tolerations .Values.tolerations) }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

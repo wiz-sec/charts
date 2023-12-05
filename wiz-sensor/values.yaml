@@ -214,3 +214,6 @@ global:
   podCustomEnvironmentVariables: []
   customVolumes: [] # Additional volumes to add to the components Pods
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
+  nodeSelector: {} # custom assignment to nodes
+  affinity: {} # custom affinity rules for node assignment
+  tolerations: [] # custom tolerations

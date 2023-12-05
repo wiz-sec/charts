@@ -10,7 +10,8 @@ metadata:
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-    rollme: {{ randAlphaNum 5 | quote }}
+    rollme.proxyHash: {{ include "wiz-kubernetes-connector.proxyHash" . }}
+    rollme.brokerHash: {{ include "wiz-kubernetes-connector.brokerHash" . }}
     {{- with (.Values.autoCreateConnector.deleteJobAnnotations) }}
       {{- toYaml . | nindent 4 }}
     {{- end }} 
@@ -124,15 +125,15 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- end }}            
-      {{- with .Values.nodeSelector }}
+      {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with (coalesce .Values.global.affinity .Values.affinity) }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with (coalesce .Values.global.tolerations .Values.tolerations) }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
