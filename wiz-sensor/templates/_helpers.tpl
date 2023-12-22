@@ -36,8 +36,9 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "wiz-sensor.labels" -}}
+{{- $imageparts:= split "@" .Values.image.tag }}
 helm.sh/chart: {{ include "wiz-sensor.chart" . }}
-image/tag: {{ .Values.image.tag }}
+image/tag: {{ $imageparts._0 }}
 {{ include "wiz-sensor.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}

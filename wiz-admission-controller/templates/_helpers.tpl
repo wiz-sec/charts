@@ -40,7 +40,8 @@ Common labels
 helm.sh/chart: {{ include "wiz-admission-controller.chart" . }}
 {{ include "wiz-admission-controller.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+{{- $imageparts:= split "@" .Values.image.tag }}
+app.kubernetes.io/version: {{ $imageparts._0 | default .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.commonLabels }}
