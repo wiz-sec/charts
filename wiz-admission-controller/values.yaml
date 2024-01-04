@@ -97,6 +97,7 @@ opaWebhook:
       operator: NotIn
       values:
       - kube-system
+      - kube-node-lease
 
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
