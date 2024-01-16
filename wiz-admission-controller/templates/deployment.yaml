@@ -157,14 +157,6 @@ spec:
             value: "/var/cache/.sigstore"
           - name: AWS_ECR_CACHE_DIR
             value: "/var/cache/.ecr"
-          - name: WIZ_RUNTIME_METADATA_POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: WIZ_RUNTIME_METADATA_NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
