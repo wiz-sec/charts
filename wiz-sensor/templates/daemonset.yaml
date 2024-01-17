@@ -135,8 +135,6 @@ spec:
           value: {{ include "wiz-sensor.secretName" . }}
         - name: AWS_EC2_METADATA_DISABLED
           value: "true"
-        - name: RUST_BACKTRACE
-          value: "full"
         - name: CRI_SOCKET_CUSTOM_PATH
           value: {{ .Values.daemonset.criSocketPath }}
         - name: HTTP_PROXY_URL
