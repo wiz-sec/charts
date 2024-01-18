@@ -17,6 +17,7 @@ metadata:
     {{- end }}   
 
 spec:
+  ttlSecondsAfterFinished: 60
   manualSelector: true
   selector:
     matchLabels:
