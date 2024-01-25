@@ -42,6 +42,7 @@ webhooks:
   namespaceSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  timeoutSeconds: {{ .Values.opaWebhook.timeoutSeconds }}
   failurePolicy: {{ .Values.opaWebhook.failurePolicy }}
   sideEffects: {{ .Values.opaWebhook.sideEffects }}
 {{- end }}
@@ -80,6 +81,7 @@ webhooks:
   namespaceSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  timeoutSeconds: {{ .Values.imageIntegrityWebhook.timeoutSeconds }}
   failurePolicy: {{ .Values.imageIntegrityWebhook.failurePolicy }}
   sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
