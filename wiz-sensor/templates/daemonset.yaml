@@ -42,8 +42,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 
+      {{- if .Values.hostNetwork }}
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+
       hostPID: true
       hostIPC: true
 
@@ -81,7 +84,9 @@ spec:
             - IPC_LOCK # eBPF
             - FOWNER # file hashing
             - SYS_PTRACE # eBPF
-            - KILL # forensics
+        {{- if not .Values.disallowRuntimeResponse }}
+            - KILL # response
+        {{- end }}
 
           privileged: false
           readOnlyRootFilesystem: true
@@ -173,6 +178,10 @@ spec:
               containerName: wiz-sensor
               resource: limits.cpu
               divisor: "1m"
+        {{- if .Values.disallowRuntimeResponse }}
+        - name: DISALLOW_RUNTIME_RESPONSE
+          value: "true"
+        {{- end}}
         {{- with .Values.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
         {{- end }}

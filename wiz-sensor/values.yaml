@@ -33,6 +33,12 @@ sensorClusterName: ""
 customVolumes: []
 customVolumeMounts: []
 
+# set to true to disallow runtime response from the sensor for this deployment
+disallowRuntimeResponse: false
+
+# set to false to set the sensor in its own network namespace
+hostNetwork: true
+
 # the API key identifying this installation (for comm with Wiz portal)
 wizApiToken:
   secret:
