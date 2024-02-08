@@ -14,7 +14,7 @@ podSecurityContext:
 global:
 
   image:
-    registry: wiziopublic.azurecr.io/wiz-app
+    registry: public-registry.wiz.io/wiz-app
     repository: wiz-broker
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
