@@ -42,7 +42,7 @@ httpProxyConfiguration:
 replicaCount: 2
 
 image:
-  registry: public-registry.wiz.io/wiz-app
+  registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-admission-controller
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.

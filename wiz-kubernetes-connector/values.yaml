@@ -6,7 +6,7 @@ nameOverride: "" # Override the release’s name.
 commonLabels: {} # Labels applied on all the resources (not used for selection)
 
 image:
-  registry: public-registry.wiz.io/wiz-app
+  registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-broker
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
