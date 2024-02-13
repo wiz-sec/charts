@@ -111,3 +111,4 @@ global:
     targetPort: ""
     tunnelServerDomain: ""
     tunnelServerPort: ""
+    tunnelClientAllowedDomains: []

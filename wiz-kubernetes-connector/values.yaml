@@ -90,6 +90,7 @@ wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = 
   targetDomain: ""
   targetIp: ""
   targetPort: ""
+  tunnelClientAllowedDomains: []
 
 broker:
   enabled: true
