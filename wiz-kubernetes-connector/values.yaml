@@ -158,6 +158,10 @@ global:
   nameOverride: "" # Override the release’s name.
   commonLabels: {} # Labels applied on all the resources (not used for selection)
 
+  # Set the log level. Can be one of "debug", "info", "warn", or "error".
+  # Warning: Do not set to `debug` in production environments, or sensitive data may be written to the logs.
+  logLevel: "info"
+
   # Wiz Service Account used to authenticate to Wiz.
   wizApiToken:
     clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).

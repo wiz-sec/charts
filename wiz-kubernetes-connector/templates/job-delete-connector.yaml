@@ -67,6 +67,10 @@ spec:
             {{- include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
             ]
           env:
+          {{- if .Values.global.logLevel }}
+          - name: LOG_LEVEL
+            value: {{ .Values.global.logLevel }}
+          {{- end }}
           {{- with .Values.global.podCustomEnvironmentVariables }}
             {{- toYaml . | nindent 10 }}
           {{- end }}

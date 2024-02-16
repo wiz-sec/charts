@@ -85,6 +85,10 @@ spec:
             "--wait={{ and .Values.broker.enabled .Values.autoCreateConnector.waitUntilInitialized }}",
             ]
           env:
+          {{- if .Values.global.logLevel }}
+          - name: LOG_LEVEL
+            value: {{ .Values.global.logLevel }}
+          {{- end }}
           {{- with .Values.global.podCustomEnvironmentVariables }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
