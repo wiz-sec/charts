@@ -151,6 +151,7 @@ imageIntegrityWebhook:
 
   patchImageDigestAnnotation: true # If true, annotate the pod with mapping between tag->digest.
 
+# Debug webhhok only logs the request
 debugWebhook:
   enabled: false
   # Override to run admission controller on specific resources.
