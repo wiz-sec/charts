@@ -97,6 +97,8 @@ spec:
           {{ include "wiz-admission-controller.imageRegistryClient.pullSecrets" . | trim | nindent 10 }}
           {{ include "wiz-admission-controller.imageRegistryClient.credentialHelpersSecrets" . | trim | nindent 10 }}
           {{- end }}
+          ## debug webhook
+          - "--debug-webhook-enabled={{ .Values.debugWebhook.enabled }}"
           env:
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
