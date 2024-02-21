@@ -62,6 +62,9 @@ TunnelToken: {{ required "A valid .Values.global.wizConnector.connectorToken ent
 TunnelDomain: {{ required "A valid .Values.global.wizConnector.targetDomain entry required!" .Values.global.wizConnector.targetDomain | quote }}
 TunnelServerDomain: {{ required "A valid .Values.global.wizConnector.tunnelServerDomain entry required!" .Values.global.wizConnector.tunnelServerDomain | quote }}
 TunnelServerPort: {{ required "A valid .Values.global.wizConnector.tunnelServerPort entry required!" .Values.global.wizConnector.tunnelServerPort | quote }}
+{{- if .Values.global.wizConnector.tunnelClientAllowedDomains }}
+TunnelClientAllowedDomains: "{{ range $index, $domain := .Values.global.wizConnector.tunnelClientAllowedDomains }}{{ if $index }},{{ end }}{{ $domain }}{{ end }}"
+{{- end }}
 {{- end }}
 {{- end }}
 
