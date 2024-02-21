@@ -97,8 +97,6 @@ spec:
           {{ include "wiz-admission-controller.imageRegistryClient.pullSecrets" . | trim | nindent 10 }}
           {{ include "wiz-admission-controller.imageRegistryClient.credentialHelpersSecrets" . | trim | nindent 10 }}
           {{- end }}
-          ## debug webhook
-          - "--debug-webhook-enabled={{ .Values.debugWebhook.enabled }}"
           env:
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
@@ -167,6 +165,11 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
+          ## Enable debug webhook that only logs the request
+          {{- if .Values.debugWebhook.enabled }}
+          - name: WIZ_DEBUG_WEBHOOK_ENABLED
+            value: "true"
+          {{- end }}        
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
