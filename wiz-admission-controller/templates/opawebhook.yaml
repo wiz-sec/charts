@@ -85,7 +85,6 @@ webhooks:
   failurePolicy: {{ .Values.imageIntegrityWebhook.failurePolicy }}
   sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
-{{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled) (not $useCertManagerCerts) }}
 ---
 {{ if .Values.debugWebhook.enabled -}}
 apiVersion: admissionregistration.k8s.io/v1
@@ -126,6 +125,7 @@ webhooks:
   sideEffects: {{ .Values.debugWebhook.sideEffects }}
 {{- end }}
 ---
+{{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled) (not $useCertManagerCerts) }}
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
@@ -145,3 +145,4 @@ data:
   tls.crt: {{ $tlsCrt }}
   tls.key: {{ $tlsKey }}
 {{- end }}
+
