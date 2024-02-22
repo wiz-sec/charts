@@ -151,6 +151,49 @@ imageIntegrityWebhook:
 
   patchImageDigestAnnotation: true # If true, annotate the pod with mapping between tag->digest.
 
+# Debug webhook only logs the request
+debugWebhook:
+  enabled: false
+  # Override to run admission controller on specific resources.
+  rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
+    - operations:
+      - CREATE
+      - UPDATE
+      apiGroups:
+      - "*"
+      apiVersions:
+      - "*"
+      resources:
+      - "namespaces"
+      - "secrets"
+      - "configmaps"
+      - "storageclasses"
+      - "persistentvolumes"
+      - "persistentvolumeclaims"
+      - "controllerrevisions"
+      - "ingresses"
+      - "services"
+      - "networkpolicies"
+      - "pods"
+      - "deployments"
+      - "jobs"
+      - "cronjobs"
+      - "replicasets"
+      - "statefulsets"
+      - "daemonsets"
+  namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+    matchExpressions:
+    - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
+      operator: NotIn
+      values:
+      - kube-system
+      - kube-node-lease
+
+  timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
+  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
+  sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
+
+
 # The following values are used for image integrity webhook.
 imageRegistryClient:
   createRole: true # Should a Role and RoleBinding be created by the chart or not.
