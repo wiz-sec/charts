@@ -12,6 +12,9 @@ podSecurityContext:
   runAsUser: 1000
 
 global:
+  # Set the log level. Can be one of "debug", "info", "warn", or "error".
+  # Warning: Do not set to `debug` in production environments, or sensitive data may be written to the logs.
+  logLevel: "info"
 
   image:
     registry: wiziopublic.azurecr.io/wiz-app
