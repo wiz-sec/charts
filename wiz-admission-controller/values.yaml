@@ -202,7 +202,7 @@ imageRegistryClient:
   credentialHelpers: [] # List of credential helpers to use, Can be one of amazon, azure, google, github. 
 
 kubernetesApiServer:
-  cacheNamespaceLabelsTTL: 10m # The TTL of the cache for namespace labels. The cache is used to avoid querying cluster for the same namespace multiple times.
+  cacheNamespaceLabelsTTL: 10m # The interval of the background reloder cache for namespace labels. The cache is used to avoid querying cluster for the same namespace multiple times.
 
 # K8s service account to be used by the pod(s)
 serviceAccount:
