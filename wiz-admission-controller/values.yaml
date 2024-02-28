@@ -319,3 +319,21 @@ global:
   nodeSelector: {} # custom assignment to nodes
   affinity: {} # custom affinity rules for node assignment
   tolerations: [] # custom tolerations
+
+probes: # Probes config for the container
+# https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+# Note that httpGet already configured in the deployment.yaml
+  startupProbe:
+    initialDelaySeconds: 5
+    failureThreshold: 30
+    timeoutSeconds: 300 
+
+  readinessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 30
+    failureThreshold: 3
+
+  livenessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 30
+    failureThreshold: 3
