@@ -51,18 +51,19 @@ spec:
               path: /ready
               port: {{ .Values.healthPort }}
               scheme: HTTPS
-            initialDelaySeconds: 5
-            timeoutSeconds: 30
-            failureThreshold: 3
-
+            {{- toYaml .Values.probes.readinessProbe | nindent 12 }}
           livenessProbe:
             httpGet:
               path: /live
               port: {{ .Values.healthPort }}
               scheme: HTTPS
-            initialDelaySeconds: 5
-            timeoutSeconds: 30
-            failureThreshold: 3
+            {{- toYaml .Values.probes.livenessProbe | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.healthPort }}
+              scheme: HTTPS
+            {{- toYaml .Values.probes.startupProbe | nindent 12 }}
 
           command:
           - "/usr/bin/wiz-admission-controller"
