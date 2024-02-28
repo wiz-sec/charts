@@ -280,6 +280,24 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+probes: # Probes config for the container
+# https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+# Note that httpGet already configured in the deployment.yaml
+  startupProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 300 # 5 minutes
+    failureThreshold: 30 # 10s(default) * 30 attempts = 300 seconds for it to finish
+    
+  readinessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 30
+    failureThreshold: 3
+
+  livenessProbe:
+    initialDelaySeconds: 5
+    timeoutSeconds: 30
+    failureThreshold: 3
+
 # Global values to override chart values.
 global:
   nameOverride: "" # Override the release’s name.
@@ -319,21 +337,3 @@ global:
   nodeSelector: {} # custom assignment to nodes
   affinity: {} # custom affinity rules for node assignment
   tolerations: [] # custom tolerations
-
-probes: # Probes config for the container
-# https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-# Note that httpGet already configured in the deployment.yaml
-  startupProbe:
-    initialDelaySeconds: 5
-    timeoutSeconds: 300 # 5 minutes
-    failureThreshold: 30 # 10s(default) * 30 attempts = 300 seconds for it to finish
-    
-  readinessProbe:
-    initialDelaySeconds: 5
-    timeoutSeconds: 30
-    failureThreshold: 3
-
-  livenessProbe:
-    initialDelaySeconds: 5
-    timeoutSeconds: 30
-    failureThreshold: 3
