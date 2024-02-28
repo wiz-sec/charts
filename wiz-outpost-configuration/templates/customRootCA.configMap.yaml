@@ -1,0 +1,10 @@
+{{- if .Values.trustedCa.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.trustedCa.name }}
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+data:
+  rootCa.pem: {{ .Values.trustedCa.rootCaPemBase64 | b64dec | quote }}
+{{- end }}

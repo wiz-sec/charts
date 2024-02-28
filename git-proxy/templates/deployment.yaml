@@ -125,6 +125,8 @@ spec:
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "no-proxy-address-cs"
                 optional: true
+          - name: SSL_CERT_FILE
+            value: "/usr/local/share/ca-certificates/rootCa.pem"
           args: [
             {{- if eq .Values.storageService "blob" }}
             "--resourceGroup", {{ required "blob.resourceGroupName is required" .Values.blob.resourceGroupName | quote }},
@@ -169,6 +171,9 @@ spec:
             - name: oidc-token
               mountPath: /var/run/secrets/tokens
             {{- end }}
+            - mountPath: /usr/local/share/ca-certificates/root_ca_only.crt
+              name: custom-cert-ca
+              subPath: root_ca_only.crt
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -180,6 +185,11 @@ spec:
       volumes:
         - name: tmp-dir
           emptyDir: {}
+        - name: custom-cert-ca
+          configMap:
+            defaultMode: 420
+            name: {{ .Values.trustedCa.name }}
+            optional: true
         {{- if eq .Values.storageService "blob" }}
         {{- if .Values.blob.azureCreds }}
         - name: azure-creds
