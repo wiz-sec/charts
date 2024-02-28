@@ -325,8 +325,8 @@ probes: # Probes config for the container
 # Note that httpGet already configured in the deployment.yaml
   startupProbe:
     initialDelaySeconds: 5
-    timeoutSeconds: 300 
-    failureThreshold: 30
+    timeoutSeconds: 300 # 5 minutes
+    failureThreshold: 30 # 10s(default) * 30 attempts = 300 seconds for it to finish
     
   readinessProbe:
     initialDelaySeconds: 5
