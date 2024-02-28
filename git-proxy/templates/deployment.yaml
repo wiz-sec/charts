@@ -171,9 +171,8 @@ spec:
             - name: oidc-token
               mountPath: /var/run/secrets/tokens
             {{- end }}
-            - mountPath: /usr/local/share/ca-certificates/root_ca_only.crt
+            - mountPath: /usr/local/share/ca-certificates/
               name: custom-cert-ca
-              subPath: root_ca_only.crt
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
