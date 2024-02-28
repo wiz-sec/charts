@@ -11,7 +11,6 @@ httpProxyConfiguration:
   - replaceme
   - replaceme2
 
-
 azureCreds: 
   # tenantId: replaceme
   # aadClientId: replaceme
