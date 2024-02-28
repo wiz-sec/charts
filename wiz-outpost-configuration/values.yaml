@@ -14,3 +14,13 @@ httpProxyConfiguration:
     --- BEGIN CERTIFICATE ---
     replaceme
     --- END CERTIFICATE ---
+
+azureCreds: 
+  # tenantId: replaceme
+  # aadClientId: replaceme
+  # aadClientSecret: replaceme
+  # subscriptionId: replaceme
+  # environment: replaceme
+  # useInstanceMetadata: false
+  # useFederatedToken: false
+  # publishAzureCreds: false
