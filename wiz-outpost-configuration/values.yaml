@@ -10,3 +10,13 @@ httpProxyConfiguration:
   noProxy:
   - replaceme
   - replaceme2
+
+azureCreds: 
+  # tenantId: replaceme
+  # aadClientId: replaceme
+  # aadClientSecret: replaceme
+  # subscriptionId: replaceme
+  # environment: replaceme
+  # useInstanceMetadata: false
+  # useFederatedToken: false
+  # publishAzureCreds: false
