@@ -81,7 +81,7 @@ spec:
             cpu: 1000m
             memory: 1Gi
           requests:
-            cpu: 100m
+            cpu: 20m
             memory: 64Mi
         volumeMounts:
           - name: temp
