@@ -93,37 +93,37 @@ spec:
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "http-proxy"
+                key: "httpProxy"
                 optional: true
           - name: HTTP_PROXY
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "http-proxy"
+                key: "httpProxy"
                 optional: true
           - name: https_proxy
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "https-proxy"
+                key: "httpsProxy"
                 optional: true
           - name: HTTPS_PROXY
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "https-proxy"
+                key: "httpsProxy"
                 optional: true
           - name: no_proxy
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "no-proxy-address-cs"
+                key: "noProxyAddress"
                 optional: true
           - name: NO_PROXY
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "no-proxy-address-cs"
+                key: "noProxyAddress"
                 optional: true
           - name: SSL_CERT_FILE
             value: "/usr/local/share/ca-certificates/root.crt"
@@ -188,7 +188,7 @@ spec:
         - name: ca-certificate
           secret:
             defaultMode: 420
-            secretName: {{ .Values.caCertificate.name }}
+            secretName: {{ .Values.httpProxyConfiguration.name | quote }}
             items:
               - key: caCertificate
                 path: root.crt

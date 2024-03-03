@@ -10,11 +10,7 @@ httpProxyConfiguration:
   noProxy:
     - replaceme
     - replaceme2
-
-caCertificate:
-  enabled: false
-  name: wiz-trusted-ca
-  pem: |
+  caCertificate: |
     --- BEGIN CERTIFICATE ---
     replaceme
     --- END CERTIFICATE ---

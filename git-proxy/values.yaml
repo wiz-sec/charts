@@ -93,6 +93,3 @@ extraEnv: {}
 
 httpProxyConfiguration:
   name: wiz-http-proxy-configuration
-
-caCertificate:
-  name: wiz-trusted-ca
