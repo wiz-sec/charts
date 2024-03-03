@@ -14,4 +14,7 @@ httpProxyConfiguration:
 caCertificate:
   enabled: false
   name: wiz-trusted-ca
-  pemBase64: LS0tLS1CRUdJTiBDRVJUSUZJQ0...VEUtLS0tLQo=
+  pem: |
+    --- BEGIN CERTIFICATE ---
+    replaceme
+    --- END CERTIFICATE ---
