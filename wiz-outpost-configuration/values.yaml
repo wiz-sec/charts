@@ -11,7 +11,7 @@ httpProxyConfiguration:
     - replaceme
     - replaceme2
 
-trustedCa:
+caCertificate:
   enabled: false
   name: wiz-trusted-ca
-  rootCaPemBase64: LS0tLS1CRUdJTiBDRVJUSUZJQ0...VEUtLS0tLQo=
+  pemBase64: LS0tLS1CRUdJTiBDRVJUSUZJQ0...VEUtLS0tLQo=

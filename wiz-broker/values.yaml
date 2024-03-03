@@ -115,3 +115,7 @@ global:
     tunnelServerDomain: ""
     tunnelServerPort: ""
     tunnelClientAllowedDomains: []
+
+caCertificate:
+  enabled: false
+  name: wiz-trusted-ca
