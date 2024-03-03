@@ -42,23 +42,14 @@ spec:
             items:
               - key: connectorData
                 path: {{ $connectorDataFileName }}
+        {{- if .Values.global.broker.caCertificate.enabled }}
         - name: ca-certificate
-          projected:
-            sources:
-              - secret:
-                  defaultMode: 420
-                  secretName: {{ include "wiz-broker.caCertificateSecretName" . | trim }}
-                  items:
-                    - key: caCertificate
-                      path: target.crt
-                  optional: true
-              - secret:
-                  defaultMode: 420
-                  secretName: {{ .Values.caCertificate.name }}
-                  items:
-                    - key: caCertificate
-                      path: root.crt
-                  optional: true
+          secret:
+            secretName: {{ include "wiz-broker.caCertificateSecretName" . | trim }}
+            items:
+              - key: caCertificate
+                path: target.crt
+        {{- end }}
         {{- if .Values.global.broker.mtls.enabled }}
         - name: mtls
           secret:
@@ -82,9 +73,11 @@ spec:
           - name: connector-data
             mountPath: {{ $mountPath }}
             readOnly: true
+          {{- if .Values.global.broker.caCertificate.enabled }}
           - name: ca-certificate
             mountPath: /usr/local/share/ca-certificates
             readOnly: true
+          {{- end }}
           {{- if .Values.global.broker.mtls.enabled }}
           - name: mtls
             mountPath: {{ $mtlsPath }}
