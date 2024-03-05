@@ -82,7 +82,7 @@ helmController:
   tolerations: []
 
 imageAutomationController:
-  create: true
+  create: false
   image: ghcr.io/fluxcd/image-automation-controller
   tag: v0.37.1
   resources:
@@ -110,7 +110,7 @@ imageAutomationController:
   tolerations: []
 
 imageReflectionController:
-  create: true
+  create: false
   image: ghcr.io/fluxcd/image-reflector-controller
   tag: v0.31.2
   resources:
@@ -186,7 +186,7 @@ kustomizeController:
   tolerations: []
 
 notificationController:
-  create: true
+  create: false
   image: ghcr.io/fluxcd/notification-controller
   tag: v1.2.4
   resources:
@@ -325,3 +325,8 @@ prometheus:
           - sourceLabels: [__meta_kubernetes_pod_phase]
             action: keep
             regex: Running
+
+git:
+  url: http://git-proxy.default.svc.cluster.local
+  branch: master
+  path: #./replaceme/
