@@ -78,6 +78,7 @@ global:
     httpProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
     httpsProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
     noProxyAddress: "" # comma or space separated list of machine or domain names
+    caCertificate: "" # PEM format CA certificate to use for proxy TLS verification.
 
   wizApiToken:
     clientId: ""
