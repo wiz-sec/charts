@@ -42,7 +42,7 @@ helmController:
     # cpu: 1000m
     # memory: 1Gi
     requests:
-      cpu: 100m
+      cpu: 20m
       memory: 64Mi
   priorityClassName: ""
   annotations:
@@ -90,7 +90,7 @@ imageAutomationController:
     # cpu: 1000m
     # memory: 1Gi
     requests:
-      cpu: 100m
+      cpu: 20m
       memory: 64Mi
   priorityClassName: ""
   annotations:
@@ -118,7 +118,7 @@ imageReflectionController:
     # cpu: 1000m
     # memory: 1Gi
     requests:
-      cpu: 100m
+      cpu: 20m
       memory: 64Mi
   priorityClassName: ""
   annotations:
@@ -146,7 +146,7 @@ kustomizeController:
     # cpu: 1000m
     # memory: 1Gi
     requests:
-      cpu: 100m
+      cpu: 20m
       memory: 64Mi
   priorityClassName: ""
   annotations:
@@ -194,7 +194,7 @@ notificationController:
     # cpu: 1000m
     # memory: 1Gi
     requests:
-      cpu: 100m
+      cpu: 20m
       memory: 64Mi
   priorityClassName: ""
   annotations:
@@ -247,7 +247,7 @@ sourceController:
     # cpu: 1000m
     # memory: 1Gi
     requests:
-      cpu: 100m
+      cpu: 20m
       memory: 64Mi
   priorityClassName: ""
   annotations:
