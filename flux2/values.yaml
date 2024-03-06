@@ -82,7 +82,7 @@ helmController:
   tolerations: []
 
 imageAutomationController:
-  create: false
+  create: false  # WIZ
   image: ghcr.io/fluxcd/image-automation-controller
   tag: v0.37.1
   resources:
@@ -110,7 +110,7 @@ imageAutomationController:
   tolerations: []
 
 imageReflectionController:
-  create: false
+  create: false  # WIZ
   image: ghcr.io/fluxcd/image-reflector-controller
   tag: v0.31.2
   resources:
@@ -186,7 +186,7 @@ kustomizeController:
   tolerations: []
 
 notificationController:
-  create: false
+  create: false  # WIZ
   image: ghcr.io/fluxcd/notification-controller
   tag: v1.2.4
   resources:
@@ -281,7 +281,7 @@ rbac:
   roleRef:
     name: cluster-admin
 
-logLevel: info
+logLevel: error  # WIZ
 watchAllNamespaces: true
 
 # -- contents of pod imagePullSecret in form 'name=[secretName]'; applied to all controllers
