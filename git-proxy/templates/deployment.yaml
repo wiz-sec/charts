@@ -93,38 +93,40 @@ spec:
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "http-proxy"
+                key: "httpProxy"
                 optional: true
           - name: HTTP_PROXY
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "http-proxy"
+                key: "httpProxy"
                 optional: true
           - name: https_proxy
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "https-proxy"
+                key: "httpsProxy"
                 optional: true
           - name: HTTPS_PROXY
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "https-proxy"
+                key: "httpsProxy"
                 optional: true
           - name: no_proxy
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "no-proxy-address-cs"
+                key: "noProxyAddress"
                 optional: true
           - name: NO_PROXY
             valueFrom:
               secretKeyRef: 
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
-                key: "no-proxy-address-cs"
+                key: "noProxyAddress"
                 optional: true
+          - name: SSL_CERT_FILE
+            value: "/usr/local/share/ca-certificates/root.crt"
           args: [
             {{- if eq .Values.storageService "blob" }}
             "--resourceGroup", {{ required "blob.resourceGroupName is required" .Values.blob.resourceGroupName | quote }},
@@ -169,6 +171,9 @@ spec:
             - name: oidc-token
               mountPath: /var/run/secrets/tokens
             {{- end }}
+            - mountPath: /usr/local/share/ca-certificates/
+              name: ca-certificate
+              readOnly: true
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -180,6 +185,14 @@ spec:
       volumes:
         - name: tmp-dir
           emptyDir: {}
+        - name: ca-certificate
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.httpProxyConfiguration.name | quote }}
+            items:
+              - key: caCertificate
+                path: root.crt
+            optional: true
         {{- if eq .Values.storageService "blob" }}
         {{- if .Values.blob.azureCreds }}
         - name: azure-creds
