@@ -1,5 +1,5 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta1
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: outpost-state
@@ -9,7 +9,7 @@ spec:
     branch: {{ required "branch is required" .Values.git.branch }}
   url: {{ required "git.url is required" .Values.git.url }}
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: outpost-state
