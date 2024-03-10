@@ -1,17 +1,17 @@
-{{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled)}}
+{{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiz-admission-controller.fullname" . }}
+  name: {{ include "wiz-admission-controller-audit-logs.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    {{- include "wiz-admission-controller-enforcement.labels" . | nindent 4 }}
+    {{- include "wiz-kubernetes-audit-logs.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.kubernetesAuditLogsWebhook.replicaCount }}
   selector:
     matchLabels:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
-      {{- include "wiz-admission-controller-enforcement.selectorLabels" . | nindent 6 }}
+      {{- include "wiz-kubernetes-audit-logs.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -25,7 +25,7 @@ spec:
         {{/*
         `labels` includes `selectorLabels`
         */}}
-        {{- include "wiz-admission-controller-enforcement.labels" . | nindent 8 }}
+        {{- include "wiz-kubernetes-audit-logs.labels" . | nindent 8 }}
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
@@ -75,33 +75,16 @@ spec:
           - "--tls-private-key-file=/var/server-certs/tls.key"
           - "--tls-cert-file=/var/server-certs/tls.crt"
           # Webhook flags
-          {{- with (coalesce .Values.opaWebhook.errorEnforcementMethod .Values.webhook.errorEnforcementMethod) }} # check opaWebhook for backward compatibility
-          - "--error-enforcement-method={{ . }}"
-          {{- end }}
-          {{- with (coalesce .Values.webhook.policyEnforcementMethod .Values.opaWebhook.policyEnforcementMethod) }} # check opaWebhook for backward compatibility
-          - "--policy-enforcement-method={{ . }}"
-          {{- end }}
-          {{- with (coalesce .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }} # check opaWebhook for backward compatibility
-          - "--cluster-external-id={{ . }}"
-          {{- end }}
+          - "--error-enforcement-method=AUDIT"
+          - "--policy-enforcement-method=AUDIT"
+          - "--cluster-external-id={{ .Values.webhook.clusterExternalId }}"
           # Kubernetes API server flags
           - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
-          # OPA webhook flags
-          - "--misconfiguration-enabled={{ .Values.opaWebhook.enabled }}"
-          {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}  
-          # Image integrity webhook flags
-          {{- if .Values.imageIntegrityWebhook.enabled }}
-          - "--image-integrity-enabled=true"
-          - "--image-integrity-cache-digest-ttl={{ .Values.imageIntegrityWebhook.cacheImageDigestTTL }}"
-          - "--image-integrity-cache-verify-ttl={{ .Values.imageIntegrityWebhook.cacheImageVerifyTTL }}"
-          {{ include "wiz-admission-controller.imageIntegrityCliParams.policies" . | trim | nindent 10 }}
-          ## Image registry client flags
-          - "--registry-image-pull-secret-namespace={{ .Values.imageRegistryClient.secretsNamespace }}"
-          {{ include "wiz-admission-controller.imageRegistryClient.pullSecrets" . | trim | nindent 10 }}
-          {{ include "wiz-admission-controller.imageRegistryClient.credentialHelpersSecrets" . | trim | nindent 10 }}
-          {{- end }}
-          # Disable K8S audit logs webhook
-          - "--kubernetes-audit-logs-enabled=false"
+          # K8S audit logs webhook flags
+          - "--kubernetes-audit-logs-enabled=true"
+          # Disable other webhooks
+          - "--misconfiguration-enabled=false"
+          - "--image-integrity-enabled=false"
           env:
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
@@ -119,8 +102,6 @@ spec:
           {{- end }}
           - name: WIZ_ENV
             value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
-          - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
-            value: {{ .Values.imageIntegrityWebhook.patchImageDigestAnnotation | quote }}
           {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
@@ -174,7 +155,7 @@ spec:
           {{- if .Values.debugWebhook.enabled }}
           - name: WIZ_DEBUG_WEBHOOK_ENABLED
             value: "true"
-          {{- end }}        
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
