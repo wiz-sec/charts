@@ -4,7 +4,7 @@ metadata:
   name: {{ include "wiz-admission-controller.fullname" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+    {{- include "wiz-admission-controller-enforcement.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -13,3 +13,21 @@ spec:
       protocol: TCP
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
+    {{- include "wiz-admission-controller-enforcement.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "wiz-admission-controller-audit-logs.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-kubernetes-audit-logs.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
+    {{- include "wiz-kubernetes-audit-logs.selectorLabels" . | nindent 4 }}

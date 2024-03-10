@@ -151,6 +151,36 @@ imageIntegrityWebhook:
 
   patchImageDigestAnnotation: true # If true, annotate the pod with mapping between tag->digest.
 
+# Kubernetes audit logs webhook is currently in private preview.
+# This webhooks sends the audit logs to Wiz, and should never block any requests.
+kubernetesAuditLogsWebhook:
+  enabled: false 
+
+    # Override to run admission controller on specific resources.
+  rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
+    - operations:
+      - "*"
+      apiGroups:
+      - "*"
+      apiVersions:
+      - "*"
+      resources:
+      - "*"
+  namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+    matchExpressions:
+    - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
+      operator: NotIn
+      values:
+      - kube-system
+      - kube-node-lease
+
+  timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
+  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
+  sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
+
+  replicaCount: 2
+
+
 # Debug webhook only logs the request
 debugWebhook:
   enabled: false
