@@ -56,7 +56,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Wiz admission controller webhook server selector labels
+Wiz admission controller deployment selector labels
 */}}
 {{- define "wiz-admission-controller.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "wiz-admission-controller.name" . }}
@@ -150,3 +150,57 @@ Use for debug purpose only.
 {{- define "helpers.var_dump" -}}
 {{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
 {{- end -}}
+
+{{/*
+Create a default fully qualified app name for Kubernetes audit logs.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
+*/}}
+{{- define "wiz-kubernetes-audit-logs.name" -}}
+{{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
+{{- .Values.kubernetesAuditLogsWebhookobal.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else -}}
+{{- printf "wiz-kubernetes-audit-logs" -}}
+{{- end }}
+{{- end }}
+
+{{/*
+Common labels
+*/}}
+{{- define "wiz-kubernetes-audit-logs.labels" -}}
+helm.sh/chart: {{ include "wiz-admission-controller.chart" . }}
+{{ include "wiz-kubernetes-audit-logs.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.commonLabels }}
+{{- range $index, $content := .Values.commonLabels }}
+{{ $index }}: {{ tpl $content $ | quote }}
+{{- end }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- range $index, $content := .Values.global.commonLabels }}
+{{ $index }}: {{ tpl $content $ | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Wiz Kubernetes audit logs deployment selector labels
+*/}}
+{{- define "wiz-kubernetes-audit-logs.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-logs.name" . }}
+app.kubernetes.io/chartName: {{ .Chart.Name | trunc 63 }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+
+
+{{/*
+Wiz admission controller webhook server selector labels
+*/}}
+{{- define "wiz-admission-controller-service.selectorLabels" -}}
+app.kubernetes.io/chartName: {{ .Chart.Name | trunc 63 }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}

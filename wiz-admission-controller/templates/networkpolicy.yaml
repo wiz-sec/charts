@@ -9,7 +9,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
+      {{- include "wiz-admission-controller-service.selectorLabels" . | nindent 6 }}
   policyTypes:
     - Ingress
   ingress:

@@ -12,4 +12,4 @@ spec:
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
   selector:
-    {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
+    {{- include "wiz-admission-controller-service.selectorLabels" . | nindent 4 }}
