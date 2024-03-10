@@ -155,7 +155,6 @@ imageIntegrityWebhook:
 # This webhooks sends the audit logs to Wiz, and should never block any requests.
 kubernetesAuditLogsWebhook:
   enabled: false 
-  policies: [] # List of policies to enforce on the image integrity webhook. If not set, by default AC will get policies from Wiz based on projects.
 
     # Override to run admission controller on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
