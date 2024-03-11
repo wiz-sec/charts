@@ -1,4 +1,4 @@
-{{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled)}}
+{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
