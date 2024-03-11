@@ -165,7 +165,23 @@ kubernetesAuditLogsWebhook:
       apiVersions:
       - "*"
       resources:
-      - "*"
+        - "namespaces"
+        - "secrets"
+        - "configmaps"
+        - "storageclasses"
+        - "persistentvolumes"
+        - "persistentvolumeclaims"
+        - "controllerrevisions"
+        - "ingresses"
+        - "services"
+        - "networkpolicies"
+        - "pods"
+        - "deployments"
+        - "jobs"
+        - "cronjobs"
+        - "replicasets"
+        - "statefulsets"
+        - "daemonsets"
   namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
     matchExpressions:
     - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
