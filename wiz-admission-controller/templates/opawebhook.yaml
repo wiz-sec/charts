@@ -106,7 +106,7 @@ webhooks:
   clientConfig:
     service:
       namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller.fullname" . }}
+      name: {{ include "wiz-admission-controller-audit-logs.name" . }}
       path: /kubernetes-audit-logs
       port: {{ .Values.service.port }}
 {{- if not $useCertManagerCerts }}
