@@ -86,6 +86,8 @@ spec:
           - "--misconfiguration-enabled=false"
           - "--image-integrity-enabled=false"
           env:
+          - name: WIZ_UPLOAD_BACKEND_STORAGE # TODO: remove once this is removed from the code
+            value: "true"
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
             valueFrom:
