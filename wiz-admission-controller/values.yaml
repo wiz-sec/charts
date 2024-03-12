@@ -201,6 +201,7 @@ kubernetesAuditLogsWebhook:
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
+  nameOverride: "" # Override the audit logs deployment name.
   replicaCount: 2
 
 

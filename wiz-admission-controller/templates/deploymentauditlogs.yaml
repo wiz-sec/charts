@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiz-admission-controller-audit-logs.name" . }}
+  name: {{ include "wiz-admission-controller-audit-logs-collector.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-kubernetes-audit-logs.labels" . | nindent 4 }}
