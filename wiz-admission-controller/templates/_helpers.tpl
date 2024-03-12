@@ -26,6 +26,19 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller-audit-logs-collector.name" -}}
+{{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
+{{- .Values.kubernetesAuditLogsWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := "wiz-audit-logs-collector" }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -63,6 +76,32 @@ app.kubernetes.io/name: {{ include "wiz-admission-controller.name" . }}
 app.kubernetes.io/chartName: {{ .Chart.Name | trunc 63 }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Wiz admission controller enforcement webhook server selector labels
+*/}}
+{{- define "wiz-admission-controller-enforcement.selectorLabels" -}}
+type: enforcement
+{{- end }}
+
+{{/*
+Wiz kubernetes audit logs webhook server selector labels
+*/}}
+{{- define "wiz-kubernetes-audit-logs.selectorLabels" -}}
+type: audit-logs
+{{- end }}
+
+{{- define "wiz-admission-controller-enforcement.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-admission-controller-enforcement.selectorLabels" . }}
+{{- end }}
+
+{{- define "wiz-kubernetes-audit-logs.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-kubernetes-audit-logs.selectorLabels" . }}
+{{- end }}
+
+{{/*
 
 {{/*
 Create the name of the service account to use

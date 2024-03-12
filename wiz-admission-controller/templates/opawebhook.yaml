@@ -2,7 +2,7 @@
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
-{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) -}}
+{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s" ( include "wiz-admission-controller-audit-logs-collector.name" .) .Release.Namespace ) ( printf "%s.%s.svc" ( include "wiz-admission-controller-audit-logs-collector.name" .) .Release.Namespace ) -}}
 {{- $ca := genCA "wiz-admission-controller-ca" 3650 -}}
 {{- $cert := genSignedCert ( include "wiz-admission-controller.fullname" . ) nil $altNames 3650 $ca -}}
 {{- $tlsCrt = $cert.Cert | b64enc -}}
@@ -86,6 +86,45 @@ webhooks:
   sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
 ---
+{{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "kubernetes-audit-logs" }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "post-install, post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- if $useCertManagerCerts }}
+    "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
+  {{- end }}
+webhooks:
+- name: kubernetesauditlogs.wiz.io
+  admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    service:
+      namespace: {{ .Release.Namespace }}
+      name: {{ include "wiz-admission-controller-audit-logs-collector.name" . }}
+      path: /kubernetes-audit-logs
+      port: {{ .Values.service.port }}
+{{- if not $useCertManagerCerts }}
+    caBundle: {{ $tlsCrt }}
+{{- end }}
+  {{- with .Values.kubernetesAuditLogsWebhook.rules }}
+  rules:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.kubernetesAuditLogsWebhook.namespaceSelector }}
+  namespaceSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  timeoutSeconds: {{ .Values.kubernetesAuditLogsWebhook.timeoutSeconds }}
+  failurePolicy: {{ .Values.kubernetesAuditLogsWebhook.failurePolicy }}
+  sideEffects: {{ .Values.kubernetesAuditLogsWebhook.sideEffects }}
+{{- end }}
+---
 {{ if .Values.debugWebhook.enabled -}}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
@@ -125,7 +164,7 @@ webhooks:
   sideEffects: {{ .Values.debugWebhook.sideEffects }}
 {{- end }}
 ---
-{{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled) (not $useCertManagerCerts) }}
+{{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.kubernetesAuditLogsWebhook.enabled .Values.debugWebhook.enabled) (not $useCertManagerCerts) }}
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
