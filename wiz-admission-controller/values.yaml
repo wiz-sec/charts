@@ -156,7 +156,10 @@ imageIntegrityWebhook:
 kubernetesAuditLogsWebhook:
   enabled: false 
 
-    # Override to run admission controller on specific resources.
+  nameOverride: "" # Override the audit logs deployment name.
+  replicaCount: 2
+
+  # Override to run audit logs collector on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
     - operations:
       - "*"
@@ -200,9 +203,6 @@ kubernetesAuditLogsWebhook:
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
-
-  nameOverride: "" # Override the audit logs deployment name.
-  replicaCount: 2
 
 
 # Debug webhook only logs the request
