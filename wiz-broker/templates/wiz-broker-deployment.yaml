@@ -20,7 +20,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if .Values.rollmeAnnotation.enabled }}
         rollme: {{ randAlphaNum 5 | quote }}
+        {{- end }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
