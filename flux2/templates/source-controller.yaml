@@ -1,128 +1,140 @@
-# based on: https://github.com/fluxcd/source-controller/blob/main/config/manager/service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: source-controller
-  labels:
-    {{- include "flux2.labels" . | nindent 4 }}
-    control-plane: controller
-spec:
-  type: ClusterIP
-  selector:
-    app: source-controller
-  ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: http
-  selector:
-    app: source-controller
-  type: ClusterIP
----
-# based on: https://github.com/fluxcd/source-controller/blob/main/config/manager/deployment.yaml
+{{- if .Values.sourceController.create }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: source-controller
   labels:
-    app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: {{ .Chart.Version }}
+    app.kubernetes.io/component: source-controller
+    app.kubernetes.io/instance: {{ .Release.Namespace | quote }}
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote  }}
+    app.kubernetes.io/part-of: flux
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     control-plane: controller
-  namespace: {{ .Release.Namespace }}
+    {{- with .Values.sourceController.labels }}
+    {{- . | toYaml | nindent 4 }}
+    {{- end }}
+  name: source-controller
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: source-controller
-  replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
+      {{- with .Values.sourceController.annotations }}
+      annotations: {{ toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app: source-controller
-      annotations:
-        {{- if .Values.podAnnotations }}
-        {{- with merge .Values.defaultPodAnnotations .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- else }}
-        {{- toYaml .Values.defaultPodAnnotations | nindent 8 }}
-        {{- end }}
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8080"
+{{ with .Values.sourceController.labels }}{{ toYaml . | indent 8 }}{{ end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- if .Values.affinity }}
-      affinity:
-        {{- toYaml .Values.affinity | nindent 8 }}
-      {{- end }}
-      terminationGracePeriodSeconds: 10
-      securityContext:
-        # Required for AWS IAM Role bindings
-        # https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html
-        fsGroup: 1337
+      automountServiceAccountToken: {{ .Values.sourceController.serviceAccount.automount }}
+      {{- if .Values.sourceController.initContainers}}
+      initContainers:
+        {{- toYaml .Values.sourceController.initContainers | nindent 8}}
+      {{- end}}
       containers:
-      - name: manager
-        image: "{{ .Values.image.repository }}/{{ .Values.image.sourceController.name }}:{{ .Values.image.sourceController.tag }}"
-        imagePullPolicy: IfNotPresent
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          runAsNonRoot: true
-          capabilities:
-            drop: [ "ALL" ]
-          seccompProfile:
-            type: RuntimeDefault
-        ports:
-          - containerPort: 9090
-            name: http
-            protocol: TCP
-          - containerPort: 8080
-            name: http-prom
-            protocol: TCP
-          - containerPort: 9440
-            name: healthz
-            protocol: TCP
+      - args:
+        {{- if .Values.notificationController.create }}
+        - --events-addr=http://notification-controller.$(RUNTIME_NAMESPACE).svc.{{ .Values.clusterDomain | default "cluster.local" }}.
+        {{- end}}
+        - --watch-all-namespaces={{ .Values.watchAllNamespaces }}
+        - --log-level={{ .Values.logLevel | default "info" }}
+        - --log-encoding=json
+        - --enable-leader-election
+        - --storage-path=/data
+        - --storage-adv-addr=source-controller.$(RUNTIME_NAMESPACE).svc.{{ .Values.clusterDomain | default "cluster.local" }}.
+        {{- range .Values.sourceController.container.additionalArgs }}
+        - {{ . }}
+        {{- end}}
         env:
-          - name: RUNTIME_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-        args:
-          - --watch-all-namespaces
-          - --log-level=error
-          - --log-encoding=json
-          - --enable-leader-election
-          - --storage-path=/data
-          - --storage-adv-addr=source-controller.$(RUNTIME_NAMESPACE).svc.cluster.local
+        - name: RUNTIME_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        {{- with .Values.sourceController.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        image: {{ template "template.image" .Values.sourceController }}
+        {{- if .Values.sourceController.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.sourceController.imagePullPolicy }}
+        {{- else }}
+        imagePullPolicy: IfNotPresent
+        {{- end }}
         livenessProbe:
           httpGet:
-            port: healthz
             path: /healthz
+            port: healthz
+        name: manager
+        ports:
+        - containerPort: 9090
+          name: http
+          protocol: TCP
+        - containerPort: 8080
+          name: http-prom
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
         readinessProbe:
           httpGet:
-            port: http
             path: /
-        resources:
-          limits:
-            cpu: 1000m
-            memory: 2Gi
-          requests:
-            cpu: 20m
-            memory: 64Mi
+            port: http
+        {{- with .Values.sourceController.resources }}
+        resources: {{ toYaml . | nindent 10 }}
+        {{- end }}
+        {{- if .Values.sourceController.securityContext }}
+        securityContext: {{ toYaml .Values.sourceController.securityContext | nindent 10 }}
+        {{- else }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        {{- end}}
         volumeMounts:
-          - name: data
-            mountPath: /data
-          - name: tmp
-            mountPath: /tmp
-      nodeSelector:
-        kubernetes.io/os: linux
+        - mountPath: /data
+          name: data
+        - mountPath: /tmp
+          name: tmp
+        {{- if .Values.sourceController.volumeMounts }}
+        {{- toYaml .Values.sourceController.volumeMounts | nindent 8 }}
+        {{- end}}
+      {{- if .Values.sourceController.priorityClassName }}
+      priorityClassName: {{ .Values.sourceController.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.sourceController.podSecurityContext }}
+      securityContext: {{ toYaml .Values.sourceController.podSecurityContext | nindent 8 }}
+      {{- else }}
+      securityContext:
+        fsGroup: 1337
+      {{- end}}
       serviceAccountName: source-controller
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 6 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 10
       volumes:
-        - name: data
-          emptyDir: {}
-        - name: tmp
-          emptyDir: {}
+      - emptyDir: {}
+        name: data
+      - emptyDir: {}
+        name: tmp
+      {{- if .Values.sourceController.volumes }}
+      {{- toYaml .Values.sourceController.volumes | nindent 6 }}
+      {{- end}}
+      {{- with .Values.sourceController.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.sourceController.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.sourceController.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
