@@ -8,5 +8,9 @@ httpProxyConfiguration:
   httpProxy: replaceme
   httpsProxy: replaceme
   noProxy:
-  - replaceme
-  - replaceme2
+    - replaceme
+    - replaceme2
+  caCertificate: |
+    --- BEGIN CERTIFICATE ---
+    replaceme
+    --- END CERTIFICATE ---
