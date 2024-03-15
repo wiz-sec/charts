@@ -42,13 +42,24 @@ spec:
             items:
               - key: connectorData
                 path: {{ $connectorDataFileName }}
-        {{- if .Values.global.broker.caCertificate.enabled }}
+        {{- if .Values.global.broker.caCertificate.enabled || .Values.global.httpProxyConfiguration.caCertificate }}
         - name: ca-certificate
-          secret:
-            secretName: {{ include "wiz-broker.caCertificateSecretName" . | trim }}
-            items:
-              - key: caCertificate
-                path: target.crt
+          projected:
+            sources:
+              {{- if .Values.global.broker.caCertificate.enabled }}
+              - secret:
+                  secretName: {{ include "wiz-broker.caCertificateSecretName" . | trim }}
+                  items:
+                    - key: caCertificate
+                      path: target.crt
+              {{- end }}
+              {{- if .Values.global.httpProxyConfiguration.enabled }
+              - secret:
+                  secretName: {{ include "wiz-broker.proxySecretName" . | trim }}
+                  items:
+                    - key: caCertificate
+                      path: proxy.crt
+              {{- end }}
         {{- end }}
         {{- if .Values.global.broker.mtls.enabled }}
         - name: mtls
@@ -142,6 +153,10 @@ spec:
                 name: {{ include "wiz-broker.proxySecretName" . | trim }}
                 key: noProxyAddress
                 optional: false
+          {{- if .Values.global.httpProxyConfiguration.caCertificate}}
+          - name: SSL_CERT_FILE
+            value: "/usr/local/share/ca-certificates/proxy.crt"
+          {{- end }}
           {{- end }}
           {{- if .Values.global.broker.skipTlsVerify }}
           - name: DISABLE_TLS_VALIDATION
