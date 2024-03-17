@@ -193,6 +193,7 @@ kubernetesAuditLogsWebhook:
         - "pods/portforward"
         - "pods/attach"
         - "clusterroles"
+        - "roles"
         - "rolebindings"
         - "clusterrolebindings"
         - "serviceaccounts"
