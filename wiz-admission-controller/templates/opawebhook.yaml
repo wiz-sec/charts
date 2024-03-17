@@ -85,8 +85,8 @@ webhooks:
   failurePolicy: {{ .Values.imageIntegrityWebhook.failurePolicy }}
   sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
----
 {{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
+---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -124,8 +124,8 @@ webhooks:
   failurePolicy: {{ .Values.kubernetesAuditLogsWebhook.failurePolicy }}
   sideEffects: {{ .Values.kubernetesAuditLogsWebhook.sideEffects }}
 {{- end }}
----
 {{ if .Values.debugWebhook.enabled -}}
+---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -163,8 +163,8 @@ webhooks:
   failurePolicy: {{ .Values.debugWebhook.failurePolicy }}
   sideEffects: {{ .Values.debugWebhook.sideEffects }}
 {{- end }}
----
 {{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.kubernetesAuditLogsWebhook.enabled .Values.debugWebhook.enabled) (not $useCertManagerCerts) }}
+---
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
