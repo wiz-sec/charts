@@ -18,10 +18,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "wiz-admission-controller-audit-logs-collector.name" . }}
+  name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    {{- include "wiz-kubernetes-audit-logs.labels" . | nindent 4 }}
+    {{- include "wiz-kubernetes-audit-log-collector.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -30,4 +30,4 @@ spec:
       protocol: TCP
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
-    {{- include "wiz-kubernetes-audit-logs.selectorLabels" . | nindent 4 }}
+    {{- include "wiz-kubernetes-audit-log-collector.selectorLabels" . | nindent 4 }}
