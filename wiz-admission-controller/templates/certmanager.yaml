@@ -19,8 +19,8 @@ spec:
   dnsNames:
   - {{ printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace | quote }}
   - {{ printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace | quote }}
-  - {{ printf "%s.%s" ( include "wiz-admission-controller-audit-logs-collector.name" .) .Release.Namespace }}
-  - {{ printf "%s.%s.svc" ( include "wiz-admission-controller-audit-logs-collector.name" .) .Release.Namespace }}
+  - {{ printf "%s.%s" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace }}
+  - {{ printf "%s.%s.svc" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace }}
   duration: "87600h0m0s" # AC doesn't currently detect changes to the certificate and must be restarted after renewal
   renewBefore: "360h0m0s"
   secretName: {{ include "wiz-admission-controller.secretServerCert" . | quote }}

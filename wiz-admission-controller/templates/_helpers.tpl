@@ -26,7 +26,8 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
-{{- define "wiz-admission-controller-audit-logs-collector.name" -}}
+
+{{- define "wiz-kubernetes-audit-log-collector.name" -}}
 {{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
 {{- .Values.kubernetesAuditLogsWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -72,7 +73,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Wiz admission controller webhook server selector labels
 */}}
 {{- define "wiz-admission-controller.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "wiz-admission-controller.name" . }}
 app.kubernetes.io/chartName: {{ .Chart.Name | trunc 63 }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -81,14 +81,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Wiz admission controller enforcement webhook server selector labels
 */}}
 {{- define "wiz-admission-controller-enforcement.selectorLabels" -}}
-type: enforcement
+app.kubernetes.io/name: {{ include "wiz-admission-controller.name" . }}
 {{- end }}
 
 {{/*
 Wiz kubernetes audit logs webhook server selector labels
 */}}
-{{- define "wiz-kubernetes-audit-logs.selectorLabels" -}}
-type: audit-logs
+{{- define "wiz-kubernetes-audit-log-collector.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
 {{- end }}
 
 {{- define "wiz-admission-controller-enforcement.labels" -}}
@@ -96,9 +96,9 @@ type: audit-logs
 {{ include "wiz-admission-controller-enforcement.selectorLabels" . }}
 {{- end }}
 
-{{- define "wiz-kubernetes-audit-logs.labels" -}}
+{{- define "wiz-kubernetes-audit-log-collector.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
-{{ include "wiz-kubernetes-audit-logs.selectorLabels" . }}
+{{ include "wiz-kubernetes-audit-log-collector.selectorLabels" . }}
 {{- end }}
 
 {{/*

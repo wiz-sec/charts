@@ -2,7 +2,7 @@
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
-{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s" ( include "wiz-admission-controller-audit-logs-collector.name" .) .Release.Namespace ) ( printf "%s.%s.svc" ( include "wiz-admission-controller-audit-logs-collector.name" .) .Release.Namespace ) -}}
+{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) ( printf "%s.%s.svc" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) -}}
 {{- $ca := genCA "wiz-admission-controller-ca" 3650 -}}
 {{- $cert := genSignedCert ( include "wiz-admission-controller.fullname" . ) nil $altNames 3650 $ca -}}
 {{- $tlsCrt = $cert.Cert | b64enc -}}
@@ -85,8 +85,8 @@ webhooks:
   failurePolicy: {{ .Values.imageIntegrityWebhook.failurePolicy }}
   sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
----
 {{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
+---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -106,7 +106,7 @@ webhooks:
   clientConfig:
     service:
       namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller-audit-logs-collector.name" . }}
+      name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
       path: /kubernetes-audit-logs
       port: {{ .Values.service.port }}
 {{- if not $useCertManagerCerts }}
@@ -124,8 +124,8 @@ webhooks:
   failurePolicy: {{ .Values.kubernetesAuditLogsWebhook.failurePolicy }}
   sideEffects: {{ .Values.kubernetesAuditLogsWebhook.sideEffects }}
 {{- end }}
----
 {{ if .Values.debugWebhook.enabled -}}
+---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -163,8 +163,8 @@ webhooks:
   failurePolicy: {{ .Values.debugWebhook.failurePolicy }}
   sideEffects: {{ .Values.debugWebhook.sideEffects }}
 {{- end }}
----
 {{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.kubernetesAuditLogsWebhook.enabled .Values.debugWebhook.enabled) (not $useCertManagerCerts) }}
+---
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
