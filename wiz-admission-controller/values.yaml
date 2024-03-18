@@ -112,7 +112,6 @@ opaWebhook:
   secret: # Deprecated, use `webhook.secret` instead
     annotations: {} 
 
-# Image integrity webhook is currently in private preview.
 imageIntegrityWebhook:
   enabled: false 
   policies: [] # List of policies to enforce on the image integrity webhook. If not set, by default AC will get policies from Wiz based on projects.
@@ -151,7 +150,6 @@ imageIntegrityWebhook:
 
   patchImageDigestAnnotation: true # If true, annotate the pod with mapping between tag->digest.
 
-# Kubernetes audit logs webhook is currently in private preview.
 # This webhooks sends the audit logs to Wiz, and should never block any requests.
 kubernetesAuditLogsWebhook:
   enabled: false 
