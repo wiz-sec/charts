@@ -7,6 +7,9 @@ nameOverride: "wiz-broker"
 
 podAnnotations: {}
 
+rollmeAnnotation:
+  enabled: true
+
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1000
