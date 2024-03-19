@@ -1,3 +1,5 @@
+{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled}}
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -14,6 +16,8 @@ spec:
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-admission-controller-enforcement.selectorLabels" . | nindent 4 }}
+{{- end }}
+{{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
 ---
 apiVersion: v1
 kind: Service
@@ -31,3 +35,4 @@ spec:
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-kubernetes-audit-log-collector.selectorLabels" . | nindent 4 }}
+{{- end }}
