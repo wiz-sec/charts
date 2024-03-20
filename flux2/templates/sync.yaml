@@ -20,4 +20,3 @@ spec:
   sourceRef:
     kind: GitRepository
     name: outpost-state
-  validation: client
