@@ -39,6 +39,11 @@ disallowRuntimeResponse: false
 # set to false to set the sensor in its own network namespace
 hostNetwork: true
 
+# A range of seconds. Given a value X, the Sensor will choose a random value R between 0 and X.
+# It will then delay its start by R seconds. This can be useful to reduce load on shared resources
+# (mainly API-server) when a large amount of Sensors are starting concurrently.
+startDelayRange: 0
+
 # the API key identifying this installation (for comm with Wiz portal)
 wizApiToken:
   secret:
@@ -75,6 +80,10 @@ httpProxyConfiguration:
 
   # (optional) Proxy CA certificate in PEM format. This is required for TLS intercept proxies
   caCertificate: ""
+
+  # (optional) Proxy client certificate in PEM format. This is required for client certificate authentication.
+  # The file should contain a certificate and a private key in PEM format.
+  clientCertificate: ""
 
 imagePullSecret:
   # Set to false if image is retrieved from a registry that doesn't require pull secret

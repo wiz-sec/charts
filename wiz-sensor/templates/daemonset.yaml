@@ -182,6 +182,10 @@ spec:
         - name: DISALLOW_RUNTIME_RESPONSE
           value: "true"
         {{- end}}
+        {{- if .Values.startDelayRange }}
+        - name: SENSOR_START_DELAY_RANGE
+          value: {{ quote .Values.startDelayRange }}
+        {{- end}}
         {{- with .Values.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -214,6 +218,8 @@ spec:
         {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
         - name: proxy-secret
           mountPath: /proxy-config/
+        - name: proxy-client-cert-secret
+          mountPath: /proxy-client-config/
         {{- end }}
 
         {{- if .Values.daemonset.resources }}
@@ -272,6 +278,13 @@ spec:
               path: https-proxy
             - key: caCertificate
               path: ca-cert
+      - name: proxy-client-cert-secret
+        secret:
+          secretName: {{ include "wiz-sensor.proxySecretName" . }}
+          optional: true
+          items:
+            - key: clientCertificate
+              path: client-cert
       {{- end }}
       - name: sensor-store
         emptyDir:
