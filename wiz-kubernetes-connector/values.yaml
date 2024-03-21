@@ -15,6 +15,7 @@ image:
 
 clusterReader:
   installRbac: true
+  enableListSecret: true
   serviceAccount:
     create: true
     # Annotations to add to the service account
