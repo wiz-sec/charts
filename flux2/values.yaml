@@ -36,7 +36,7 @@ cli:
 helmController:
   create: true
   image: wiziopublic.azurecr.io/wiz-helm-controller
-  tag: v0.36.0
+  tag: v0.37.4
   resources:
     limits: {}
     # cpu: 1000m
@@ -241,7 +241,7 @@ notificationController:
 sourceController:
   create: true
   image: wiziopublic.azurecr.io/wiz-source-controller
-  tag: v1.1.0
+  tag: v1.2.4
   resources:
     limits: {}
     # cpu: 1000m
