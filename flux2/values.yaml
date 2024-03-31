@@ -140,7 +140,7 @@ imageReflectionController:
 kustomizeController:
   create: true
   image: wiziopublic.azurecr.io/wiz-kustomize-controller
-  tag: v1.1.1
+  tag: v1.2.2
   resources:
     limits: {}
     # cpu: 1000m
