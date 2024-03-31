@@ -70,8 +70,17 @@ spec:
             runAsGroup: 1000
             privileged: false
             allowPrivilegeEscalation: false
+          {{ if gt (len .Values.image.tag) 17 }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: [ "/entrypoint"]
+          args: [
+            "{{ .Values.storageService }}"
+          ]
+          {{ else }}
           image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           env:
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
