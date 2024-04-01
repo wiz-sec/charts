@@ -70,8 +70,14 @@ spec:
             runAsGroup: 1000
             privileged: false
             allowPrivilegeEscalation: false
+          {{ if gt (len .Values.image.tag) 17 }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: [ "/entrypoint"]
+          {{ else }}
           image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}-{{ required "storageService is required" .Values.storageService }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           env:
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
@@ -128,6 +134,9 @@ spec:
           - name: SSL_CERT_FILE
             value: "/usr/local/share/ca-certificates/root.crt"
           args: [
+            {{- if gt (len .Values.image.tag) 17 }}
+            "{{ .Values.storageService }}",
+            {{- end}}
             {{- if eq .Values.storageService "blob" }}
             "--resourceGroup", {{ required "blob.resourceGroupName is required" .Values.blob.resourceGroupName | quote }},
             "--storageAccount", {{ required "blob.storageAccountName is required" .Values.blob.storageAccountName | quote }},
