@@ -71,6 +71,11 @@ spec:
         {{- end }}
 
         securityContext:
+        {{- if .Values.privileged }}
+          privileged: true
+          runAsUser: 0
+          runAsGroup: 0
+        {{- else }}
           capabilities:
             add:
             - SYS_ADMIN # moving between namespaces
@@ -84,15 +89,16 @@ spec:
             - IPC_LOCK # eBPF
             - FOWNER # file hashing
             - SYS_PTRACE # eBPF
-        {{- if not .Values.disallowRuntimeResponse }}
+          {{- if not .Values.disallowRuntimeResponse }}
             - KILL # response
-        {{- end }}
-
+          {{- end }}
           privileged: false
-          readOnlyRootFilesystem: true
           runAsNonRoot: true
           runAsUser: 2202
           runAsGroup: 2202
+        {{- end }}
+          readOnlyRootFilesystem: true
+
           {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
           seccompProfile:
             type: Unconfined

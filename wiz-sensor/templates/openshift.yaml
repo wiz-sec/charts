@@ -40,8 +40,8 @@ seccompProfiles:
 users:
   - system:serviceaccount:{{ .Release.Namespace }}:{{ include "wiz-sensor.serviceAccountName" . }}
 volumes:
-  - hostPath
-  - emptyDir
-  - secret
   - downwardAPI
+  - emptyDir
+  - hostPath
+  - secret
 {{- end }}

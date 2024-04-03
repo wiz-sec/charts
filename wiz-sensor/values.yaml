@@ -44,6 +44,9 @@ hostNetwork: true
 # (mainly API-server) when a large amount of Sensors are starting concurrently.
 startDelayRange: 0
 
+# Run in fully privileged mode. Usually used as compatibility mode for unsual setups.
+privileged: false
+
 # the API key identifying this installation (for comm with Wiz portal)
 wizApiToken:
   secret:
