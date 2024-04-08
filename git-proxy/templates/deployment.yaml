@@ -95,6 +95,24 @@ spec:
           - name: ALICLOUD_ROLE_ARN
             value: {{ .Values.oss.roleARN }}
           {{- end }}
+          {{- if eq .Values.storageService "wiz" }}
+          - name: WIZ_OUTPOST_ID
+            value: {{ .Values.wiz.outpostId | quote }}
+          {{- if .Values.wiz.env }}
+          - name: env
+            value: {{ .Values.wiz.env }}
+          {{- end}}
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.wiz.secretName }}
+                key: clientId
+          - name: WIZ_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.wiz.secretName }}
+                key: clientSecret
+          {{- end }}
           - name: http_proxy
             valueFrom:
               secretKeyRef: 
