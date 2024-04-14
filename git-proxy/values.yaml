@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-storageService: '' # s3/gcs/blob/objectstorage/oss
+storageService: "" # s3/gcs/blob/objectstorage/oss
 s3:
   bucketName:
   region:
@@ -14,13 +14,13 @@ blob:
   # leave empty if you're using the system assigned identity for the node
   # (existing in /etc/kubernetes/azure.json)
   azureCreds:
-#    tenantId:
-#    aadClientId:
-#    aadClientSecret:
-#    subscriptionId:
-#    environment:
-#    useInstanceMetadata:
-#    useFederatedToken:
+  #    tenantId:
+  #    aadClientId:
+  #    aadClientSecret:
+  #    subscriptionId:
+  #    environment:
+  #    useInstanceMetadata:
+  #    useFederatedToken:
   resourceGroupName:
   storageAccountName:
   containerName: gitops-state
@@ -52,7 +52,7 @@ image:
   namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "afd9bf7-multiarch"
+  tag: "97ab4c3877cf1e7355a5f318088fef226ec80439-multiarch"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -64,7 +64,8 @@ service:
   type: ClusterIP
   port: 8080
 
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
