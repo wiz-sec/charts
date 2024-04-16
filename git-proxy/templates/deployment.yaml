@@ -99,7 +99,7 @@ spec:
           - name: WIZ_OUTPOST_ID
             value: {{ .Values.wiz.outpostId | quote }}
           {{- if .Values.wiz.env }}
-          - name: env
+          - name: ENV
             value: {{ .Values.wiz.env }}
           {{- end}}
           - name: WIZ_CLIENT_ID
