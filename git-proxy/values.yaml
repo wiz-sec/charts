@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-storageService: "" # s3/gcs/blob/objectstorage/oss
+storageService: "" # s3/gcs/blob/objectstorage/oss/wiz
 s3:
   bucketName:
   region:
@@ -26,6 +26,13 @@ blob:
   containerName: gitops-state
   globalStorageAccountIP: ""
   storageAccountDomain: core.windows.net
+
+wiz:
+  secretName: wiz-outpost-agent-creds
+  clientId: ""
+  clientSecret: ""
+  env: ""
+  outpostId: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
