@@ -58,6 +58,7 @@ webhook:
 
   injectCaFrom: "" # Inject Certificate to webhook configurations. Format: "namespace/certificate". Prerequisite - https://cert-manager.io/docs/installation.
   createSelfSignedCert: false # Create and use a self-signed certificate using `cert-manager`. Prerequisite - https://cert-manager.io/docs/installation.
+  installAsHook: true # Install the webhooks as helm hooks so they are deleted on every install or upgrade.
   secret:
     name: "" # Name of the Certificate secret.
     annotations: {} # Annotations of the Certificate secret.
