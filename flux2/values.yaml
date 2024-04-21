@@ -241,7 +241,7 @@ notificationController:
 sourceController:
   create: true
   image: wiziopublic.azurecr.io/wiz-source-controller
-  tag: v1.2.4
+  tag: v1.2.5
   resources:
     limits: {}
     # cpu: 1000m
