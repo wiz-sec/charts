@@ -318,6 +318,7 @@ serviceAccount:
   name: ""
 
 podAnnotations: {} # Annotations to add to the components Pods.
+podLabels: {} # Labels to add to the components Pods.
 
 podSecurityContext: {}
 
@@ -432,6 +433,7 @@ global:
   imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
   podAnnotations: {} # Annotations to add to the components Pods.
+  podLabels: {} # Labels to add to the components Pods.
 
   podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
   customVolumes: [] # Additional volumes to add to the components Pods

@@ -26,6 +26,9 @@ spec:
         `labels` includes `selectorLabels`
         */}}
         {{- include "wiz-kubernetes-audit-log-collector.labels" . | nindent 8 }}
+        {{- with (coalesce .Values.global.podLabels .Values.podLabels) }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
