@@ -84,7 +84,7 @@ spec:
           {{- with (coalesce .Values.webhook.policyEnforcementMethod .Values.opaWebhook.policyEnforcementMethod) }} # check opaWebhook for backward compatibility
           - "--policy-enforcement-method={{ . }}"
           {{- end }}
-          {{- with (coalesce .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }} # check opaWebhook for backward compatibility
+          {{- with (coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }} # check opaWebhook for backward compatibility
           - "--cluster-external-id={{ . }}"
           {{- end }}
           # Kubernetes API server flags

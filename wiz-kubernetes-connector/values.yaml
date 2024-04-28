@@ -189,3 +189,4 @@ global:
   nodeSelector: {} # custom assignment to nodes
   affinity: {} # custom affinity rules for node assignment
   tolerations: [] # custom tolerations
+  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
