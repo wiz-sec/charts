@@ -80,7 +80,7 @@ spec:
           # Webhook flags
           - "--error-enforcement-method=AUDIT"
           - "--policy-enforcement-method=AUDIT"
-          - "--cluster-external-id={{ .Values.webhook.clusterExternalId }}"
+          - "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId }}"
           # Kubernetes API server flags
           - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
           # K8S audit logs webhook flags

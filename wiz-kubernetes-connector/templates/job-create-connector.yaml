@@ -78,7 +78,7 @@ spec:
             "--service-type",
             {{ . | quote }},
             {{ end }}
-            {{ with .Values.autoCreateConnector.clusterExternalId }}
+            {{ with (coalesce .Values.global.clusterExternalId .Values.autoCreateConnector.clusterExternalId) }}
             "--cluster-external-id",
             {{ . | quote }},
             {{ end }}
