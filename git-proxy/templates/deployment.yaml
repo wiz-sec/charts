@@ -96,12 +96,13 @@ spec:
             value: {{ .Values.oss.roleARN }}
           {{- end }}
           {{- if eq .Values.storageService "wiz" }}
-          - name: WIZ_OUTPOST_ID
-            value: {{ .Values.wiz.outpostId | quote }}
           {{- if .Values.wiz.env }}
           - name: ENV
             value: {{ .Values.wiz.env }}
           {{- end}}
+          {{- if .Values.outpostId }}
+          - name: WIZ_OUTPOST_ID
+            value: {{ .Values.wiz.outpostId | quote }}
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -112,6 +113,14 @@ spec:
               secretKeyRef:
                 name: {{ .Values.wiz.secretName }}
                 key: clientSecret
+          {{- else }}
+          {{- if .Values.wiz.serviceType}}
+          - name: WIZ_SERVICE_TYPE
+            value: {{ .Values.wiz.serviceType }}
+          - name: WIZ_DATA_CENTER
+            value: {{ .Values.wiz.datacenter }}
+          {{- end }}
+          {{- end }}
           {{- end }}
           - name: http_proxy
             valueFrom:
@@ -189,6 +198,11 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp-dir
+            {{- if and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId) }}
+            - name: secrets
+              mountPath: /mnt/secrets/
+              readOnly: true
+            {{- end }}
             {{- if eq .Values.storageService "blob" }}
             - mountPath: /etc/kubernetes/
               name: azure-creds
@@ -220,6 +234,16 @@ spec:
               - key: caCertificate
                 path: root.crt
             optional: true
+        {{- if and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId) }}
+        - name: secrets
+          projected:
+            sources:
+              - secret:
+                  name: {{ .Values.wiz.secretName }}
+                    items:
+                    - key: privateKey
+                      path: WIZ_PRIVATE_KEY
+        {{- end }}
         {{- if eq .Values.storageService "blob" }}
         {{- if .Values.blob.azureCreds }}
         - name: azure-creds
