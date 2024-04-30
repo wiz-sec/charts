@@ -41,6 +41,14 @@ httpProxyConfiguration:
 
 replicaCount: 2
 
+# Use PodDisruptionBudget for the admission controller enforcer deployment.
+# For more information about PodDisruptionBudget please refer to:
+# https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget:
+  enabled: false # Should a PodDisruptionBudget be created by the chart or not.
+  minAvailable: 1 
+  maxUnavailable: null
+
 image:
   registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-admission-controller
@@ -194,6 +202,13 @@ kubernetesAuditLogsWebhook:
 
   nameOverride: "" # Override the audit logs deployment name.
   replicaCount: 2
+  # Use PodDisruptionBudget for the admission controller audit logs deployment.
+  # For more information about PodDisruptionBudget please refer to:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  podDisruptionBudget:
+    enabled: false # Should a PodDisruptionBudget be created by the chart or not.
+    minAvailable: 1
+    maxUnavailable: null
 
   # Override to run audit logs collector on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
