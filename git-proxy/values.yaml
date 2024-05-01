@@ -33,6 +33,9 @@ wiz:
   clientSecret: ""
   env: ""
   outpostId: ""
+  serviceType: ""
+  dataCenter: ""
+  privateKey: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
