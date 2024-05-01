@@ -116,9 +116,9 @@ spec:
           {{- else }}
           {{- if .Values.wiz.serviceType}}
           - name: WIZ_SERVICE_TYPE
-            value: {{ .Values.wiz.serviceType }}
+            value: {{ .Values.wiz.serviceType | quote }}
           - name: WIZ_DATA_CENTER
-            value: {{ .Values.wiz.datacenter }}
+            value: {{ .Values.wiz.dataCenter | quote }}
           {{- end }}
           {{- end }}
           {{- end }}
@@ -240,7 +240,7 @@ spec:
             sources:
               - secret:
                   name: {{ .Values.wiz.secretName }}
-                    items:
+                  items:
                     - key: privateKey
                       path: WIZ_PRIVATE_KEY
         {{- end }}
