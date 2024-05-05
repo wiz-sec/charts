@@ -23,4 +23,3 @@ azureCreds:
   # environment: replaceme
   # useInstanceMetadata: false
   # useFederatedToken: false
-  # publishAzureCreds: false

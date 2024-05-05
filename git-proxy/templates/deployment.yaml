@@ -245,7 +245,11 @@ spec:
                       path: WIZ_PRIVATE_KEY
         {{- end }}
         {{- if eq .Values.storageService "blob" }}
-        {{- if .Values.blob.azureCreds }}
+        {{- if .Values.blob.azureCredsSecretName }}
+        - name: azure-creds
+          secret:
+            secretName: {{ .Values.blob.azureCredsSecretName }}
+        {{- else if .Values.blob.azureCreds }}
         - name: azure-creds
           secret:
             secretName: azure-creds
