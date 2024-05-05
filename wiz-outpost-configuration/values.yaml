@@ -15,7 +15,7 @@ httpProxyConfiguration:
     replaceme
     --- END CERTIFICATE ---
 
-azureCreds: 
+azureWorkerCredentials: 
   # tenantId: replaceme
   # aadClientId: replaceme
   # aadClientSecret: replaceme
