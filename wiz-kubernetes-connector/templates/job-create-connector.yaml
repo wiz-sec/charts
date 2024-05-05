@@ -69,7 +69,7 @@ spec:
             {{ include "wiz-kubernetes-connector.clusterReaderToken" . | quote }},
             "--output-secret-name",
             {{- include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
-            "--is-on-prem={{ .Values.broker.enabled }}",
+            '--is-on-prem={{ include "wiz-kubernetes-connector.brokerEnabled" . | trim}}',
             {{ with .Values.autoCreateConnector.connectorName }}
             "--connector-name",
             {{ . | quote }},
@@ -82,7 +82,7 @@ spec:
             "--cluster-external-id",
             {{ . | quote }},
             {{ end }}
-            "--wait={{ and .Values.broker.enabled .Values.autoCreateConnector.waitUntilInitialized }}",
+            '--wait={{ and (include "wiz-kubernetes-connector.brokerEnabled" . | trim) .Values.autoCreateConnector.waitUntilInitialized }}',
             ]
           env:
           {{- if .Values.global.logLevel }}

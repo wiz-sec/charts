@@ -78,11 +78,15 @@ Secrets names
 {{ printf "%s-token" .Values.clusterReader.serviceAccount.name }}
 {{- end }}
 
+{{- define "wiz-kubernetes-connector.brokerEnabled" -}}
+{{ index .Values "wiz-broker" "enabled" }}
+{{- end }}
+
 {{/*
 Input parameters
 */}}
 {{- define "wiz-kubernetes-connector.apiServerEndpoint" -}}
-  {{- if and .Values.autoCreateConnector.enabled (not .Values.broker.enabled) }}
+  {{- if and .Values.autoCreateConnector.enabled (not "wiz-kubernetes-connector.brokerEnabled") }}
     {{- required "A valid .Values.autoCreateConnector.apiServerEndpoint entry required!" .Values.autoCreateConnector.apiServerEndpoint -}}
   {{- else -}}
     {{ if .Values.autoCreateConnector.apiServerEndpoint }}
@@ -122,5 +126,5 @@ Use for debug purpose only.
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.brokerHash" -}}
-{{ include "helpers.calculateHash" (list .Values.broker.enabled .Values.broker.targetIp ) }}
+{{ include "helpers.calculateHash" (list "wiz-kubernetes-connector.brokerHash" .Values.wizConnector.targetIp) }}
 {{- end }}

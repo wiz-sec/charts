@@ -23,7 +23,7 @@ Deployment name.
 Service account name.
 */}}
 {{- define "wiz-broker.serviceAccountName" -}}
-{{ coalesce (.Values.global.broker.serviceAccount.name) (printf "%s-wiz-broker-sa" .Release.Name) }}
+{{ coalesce (.Values.serviceAccount.name) (printf "%s-wiz-broker-sa" .Release.Name) }}
 {{- end }}
 
 {{/*
@@ -56,14 +56,16 @@ Create Wiz broker properties to use
 */}}
 
 {{- define "wiz-broker.wizConnectorSecretData" -}}
-{{- if .Values.global.broker.createSecret }}
-ConnectorId: {{ required "A valid .Values.global.wizConnector.connectorId entry required!" .Values.global.wizConnector.connectorId | quote}}
-TunnelToken: {{ required "A valid .Values.global.wizConnector.connectorToken entry required!" .Values.global.wizConnector.connectorToken | quote }}
-TunnelDomain: {{ required "A valid .Values.global.wizConnector.targetDomain entry required!" .Values.global.wizConnector.targetDomain | quote }}
-TunnelServerDomain: {{ required "A valid .Values.global.wizConnector.tunnelServerDomain entry required!" .Values.global.wizConnector.tunnelServerDomain | quote }}
-TunnelServerPort: {{ required "A valid .Values.global.wizConnector.tunnelServerPort entry required!" .Values.global.wizConnector.tunnelServerPort | quote }}
-{{- if .Values.global.wizConnector.tunnelClientAllowedDomains }}
-TunnelClientAllowedDomains: "{{ range $index, $domain := .Values.global.wizConnector.tunnelClientAllowedDomains }}{{ if $index }},{{ end }}{{ $domain }}{{ end }}"
+{{- if and .Values.wizConnector.createSecret (not .Values.wizConnector.autoCreated) }}
+ConnectorId: {{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId | quote}}
+TunnelToken: {{ required "A valid .Values.wizConnector.connectorToken entry required!" .Values.wizConnector.connectorToken | quote }}
+TunnelDomain: {{ required "A valid .Values.wizConnector.targetDomain entry required!" .Values.wizConnector.targetDomain | quote }}
+TunnelServerDomain: {{ required "A valid .Values.wizConnector.tunnelServerDomain entry required!" .Values.wizConnector.tunnelServerDomain | quote }}
+TunnelServerPort: {{ required "A valid .Values.wizConnector.tunnelServerPort entry required!" .Values.wizConnector.tunnelServerPort | quote }}
+TargetIp: {{ required "A valid .Values.wizConnector.targetIp entry required!" .Values.wizConnector.targetIp | quote }}
+TargetPort: {{ required "A valid .Values.wizConnector.targetPort entry required!" .Values.wizConnector.targetPort | quote }}
+{{- if .Values.wizConnector.tunnelClientAllowedDomains }}
+TunnelClientAllowedDomains: "{{ range $index, $domain := .Values.wizConnector.tunnelClientAllowedDomains }}{{ if $index }},{{ end }}{{ $domain }}{{ end }}"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -77,11 +79,11 @@ Secrets names
 {{- end }}
 
 {{- define "wiz-broker.caCertificateSecretName" -}}
-{{ coalesce (.Values.global.broker.caCertificate.secretName) (printf "%s-ca-certificate" .Release.Name) }}
+{{ coalesce (.Values.caCertificate.secretName) (printf "%s-ca-certificate" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-broker.mtlsSecretName" -}}
-{{- with .Values.global.broker.mtls }}
+{{- with .Values.mtls }}
 {{- if and .createSecret (not (and .certificate .privateKey)) }}
   {{- fail "Both client certificate and private key must be provided" }}
 {{- end }}
@@ -94,5 +96,5 @@ Secrets names
 {{- end }}
 
 {{- define "wiz-broker.connectorSecretName" -}}
-{{ coalesce (.Values.global.wizConnector.secretName) (printf "%s-connector" .Release.Name) }}
+{{ coalesce (.Values.wizConnector.secretName) (printf "%s-connector" .Release.Name) }}
 {{- end }}

@@ -1,4 +1,4 @@
-{{- if .Values.global.broker.enabled }}
+{{- if .Values.enabled }}
 {{ $mountPath := "/etc/connectorData" }}
 {{ $connectorDataFileName := "data" }}
 {{ $connectorDataFilePath := printf "%s/%s" $mountPath "data" }}
@@ -34,7 +34,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.global.broker.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
@@ -44,7 +44,7 @@ spec:
             items:
               - key: connectorData
                 path: {{ $connectorDataFileName }}
-        {{- if .Values.global.broker.caCertificate.enabled }}
+        {{- if .Values.caCertificate.enabled }}
         - name: ca-certificate
           secret:
             secretName: {{ include "wiz-broker.caCertificateSecretName" . | trim }}
@@ -52,7 +52,7 @@ spec:
               - key: caCertificate
                 path: target.crt
         {{- end }}
-        {{- if .Values.global.broker.mtls.enabled }}
+        {{- if .Values.mtls.enabled }}
         - name: mtls
           secret:
             secretName: {{ include "wiz-broker.mtlsSecretName" . | trim }}
@@ -62,7 +62,7 @@ spec:
               - key: privateKey
                 path: {{ $clientPrivateKeyFileName }}
         {{- end }}
-        {{- with .Values.global.broker.customVolumes }}
+        {{- with .Values.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
@@ -75,17 +75,17 @@ spec:
           - name: connector-data
             mountPath: {{ $mountPath }}
             readOnly: true
-          {{- if .Values.global.broker.caCertificate.enabled }}
+          {{- if .Values.caCertificate.enabled }}
           - name: ca-certificate
             mountPath: /usr/local/share/ca-certificates
             readOnly: true
           {{- end }}
-          {{- if .Values.global.broker.mtls.enabled }}
+          {{- if .Values.mtls.enabled }}
           - name: mtls
             mountPath: {{ $mtlsPath }}
             readOnly: true
           {{- end }}
-          {{- with .Values.global.broker.customVolumeMounts }}
+          {{- with .Values.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
           args: [
@@ -110,22 +110,18 @@ spec:
                 name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
                 key: clientToken
           {{- end }}
-          {{- if .Values.global.broker.wizManaged }}
+          {{- if .Values.managed.enabled }}
           - name: WIZ_MANAGED
             value: "true"
           - name: WIZ_OUTPOST_ID
-            value: {{ .Values.global.broker.outpostId | quote }}
-          {{- end}}
-          {{- if .Values.global.broker.podCustomEnvironmentVariablesFile }}
+            value: {{ .Values.managed.outpostId | quote }}
+          {{- end }}
+          {{- if .Values.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
-            value: {{ .Values.global.broker.podCustomEnvironmentVariablesFile }}
+            value: {{ .Values.podCustomEnvironmentVariablesFile }}
           - name: USE_CLI_ENV_FILE
             value: "true"
           {{- end }}
-          - name: TARGET_IP
-            value: {{ .Values.global.broker.targetIp }}
-          - name: TARGET_PORT
-            value: {{ .Values.global.broker.targetPort | quote }}
           {{- if .Values.global.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
@@ -145,11 +141,11 @@ spec:
                 key: noProxyAddress
                 optional: false
           {{- end }}
-          {{- if .Values.global.broker.skipTlsVerify }}
+          {{- if .Values.skipTlsVerify }}
           - name: DISABLE_TLS_VALIDATION
             value: "true"
           {{- end }}
-          {{- if .Values.global.broker.mtls.enabled }}
+          {{- if .Values.mtls.enabled }}
           - name: CLIENT_CERT_PATH
             value: {{ printf "%s/%s" $mtlsPath $clientCertificateFileName }}
           - name: CLIENT_KEY_PATH

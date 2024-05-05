@@ -4,8 +4,33 @@
 
 # override default application name
 nameOverride: "wiz-broker"
-
+enabled: true
+serviceAccount:
+  create: false
+  # Annotations to add to the service account
+  annotations: { }
+  # The name of the service account to use.
+  name: ""
+podCustomEnvironmentVariablesFile: ""
 podAnnotations: {}
+customVolumes: [ ]
+customVolumeMounts: [ ]
+skipTlsVerify: false # true indicates that the proxy's certificate should not be verified. DO NOT USE IN PRODUCTION!
+
+caCertificate:
+  enabled: false
+  createSecret: true # If false, need to create the secret manually and provide its name in secretName.
+  annotations: { }
+  secretName: ""
+  pem: "" # PEM format CA certificate to use for proxy TLS verification.
+
+mtls:
+  enabled: false
+  createSecret: true # If false, need to create the secret manually and provide its name in secretName.
+  annotations: { }
+  secretName: ""
+  certificate: "" # PEM format client certificate to use for proxy TLS verification.
+  privateKey: "" # PEM format private key to use for proxy TLS verification.
 
 rollmeAnnotation:
   enabled: true
@@ -13,6 +38,34 @@ rollmeAnnotation:
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1000
+
+wizConnector:
+  # Specifies whether a connector secret should be created
+  # If createSecret is false you need to:
+  #  1. Create secret with this keys:
+  #     CONNECTOR_ID, CONNECTOR_TOKEN, TARGET_DOMAIN, TARGET_IP, TARGET_PORT
+  #  2. Set secretName to reference your secret
+  createSecret: true
+  autoCreated: false
+  # Annotations to add to the secret
+  annotations: {}
+  secretName: ""
+
+  connectorId: ""
+  connectorToken: ""
+  targetDomain: ""
+  targetIp: ""
+  targetPort: ""
+  tunnelServerDomain: ""
+  tunnelServerPort: ""
+  tunnelClientAllowedDomains: []
+
+# Specifies whether the broker is managed by Wiz or not.
+# Do not edit manually.
+managed:
+  enabled: false
+  # Relevant only for wiz-managed brokers
+  outpostId: ""
 
 global:
   # Set the log level. Can be one of "debug", "info", "warn", or "error".
@@ -26,46 +79,6 @@ global:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
     imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
-
-  broker:
-    enabled: true
-    # Specifies whether the broker is managed by Wiz or not.
-    # Do not edit manually.
-    wizManaged: false
-    # Relevant only for wiz-managed brokers
-    outpostId: ""
-    # Specifies whether the connector/api-token secrets should be created by the chart
-    createSecret: true
-    targetIp: ""
-    targetPort: ""
-    serviceAccount:
-      create: true
-      # Annotations to add to the service account
-      annotations: { }
-      # The name of the service account to use.
-      name: ""
-
-    podCustomEnvironmentVariablesFile: ""
-
-    customVolumes: [ ]
-    customVolumeMounts: [ ]
-
-    skipTlsVerify: false # true indicates that the proxy's certificate should not be verified. DO NOT USE IN PRODUCTION!
-
-    caCertificate:
-      enabled: false
-      createSecret: true # If false, need to create the secret manually and provide its name in secretName.
-      annotations: { }
-      secretName: ""
-      pem: "" # PEM format CA certificate to use for proxy TLS verification.
-
-    mtls:
-      enabled: false
-      createSecret: true # If false, need to create the secret manually and provide its name in secretName.
-      annotations: { }
-      secretName: ""
-      certificate: "" # PEM format client certificate to use for proxy TLS verification.
-      privateKey: "" # PEM format private key to use for proxy TLS verification.
 
   httpProxyConfiguration:
     enabled: false
@@ -99,22 +112,3 @@ global:
 
     # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
     usePodCustomEnvironmentVariablesFile: false
-
-  wizConnector: # Relevant only for broker.enabled = true
-    # Specifies whether a connector secret should be created
-    # If createSecret is false you need to:
-    #  1. Create secret with this keys:
-    #     CONNECTOR_ID, CONNECTOR_TOKEN, TARGET_DOMAIN, TARGET_IP, TARGET_PORT
-    #  2. Set secretName to reference your secret
-    createSecret: true
-    # Annotations to add to the secret
-    annotations: {}
-    secretName: ""
-
-    connectorId: ""
-    connectorToken: ""
-    targetDomain: ""
-    targetPort: ""
-    tunnelServerDomain: ""
-    tunnelServerPort: ""
-    tunnelClientAllowedDomains: []
