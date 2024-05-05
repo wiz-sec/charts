@@ -99,6 +99,11 @@ spec:
         {{- end }}
           readOnlyRootFilesystem: true
 
+          {{- if semverCompare ">=1.30-0" .Capabilities.KubeVersion.GitVersion }}
+          appArmorProfile:
+            type: Unconfined
+          {{- end }}
+
           {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
           seccompProfile:
             type: Unconfined
@@ -192,6 +197,10 @@ spec:
         - name: SENSOR_START_DELAY_RANGE
           value: {{ quote .Values.startDelayRange }}
         {{- end}}
+        {{- if coalesce .Values.global.clusterExternalId .Values.clusterExternalId }}
+        - name: CLUSTER_EXTERNAL_ID
+          value: {{ coalesce .Values.global.clusterExternalId .Values.clusterExternalId }}
+        {{- end }}
         {{- with .Values.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
