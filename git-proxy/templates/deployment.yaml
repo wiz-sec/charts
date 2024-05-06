@@ -28,7 +28,7 @@ spec:
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
       {{- end }}
-      {{- if and (eq .Values.storageService "blob") (not .Values.blob.azureCreds) (not .Values.blob.azureCredsSecretName) }}
+      {{- if and (eq .Values.storageService "blob") (not .Values.blob.azureCreds) (not .Values.blob.useAzureCredsSecret) }}
       {{/* since the main container is running in non-root we need to change the azure.json file permissions to allow
       us to read it */}}
       initContainers:
