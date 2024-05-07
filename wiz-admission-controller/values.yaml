@@ -309,7 +309,7 @@ debugWebhook:
 # The following values are used for image integrity webhook.
 imageRegistryClient:
   createRole: true # Should a Role and RoleBinding be created by the chart or not.
-  pullSecrets: [] # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
+  pullSecrets: [] # Secret names for container image registry. List of string containing only the name of the secret.
   secretsNamespace: "default" # Namespace of the pull secrets.
   credentialHelpers: [] # List of credential helpers to use, Can be one of amazon, azure, google, github. 
 
