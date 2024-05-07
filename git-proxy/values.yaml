@@ -21,6 +21,8 @@ blob:
   #    environment:
   #    useInstanceMetadata:
   #    useFederatedToken:
+  azureCredsSecretName: azure-creds
+  useAzureCredsSecret: false
   resourceGroupName:
   storageAccountName:
   containerName: gitops-state
