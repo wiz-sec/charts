@@ -15,6 +15,14 @@ httpProxyConfiguration:
     replaceme
     --- END CERTIFICATE ---
 
+agent:
+  enabled: true
+  clientId: ""
+  clientSecret: ""
+  privateKey: ""
+
+agentCredsSecretName: wiz-outpost-agent-creds
+
 azureWorkerCredentials: 
   # tenantId: replaceme
   # aadClientId: replaceme

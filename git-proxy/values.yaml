@@ -31,13 +31,10 @@ blob:
 
 wiz:
   secretName: wiz-outpost-agent-creds
-  clientId: ""
-  clientSecret: ""
   env: ""
   outpostId: ""
   serviceType: ""
   dataCenter: ""
-  privateKey: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
