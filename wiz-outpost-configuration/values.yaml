@@ -16,7 +16,7 @@ httpProxyConfiguration:
     --- END CERTIFICATE ---
 
 agent:
-  enabled: true
+  enabled: false
   clientId: ""
   clientSecret: ""
   privateKey: ""
