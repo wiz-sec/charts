@@ -9,3 +9,4 @@ sources:
   - https://github.com/fluxcd-community/helm-charts
 type: application
 version: 2024.05.16
+
