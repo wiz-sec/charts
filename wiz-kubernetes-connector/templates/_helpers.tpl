@@ -47,16 +47,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create Wiz connector properties to use
 */}}
 
-{{- define "wiz-kubernetes-connector.wizConnectorSecretData" -}}
-{{- if not .Values.autoCreateConnector.enabled }}
-CONNECTOR_ID: {{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId | quote}}
-CONNECTOR_TOKEN: {{ required "A valid .Values.wizConnector.connectorToken entry required!" .Values.wizConnector.connectorToken | quote }}
-TARGET_DOMAIN: {{ required "A valid .Values.wizConnector.targetDomain entry required!" .Values.wizConnector.targetDomain | quote }}
-TARGET_IP: {{ required "A valid .Values.wizConnector.targetIp entry required!" .Values.wizConnector.targetIp | quote }}
-TARGET_PORT: {{ required "A valid .Values.wizConnector.targetPort entry required!" .Values.wizConnector.targetPort | quote }}
-{{- end }}
-{{- end }}
-
 {{/*
 Secrets names
 */}}
@@ -71,7 +61,7 @@ Secrets names
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.connectorSecretName" -}}
-{{ coalesce (.Values.wizConnector.secretName) (printf "%s-connector" .Release.Name) }}
+{{ coalesce (index .Values "wiz-broker" "wizConnector.secretName") (printf "%s-connector" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.clusterReaderToken" -}}
@@ -126,5 +116,5 @@ Use for debug purpose only.
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.brokerHash" -}}
-{{ include "helpers.calculateHash" (list "wiz-kubernetes-connector.brokerHash" .Values.wizConnector.targetIp) }}
+{{ include "helpers.calculateHash" (list "wiz-kubernetes-connector.brokerHash" index .Values "wiz-broker" "wizConnector.targetIp") }}
 {{- end }}

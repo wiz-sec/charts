@@ -73,25 +73,6 @@ wizApiToken:
   # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
   usePodCustomEnvironmentVariablesFile: false
 
-wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = false
-  # Specifies whether a proxy secret should be created
-  # If createSecret is false you need to:
-  #  1. Create secret with this keys:
-  #     CONNECTOR_ID, CONNECTOR_TOKEN, TARGET_DOMAIN, TARGET_IP, TARGET_PORT
-  #  2. Set secretName to reference your secret
-  createSecret: true
-  # Annotations to add to the secret
-  annotations: {}
-  secretName: ""
-
-  # Required arguments for autoCreateConnector = false
-  connectorId: ""
-  connectorToken: ""
-  targetDomain: ""
-  targetIp: ""
-  targetPort: ""
-  tunnelClientAllowedDomains: []
-
 wiz-broker:
   enabled: true
   targetIp: "kubernetes.default.svc.cluster.local"
@@ -117,7 +98,7 @@ wiz-broker:
     createSecret: true
     autoCreated: true # Should be set to false if the connector was not created by the autoCreateConnector Job
     # Annotations to add to the secret
-    annotations: { }
+    annotations: {}
     secretName: ""
 
     # Required arguments for autoCreateConnector = false
@@ -126,7 +107,7 @@ wiz-broker:
     targetDomain: ""
     targetIp: ""
     targetPort: ""
-    tunnelClientAllowedDomains: [ ]
+    tunnelClientAllowedDomains: []
 
 podAnnotations: {}
 
@@ -203,8 +184,8 @@ global:
 
   image:
     registry: wiziopublic.azurecr.io/wiz-app # Registry to get the container images from.
-    repository: wiz-broker # Container image pull policy. One of Always, Never, IfNotPresent.
-    pullPolicy: Always
+    repository: wiz-broker
+    pullPolicy: Always  # Container image pull policy. One of Always, Never, IfNotPresent.
   imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
   podAnnotations: {} # Annotations to add to the components Pods.
