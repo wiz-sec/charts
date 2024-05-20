@@ -165,17 +165,23 @@ global:
 
   # Wiz Service Account used to authenticate to Wiz.
   wizApiToken:
-    createSecret: true
-    # The name of the secret to use.
-    # If not set, a name is generated using the fullname template
-    name: "api-token-secret"
-    clientId: ""
-    clientToken: ""
-    clientEndpoint: ""
+    clientId: "" # Client ID of the Wiz Service Account.
+    clientToken: "" # Client secret of the Wiz Service Account.
+    clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
 
     secret:
-      # The name of the Wiz Service Account Secret.
+      # Should a Secret be created by the chart or not.
+      # Set this to false if you wish to create the Secret yourself or using another tool.
+      # The Secret should contain clientId for the ID and clientToken for the token.
+      create: true
+      # Annotations to add to the secret
+      annotations: { }
+      # The name of the secret to use.
+      # If not set, a name is generated using the fullname template
       name: ""
+
+    # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+    usePodCustomEnvironmentVariablesFile: false
 
   # Redirect HTTP and/or HTTPS traffic through a proxy.
   httpProxyConfiguration:

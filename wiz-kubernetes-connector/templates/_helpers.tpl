@@ -116,5 +116,5 @@ Use for debug purpose only.
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.brokerHash" -}}
-{{ include "helpers.calculateHash" (list "wiz-kubernetes-connector.brokerHash" index .Values "wiz-broker" "wizConnector.targetIp") }}
+{{ include "helpers.calculateHash" (list "wiz-kubernetes-connector.brokerHash" (index .Values "wiz-broker" "wizConnector.targetIp")) }}
 {{- end }}

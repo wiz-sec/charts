@@ -27,5 +27,5 @@ dependencies:
   - name: wiz-broker
     repository: https://wiz-sec.github.io/charts
 #    repository: "file://../wiz-broker" # Use this line to test the chart locally
-    version: ">=2.0.0"
+    version: ">=2.0.0-preview"
     condition: wiz-broker.enabled
