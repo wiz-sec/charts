@@ -36,7 +36,7 @@ cli:
 helmController:
   create: true
   image: wiziopublic.azurecr.io/wiz-helm-controller
-  tag: v0.37.4
+  tag: v1.0.1
   resources:
     limits: {}
     # cpu: 1000m
@@ -82,7 +82,7 @@ helmController:
   tolerations: []
 
 imageAutomationController:
-  create: false  # WIZ
+  create: false # WIZ
   image: wiziopublic.azurecr.io/wiz-image-automation-controller
   tag: v0.37.1
   resources:
@@ -110,7 +110,7 @@ imageAutomationController:
   tolerations: []
 
 imageReflectionController:
-  create: false  # WIZ
+  create: false # WIZ
   image: wiziopublic.azurecr.io/wiz-image-reflector-controller
   tag: v0.31.2
   resources:
@@ -140,7 +140,7 @@ imageReflectionController:
 kustomizeController:
   create: true
   image: wiziopublic.azurecr.io/wiz-kustomize-controller
-  tag: v1.2.2
+  tag: v1.3.0
   resources:
     limits: {}
     # cpu: 1000m
@@ -186,7 +186,7 @@ kustomizeController:
   tolerations: []
 
 notificationController:
-  create: false  # WIZ
+  create: false # WIZ
   image: wiziopublic.azurecr.io/wiz-notification-controller
   tag: v1.2.4
   resources:
@@ -233,7 +233,6 @@ notificationController:
       #    hosts:
       #      - flux-webhook.example.com
 
-
   nodeSelector: {}
   affinity: {}
   tolerations: []
@@ -241,7 +240,7 @@ notificationController:
 sourceController:
   create: true
   image: wiziopublic.azurecr.io/wiz-source-controller
-  tag: v1.2.5
+  tag: v1.3.0
   resources:
     limits: {}
     # cpu: 1000m
@@ -281,7 +280,7 @@ rbac:
   roleRef:
     name: cluster-admin
 
-logLevel: error  # WIZ
+logLevel: error # WIZ
 watchAllNamespaces: true
 
 # -- contents of pod imagePullSecret in form 'name=[secretName]'; applied to all controllers
