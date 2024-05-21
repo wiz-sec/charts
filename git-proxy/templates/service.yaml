@@ -27,6 +27,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
     - port: 3000
       targetPort: grpc
       protocol: TCP
