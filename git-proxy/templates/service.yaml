@@ -17,3 +17,19 @@ spec:
       name: grpc
   selector:
     {{- include "git-proxy.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: git-proxy
+  labels:
+    {{- include "git-proxy.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 3000
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+  selector:
+    {{- include "git-proxy.selectorLabels" . | nindent 4 }}
