@@ -100,7 +100,7 @@ spec:
           - name: ENV
             value: {{ .Values.wiz.env }}
           {{- end}}
-          {{- if .Values.outpostId }}
+          {{- if .Values.wiz.outpostId }}
           - name: WIZ_OUTPOST_ID
             value: {{ .Values.wiz.outpostId | quote }}
           - name: WIZ_CLIENT_ID
