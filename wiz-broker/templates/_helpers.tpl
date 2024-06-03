@@ -75,7 +75,7 @@ Secrets names
 */}}
 
 {{- define "wiz-broker.apiTokenSecretName" -}}
-{{ coalesce (.Values.global.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
+{{ coalesce (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-broker.caCertificateSecretName" -}}
@@ -92,7 +92,7 @@ Secrets names
 {{- end }}
 
 {{- define "wiz-broker.proxySecretName" -}}
-{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
+{{ coalesce (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-broker.connectorSecretName" -}}

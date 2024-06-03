@@ -47,21 +47,35 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Create Wiz connector properties to use
 */}}
 
+{{- define "wiz-kubernetes-connector.wizConnectorSecretData" -}}
+{{- if and .Values.wizConnector.createSecret (not .Values.wizConnector.autoCreated) }}
+ConnectorId: {{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId | quote}}
+TunnelToken: {{ required "A valid .Values.wizConnector.connectorToken entry required!" .Values.wizConnector.connectorToken | quote }}
+TunnelDomain: {{ required "A valid .Values.wizConnector.targetDomain entry required!" .Values.wizConnector.targetDomain | quote }}
+TunnelServerDomain: {{ required "A valid .Values.wizConnector.tunnelServerDomain entry required!" .Values.wizConnector.tunnelServerDomain | quote }}
+TunnelServerPort: {{ required "A valid .Values.wizConnector.tunnelServerPort entry required!" .Values.wizConnector.tunnelServerPort | quote }}
+TargetIp: {{ required "A valid .Values.wizConnector.targetIp entry required!" .Values.wizConnector.targetIp | quote }}
+TargetPort: {{ required "A valid .Values.wizConnector.targetPort entry required!" .Values.wizConnector.targetPort | quote }}
+{{- if .Values.wizConnector.tunnelClientAllowedDomains }}
+TunnelClientAllowedDomains: "{{ range $index, $domain := .Values.wizConnector.tunnelClientAllowedDomains }}{{ if $index }},{{ end }}{{ $domain }}{{ end }}"
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{/*
 Secrets names
 */}}
 
 {{- define "wiz-kubernetes-connector.apiTokenSecretName" -}}
-{{- $nameOverride := coalesce .Values.global.wizApiToken.secret.name  .Values.wizApiToken.secret.name .Values.global.nameOverride .Values.nameOverride }}
-{{- default .Chart.Name $nameOverride | trunc 63 | trimSuffix "-" }}
+{{ coalesce (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxySecretName" -}}
-{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
+{{ coalesce (.Values.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.connectorSecretName" -}}
-{{ coalesce (index .Values "wiz-broker" "wizConnector.secretName") (printf "%s-connector" .Release.Name) }}
+{{ coalesce (.Values.wizConnector.secretName) (printf "%s-connector" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.clusterReaderToken" -}}
@@ -108,11 +122,11 @@ Use for debug purpose only.
 {{- end -}}
 
 {{- define "wiz-kubernetes-connector.wizApiTokenHash" -}}
-{{ include "helpers.calculateHash" (list .Values.global.wizApiToken.clientId .Values.global.wizApiToken.clientToken .Values.global.wizApiToken.secret.name .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
+{{ include "helpers.calculateHash" (list .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxyHash" -}}
-{{ include "helpers.calculateHash" (list .Values.global.httpProxyConfiguration.httpProxy .Values.global.httpProxyConfiguration.httpsProxy .Values.global.httpProxyConfiguration.noProxyAddress .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
+{{ include "helpers.calculateHash" (list .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.brokerHash" -}}

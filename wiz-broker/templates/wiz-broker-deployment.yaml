@@ -23,20 +23,20 @@ spec:
         {{- if .Values.rollmeAnnotation.enabled }}
         rollme: {{ randAlphaNum 5 | quote }}
         {{- end }}
-        {{- with .Values.podAnnotations }}
+        {{- with .Values.global.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
         {{- /* `labels` includes `selectorLabels` */}}
           {{- include "wiz-broker.labels" . | nindent 8 }}
     spec:
-      {{- with .Values.global.image.imagePullSecrets }}
+      {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
       volumes:
         - name: connector-data
           secret:
@@ -62,13 +62,13 @@ spec:
               - key: privateKey
                 path: {{ $clientPrivateKeyFileName }}
         {{- end }}
-        {{- with .Values.customVolumes }}
+        {{- with .Values.global.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.global.securityContext | nindent 12 }}
           image: "{{ .Values.global.image.registry }}/{{ .Values.global.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           volumeMounts:
@@ -85,7 +85,7 @@ spec:
             mountPath: {{ $mtlsPath }}
             readOnly: true
           {{- end }}
-          {{- with .Values.customVolumeMounts }}
+          {{- with .Values.global.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
           args: [
@@ -97,8 +97,8 @@ spec:
             value: {{ .Values.global.logLevel }}
           {{- end }}
           - name: WIZ_ENV
-            value: {{ .Values.global.wizApiToken.clientEndpoint | quote }}
-          {{- if not .Values.global.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+            value: {{ .Values.wizApiToken.clientEndpoint | quote }}
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -122,7 +122,7 @@ spec:
           - name: USE_CLI_ENV_FILE
             value: "true"
           {{- end }}
-          {{- if .Values.global.httpProxyConfiguration.enabled }}
+          {{- if .Values.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
               secretKeyRef:
