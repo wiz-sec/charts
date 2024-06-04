@@ -141,7 +141,7 @@ jobs:
                 package: wiz-kubernetes-integration
       - when:
           # Update wiz-kubernetes-connector chart version if only wiz-broker was updated
-          conditions:
+          condition:
             and:
               - not << pipeline.parameters.wiz-kubernetes-connector >> # Skipping auto update wiz-kubernetes-connector chart if user update it manually
               - << pipeline.parameters.wiz-broker >>
