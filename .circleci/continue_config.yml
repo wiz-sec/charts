@@ -113,12 +113,6 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-broker
-            - run:
-                name: Trigger update for wiz kubernetes connector chart
-                command: |
-                  pushd ~/project/charts/wiz-kubernetes-connector
-                  bash  ~/project/charts/.circleci/update_chart_version.sh
-                  popd
       - when:
           condition: << pipeline.parameters.wiz-outpost-configuration >>
           steps:
@@ -145,6 +139,19 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-kubernetes-integration
+      - when:
+          # Update wiz-kubernetes-connector chart version if only wiz-broker was updated
+          conditions:
+            and:
+              - not << pipeline.parameters.wiz-kubernetes-connector >>
+              - << pipeline.parameters.wiz-broker >>
+          steps:
+            - run:
+                name: Trigger update for wiz kubernetes connector chart
+                command: |
+                  pushd ~/project/charts/wiz-kubernetes-connector
+                  bash  ~/project/charts/.circleci/update_chart_version.sh
+                  popd
       - when:
           condition:
             and:
