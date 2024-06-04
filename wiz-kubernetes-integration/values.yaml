@@ -10,8 +10,8 @@ global:
   wizApiToken:
     clientId: "" # Client ID of the Wiz Service Account.
     clientToken: "" # Client secret of the Wiz Service Account.
-    clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
-    
+    clientEndpoint: "" # Set to 'gov' or 'fedramp' for gov/fedramp tenants only, otherwise leave blank.
+
     secret:
       # Should a Secret be created by the chart or not.
       # Set this to false if you wish to create the Secret yourself or using another tool.

@@ -57,7 +57,7 @@ wizConnector:
 wizApiToken:
   clientId: "" # Client ID of the Wiz Service Account.
   clientToken: "" # Client secret of the Wiz Service Account.
-  clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
+  clientEndpoint: "" # Set to 'gov' or 'fedramp' for gov/fedramp tenants only, otherwise leave blank.
 
   secret:
     # Should a Secret be created by the chart or not.
@@ -102,6 +102,8 @@ global:
 
   image:
     registry: wiziopublic.azurecr.io/wiz-app
+    # Use this if you are deploying on federal environments with FIPS endpoints.
+    # repository: wiz-broker-fips
     repository: wiz-broker
     pullPolicy: Always  # Always pull the image on every deployment
     # Overrides the image tag whose default is the chart appVersion.
