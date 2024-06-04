@@ -143,7 +143,7 @@ jobs:
           # Update wiz-kubernetes-connector chart version if only wiz-broker was updated
           conditions:
             and:
-              - not << pipeline.parameters.wiz-kubernetes-connector >>
+              - not << pipeline.parameters.wiz-kubernetes-connector >> # Skipping auto update wiz-kubernetes-connector chart if user update it manually
               - << pipeline.parameters.wiz-broker >>
           steps:
             - run:
@@ -160,7 +160,6 @@ jobs:
                 - << pipeline.parameters.wiz-admission-controller >>
                 - << pipeline.parameters.wiz-sensor >>
                 - << pipeline.parameters.wiz-kubernetes-connector >>
-
           steps:
             - run:
                 name: Trigger update for wiz kubernetes integration chart
