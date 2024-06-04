@@ -13,8 +13,8 @@
 For uninstalling the wiz kubernetes connector you need to delete helm hooks resources manually.
 Please run the following commands:
 helm uninstall {{ .Release.Name | quote }} -n {{ .Release.Namespace | quote }}
-{{- if .Values.broker.enabled }}
-{{- if .Values.wizConnector.createSecret }}
+{{- if "wiz-kubernetes-connector.brokerEnabled" }}
+{{- if (index .Values "wiz-broker" "wizConnector.createSecret") }}
 kubectl delete secret {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim }} -n {{ .Release.Namespace | quote }}
 {{- end }}
 {{- end }}

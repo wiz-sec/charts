@@ -1,4 +1,4 @@
-{{- if .Values.global.broker.enabled }}
+{{- if .Values.enabled }}
 {{ $mountPath := "/etc/connectorData" }}
 {{ $connectorDataFileName := "data" }}
 {{ $connectorDataFilePath := printf "%s/%s" $mountPath "data" }}
@@ -23,20 +23,20 @@ spec:
         {{- if .Values.rollmeAnnotation.enabled }}
         rollme: {{ randAlphaNum 5 | quote }}
         {{- end }}
-        {{- with .Values.podAnnotations }}
+        {{- with .Values.global.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
         {{- /* `labels` includes `selectorLabels` */}}
           {{- include "wiz-broker.labels" . | nindent 8 }}
     spec:
-      {{- with .Values.global.image.imagePullSecrets }}
+      {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.global.broker.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
       volumes:
         - name: connector-data
           secret:
@@ -44,7 +44,7 @@ spec:
             items:
               - key: connectorData
                 path: {{ $connectorDataFileName }}
-        {{- if .Values.global.broker.caCertificate.enabled }}
+        {{- if .Values.caCertificate.enabled }}
         - name: ca-certificate
           secret:
             secretName: {{ include "wiz-broker.caCertificateSecretName" . | trim }}
@@ -52,7 +52,7 @@ spec:
               - key: caCertificate
                 path: target.crt
         {{- end }}
-        {{- if .Values.global.broker.mtls.enabled }}
+        {{- if .Values.mtls.enabled }}
         - name: mtls
           secret:
             secretName: {{ include "wiz-broker.mtlsSecretName" . | trim }}
@@ -62,30 +62,30 @@ spec:
               - key: privateKey
                 path: {{ $clientPrivateKeyFileName }}
         {{- end }}
-        {{- with .Values.global.broker.customVolumes }}
+        {{- with .Values.global.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.global.securityContext | nindent 12 }}
           image: "{{ .Values.global.image.registry }}/{{ .Values.global.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
           volumeMounts:
           - name: connector-data
             mountPath: {{ $mountPath }}
             readOnly: true
-          {{- if .Values.global.broker.caCertificate.enabled }}
+          {{- if .Values.caCertificate.enabled }}
           - name: ca-certificate
             mountPath: /usr/local/share/ca-certificates
             readOnly: true
           {{- end }}
-          {{- if .Values.global.broker.mtls.enabled }}
+          {{- if .Values.mtls.enabled }}
           - name: mtls
             mountPath: {{ $mtlsPath }}
             readOnly: true
           {{- end }}
-          {{- with .Values.global.broker.customVolumeMounts }}
+          {{- with .Values.global.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
           args: [
@@ -97,8 +97,8 @@ spec:
             value: {{ .Values.global.logLevel }}
           {{- end }}
           - name: WIZ_ENV
-            value: {{ .Values.global.wizApiToken.clientEndpoint | quote }}
-          {{- if not .Values.global.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+            value: {{ .Values.wizApiToken.clientEndpoint | quote }}
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -110,23 +110,19 @@ spec:
                 name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
                 key: clientToken
           {{- end }}
-          {{- if .Values.global.broker.wizManaged }}
+          {{- if .Values.managed.enabled }}
           - name: WIZ_MANAGED
             value: "true"
           - name: WIZ_OUTPOST_ID
-            value: {{ .Values.global.broker.outpostId | quote }}
-          {{- end}}
-          {{- if .Values.global.broker.podCustomEnvironmentVariablesFile }}
+            value: {{ .Values.managed.outpostId | quote }}
+          {{- end }}
+          {{- if .Values.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
-            value: {{ .Values.global.broker.podCustomEnvironmentVariablesFile }}
+            value: {{ .Values.podCustomEnvironmentVariablesFile }}
           - name: USE_CLI_ENV_FILE
             value: "true"
           {{- end }}
-          - name: TARGET_IP
-            value: {{ .Values.global.broker.targetIp }}
-          - name: TARGET_PORT
-            value: {{ .Values.global.broker.targetPort | quote }}
-          {{- if .Values.global.httpProxyConfiguration.enabled }}
+          {{- if .Values.httpProxyConfiguration.enabled }}
           - name: HTTP_PROXY
             valueFrom:
               secretKeyRef:
@@ -145,11 +141,11 @@ spec:
                 key: noProxyAddress
                 optional: false
           {{- end }}
-          {{- if .Values.global.broker.skipTlsVerify }}
+          {{- if .Values.skipTlsVerify }}
           - name: DISABLE_TLS_VALIDATION
             value: "true"
           {{- end }}
-          {{- if .Values.global.broker.mtls.enabled }}
+          {{- if .Values.mtls.enabled }}
           - name: CLIENT_CERT_PATH
             value: {{ printf "%s/%s" $mtlsPath $clientCertificateFileName }}
           - name: CLIENT_KEY_PATH

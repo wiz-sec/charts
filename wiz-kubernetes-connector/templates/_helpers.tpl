@@ -48,12 +48,17 @@ Create Wiz connector properties to use
 */}}
 
 {{- define "wiz-kubernetes-connector.wizConnectorSecretData" -}}
-{{- if not .Values.autoCreateConnector.enabled }}
-CONNECTOR_ID: {{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId | quote}}
-CONNECTOR_TOKEN: {{ required "A valid .Values.wizConnector.connectorToken entry required!" .Values.wizConnector.connectorToken | quote }}
-TARGET_DOMAIN: {{ required "A valid .Values.wizConnector.targetDomain entry required!" .Values.wizConnector.targetDomain | quote }}
-TARGET_IP: {{ required "A valid .Values.wizConnector.targetIp entry required!" .Values.wizConnector.targetIp | quote }}
-TARGET_PORT: {{ required "A valid .Values.wizConnector.targetPort entry required!" .Values.wizConnector.targetPort | quote }}
+{{- if and .Values.wizConnector.createSecret (not .Values.wizConnector.autoCreated) }}
+ConnectorId: {{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId | quote}}
+TunnelToken: {{ required "A valid .Values.wizConnector.connectorToken entry required!" .Values.wizConnector.connectorToken | quote }}
+TunnelDomain: {{ required "A valid .Values.wizConnector.targetDomain entry required!" .Values.wizConnector.targetDomain | quote }}
+TunnelServerDomain: {{ required "A valid .Values.wizConnector.tunnelServerDomain entry required!" .Values.wizConnector.tunnelServerDomain | quote }}
+TunnelServerPort: {{ required "A valid .Values.wizConnector.tunnelServerPort entry required!" .Values.wizConnector.tunnelServerPort | quote }}
+TargetIp: {{ required "A valid .Values.wizConnector.targetIp entry required!" .Values.wizConnector.targetIp | quote }}
+TargetPort: {{ required "A valid .Values.wizConnector.targetPort entry required!" .Values.wizConnector.targetPort | quote }}
+{{- if .Values.wizConnector.tunnelClientAllowedDomains }}
+TunnelClientAllowedDomains: "{{ range $index, $domain := .Values.wizConnector.tunnelClientAllowedDomains }}{{ if $index }},{{ end }}{{ $domain }}{{ end }}"
+{{- end }}
 {{- end }}
 {{- end }}
 
@@ -62,12 +67,11 @@ Secrets names
 */}}
 
 {{- define "wiz-kubernetes-connector.apiTokenSecretName" -}}
-{{- $nameOverride := coalesce .Values.global.wizApiToken.secret.name  .Values.wizApiToken.secret.name .Values.global.nameOverride .Values.nameOverride }}
-{{- default .Chart.Name $nameOverride | trunc 63 | trimSuffix "-" }}
+{{ coalesce (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxySecretName" -}}
-{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
+{{ coalesce (.Values.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.connectorSecretName" -}}
@@ -78,11 +82,15 @@ Secrets names
 {{ printf "%s-token" .Values.clusterReader.serviceAccount.name }}
 {{- end }}
 
+{{- define "wiz-kubernetes-connector.brokerEnabled" -}}
+{{ index .Values "wiz-broker" "enabled" }}
+{{- end }}
+
 {{/*
 Input parameters
 */}}
 {{- define "wiz-kubernetes-connector.apiServerEndpoint" -}}
-  {{- if and .Values.autoCreateConnector.enabled (not .Values.broker.enabled) }}
+  {{- if and .Values.autoCreateConnector.enabled (not "wiz-kubernetes-connector.brokerEnabled") }}
     {{- required "A valid .Values.autoCreateConnector.apiServerEndpoint entry required!" .Values.autoCreateConnector.apiServerEndpoint -}}
   {{- else -}}
     {{ if .Values.autoCreateConnector.apiServerEndpoint }}
@@ -114,13 +122,13 @@ Use for debug purpose only.
 {{- end -}}
 
 {{- define "wiz-kubernetes-connector.wizApiTokenHash" -}}
-{{ include "helpers.calculateHash" (list .Values.global.wizApiToken.clientId .Values.global.wizApiToken.clientToken .Values.global.wizApiToken.secret.name .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
+{{ include "helpers.calculateHash" (list .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxyHash" -}}
-{{ include "helpers.calculateHash" (list .Values.global.httpProxyConfiguration.httpProxy .Values.global.httpProxyConfiguration.httpsProxy .Values.global.httpProxyConfiguration.noProxyAddress .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
+{{ include "helpers.calculateHash" (list .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.brokerHash" -}}
-{{ include "helpers.calculateHash" (list .Values.broker.enabled .Values.broker.targetIp ) }}
+{{ include "helpers.calculateHash" (list "wiz-kubernetes-connector.brokerHash" (index .Values "wiz-broker" "wizConnector.targetIp")) }}
 {{- end }}
