@@ -10,8 +10,8 @@ commonLabels: {} # Labels applied on all the resources (not used for selection)
 wizApiToken:
   clientId: "" # Client ID of the Wiz Service Account.
   clientToken: "" # Client secret of the Wiz Service Account.
-  clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
-  
+  clientEndpoint: "" # Set to 'gov' or 'fedramp' for gov/fedramp tenants only, otherwise leave blank.
+
   secret:
     # Should a Secret be created by the chart or not.
     # Set this to false if you wish to create the Secret yourself or using another tool.
@@ -51,6 +51,8 @@ podDisruptionBudget:
 
 image:
   registry: wiziopublic.azurecr.io/wiz-app
+  # Use this if you are deploying on federal environments with FIPS endpoints.
+  # repository: wiz-admission-controller-fips
   repository: wiz-admission-controller
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
