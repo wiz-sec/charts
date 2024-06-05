@@ -116,6 +116,10 @@ spec:
           - name: WIZ_OUTPOST_ID
             value: {{ .Values.managed.outpostId | quote }}
           {{- end }}
+          - name: TARGET_IP
+            value: {{ .Values.targetIp }}
+          - name: TARGET_PORT
+            value: {{ .Values.targetPort | quote }}
           {{- if .Values.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
             value: {{ .Values.podCustomEnvironmentVariablesFile }}
