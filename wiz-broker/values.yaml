@@ -5,6 +5,10 @@
 # override default application name
 nameOverride: "wiz-broker"
 enabled: true
+
+targetIp: ""
+targetPort: 443
+
 serviceAccount:
   create: false
   # Annotations to add to the service account
