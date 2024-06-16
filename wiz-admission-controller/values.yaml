@@ -314,6 +314,8 @@ imageRegistryClient:
   pullSecrets: [] # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
   secretsNamespace: "default" # Namespace of the pull secrets.
   credentialHelpers: [] # List of credential helpers to use, Can be one of amazon, azure, google, github. 
+  cacheImagePullSecretsInterval: 5m # The interval of the background reloader cache for image pull secrets. The cache is used to avoid querying the cluster for the same image pull secrets multiple times.
+  ignoreMissingSecretError: false # Ignore missing secret error on startup, the admission controller will continue to run without the secret value and tries to fetch the secret every cacheImagePullSecretsInterval.
 
 kubernetesApiServer:
   cacheNamespaceLabelsTTL: 10m # The interval of the background reloder cache for namespace labels. The cache is used to avoid querying cluster for the same namespace multiple times.
