@@ -14,6 +14,11 @@ podAnnotations: {}
 # Additional environment variables to add to the components Pods as pairs “name”, “value”.
 podCustomEnvironmentVariables: []
 
+# Expose some metrics to be consumed by Prometheus and other Metrics servers.
+# The default port can be changed in case of conflicts
+exposeMetrics: false
+metricsPort: 9100
+
 # create a SecurityContextConstraints CRD for our service-account - used when installing on OpenShift clusters
 openshift: false
 
@@ -36,8 +41,8 @@ customVolumeMounts: []
 # set to true to disallow runtime response from the sensor for this deployment
 disallowRuntimeResponse: false
 
-# set to false to set the sensor in its own network namespace
-hostNetwork: true
+# set to true to run the sensor in the host network namespace
+hostNetwork: false
 
 # A range of seconds. Given a value X, the Sensor will choose a random value R between 0 and X.
 # It will then delay its start by R seconds. This can be useful to reduce load on shared resources
@@ -138,9 +143,14 @@ image:
   # "registry/repository:tag" and here this is "wizio.azurecr.io/sensor:v1"
   registry: wizio.azurecr.io
   repository: sensor
+  args: {}
   tag: "v1"
   pullPolicy: Always
-  args: {}
+  # the default is "wizio.azurecr.io/disk-scanner:v1"
+  diskScanRepository: disk-scanner
+  diskScanArgs: {}
+  diskScanTag: "v1"
+  diskScanPullPolicy: Always
 
 daemonset:
   # cache folder on the node
@@ -207,14 +217,22 @@ daemonset:
   # Time for which kubernetes waits for the sensor pod to terminate gracefully.
   terminationGracePeriodSeconds: 90
 
-  # resource values for the wiz sensor
   resources:
+    # resource values for the wiz sensor
     limits:
       cpu: "300m"
       memory: "300Mi"
     requests:
       cpu: "10m"
       memory: "50Mi"
+
+    # resource values for the wiz disk scanner
+    diskScanLimits:
+      cpu: "100m"
+      memory: "1000Mi"
+    diskScanRequests:
+      cpu: "10m"
+      memory: "200Mi"
 
   # If a non-standard path is used please specify it here. Usually not required.
   criSocketPath: ""

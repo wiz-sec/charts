@@ -111,7 +111,7 @@ true
 
 {{- define "wiz-sensor.imagePullSecretValue" -}}
 {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
-{{- printf "{\"auths\": {\"%s/%s\": {\"auth\": \"%s\"}}}" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository (printf "%s:%s" (required "A valid username for image pull secret required" .Values.imagePullSecret.username) .Values.imagePullSecret.password | b64enc) | b64enc }}
+{{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" (coalesce .Values.global.image.registry .Values.image.registry) (printf "%s:%s" (required "A valid username for image pull secret required" .Values.imagePullSecret.username) .Values.imagePullSecret.password | b64enc) | b64enc }}
 {{- else }}
 {{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .Values.image.repository (printf "%s:%s" (required "A valid username for image pull secret required" .Values.imagePullSecret.username) .Values.imagePullSecret.password | b64enc) | b64enc }}
 {{- end }}
@@ -133,5 +133,13 @@ log levels
 {{- "debug" -}}
 {{- else }}
 {{- default "error" .Values.logLevel -}}
+{{- end }}
+{{- end }}
+
+{{- define "validate.values" -}}
+{{- if .Values.exposeMetrics }}
+{{- if .Values.hostNetwork }}
+{{- fail "Cannot set hostNetwork to true when exposeMetrics is set to true" }}
+{{- end }}
 {{- end }}
 {{- end }}
