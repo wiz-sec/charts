@@ -58,14 +58,14 @@ spec:
             {{- toYaml .Values.global.securityContext | nindent 12 }}
           image: "{{ .Values.global.image.registry }}/{{ .Values.global.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.global.image.pullPolicy }}
-          command: ["wiz-broker"]
-          args: [
-            "delete-kubernetes-connector",
-            "--input-secrets-namespace", 
-            {{ .Release.Namespace | quote }},
-            "--input-secret-name",
-            {{- include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
-            ]
+          command: ["/bin/sh", "-c"]
+          # Never fail the job if the deletion fails
+          args:
+            - >
+              wiz-broker delete-kubernetes-connector
+              --input-secrets-namespace {{ .Release.Namespace | quote }}
+              --input-secret-name {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
+              || true
           env:
           {{- if .Values.global.logLevel }}
           - name: LOG_LEVEL
