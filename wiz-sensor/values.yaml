@@ -49,7 +49,7 @@ hostNetwork: false
 # (mainly API-server) when a large amount of Sensors are starting concurrently.
 startDelayRange: 0
 
-# Run in fully privileged mode. Usually used as compatibility mode for unsual setups.
+# Run in fully privileged mode. Usually used as compatibility mode for unusual setups.
 privileged: false
 
 # Set to true to enable debug logging (useful for debugging install issues). Do not use
