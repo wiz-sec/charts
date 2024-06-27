@@ -14,6 +14,9 @@ podAnnotations: {}
 # Additional environment variables to add to the components Pods as pairs “name”, “value”.
 podCustomEnvironmentVariables: []
 
+# enable vulnerability scanner (usually for on-prem deployments)
+diskScanEnabled: false
+
 # Expose some metrics to be consumed by Prometheus and other Metrics servers.
 # The default port can be changed in case of conflicts
 exposeMetrics: false
@@ -49,7 +52,7 @@ hostNetwork: false
 # (mainly API-server) when a large amount of Sensors are starting concurrently.
 startDelayRange: 0
 
-# Run in fully privileged mode. Usually used as compatibility mode for unsual setups.
+# Run in fully privileged mode. Usually used as compatibility mode for unusual setups.
 privileged: false
 
 # Set to true to enable debug logging (useful for debugging install issues). Do not use

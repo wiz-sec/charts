@@ -151,8 +151,8 @@ spec:
             secretKeyRef:
               name: {{ include "wiz-sensor.proxySecretName" . }}
               key: httpsProxy
-         - name: SSL_CERT_DIR # Used by Go runtime to resolve additional certificates from this directory
-+          value: /proxy-config
+        - name: SSL_CERT_DIR # Used by Go runtime to resolve additional certificates from this directory
+          value: "/proxy-config"
         {{- end }}
         {{- if .Values.startDelayRange }}
         - name: WIZ_ONPREM_ORCHESTRATOR_MAX_JITTER_DELAY_SECONDS
@@ -178,6 +178,8 @@ spec:
           mountPath: /api-endpoint-name/
         - name: sensor-scanner-shared-vol
           mountPath: /wiz-sensor-share/
+        - name: sensor-scanner-tmp-store
+          mountPath: /tmp/
         {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
         - name: proxy-secret
           mountPath: /proxy-config/
@@ -474,5 +476,9 @@ spec:
       - name: sensor-scanner-shared-vol
         emptyDir:
           sizeLimit: "100Mi"
+          medium: "Memory"
+      - name: sensor-scanner-tmp-store
+        emptyDir:
+          sizeLimit: "200Mi"
           medium: "Memory"
       {{- end }}
