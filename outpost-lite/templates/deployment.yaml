@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "outpost-lite.fullname" . }}
+  labels:
+    {{- include "outpost-lite.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "outpost-lite.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+        container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
+      labels:
+        {{- include "outpost-lite.selectorLabels" . | nindent 8 }}
+        {{- with .Values.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      restartPolicy: Always
+      {{- if .Values.affinity }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: [ "/entrypoint"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+          {{- end }}
+          {{- if .Values.agent.env }}
+          - name: ENV
+            value: {{ .Values.agent.env }}
+          {{- end}}
+          - name: WIZ_OUTPOST_ID
+            value: {{ required "Missing required value agent.outpostId is required" .Values.agent.outpostId | quote }}
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agent.secretName }}
+                key: clientId
+          - name: WIZ_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agent.secretName }}
+                key: clientSecret
+          - name: http_proxy
+            valueFrom:
+              secretKeyRef: 
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: HTTP_PROXY
+            valueFrom:
+              secretKeyRef: 
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: https_proxy
+            valueFrom:
+              secretKeyRef: 
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: HTTPS_PROXY
+            valueFrom:
+              secretKeyRef: 
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: no_proxy
+            valueFrom:
+              secretKeyRef: 
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: NO_PROXY
+            valueFrom:
+              secretKeyRef: 
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: SSL_CERT_FILE
+            value: "/usr/local/share/ca-certificates/root.crt"
+          args: [
+            "--region", "{{ .Values.agent.outpostRegion }}",
+          ]
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            capabilities:
+              add:
+              - SYS_ADMIN
+            seLinuxOptions:
+              type: spc_t
+          volumeMounts:
+            - mountPath: /var/wiz
+              name: working-dir
+            - mountPath: /usr/local/share/ca-certificates/
+              name: ca-certificate
+              readOnly: true
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: working-dir
+          emptyDir: {}
+        - name: ca-certificate
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.httpProxyConfiguration.name | quote }}
+            items:
+              - key: caCertificate
+                path: root.crt
+            optional: true
