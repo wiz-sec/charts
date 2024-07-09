@@ -1,4 +1,18 @@
 {{- if .Values.autoCreateConnector.enabled }}
+  {{- if and (not (index .Values "wiz-broker" "enabled")) (empty .Values.autoCreateConnector.apiServerEndpoint) }}
+    {{- required (cat "Error: failed rendering. apiServerEndpoint must be specified for public clusters when Wiz Broker is disabled.\n\n"
+                   "To resolve it, you may fetch the public endpoint address with:\n"
+                   "kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}'\n\n"
+                   "And then in your values.yaml file, put the address under:\n\n"
+                   "# Unified Helm Chart (wiz-kubernetes-integration).\n"
+                   "wiz-kubernetes-connector:\n"
+                   "  autoCreateConnector:\n"
+                   "    apiServerEndpoint: <the k8s api server address>\n\n"
+                   "# Standalone Helm Chart (wiz-kubernetes-connector).\n"
+                   "autoCreateConnector:\n"
+                   "  apiServerEndpoint: <the k8s api server address>") .Values.autoCreateConnector.apiServerEndpoint }}
+  {{- end }}
+
 apiVersion: batch/v1
 kind: Job
 metadata:
