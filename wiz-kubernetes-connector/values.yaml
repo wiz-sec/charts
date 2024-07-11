@@ -186,3 +186,7 @@ global:
     runAsNonRoot: true
     runAsUser: 1000
     allowPrivilegeEscalation: false
+
+  wizApiToken:
+    secret:
+      name: "" # Override with parent secret name

@@ -120,3 +120,7 @@ global:
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
+
+  wizApiToken:
+    secret:
+      name: "" # Override with parent secret name
