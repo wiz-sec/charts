@@ -5,6 +5,15 @@
 nameOverride: "" # Override the release’s name.
 commonLabels: {} # Labels applied on all the resources (not used for selection)
 
+image:
+  registry: wiziopublic.azurecr.io/wiz-app
+  # Use this if you are deploying on federal environments with FIPS endpoints.
+  # repository: wiz-broker-fips
+  repository: wiz-broker
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
 clusterReader:
   installRbac: true
   serviceAccount:
