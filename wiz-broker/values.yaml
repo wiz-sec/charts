@@ -131,5 +131,11 @@ global:
     runAsUser: 1000
 
   wizApiToken:
+    clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
     secret:
       name: "" # Override with parent secret name
+
+  httpProxyConfiguration:
+    enabled: false # Should the components use a proxy.
+    create: false # Secret created by wiz-broker.
+    secretName: "" # The name of the proxy Secret.

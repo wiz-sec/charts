@@ -71,7 +71,7 @@ Secrets names
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxySecretName" -}}
-{{ coalesce (.Values.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
+{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.connectorSecretName" -}}

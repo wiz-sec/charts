@@ -130,8 +130,8 @@ spec:
                 optional: false
           {{- end }}
           - name: WIZ_ENV
-            value: {{ coalesce .Values.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
-          {{- if (or .Values.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+            value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+          {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
           - name: HTTP_PROXY
             valueFrom:
               secretKeyRef:
