@@ -67,7 +67,7 @@ Secrets names
 */}}
 
 {{- define "wiz-kubernetes-connector.apiTokenSecretName" -}}
-{{ coalesce (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
+{{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxySecretName" -}}

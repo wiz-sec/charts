@@ -75,7 +75,7 @@ Secrets names
 */}}
 
 {{- define "wiz-broker.apiTokenSecretName" -}}
-{{ coalesce (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
+{{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-broker.caCertificateSecretName" -}}

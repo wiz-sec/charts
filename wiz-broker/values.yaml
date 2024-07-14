@@ -6,6 +6,15 @@
 nameOverride: "wiz-broker"
 enabled: true
 
+image:
+  registry: wiziopublic.azurecr.io/wiz-app
+  # Use this if you are deploying on federal environments with FIPS endpoints.
+  # repository: wiz-broker-fips
+  repository: wiz-broker
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
 targetIp: ""
 targetPort: 443
 
@@ -120,3 +129,7 @@ global:
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
+
+  wizApiToken:
+    secret:
+      name: "" # Override with parent secret name
