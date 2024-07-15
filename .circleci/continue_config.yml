@@ -85,6 +85,7 @@ jobs:
             - << pipeline.parameters.wiz-kubernetes-connector >>
             - << pipeline.parameters.wiz-kubernetes-integration >>
             - << pipeline.parameters.wiz-outpost-configuration >>
+            - << pipeline.parameters.wiz-outpost-lite >>
           steps:
             - checkout:
                 path: ~/project
