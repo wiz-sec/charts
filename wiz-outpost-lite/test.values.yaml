@@ -1,0 +1,9 @@
+agent:
+  env: "test"
+  clientId: "ucg6pu6gcnebbd7upmf2f3r46r5pbhgaovsvl3mdqqtqou2a7qbg6"
+  clientSecret: "G7ru2WuAlm1PkFMQowpYoaemI545dmCxKnhWUbu1OhddSfCUm37cB6henmFXjbBW"
+  outpostId: 02555c49-d754-442d-af14-dfaae10120a4
+imagePullSecrets:
+  - name: wizacrcreds
+
+
