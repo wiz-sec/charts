@@ -76,6 +76,7 @@ workflows:
             ^wiz-broker/.* wiz-broker true
             ^wiz-admission-controller/.* wiz-admission-controller true
             ^wiz-sensor/.* wiz-sensor true
+            ^wiz-outpost-lite/.* wiz-outpost-lite true
           base-revision: << pipeline.git.branch >>
           filters:
             branches:
