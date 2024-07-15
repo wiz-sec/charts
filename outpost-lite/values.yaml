@@ -20,7 +20,7 @@ image:
   namePrefix: outpost-lite-runner
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "ea3b7b48a77b74f9adfd5e0a48569a1bea7bee4d-multiarch"
+  tag: "d0beeb0cf48eb4524b37aefcf07e636b9d5f8575-multiarch"
 
 imagePullSecrets: []
 nameOverride: ""
