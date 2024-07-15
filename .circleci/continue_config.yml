@@ -26,6 +26,9 @@ parameters:
   wiz-outpost-configuration:
     default: false
     type: boolean
+  outpost-lite:
+    default: false
+    type: boolean
 
 
 executors:
@@ -118,6 +121,11 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-outpost-configuration
+      - when:
+          condition: << pipeline.parameters.outpost-lite >>
+          steps:
+            - upload_new_chart:
+                package: outpost-lite
       - when:
           condition: << pipeline.parameters.wiz-admission-controller >>
           steps:
