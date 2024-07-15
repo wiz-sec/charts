@@ -1,0 +1,49 @@
+# Default values for outpost-lite.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+agent:
+  secretName: outpost-lite-agent-creds
+  env: ""
+  clientId: ""
+  clientSecret: ""
+  outpostId: ""
+  outpostRegion: partition-1
+
+secret:
+  create: true
+
+image:
+  repository: wizio.azurecr.io
+  namePrefix: outpost-lite-runner
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "d0beeb0cf48eb4524b37aefcf07e636b9d5f8575-multiarch"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+resources:
+  limits:
+    memory: 4396M
+  requests:
+    memory: 1024M
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+internetAccessCertificates:
+  skipSslValidation: false
+
+extraEnv: {}
+
+httpProxyConfiguration:
+  name: wiz-http-proxy-configuration
