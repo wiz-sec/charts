@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "outpost-lite.fullname" . }}
+  name: {{ include "wiz-outpost-lite.fullname" . }}
   labels:
-    {{- include "outpost-lite.labels" . | nindent 4 }}
+    {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "outpost-lite.selectorLabels" . | nindent 6 }}
+      {{- include "wiz-outpost-lite.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -17,7 +17,7 @@ spec:
       {{- end }}
         container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
       labels:
-        {{- include "outpost-lite.selectorLabels" . | nindent 8 }}
+        {{- include "wiz-outpost-lite.selectorLabels" . | nindent 8 }}
         {{- with .Values.labels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
