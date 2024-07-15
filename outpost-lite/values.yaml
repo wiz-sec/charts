@@ -10,7 +10,7 @@ agent:
   clientId: ""
   clientSecret: ""
   outpostId: ""
-  outpostRegion: region-1
+  outpostRegion: partition-1
 
 secret:
   create: true
