@@ -1,0 +1,14 @@
+{{- if .Values.diskScan.enabled }}
+
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: {{ include "wiz-sensor.diskScanConfigName" . }}
+  labels: {{- include "wiz-sensor.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+
+data:
+  config: |
+    {{ coalesce .Values.diskScan.config "" | toJson }}
+{{- end -}}

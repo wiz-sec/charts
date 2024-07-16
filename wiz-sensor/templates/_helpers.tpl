@@ -93,6 +93,9 @@ Secrets
 {{ coalesce .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.secretName (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}
 
+{{- define "wiz-sensor.diskScanConfigName" -}}
+{{ coalesce .Values.diskScan.configName (printf "%s-%s" .Release.Name "disk-scan-config") }}
+{{- end }}
 
 {{/*
 TODO: Backward compatibility - remove

@@ -67,7 +67,7 @@ spec:
       restartPolicy: Always
 
       containers:
-      {{- if .Values.diskScanEnabled }}
+      {{- if .Values.diskScan.enabled }}
       - name: wiz-disk-scanner
         {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
         image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository .Values.image.diskScanTag }}
@@ -88,10 +88,10 @@ spec:
         {{- else }}
           capabilities:
             add:
+            - SYS_ADMIN  # Mounting host filesystem as read only.
             - SYS_CHROOT # moving between namespaces
             - DAC_OVERRIDE # file reading
             - DAC_READ_SEARCH # file reading
-            - SYS_PTRACE # access host file system
           privileged: false
           runAsNonRoot: true
           runAsUser: 2202
@@ -172,6 +172,12 @@ spec:
         {{- with .Values.global.customVolumeMounts }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
+        - name: host-mount
+          mountPath: /host
+          readOnly: true
+          {{- if semverCompare ">=1.30-0" .Capabilities.KubeVersion.GitVersion }}
+          recursiveReadOnly: IfPossible
+          {{- end }}
         - name: api-client-secret
           mountPath: /api-client/
         - name: api-endpoint-name-secret
@@ -180,6 +186,8 @@ spec:
           mountPath: /wiz-sensor-share/
         - name: sensor-scanner-tmp-store
           mountPath: /tmp/
+        - name: disk-scan-config
+          mountPath: /wiz-disk-scan-config/
         {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
         - name: proxy-secret
           mountPath: /proxy-config/
@@ -314,7 +322,7 @@ spec:
           value: {{ .Values.daemonset.httpProxyPassword }}
         - name: HTTP_PROXY_CERT
           value: {{ .Values.daemonset.httpProxyCaCert }}
-        {{- if .Values.diskScanEnabled }}
+        {{- if .Values.diskScan.enabled }}
         - name: DISK_SCAN_SHARED_VOL
           value: "/wiz-sensor-share/"
         {{- end }}
@@ -390,7 +398,7 @@ spec:
         - name: api-endpoint-name-secret
           mountPath: /api-endpoint-name/
         {{- end }}
-        {{- if .Values.diskScanEnabled }}
+        {{- if .Values.diskScan.enabled }}
         - name: sensor-scanner-shared-vol
           mountPath: /wiz-sensor-share/
         {{- end }}
@@ -472,7 +480,10 @@ spec:
         emptyDir:
           sizeLimit: "100Mi"
           medium: "Memory"
-      {{- if .Values.diskScanEnabled }}
+      {{- if .Values.diskScan.enabled }}
+      - name: host-mount
+        hostPath:
+          path: /
       - name: sensor-scanner-shared-vol
         emptyDir:
           sizeLimit: "100Mi"
@@ -481,4 +492,11 @@ spec:
         emptyDir:
           sizeLimit: "200Mi"
           medium: "Memory"
+      - name: disk-scan-config
+        configMap:
+          name: {{ include "wiz-sensor.diskScanConfigName" . }}
+          optional: true
+          items:
+            - key: config
+              path: config.json
       {{- end }}

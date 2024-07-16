@@ -14,8 +14,15 @@ podAnnotations: {}
 # Additional environment variables to add to the components Pods as pairs “name”, “value”.
 podCustomEnvironmentVariables: []
 
-# enable vulnerability scanner (usually for on-prem deployments)
-diskScanEnabled: false
+# Various configurations for the disk scanner
+diskScan:
+  # enable disk scanner scanner (usually for on-prem deployments)
+  enabled: false
+  # The runtime config to be used by the disk scanner. Passing an empty object will use the default config.
+  config: {}
+  # Overriding default name for runtime config name. Default "{.Release.Name}-disk-scan-config"
+  configName: ""
+
 
 # Expose some metrics to be consumed by Prometheus and other Metrics servers.
 # The default port can be changed in case of conflicts
@@ -118,7 +125,7 @@ imagePullSecret:
   # In case you want use an existing value please mark "create" above as false.
   # For general directions on how to pre-create this kind of secret please refer to:
   # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#registry-secret-existing-credentials
-  # the default registry server URL to use in the secret is wizio.azurecr.io/sensor
+  # the default registry server URL to use in the secret is wizio.azurecr.io. For FEDRAMP use wizfedramp.azurecr.io.
   username: ""
   password: ""
 
@@ -143,7 +150,8 @@ serviceAccount:
 
 image:
   # set registry to an empty string if the image is local. The final image pulled is
-  # "registry/repository:tag" and here this is "wizio.azurecr.io/sensor:v1"
+  # "registry/repository:tag" and here this is "wizio.azurecr.io/sensor:v1".
+  # For FEDRAMP use wizfedramp.azurecr.io, for a final URL of "wizfedramp.azurecr.io/sensor:v1".
   registry: wizio.azurecr.io
   repository: sensor
   args: {}
