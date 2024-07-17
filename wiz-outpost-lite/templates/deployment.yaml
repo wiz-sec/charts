@@ -45,6 +45,8 @@ spec:
           - name: ENV
             value: {{ .Values.agent.env }}
           {{- end}}
+          - name: OUTPOST
+            value: "1"
           - name: WIZ_OUTPOST_ID
             value: {{ required "Missing required value agent.outpostId is required" .Values.agent.outpostId | quote }}
           - name: WIZ_CLIENT_ID
