@@ -18,6 +18,7 @@ spec:
   selector:
     {{- include "git-proxy.selectorLabels" . | nindent 4 }}
 ---
+{{- if ne .Release.Name "git-proxy" }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -37,3 +38,4 @@ spec:
       name: grpc
   selector:
     {{- include "git-proxy.selectorLabels" . | nindent 4 }}
+{{- end }}
