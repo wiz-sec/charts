@@ -83,7 +83,7 @@ wizApiToken:
   # The chart will refuse to install unless these are set to valid values
   clientId: ""
   clientToken: ""
-  clientEndpoint: "" # Set custom endpoint (gov for example)
+  clientEndpoint: "" # Set custom endpoint - should be "fedramp" for FEDRAMP environments
 
 httpProxyConfiguration:
   # set to true to enable the use of a proxy. creates a secret with proxy configuration
@@ -125,7 +125,7 @@ imagePullSecret:
   # In case you want use an existing value please mark "create" above as false.
   # For general directions on how to pre-create this kind of secret please refer to:
   # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#registry-secret-existing-credentials
-  # the default registry server URL to use in the secret is wizio.azurecr.io. For FEDRAMP use wizfedramp.azurecr.io.
+  # the default registry server URL to use in the secret is wizio.azurecr.io. For FEDRAMP use wizfedramp.azurecr.us.
   username: ""
   password: ""
 
@@ -151,16 +151,16 @@ serviceAccount:
 image:
   # set registry to an empty string if the image is local. The final image pulled is
   # "registry/repository:tag" and here this is "wizio.azurecr.io/sensor:v1".
-  # For FEDRAMP use wizfedramp.azurecr.io, for a final URL of "wizfedramp.azurecr.io/sensor:v1".
+  # For FEDRAMP use wizfedramp.azurecr.us, for a final URL of "wizfedramp.azurecr.us/sensor:v1".
   registry: wizio.azurecr.io
   repository: sensor
   args: {}
   tag: "v1"
   pullPolicy: Always
-  # the default is "wizio.azurecr.io/disk-scanner:v1"
-  diskScanRepository: disk-scanner
+  # the default is "wizio.azurecr.io/wiz-app/onprem-scanner:0.1"
+  diskScanRepository: wiz-app/onprem-scanner
   diskScanArgs: {}
-  diskScanTag: "v1"
+  diskScanTag: "0.1"
   diskScanPullPolicy: Always
 
 daemonset:
