@@ -62,10 +62,16 @@ spec:
           # Never fail the job if the deletion fails
           args:
             - >
+              {{- if .Values.autoCreateConnector.istio.enabled }}
+              sleep {{ .Values.autoCreateConnector.istio.sleepBeforeJobSecs | default 15 }} &&
+              {{- end }}
               wiz-broker delete-kubernetes-connector
               --input-secrets-namespace {{ .Release.Namespace | quote }}
               --input-secret-name {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
               || true
+              {{- if .Values.autoCreateConnector.istio.enabled }}
+              && curl --max-time 2 -s -f -XPOST http://127.0.0.1:{{ .Values.autoCreateConnector.istio.proxySidecarPort | default 15000 }}/quitquitquit
+              {{- end }}
           env:
           {{- if .Values.global.logLevel }}
           - name: LOG_LEVEL
