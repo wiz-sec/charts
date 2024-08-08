@@ -8,7 +8,8 @@ appVersion: ""
 # Dependencies for wiz-kubernetes connector and wiz-admission-controller and wiz-sensor
 dependencies:
 - name: wiz-kubernetes-connector
-  repository: https://wiz-sec.github.io/charts
+  #repository: https://wiz-sec.github.io/charts
+  repository: "file://../wiz-kubernetes-connector"
   version: ">=2.2.8"
   condition: wiz-kubernetes-connector.enabled
 - name: "wiz-admission-controller"
