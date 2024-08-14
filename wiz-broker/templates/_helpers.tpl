@@ -41,6 +41,11 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{ $index }}: {{ tpl $content $ | quote }}
 {{- end }}
 {{- end }}
+{{- if .Values.global.commonLabels }}
+{{- range $index, $content := .Values.global.commonLabels }}
+{{ $index }}: {{ tpl $content $ | quote }}
+{{- end }}
+{{- end }}
 {{- end }}
 
 {{/*
