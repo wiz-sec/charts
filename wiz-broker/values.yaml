@@ -5,6 +5,7 @@
 # override default application name
 nameOverride: "wiz-broker"
 enabled: true
+commonLabels: {} # Labels applied on all the resources (not used for selection)
 
 image:
   registry: wiziopublic.azurecr.io/wiz-app
@@ -122,6 +123,8 @@ global:
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
   imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
+
+  commonLabels: {} # Labels applied on all the resources (not used for selection)
 
   podAnnotations: {}
   customVolumes: []
