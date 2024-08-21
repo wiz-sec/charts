@@ -132,3 +132,84 @@ Use for debug purpose only.
 {{- define "wiz-kubernetes-connector.brokerHash" -}}
 {{ include "helpers.calculateHash" (list "wiz-kubernetes-connector.brokerHash" (index .Values "wiz-broker" "wizConnector.targetIp")) }}
 {{- end }}
+
+{{- define "wiz-kubernetes-connector.entrypoint" -}}
+{{- if .Values.autoCreateConnector.istio.enabled -}}
+- "sh"
+- "-c"
+{{- else -}}
+- "wiz-broker"
+{{- end -}}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.generate-args-list-create" -}}
+create-kubernetes-connector
+--api-server-endpoint
+{{ include "wiz-kubernetes-connector.apiServerEndpoint" . | trim | quote }}
+--secrets-namespace
+{{ .Release.Namespace | quote }}
+--service-account-token-secret-name
+{{ include "wiz-kubernetes-connector.clusterReaderToken" . | quote }}
+--output-secret-name
+{{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
+--is-on-prem={{ include "wiz-kubernetes-connector.brokerEnabled" . | trim}}
+{{- with .Values.autoCreateConnector.connectorName }}
+--connector-name
+{{ . | quote }}
+{{- end }}
+{{- with .Values.autoCreateConnector.clusterFlavor }}
+--service-type
+{{ . | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.clusterExternalId .Values.autoCreateConnector.clusterExternalId) }}
+--cluster-external-id
+{{ . | quote }}
+{{- end }}
+--wait={{ and (include "wiz-kubernetes-connector.brokerEnabled" . | trim) .Values.autoCreateConnector.waitUntilInitialized }}
+{{- end }}
+
+{{- define "wiz-kubernetes.pre-istio-sidecar" -}}
+{{- printf "sleep %d" (int (.Values.autoCreateConnector.istio.sleepBeforeJobSecs | default 15)) -}}
+{{- end -}}
+
+{{- define "wiz-kubernetes.post-istio-sidecar" -}}
+{{- printf "curl --max-time 2 -s -f -XPOST http://127.0.0.1:%d/quitquitquit" (int (.Values.autoCreateConnector.istio.proxySidecarPort | default 15000)) -}}
+{{- end -}}
+
+{{- define "wiz-kubernetes-connector.generate-args-create" -}}
+{{- $args := include "wiz-kubernetes-connector.generate-args-list-create" . | splitList "\n" -}}
+{{- if .Values.autoCreateConnector.istio.enabled -}}
+{{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
+{{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
+{{- $argsWithIstio := printf "%s &&\nwiz-broker %s &&\n%s" $first (join " \n" $args) $last -}}
+  - >
+    {{- printf "%s" $argsWithIstio | nindent 2 }}
+{{- else -}}
+{{- range $arg := $args }}
+- {{ $arg }}
+{{- end }}
+{{- end -}}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.generate-args-list-delete" -}}
+delete-kubernetes-connector
+--input-secrets-namespace
+{{ .Release.Namespace | quote }}
+--input-secret-name
+{{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
+|| true
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.generate-args-delete" -}}
+{{- $args := include "wiz-kubernetes-connector.generate-args-list-delete" . | splitList "\n" -}}
+{{- $output := "kuku" }}
+{{- if .Values.autoCreateConnector.istio.enabled -}}
+{{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
+{{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
+{{- $output = printf "%s &&\nwiz-broker %s &&\n%s" $first (join " \n" $args) $last -}}
+{{- else -}}
+{{- $output = printf "wiz-broker %s" (join " \n" $args) -}}
+{{- end -}}
+  - >
+    {{- printf "%s" $output | nindent 2 }}
+{{- end }}

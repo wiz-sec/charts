@@ -59,19 +59,7 @@ spec:
           image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
           command: ["/bin/sh", "-c"]
-          # Never fail the job if the deletion fails
-          args:
-            - >
-              {{- if .Values.autoCreateConnector.istio.enabled }}
-              sleep {{ .Values.autoCreateConnector.istio.sleepBeforeJobSecs | default 15 }} &&
-              {{- end }}
-              wiz-broker delete-kubernetes-connector
-              --input-secrets-namespace {{ .Release.Namespace | quote }}
-              --input-secret-name {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
-              || true
-              {{- if .Values.autoCreateConnector.istio.enabled }}
-              && curl --max-time 2 -s -f -XPOST http://127.0.0.1:{{ .Values.autoCreateConnector.istio.proxySidecarPort | default 15000 }}/quitquitquit
-              {{- end }}
+          args: {{- include "wiz-kubernetes-connector.generate-args-delete" . | nindent 12 }}
           env:
           {{- if .Values.global.logLevel }}
           - name: LOG_LEVEL
