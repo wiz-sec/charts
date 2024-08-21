@@ -142,7 +142,7 @@ Use for debug purpose only.
 {{- end -}}
 {{- end }}
 
-{{- define "wiz-kubernetes-connector.generate-args-list-create" -}}
+{{- define "wiz-kubernetes-connector.argsListCreateConnector" -}}
 create-kubernetes-connector
 --api-server-endpoint
 {{ include "wiz-kubernetes-connector.apiServerEndpoint" . | trim | quote }}
@@ -176,8 +176,8 @@ create-kubernetes-connector
 {{- printf "curl --max-time 2 -s -f -XPOST http://127.0.0.1:%d/quitquitquit" (int (.Values.autoCreateConnector.istio.proxySidecarPort | default 15000)) -}}
 {{- end -}}
 
-{{- define "wiz-kubernetes-connector.generate-args-create" -}}
-{{- $args := include "wiz-kubernetes-connector.generate-args-list-create" . | splitList "\n" -}}
+{{- define "wiz-kubernetes-connector.generateArgsCreate" -}}
+{{- $args := include "wiz-kubernetes-connector.argsListCreateConnector" . | splitList "\n" -}}
 {{- if .Values.autoCreateConnector.istio.enabled -}}
 {{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
 {{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
@@ -200,7 +200,7 @@ delete-kubernetes-connector
 || true
 {{- end }}
 
-{{- define "wiz-kubernetes-connector.generate-args-delete" -}}
+{{- define "wiz-kubernetes-connector.argsListDeleteConnector" -}}
 {{- $args := include "wiz-kubernetes-connector.generate-args-list-delete" . | splitList "\n" -}}
 {{- $output := "kuku" }}
 {{- if .Values.autoCreateConnector.istio.enabled -}}

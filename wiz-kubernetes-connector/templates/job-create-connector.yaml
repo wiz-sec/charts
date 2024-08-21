@@ -74,7 +74,7 @@ spec:
           imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
           command:
             {{- include "wiz-kubernetes-connector.entrypoint" . | nindent 12 }}
-          args: {{- include "wiz-kubernetes-connector.generate-args-create" . | nindent 12 }}
+          args: {{- include "wiz-kubernetes-connector.generateArgsCreate" . | nindent 12 }}
           env:
           {{- if .Values.global.logLevel }}
           - name: LOG_LEVEL

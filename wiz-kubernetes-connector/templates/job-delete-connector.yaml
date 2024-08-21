@@ -59,7 +59,7 @@ spec:
           image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
           command: ["/bin/sh", "-c"]
-          args: {{- include "wiz-kubernetes-connector.generate-args-delete" . | nindent 12 }}
+          args: {{- include "wiz-kubernetes-connector.argsListDeleteConnector" . | nindent 12 }}
           env:
           {{- if .Values.global.logLevel }}
           - name: LOG_LEVEL
