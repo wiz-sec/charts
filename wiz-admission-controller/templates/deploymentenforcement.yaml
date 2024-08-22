@@ -39,8 +39,8 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "wiz-admission-controller.serviceAccountName" . }}
       securityContext:
-        {{- if .Values.global.overridePodSecurityContext }}
-        {{- toYaml .Values.global.overridePodSecurityContext | nindent 8 }}
+        {{- if .Values.global.lowPrivilegePodSecurityPolicy }}
+        {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 8 }}
         {{- else }}
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
         {{- end }}
@@ -50,8 +50,8 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- if .Values.global.overrideSecurityContext }}
-            {{- toYaml .Values.global.overrideSecurityContext | nindent 12 }}
+            {{- if .Values.global.lowPrivilegeSecurityPolicy }}
+            {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 12 }}
             {{- else }}
             {{- toYaml .Values.securityContext | nindent 12 }}
             {{- end }}

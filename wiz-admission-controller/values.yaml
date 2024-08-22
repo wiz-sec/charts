@@ -467,15 +467,15 @@ global:
   # Wiz Helm Charts process the security contexts
   # in the following order:
   # 1. Pod security context
-  #    overridePodSecurityContext -> podSecurityContext
+  #    lowPrivilegePodSecurityPolicy -> podSecurityContext
   # 2. Containers security context
-  #    overrideSecurityContext -> securityContext
+  #    lowPrivilegeSecurityPolicy -> securityContext
   #
-  # Adding the following overrides to your user-supplied values.yaml
+  # Populating the following overrides lowPrivilegeSecurityPolicy to your user-supplied values.yaml
   # allows you to customize and override the defaults
   # (useful for e.g. OpenShift installations that automatically
   #  mutate the Pod and use the first UID and first GID from
   #  the allowed range to run the Pod).
   #
-  # overridePodSecurityContext: {}
-  # overrideSecurityContext: {}
+  lowPrivilegePodSecurityPolicy: nil
+  lowPrivilegeSecurityPolicy: nil
