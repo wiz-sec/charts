@@ -160,7 +160,7 @@ image:
   # the default is "wizio.azurecr.io/wiz-app/onprem-scanner:0.1"
   diskScanRepository: wiz-app/onprem-scanner
   diskScanArgs: {}
-  diskScanTag: "0.1"
+  diskScanTag: "v1"
   diskScanPullPolicy: Always
 
 daemonset:
@@ -240,10 +240,10 @@ daemonset:
     # resource values for the wiz disk scanner
     diskScanLimits:
       cpu: "100m"
-      memory: "1000Mi"
+      memory: "500Mi"
     diskScanRequests:
       cpu: "10m"
-      memory: "200Mi"
+      memory: "100Mi"
 
   # If a non-standard path is used please specify it here. Usually not required.
   criSocketPath: ""
