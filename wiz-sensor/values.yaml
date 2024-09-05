@@ -157,7 +157,7 @@ image:
   args: {}
   tag: "v1"
   pullPolicy: Always
-  # the default is "wizio.azurecr.io/wiz-app/onprem-scanner:0.1"
+  # the default is "wizio.azurecr.io/wiz-app/onprem-scanner:v1"
   diskScanRepository: wiz-app/onprem-scanner
   diskScanArgs: {}
   diskScanTag: "v1"

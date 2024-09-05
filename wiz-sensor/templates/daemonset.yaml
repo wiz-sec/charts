@@ -24,7 +24,7 @@ spec:
         prometheus.io/port: "{{ .Values.metricsPort }}"
       {{- end }}
 
-      {{- if semverCompare "<1.30-0" .Capabilities.KubeVersion.GitVersion }}
+      {{- if semverCompare "<1.31-0" .Capabilities.KubeVersion.GitVersion }}
         container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
       {{- end }}
         cluster-autoscaler.kubernetes.io/enable-ds-eviction: "true"
@@ -97,7 +97,7 @@ spec:
           runAsGroup: 2202
         {{- end }}
           readOnlyRootFilesystem: true
-          {{- if semverCompare ">=1.30-0" .Capabilities.KubeVersion.GitVersion }}
+          {{- if semverCompare ">=1.31-0" .Capabilities.KubeVersion.GitVersion }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
@@ -253,7 +253,14 @@ spec:
             - IPC_LOCK # eBPF
             - FOWNER # file hashing
             - SYS_PTRACE # eBPF
+          {{- if not .Values.gkeAutopilot }}
+            - SYSLOG # kernel symbol resolve
+          {{- end }}
           {{- if not .Values.disallowRuntimeResponse }}
+            - KILL # response
+          {{- end }}
+          {{- if .Values.disallowRuntimeResponse }}
+            drop:
             - KILL # response
           {{- end }}
           privileged: false

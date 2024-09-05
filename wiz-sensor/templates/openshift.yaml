@@ -23,6 +23,7 @@ allowedCapabilities:
   - FOWNER # file hashing
   - SYS_PTRACE # eBPF
   - KILL # forensics
+  - SYSLOG # syslog
 requiredDropCapabilities: null
 fsGroup:
   type: RunAsAny
