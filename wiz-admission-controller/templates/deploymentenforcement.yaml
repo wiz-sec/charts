@@ -47,6 +47,7 @@ spec:
       {{- if .Values.hostNetwork }}
       hostNetwork: true
       {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.global.podTerminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -190,6 +191,8 @@ spec:
             value: {{ .Values.imageRegistryClient.ignoreMissingSecretError | quote }}
           - name: WIZ_REGISTRY_IMAGE_PULL_SECRET_RELOAD_INTERVAL
             value: {{ .Values.imageRegistryClient.cacheImagePullSecretsInterval | quote }}
+          - name: WIZ_SERVER_GRACEFUL_TERMINATION
+            value: {{ include "gracefulTerminationWaitTime" . }}
           ## Enable debug webhook that only logs the request
           {{- if .Values.debugWebhook.enabled }}
           - name: WIZ_DEBUG_WEBHOOK_ENABLED

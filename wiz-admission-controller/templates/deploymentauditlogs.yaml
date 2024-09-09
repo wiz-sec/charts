@@ -47,6 +47,7 @@ spec:
       {{- if .Values.hostNetwork }}
       hostNetwork: true
       {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.global.podTerminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -163,6 +164,8 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: WIZ_SERVER_GRACEFUL_TERMINATION
+            value: {{ include "gracefulTerminationWaitTime" . }}
           ## Enable debug webhook that only logs the request
           {{- if .Values.debugWebhook.enabled }}
           - name: WIZ_DEBUG_WEBHOOK_ENABLED

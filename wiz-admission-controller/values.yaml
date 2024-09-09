@@ -414,8 +414,9 @@ probes: # Probes config for the container
     
   readinessProbe:
     initialDelaySeconds: 5
+    periodSeconds: 5
     timeoutSeconds: 30
-    failureThreshold: 3
+    failureThreshold: 1
 
   livenessProbe:
     initialDelaySeconds: 5
@@ -463,6 +464,7 @@ global:
   affinity: {} # custom affinity rules for node assignment
   tolerations: [] # custom tolerations
   clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  podTerminationGracePeriodSeconds: 60 # The grace period for pod termination in seconds. The value must be non-negative integer.
 
   # Wiz Helm Charts process the security contexts
   # in the following order:
