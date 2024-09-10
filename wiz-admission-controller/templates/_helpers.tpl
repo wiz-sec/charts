@@ -189,15 +189,3 @@ Use for debug purpose only.
 {{- define "helpers.var_dump" -}}
 {{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
 {{- end -}}
-
-
-{{/*
-Calculate total wait time after SIGTERM based on readinessProbe settings.
-*/}}
-{{- define "gracefulTerminationWaitTime" -}}
-{{- $readinessProbePeriod := .Values.probes.readinessProbe.periodSeconds -}}
-{{- $readinessProbeFailureThreshold := .Values.probes.readinessProbe.failureThreshold -}}
-{{- $serverGracefulTerminationSecondsBuffer := 5 -}}
-{{- $totalWaitTimeWithTimeout := add (mul $readinessProbePeriod $readinessProbeFailureThreshold) $serverGracefulTerminationSecondsBuffer -}}
-{{- printf "%ds" $totalWaitTimeWithTimeout -}}
-{{- end -}}
