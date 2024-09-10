@@ -24,7 +24,7 @@ spec:
         prometheus.io/port: "{{ .Values.metricsPort }}"
       {{- end }}
 
-      {{- if semverCompare "<1.30-0" .Capabilities.KubeVersion.GitVersion }}
+      {{- if semverCompare "<1.31-0" .Capabilities.KubeVersion.GitVersion }}
         container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
       {{- end }}
         cluster-autoscaler.kubernetes.io/enable-ds-eviction: "true"
@@ -89,16 +89,15 @@ spec:
           capabilities:
             add:
             - SYS_ADMIN  # Mounting host filesystem as read only.
-            - SYS_CHROOT # moving between namespaces
-            - DAC_OVERRIDE # file reading
             - DAC_READ_SEARCH # file reading
+            - SETPCAP # Dropping capabilities when not needed
           privileged: false
           runAsNonRoot: true
           runAsUser: 2202
           runAsGroup: 2202
         {{- end }}
           readOnlyRootFilesystem: true
-          {{- if semverCompare ">=1.30-0" .Capabilities.KubeVersion.GitVersion }}
+          {{- if semverCompare ">=1.31-0" .Capabilities.KubeVersion.GitVersion }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
@@ -163,6 +162,13 @@ spec:
             secretKeyRef:
               name: {{ include "wiz-sensor.secretName" . }}
               key: clientEndpoint
+              optional: true
+        - name: WIZ_ONPREM_SCANNER_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "wiz-sensor.diskScanConfigName" . }}
+              key: config
+
         {{- with .Values.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -191,8 +197,6 @@ spec:
           mountPath: /wiz-sensor-share/
         - name: sensor-scanner-tmp-store
           mountPath: /tmp/
-        - name: disk-scan-config
-          mountPath: /wiz-disk-scan-config/
         {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
         - name: proxy-secret
           mountPath: /proxy-config/
@@ -249,7 +253,14 @@ spec:
             - IPC_LOCK # eBPF
             - FOWNER # file hashing
             - SYS_PTRACE # eBPF
+          {{- if not .Values.gkeAutopilot }}
+            - SYSLOG # kernel symbol resolve
+          {{- end }}
           {{- if not .Values.disallowRuntimeResponse }}
+            - KILL # response
+          {{- end }}
+          {{- if .Values.disallowRuntimeResponse }}
+            drop:
             - KILL # response
           {{- end }}
           privileged: false
@@ -497,11 +508,4 @@ spec:
         emptyDir:
           sizeLimit: "200Mi"
           medium: "Memory"
-      - name: disk-scan-config
-        configMap:
-          name: {{ include "wiz-sensor.diskScanConfigName" . }}
-          optional: true
-          items:
-            - key: config
-              path: config.json
       {{- end }}

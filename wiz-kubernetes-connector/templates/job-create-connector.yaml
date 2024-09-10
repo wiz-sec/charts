@@ -56,7 +56,11 @@ spec:
       serviceAccountName: {{ .Values.autoCreateConnector.serviceAccount.name }}
       restartPolicy: "Never"
       securityContext:
+        {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
+        {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 8 }}
+        {{- else }}
         {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
+        {{- end }}
       {{- if or .Values.autoCreateConnector.customVolumes  .Values.global.customVolumes}}
       volumes:
       {{ with .Values.global.customVolumes }}
@@ -69,35 +73,16 @@ spec:
       containers:
         - name: wiz-connector-creator
           securityContext:
+            {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+            {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 12 }}
+            {{- else }}
             {{- toYaml .Values.global.securityContext | nindent 12 }}
+            {{- end }}
           image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
-          command: ["wiz-broker"]
-          args: [
-            "create-kubernetes-connector",
-            "--api-server-endpoint", 
-            {{ include "wiz-kubernetes-connector.apiServerEndpoint" . | trim | quote }},
-            "--secrets-namespace", 
-            {{ .Release.Namespace | quote }},
-            "--service-account-token-secret-name",
-            {{ include "wiz-kubernetes-connector.clusterReaderToken" . | quote }},
-            "--output-secret-name",
-            {{- include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote | nindent 12 }},
-            '--is-on-prem={{ include "wiz-kubernetes-connector.brokerEnabled" . | trim}}',
-            {{ with .Values.autoCreateConnector.connectorName }}
-            "--connector-name",
-            {{ . | quote }},
-            {{ end }}
-            {{ with .Values.autoCreateConnector.clusterFlavor }}
-            "--service-type",
-            {{ . | quote }},
-            {{ end }}
-            {{ with (coalesce .Values.global.clusterExternalId .Values.autoCreateConnector.clusterExternalId) }}
-            "--cluster-external-id",
-            {{ . | quote }},
-            {{ end }}
-            '--wait={{ and (include "wiz-kubernetes-connector.brokerEnabled" . | trim) .Values.autoCreateConnector.waitUntilInitialized }}',
-            ]
+          command:
+            {{- include "wiz-kubernetes-connector.entrypoint" . | nindent 12 }}
+          args: {{- include "wiz-kubernetes-connector.generateArgsCreate" . | nindent 12 }}
           env:
           {{- if .Values.global.logLevel }}
           - name: LOG_LEVEL

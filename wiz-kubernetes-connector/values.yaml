@@ -55,6 +55,23 @@ autoCreateConnector:
   roleAnnotations: {}
   roleBindingAnnotations: {}
 
+  # Set this to true if you are using Istio in sidecar mode.
+  # When Istio uses sidecars, there are 2 issues when deploying Wiz:
+  # 1) The creation and deletion Jobs never complete (due to istio-proxy sidecar)
+  # 2) There is a race condition and possible network connectivity failures
+  #    when contacting the Wiz backend.
+  #
+  # When either of this happens, either the installation, upgrade or uninstallation
+  # of the charts fail.
+  # Setting this to true ensures that the istio-proxy gets a graceful shutdown
+  # and mitigates the networking race condition by sleeping before the Job starts.
+  # Learn more:
+  # https://istio.io/latest/blog/2023/native-sidecars/
+  istio:
+    enabled: false
+    sleepBeforeJobSecs: 15
+    proxySidecarPort: 15000
+
 wizApiToken:
   clientId: "" # Client ID of the Wiz Service Account.
   clientToken: "" # Client secret of the Wiz Service Account.
@@ -186,6 +203,22 @@ global:
   affinity: {} # custom affinity rules for node assignment
   tolerations: [] # custom tolerations
   clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+
+  # Wiz Helm Charts process the security contexts
+  # in the following order:
+  # 1. Pod security context
+  #    lowPrivilegePodSecurityPolicy -> podSecurityContext
+  # 2. Containers security context
+  #    lowPrivilegeSecurityPolicy -> securityContext
+  #
+  # Populating the following overrides lowPrivilegeSecurityPolicy to your user-supplied values.yaml
+  # allows you to customize and override the defaults
+  # (useful for e.g. OpenShift installations that automatically
+  #  mutate the Pod and use the first UID and first GID from
+  #  the allowed range to run the Pod).
+  #
+  # lowPrivilegePodSecurityPolicy: {}
+  # lowPrivilegeSecurityPolicy: {}
 
   podSecurityContext:
     runAsNonRoot: true

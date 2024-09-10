@@ -5,6 +5,7 @@
 # override default application name
 nameOverride: "wiz-broker"
 enabled: true
+commonLabels: {} # Labels applied on all the resources (not used for selection)
 
 image:
   registry: wiziopublic.azurecr.io/wiz-app
@@ -123,9 +124,28 @@ global:
     tag: ""
   imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
+  commonLabels: {} # Labels applied on all the resources (not used for selection)
+
   podAnnotations: {}
   customVolumes: []
   customVolumeMounts: []
+
+  # Wiz Helm Charts process the security contexts
+  # in the following order:
+  # 1. Pod security context
+  #    lowPrivilegePodSecurityPolicy -> podSecurityContext
+  # 2. Containers security context
+  #    lowPrivilegeSecurityPolicy -> securityContext
+  #
+  # Populating the following overrides lowPrivilegeSecurityPolicy to your user-supplied values.yaml
+  # allows you to customize and override the defaults
+  # (useful for e.g. OpenShift installations that automatically
+  #  mutate the Pod and use the first UID and first GID from
+  #  the allowed range to run the Pod).
+  #
+  # lowPrivilegePodSecurityPolicy: {}
+  # lowPrivilegeSecurityPolicy: {}
+
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000
