@@ -24,8 +24,11 @@ spec:
         prometheus.io/port: "{{ .Values.metricsPort }}"
       {{- end }}
 
-      {{- if semverCompare "<1.31-0" .Capabilities.KubeVersion.GitVersion }}
+      {{- if semverCompare "<1.31.0" .Capabilities.KubeVersion.Version }}
         container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
+        {{- if .Values.diskScan.enabled }}
+        container.apparmor.security.beta.kubernetes.io/wiz-disk-scanner: unconfined
+        {{- end }}
       {{- end }}
         cluster-autoscaler.kubernetes.io/enable-ds-eviction: "true"
         {{- with (coalesce .Values.global.podAnnotations (coalesce .Values.daemonset.podAnnotations .Values.podAnnotations)) }}
@@ -97,11 +100,11 @@ spec:
           runAsGroup: 2202
         {{- end }}
           readOnlyRootFilesystem: true
-          {{- if semverCompare ">=1.31-0" .Capabilities.KubeVersion.GitVersion }}
+          {{- if semverCompare ">=1.31.0" .Capabilities.KubeVersion.Version }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
-          {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
+          {{- if semverCompare ">=1.19.0" .Capabilities.KubeVersion.Version }}
           seccompProfile:
             type: Unconfined
           {{- end }}
@@ -186,7 +189,7 @@ spec:
         - name: host-mount
           mountPath: /host
           readOnly: true
-          {{- if semverCompare ">=1.30-0" .Capabilities.KubeVersion.GitVersion }}
+          {{- if semverCompare ">=1.31.0" .Capabilities.KubeVersion.Version }}
           recursiveReadOnly: IfPossible
           {{- end }}
         - name: api-client-secret
@@ -270,12 +273,12 @@ spec:
         {{- end }}
           readOnlyRootFilesystem: true
 
-          {{- if semverCompare ">=1.30-0" .Capabilities.KubeVersion.GitVersion }}
+          {{- if semverCompare ">=1.31.0" .Capabilities.KubeVersion.Version }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
 
-          {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
+          {{- if semverCompare ">=1.19.0" .Capabilities.KubeVersion.Version }}
           seccompProfile:
             type: Unconfined
           {{- end }}
