@@ -1,4 +1,5 @@
 {{- include "validate.values" . }}
+{{- $kubeVersion := printf "%s.%s" (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Major "") (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Minor "") }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -24,7 +25,7 @@ spec:
         prometheus.io/port: "{{ .Values.metricsPort }}"
       {{- end }}
 
-      {{- if semverCompare "<1.31.0" .Capabilities.KubeVersion.Version }}
+      {{- if semverCompare "<1.31" $kubeVersion }}
         container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
         {{- if .Values.diskScan.enabled }}
         container.apparmor.security.beta.kubernetes.io/wiz-disk-scanner: unconfined
@@ -91,20 +92,23 @@ spec:
         {{- else }}
           capabilities:
             add:
-            - SYS_ADMIN  # Mounting host filesystem as read only.
-            - DAC_READ_SEARCH # file reading
-            - SETPCAP # Dropping capabilities when not needed
+            - SYS_ADMIN # Mount operations.
+            - DAC_OVERRIDE # Access filesystem with overlayFS.
+            - DAC_READ_SEARCH # Access filesystem with overlayFS.
+            - FOWNER # Access filesystem with overlayFS.
+            - CHOWN # Access filesystem with overlayFS.
+            - SETPCAP # Drop capabilities when not needed.
           privileged: false
           runAsNonRoot: true
           runAsUser: 2202
           runAsGroup: 2202
         {{- end }}
           readOnlyRootFilesystem: true
-          {{- if semverCompare ">=1.31.0" .Capabilities.KubeVersion.Version }}
+          {{- if semverCompare ">=1.30" $kubeVersion }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
-          {{- if semverCompare ">=1.19.0" .Capabilities.KubeVersion.Version }}
+          {{- if semverCompare ">=1.19" $kubeVersion }}
           seccompProfile:
             type: Unconfined
           {{- end }}
@@ -189,7 +193,7 @@ spec:
         - name: host-mount
           mountPath: /host
           readOnly: true
-          {{- if semverCompare ">=1.31.0" .Capabilities.KubeVersion.Version }}
+          {{- if semverCompare ">=1.31" $kubeVersion }}
           recursiveReadOnly: IfPossible
           {{- end }}
         - name: api-client-secret
@@ -273,12 +277,12 @@ spec:
         {{- end }}
           readOnlyRootFilesystem: true
 
-          {{- if semverCompare ">=1.31.0" .Capabilities.KubeVersion.Version }}
+          {{- if semverCompare ">=1.30" $kubeVersion }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
 
-          {{- if semverCompare ">=1.19.0" .Capabilities.KubeVersion.Version }}
+          {{- if semverCompare ">=1.19" $kubeVersion }}
           seccompProfile:
             type: Unconfined
           {{- end }}
@@ -384,6 +388,18 @@ spec:
         {{- if coalesce .Values.global.clusterExternalId .Values.clusterExternalId }}
         - name: CLUSTER_EXTERNAL_ID
           value: {{ coalesce .Values.global.clusterExternalId .Values.clusterExternalId }}
+        {{- end }}
+        {{- with coalesce .Values.global.subscriptionExternalId .Values.subscriptionExternalId }}
+        - name: SUBSCRIPTION_EXTERNAL_ID
+          value: {{ . | quote }}
+        {{- end }}
+        {{- with coalesce .Values.global.subscriptionTags .Values.subscriptionTags }}
+        - name: SUBSCRIPTION_TAGS
+          value: {{ . | toJson | quote }}
+        {{- end }}
+        {{- with coalesce .Values.global.clusterTags .Values.clusterTags }}
+        - name: CLUSTER_TAGS
+          value: {{ . | toJson | quote }}
         {{- end }}
         {{- if .Values.exposeMetrics }}
         - name: METRICS_PORT
