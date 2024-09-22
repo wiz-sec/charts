@@ -67,6 +67,9 @@ privileged: false
 debug: false
 
 clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
+clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
+subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
 
 # the API key identifying this installation (for comm with Wiz portal)
 wizApiToken:
@@ -275,3 +278,6 @@ global:
   affinity: {}
   tolerations: []
   clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  subscriptionExternalId: ""
+  clusterTags: {}
+  subscriptionTags: {}
