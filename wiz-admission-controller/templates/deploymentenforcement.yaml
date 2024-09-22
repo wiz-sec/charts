@@ -96,6 +96,18 @@ spec:
           {{- with (coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }} # check opaWebhook for backward compatibility
           - "--cluster-external-id={{ . }}"
           {{- end }}
+          {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
+          - --subscription-external-id
+          - {{ . | quote }}
+          {{- end }}
+          {{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
+          - --cluster-tags
+          - {{ . | toJson | quote }}
+          {{- end }}
+          {{- with (coalesce .Values.global.subscriptionTags .Values.webhook.subscriptionTags) }}
+          - --subscription-tags
+          - {{ . | toJson | quote }}
+          {{- end }}
           # Kubernetes API server flags
           - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
           # OPA webhook flags
