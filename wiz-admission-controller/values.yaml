@@ -96,6 +96,9 @@ webhook:
                                   # behavior.
 
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
+  subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
+  clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
+  subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
 
   injectCaFrom: "" # Inject Certificate to webhook configurations. Format: "namespace/certificate". Prerequisite - https://cert-manager.io/docs/installation.
   createSelfSignedCert: false # Create and use a self-signed certificate using `cert-manager`. Prerequisite - https://cert-manager.io/docs/installation.
@@ -465,6 +468,9 @@ global:
   tolerations: [] # custom tolerations
   clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
   podTerminationGracePeriodSeconds: 60 # The grace period for pod termination in seconds. The value must be non-negative integer.
+  subscriptionExternalId: ""
+  clusterTags: {}
+  subscriptionTags: {}
 
   # Wiz Helm Charts process the security contexts
   # in the following order:
