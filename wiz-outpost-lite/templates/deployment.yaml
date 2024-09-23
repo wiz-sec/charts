@@ -33,9 +33,9 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}:{{ .Values.image.tag }}{{ if .Values.agent.env }}-{{ .Values.agent.env }}{{ end }}"
           command: [ "/entrypoint"]
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: Always
           env:
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
@@ -111,6 +111,9 @@ spec:
             value: "/usr/local/share/ca-certificates/:/certificates/"
           args: [
             "--region", "{{ .Values.agent.outpostRegion }}",
+            {{- if .Values.autoUpdate }}
+            "--autoUpdate",
+            {{- end }}
           ]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
