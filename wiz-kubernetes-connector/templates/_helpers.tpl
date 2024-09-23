@@ -165,18 +165,6 @@ create-kubernetes-connector
 --cluster-external-id
 {{ . | quote }}
 {{- end }}
-{{- with (coalesce .Values.global.subscriptionExternalId .Values.autoCreateConnector.subscriptionExternalId) }}
---subscription-external-id
-{{ . | quote }}
-{{- end }}
-{{- with (coalesce .Values.global.clusterTags .Values.autoCreateConnector.clusterTags) }}
---cluster-tags
-{{ . | toJson | quote }}
-{{- end }}
-{{- with (coalesce .Values.global.subscriptionTags .Values.autoCreateConnector.subscriptionTags) }}
---subscription-tags
-{{ . | toJson | quote }}
-{{- end }}
 --wait={{ and (include "wiz-kubernetes-connector.brokerEnabled" . | trim) .Values.autoCreateConnector.waitUntilInitialized }}
 {{- end }}
 
