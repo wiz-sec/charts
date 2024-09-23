@@ -90,18 +90,6 @@ spec:
           - "--error-enforcement-method=AUDIT"
           - "--policy-enforcement-method=AUDIT"
           - "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId }}"
-          {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
-          - --subscription-external-id
-          - {{ . | quote }}
-          {{- end }}
-          {{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
-          - --cluster-tags
-          - {{ . | toJson | quote }}
-          {{- end }}
-          {{- with (coalesce .Values.global.subscriptionTags .Values.webhook.subscriptionTags) }}
-          - --subscription-tags
-          - {{ . | toJson | quote }}
-          {{- end }}
           # Kubernetes API server flags
           - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
           # K8S audit logs webhook flags

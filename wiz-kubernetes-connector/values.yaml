@@ -35,9 +35,6 @@ autoCreateConnector:
   clusterFlavor: "" # Possible values: EKS, AKS, GKE, OKE, OpenShift, Kubernetes (defaults to Kubernetes)
   apiServerEndpoint: "" # Required when not using Broker. Defaults to https://kubernetes.default.svc.cluster.local
   clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
-  subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
-  clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
-  subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
   waitUntilInitialized: true # `true` is recommended for most cases. Only evaluated if using Wiz Broker.  
 
   serviceAccount:
@@ -206,9 +203,6 @@ global:
   affinity: {} # custom affinity rules for node assignment
   tolerations: [] # custom tolerations
   clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
-  subscriptionExternalId: ""
-  clusterTags: {}
-  subscriptionTags: {}
 
   # Wiz Helm Charts process the security contexts
   # in the following order:
