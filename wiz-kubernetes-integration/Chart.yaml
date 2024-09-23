@@ -9,11 +9,11 @@ appVersion: ""
 dependencies:
 - name: wiz-kubernetes-connector
   repository: https://wiz-sec.github.io/charts
-  version: ">=3.1.0"
+  version: ">=3.1.0-preview"
   condition: wiz-kubernetes-connector.enabled
 - name: "wiz-admission-controller"
   repository: https://wiz-sec.github.io/charts
-  version:  ">=3.6.0"
+  version:  ">=3.6.0-preview"
   condition: wiz-admission-controller.enabled
 - name: wiz-sensor
   repository: https://wiz-sec.github.io/charts
