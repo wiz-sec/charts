@@ -14,11 +14,12 @@ podAnnotations: {}
 # Additional environment variables to add to the components Pods as pairs “name”, “value”.
 podCustomEnvironmentVariables: []
 
-# Various configurations for the disk scanner
+# Sensor-based workload scanner configuration. The following variables apply only to on-premises workloads.
+# Do not enable or modify these variables for cloud workloads.
 diskScan:
-  # enable disk scanner scanner (usually for on-prem deployments)
+  # Enable Sensor based workload scanning. Only applicable in on-prem environments.
   enabled: false
-  # The runtime config to be used by the disk scanner. Passing an empty object will use the default config.
+  # The runtime config to be used by the Sensor based workload scanner. Passing an empty object will use the default config.
   config: {}
   # Overriding default name for runtime config name. Default "{.Release.Name}-disk-scan-config"
   configName: ""
@@ -240,10 +241,10 @@ daemonset:
       cpu: "10m"
       memory: "50Mi"
 
-    # resource values for the wiz disk scanner
+    # resource values for the Sensor based workload scanner
     diskScanLimits:
       cpu: "100m"
-      memory: "500Mi"
+      memory: "700Mi"
     diskScanRequests:
       cpu: "10m"
       memory: "100Mi"
