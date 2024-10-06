@@ -324,8 +324,3 @@ prometheus:
           - sourceLabels: [__meta_kubernetes_pod_phase]
             action: keep
             regex: Running
-
-git:
-  url: http://git-proxy.default.svc.cluster.local
-  branch: master
-  path: #./replaceme/

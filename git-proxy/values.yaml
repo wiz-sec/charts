@@ -104,3 +104,8 @@ extraEnv: {}
 
 httpProxyConfiguration:
   name: wiz-http-proxy-configuration
+
+git:
+  branch: master
+  url: http://git-proxy.default.svc.cluster.local
+  path: #./replaceme/
