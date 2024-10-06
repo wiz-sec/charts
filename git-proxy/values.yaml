@@ -109,3 +109,4 @@ git:
   branch: master
   url: http://git-proxy.default.svc.cluster.local
   path: #./replaceme/
+  fluxNamespace: flux-system
