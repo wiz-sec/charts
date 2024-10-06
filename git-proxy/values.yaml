@@ -94,7 +94,7 @@ tolerations: []
 affinity: {}
 hostpathCopier:
   image:
-    repository: wiziopublic.azurecr.io/wiz-busybox
+    name: wiz-busybox
     tag: 1.36.0
 
 internetAccessCertificates:
