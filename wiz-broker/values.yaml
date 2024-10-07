@@ -47,6 +47,8 @@ mtls:
 rollmeAnnotation:
   enabled: true
 
+priorityClassName: ""
+
 wizConnector:
   # Specifies whether a connector secret should be created
   # If createSecret is false you need to:
