@@ -1,6 +1,6 @@
 {{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled}}
 apiVersion: apps/v1
-kind: Deployment
+kind: ReplicaSet
 metadata:
   name: {{ include "wiz-admission-controller.fullname" . }}
   namespace: {{ .Release.Namespace | quote }}
@@ -82,7 +82,7 @@ spec:
           command:
           - "/usr/bin/wiz-admission-controller"
           - "--readiness-port={{ .Values.healthPort }}"
-          - "--version-port={{ .Values.versionPort }}"
+          - "--status-port={{ .Values.statusPort }}"
           # Server flags
           - "--port={{ .Values.service.targetPort }}"
           - "--tls-private-key-file=/var/server-certs/tls.key"

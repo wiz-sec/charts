@@ -379,8 +379,8 @@ hostNetwork: false
 # Port of the health server used by the readiness and liveness probes
 healthPort: 8000
 
-# Port of the version server used to get the version of the admission controller image, with path /version
-versionPort: 8001
+# Port of the status server used to get the status of the admission controller, with path /status
+statusPort: 8001
 
 # Configuration options for NetworkPolicy
 networkPolicy:
