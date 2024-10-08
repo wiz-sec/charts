@@ -1,6 +1,6 @@
 {{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled}}
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: Deployment
 metadata:
   name: {{ include "wiz-admission-controller.fullname" . }}
   namespace: {{ .Release.Namespace | quote }}
