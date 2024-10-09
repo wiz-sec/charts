@@ -525,6 +525,5 @@ spec:
           medium: "Memory"
       - name: sensor-scanner-tmp-store
         emptyDir:
-          sizeLimit: "200Mi"
-          medium: "Memory"
+          sizeLimit: "5Gi"
       {{- end }}

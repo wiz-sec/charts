@@ -33,7 +33,7 @@ spec:
       us to read it */}}
       initContainers:
         - name: hostpath-copier
-          image: "{{ .Values.hostpathCopier.image.repository }}:{{ .Values.hostpathCopier.image.tag }}"
+          image: "{{ .Values.image.repository }}/{{ .Values.hostpathCopier.image.name }}:{{ .Values.hostpathCopier.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command: ["/bin/sh", "-c"]
           args: ["cp /etc/kubernetes/azure.json /target/azure.json; chmod 444 /target/azure.json"]

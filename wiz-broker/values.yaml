@@ -159,4 +159,3 @@ global:
     enabled: false # Should the components use a proxy.
     create: false # Secret created by wiz-broker.
     secretName: "" # The name of the proxy Secret.
-
