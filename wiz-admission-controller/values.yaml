@@ -340,6 +340,8 @@ serviceAccount:
   # If empty, a name is generated using the fullname template
   name: ""
 
+
+
 podAnnotations: {} # Annotations to add to the components Pods.
 podLabels: {} # Labels to add to the components Pods.
 
@@ -429,6 +431,12 @@ probes: # Probes config for the container
     timeoutSeconds: 30
     failureThreshold: 3
 
+wizManager:
+  enabled: true # Should the Wiz Manager be deployed.
+  nameOverride: "" # Override the manager deployment name.
+  autoUpdate:
+    enabled: true
+
 # Global values to override chart values.
 global:
   nameOverride: "" # Override the release’s name.
@@ -474,6 +482,7 @@ global:
   subscriptionExternalId: ""
   clusterTags: {}
   subscriptionTags: {}
+
 
   # Wiz Helm Charts process the security contexts
   # in the following order:
