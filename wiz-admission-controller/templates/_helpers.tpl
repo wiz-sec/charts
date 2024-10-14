@@ -40,6 +40,19 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller-manager.name" -}}
+{{- if .Values.wizManager.nameOverride }}
+{{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := "wiz-admission-controller-manager" }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -91,6 +104,13 @@ Wiz kubernetes audit logs webhook server selector labels
 app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
 {{- end }}
 
+{{/*
+Wiz manager selector labels
+*/}}
+{{- define "wiz-admission-controller-manager.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-admission-controller-manager.name" . }}
+{{- end }}
+
 {{- define "wiz-admission-controller-enforcement.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-admission-controller-enforcement.selectorLabels" . }}
@@ -99,6 +119,11 @@ app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }
 {{- define "wiz-kubernetes-audit-log-collector.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-kubernetes-audit-log-collector.selectorLabels" . }}
+{{- end }}
+
+{{- define "wiz-admission-controller-manager.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-admission-controller-manager.selectorLabels" . }}
 {{- end }}
 
 {{/*
@@ -188,4 +213,16 @@ Use for debug purpose only.
 */}}
 {{- define "helpers.var_dump" -}}
 {{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
+{{- end -}}
+
+
+{{- define "autoUpdate.deployments" -}}
+{{- $list := list -}}
+{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled -}}
+{{- $list = append $list (include "wiz-admission-controller.fullname" . ) -}}
+{{- end -}}
+{{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
+{{- $list = append $list (include "wiz-kubernetes-audit-log-collector.name" . ) -}}
+{{- end -}}
+--auto-update-deployments={{ $list | toJson }}
 {{- end -}}

@@ -1,17 +1,17 @@
-{{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
+{{ if and .Values.wizManager.enabled .Values.wizManager.autoUpdate.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
+  name: {{ include "wiz-admission-controller-manager.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    {{- include "wiz-kubernetes-audit-log-collector.labels" . | nindent 4 }}
+    {{- include "wiz-admission-controller-manager.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.kubernetesAuditLogsWebhook.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
-      {{- include "wiz-kubernetes-audit-log-collector.selectorLabels" . | nindent 6 }}
+      {{- include "wiz-admission-controller-manager.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -25,7 +25,7 @@ spec:
         {{/*
         `labels` includes `selectorLabels`
         */}}
-        {{- include "wiz-kubernetes-audit-log-collector.labels" . | nindent 8 }}
+        {{- include "wiz-admission-controller-manager.labels" . | nindent 8 }}
         {{- with (coalesce .Values.global.podLabels .Values.podLabels) }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -58,8 +58,6 @@ spec:
             {{- end }}
           image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-          - containerPort: {{ .Values.service.targetPort }}
           readinessProbe:
             httpGet:
               path: /ready
@@ -81,15 +79,17 @@ spec:
 
           command:
           - "/usr/bin/wiz-admission-controller"
+          - "manager"
           - "--readiness-port={{ .Values.healthPort }}"
           - "--status-port={{ .Values.statusPort }}"
-            # Server flags
-          - "--port={{ .Values.service.targetPort }}"
+          # Server flags
           - "--tls-private-key-file=/var/server-certs/tls.key"
           - "--tls-cert-file=/var/server-certs/tls.crt"
-          # Webhook flags
-          - "--error-enforcement-method=AUDIT"
-          - "--policy-enforcement-method=AUDIT"
+          # Auto update flags
+          - "--auto-update-enabled={{ .Values.wizManager.autoUpdate.enabled }}"
+          - "--release-namespace={{ .Release.Namespace }}"
+          - {{ include "autoUpdate.deployments" . | trim | quote }}
+          # Cluster identification flags
           - "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId }}"
           {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
           - --subscription-external-id
@@ -103,13 +103,6 @@ spec:
           - --subscription-tags
           - {{ . | toJson | quote }}
           {{- end }}
-          # Kubernetes API server flags
-          - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
-          # K8S audit logs webhook flags
-          - "--kubernetes-audit-logs-enabled=true"
-          # Disable other webhooks
-          - "--misconfiguration-enabled=false"
-          - "--image-integrity-enabled=false"
           env:
           - name: WIZ_UPLOAD_BACKEND_STORAGE # TODO: remove once this is removed from the code
             value: "true"
@@ -179,11 +172,6 @@ spec:
                 fieldPath: metadata.namespace
           - name: WIZ_TERMINATION_GRACE_PERIOD
             value: "{{ .Values.global.podTerminationGracePeriodSeconds }}s"
-          ## Enable debug webhook that only logs the request
-          {{- if .Values.debugWebhook.enabled }}
-          - name: WIZ_DEBUG_WEBHOOK_ENABLED
-            value: "true"
-          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
