@@ -214,3 +214,15 @@ Use for debug purpose only.
 {{- define "helpers.var_dump" -}}
 {{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
 {{- end -}}
+
+
+{{- define "autoUpdate.deployments" -}}
+{{- $list := list -}}
+{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled -}}
+{{- $list = append $list (include "wiz-admission-controller.fullname" . ) -}}
+{{- end -}}
+{{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
+{{- $list = append $list (include "wiz-kubernetes-audit-log-collector.name" . ) -}}
+{{- end -}}
+--auto-update-deployments={{ $list | toJson }}
+{{- end -}}

@@ -82,9 +82,13 @@ spec:
           - "manager"
           - "--readiness-port={{ .Values.healthPort }}"
           - "--status-port={{ .Values.statusPort }}"
-            # Server flags
+          # Server flags
           - "--tls-private-key-file=/var/server-certs/tls.key"
           - "--tls-cert-file=/var/server-certs/tls.crt"
+          # Auto update flags
+          - "--auto-update-enabled={{ .Values.wizManager.autoUpdate.enabled }}"
+          - "--release-namespace={{ .Release.Namespace }}"
+          - {{ include "autoUpdate.deployments" . | trim | quote }}
           # Cluster identification flags
           - "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId }}"
           {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
