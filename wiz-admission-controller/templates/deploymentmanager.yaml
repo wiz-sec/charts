@@ -1,4 +1,4 @@
-{{ if .Values.wizManager.enabled -}}
+{{ if and .Values.wizManager.enabled .Values.wizManager.autoUpdate.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

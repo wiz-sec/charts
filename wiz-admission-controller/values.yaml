@@ -483,7 +483,6 @@ global:
   clusterTags: {}
   subscriptionTags: {}
 
-
   # Wiz Helm Charts process the security contexts
   # in the following order:
   # 1. Pod security context
