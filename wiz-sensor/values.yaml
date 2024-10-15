@@ -24,6 +24,9 @@ diskScan:
   # Overriding default name for runtime config name. Default "{.Release.Name}-disk-scan-config"
   configName: ""
 
+# Sensor-based API security solution
+apiSecurity:
+  enabled: false
 
 # Expose some metrics to be consumed by Prometheus and other Metrics servers.
 # The default port can be changed in case of conflicts
@@ -233,13 +236,18 @@ daemonset:
   terminationGracePeriodSeconds: 90
 
   resources:
-    # resource values for the wiz sensor
+    # resource values for the wiz sensor, without API security enabled
     limits:
       cpu: "300m"
       memory: "300Mi"
     requests:
       cpu: "10m"
       memory: "50Mi"
+
+    # in case the API security module is enabled, used increased limit values here
+    apiSecurityLimits:
+      cpu: "1"
+      memory: "1Gi"
 
     # resource values for the Sensor based workload scanner
     diskScanLimits:
