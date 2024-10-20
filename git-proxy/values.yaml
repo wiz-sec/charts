@@ -61,7 +61,7 @@ image:
   namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "89ac334c3c709b3d9ab72ae32234611f82da1b82-multiarch"
+  tag: "e69f49ed2b0a09b1c4198ff50d0e3ae0a557f3bb-multiarch"
 
 imagePullSecrets: []
 nameOverride: ""
