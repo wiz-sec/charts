@@ -107,16 +107,12 @@ app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }
 {{- end }}
 
 {{/*
-Wiz Horizontal Pod Autoscaler selector labels
+Wiz Horizontal Pod Autoscaler labels
 */}}
-
-{{- define "wiz-hpa.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "wiz-hpa.name" . }}
-{{- end }}
 
 {{- define "wiz-hpa.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
-{{ include "wiz-hpa.selectorLabels" . }}
+app.kubernetes.io/name: {{ include "wiz-hpa.name" . }}
 {{- end }}
 
 {{/*
