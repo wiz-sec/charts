@@ -5,7 +5,7 @@ metadata:
   name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    {{- include "wiz-kubernetes-audit-log-collector.labels" . | nindent 4 }}
+    {{- include "wiz-hpa.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.kubernetesAuditLogsWebhook.replicaCount }}
   selector:

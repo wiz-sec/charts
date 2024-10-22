@@ -426,6 +426,32 @@ probes: # Probes config for the container
     timeoutSeconds: 30
     failureThreshold: 3
 
+# Horizontal Pod Autoscaling support.
+hpa:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  enableCPU: true
+  targetCPUUtilizationPercentage: 50
+  enableMemory: false
+  targetMemoryUtilizationPercentage: 50
+  customMetrics: []
+
+  # When using HPA, Wiz Helm Charts process the requests and limits
+  # for the Wiz Admission Controller deployment in the following order:
+  # customResources -> defaultResources
+  #
+  # Populating the following `customResources` in your user-supplied values.yaml
+  # allows you to customize and override the `defaultResources`.
+  #
+  # customResources: {}
+
+  defaultResources:
+    requests:
+      cpu: 500m
+      memory: 300Mi
+
+
 # Global values to override chart values.
 global:
   nameOverride: "" # Override the release’s name.

@@ -7,7 +7,9 @@ metadata:
   labels:
     {{- include "wiz-admission-controller-enforcement.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.hpa.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
@@ -209,9 +211,17 @@ spec:
           {{- if .Values.debugWebhook.enabled }}
           - name: WIZ_DEBUG_WEBHOOK_ENABLED
             value: "true"
-          {{- end }}        
+          {{- end }}
           resources:
+            {{- if .Values.hpa.enabled }}
+            {{- if hasKey .Values.hpa "customResources" }}
+            {{- toYaml .Values.hpa.customResources | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.hpa.defaultResources | nindent 12 }}
+            {{- end }}
+            {{- else }}
             {{- toYaml .Values.resources | nindent 12 }}
+            {{- end }}
           volumeMounts:
           - mountPath: /var/cache
             name: cache

@@ -40,6 +40,11 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-hpa.name" -}}
+{{- $name := "wiz-hpa" }}
+{{- default $name .Values.hpa.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -99,6 +104,19 @@ app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }
 {{- define "wiz-kubernetes-audit-log-collector.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-kubernetes-audit-log-collector.selectorLabels" . }}
+{{- end }}
+
+{{/*
+Wiz Horizontal Pod Autoscaler selector labels
+*/}}
+
+{{- define "wiz-hpa.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-hpa.name" . }}
+{{- end }}
+
+{{- define "wiz-hpa.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-hpa.selectorLabels" . }}
 {{- end }}
 
 {{/*

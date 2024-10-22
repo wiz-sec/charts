@@ -1,0 +1,36 @@
+{{- if .Values.hpa.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "wiz-hpa.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "wiz-hpa.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "wiz-admission-controller.fullname" . }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+    {{- if .Values.hpa.enableCPU }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.hpa.enableMemory }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.targetMemoryUtilizationPercentage }}
+    {{- end }}
+    {{- if hasKey .Values.hpa "customMetrics" }}
+    {{- toYaml .Values.hpa.customMetrics | nindent 4 }}
+    {{- end }}
+{{- end }}
