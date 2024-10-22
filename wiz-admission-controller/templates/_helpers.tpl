@@ -40,9 +40,14 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
-{{- define "wiz-hpa.name" -}}
-{{- $name := "wiz-hpa" }}
-{{- default $name .Values.hpa.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- define "wiz-hpa-enforcer.name" -}}
+{{- $name := "wiz-hpa-enforcer" }}
+{{- default $name .Values.hpa.enforcerNameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "wiz-hpa-audit-logs.name" -}}
+{{- $name := "wiz-hpa-audit-logs" }}
+{{- default $name .Values.hpa.auditLogsNameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -110,10 +115,16 @@ app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }
 Wiz Horizontal Pod Autoscaler labels
 */}}
 
-{{- define "wiz-hpa.labels" -}}
+{{- define "wiz-hpa-enforcer.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
-app.kubernetes.io/name: {{ include "wiz-hpa.name" . }}
+app.kubernetes.io/name: {{ include "wiz-hpa-enforcer.name" . }}
 {{- end }}
+
+{{- define "wiz-hpa-audit-logs.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+app.kubernetes.io/name: {{ include "wiz-hpa-audit-logs.name" . }}
+{{- end }}
+
 
 {{/*
 
@@ -203,3 +214,29 @@ Use for debug purpose only.
 {{- define "helpers.var_dump" -}}
 {{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
 {{- end -}}
+
+{{- define "wiz-admission-controller.resources" -}}
+{{- if not .Values.hpa.enabled }}
+{{- if hasKey .Values "resources" }}
+{{- toYaml .Values.resources }}
+{{- else -}}
+{}
+{{- end -}}
+{{- else }}
+{{- if hasKey .Values "resources" }}
+{{- toYaml .Values.resources }}
+{{- else -}}
+requests:
+    cpu: 500m
+    memory: 300Mi
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.isEnforcerEnabled" -}}
+  {{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled }}
+    true
+  {{- else }}
+    false
+  {{- end }}
+{{- end }}
