@@ -438,6 +438,9 @@ hpa:
   enableMemory: false
   targetMemoryUtilizationPercentage: 50
   customMetrics: []
+  # Uncomment to customize the behavior.
+  # If not set, the default HPAScalingRules for scale up and scale down are used.
+  #behavior: {}
 
 # Global values to override chart values.
 global:
