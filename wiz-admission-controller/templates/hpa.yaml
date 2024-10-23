@@ -35,6 +35,10 @@ spec:
     {{- if hasKey .Values.hpa "customMetrics" }}
     {{- toYaml .Values.hpa.customMetrics | nindent 4 }}
     {{- end }}
+  {{- if hasKey .Values.hpa "behavior" }}
+  behavior:
+    {{- toYaml .Values.hpa.behavior | nindent 4 }}
+  {{- end }}
 ---
 {{- end }}
 {{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
@@ -72,5 +76,9 @@ spec:
     {{- if hasKey .Values.hpa "customMetrics" }}
     {{- toYaml .Values.hpa.customMetrics | nindent 4 }}
     {{- end }}
+  {{- if hasKey .Values.hpa "behavior" }}
+  behavior:
+    {{- toYaml .Values.hpa.behavior | nindent 4 }}
+  {{- end }}
 {{- end }}
 {{- end }}
