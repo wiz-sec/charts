@@ -6425,26 +6425,6 @@ entries:
     version: 2023.11.01
   wiz-outpost-lite:
   - apiVersion: v2
-    appVersion: 0.0.2
-    created: "2024-10-23T17:41:17.499033201Z"
-    description: A Helm chart for Kubernetes
-    digest: eae6971c51e2aba7c4f15f46cb6f7971e578f6ad8003fba367d57623995bdbf4
-    name: wiz-outpost-lite
-    type: application
-    urls:
-    - https://wiz-sec.github.io/charts/wiz-outpost-lite-2024.09.05.tgz
-    version: 2024.09.05
-  - apiVersion: v2
-    appVersion: 0.0.2
-    created: "2024-10-23T17:41:17.498621736Z"
-    description: A Helm chart for Kubernetes
-    digest: 9456e322d8efc21b4153c3f64a4142ffea52dc403b688e2807579ce143db52f4
-    name: wiz-outpost-lite
-    type: application
-    urls:
-    - https://wiz-sec.github.io/charts/wiz-outpost-lite-2024.07.15.tgz
-    version: 2024.07.15
-  - apiVersion: v2
     appVersion: 0.1.0
     created: "2024-10-23T17:41:17.498122792Z"
     description: A Helm chart for Kubernetes
