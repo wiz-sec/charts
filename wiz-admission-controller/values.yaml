@@ -340,8 +340,6 @@ serviceAccount:
   # If empty, a name is generated using the fullname template
   name: ""
 
-
-
 podAnnotations: {} # Annotations to add to the components Pods.
 podLabels: {} # Labels to add to the components Pods.
 
@@ -395,13 +393,12 @@ tlsCertificate:
 resources: {}
   # The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
   # To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
-#  requests:
-#    cpu: 0.5
-#    memory: 256M
-#    limits:
-#      cpu: 1
-#      memory: 512M
-
+  # requests:
+  #   cpu: 0.5
+  #   memory: 256M
+  # limits:
+  #   cpu: 1
+  #   memory: 512M
 
 customVolumes: []
 customVolumeMounts: []
