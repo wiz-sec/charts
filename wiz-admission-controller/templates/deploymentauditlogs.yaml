@@ -82,7 +82,6 @@ spec:
           command:
           - "/usr/bin/wiz-admission-controller"
           - "--readiness-port={{ .Values.healthPort }}"
-          - "--status-port={{ .Values.statusPort }}"
             # Server flags
           - "--port={{ .Values.service.targetPort }}"
           - "--tls-private-key-file=/var/server-certs/tls.key"
@@ -111,8 +110,6 @@ spec:
           - "--misconfiguration-enabled=false"
           - "--image-integrity-enabled=false"
           env:
-          - name: WIZ_UPLOAD_BACKEND_STORAGE # TODO: remove once this is removed from the code
-            value: "true"
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
             valueFrom:
@@ -199,7 +196,7 @@ spec:
       volumes:
         - name: server-certs
           secret:
-            defaultMode: 444
+            defaultMode: 4
             secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
         {{- with .Values.customVolumes }}
           {{- toYaml . | nindent 8 }}

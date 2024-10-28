@@ -381,9 +381,6 @@ hostNetwork: false
 # Port of the health server used by the readiness and liveness probes
 healthPort: 8000
 
-# Port of the status server used to get the status of the admission controller, with path /status
-statusPort: 8001
-
 # Configuration options for NetworkPolicy
 networkPolicy:
   ingress:
@@ -398,12 +395,13 @@ tlsCertificate:
 resources: {}
   # The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
   # To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
-  # requests:
-  #   cpu: 0.5
-  #   memory: 256M
-  # limits:
-  #   cpu: 1
-  #   memory: 512M
+#  requests:
+#    cpu: 0.5
+#    memory: 256M
+#    limits:
+#      cpu: 1
+#      memory: 512M
+
 
 customVolumes: []
 customVolumeMounts: []
@@ -434,8 +432,18 @@ probes: # Probes config for the container
 wizManager:
   enabled: true # Should the Wiz Manager be deployed.
   nameOverride: "" # Override the manager deployment name.
-  autoUpdate:
-    enabled: true
+  schedule: "*/5 * * * *"  # Every 5 minutes
+  timeoutSeconds: 240 # The timeout for the manager job in seconds.
+  cleanupJobSeconds: 600 # The time in seconds after which the job should be deleted.
+  rolloutRestart:
+    wizForceEnabled: true # Wiz initiated remote updates.
+    interval: "168h"  # 1 week
+                      # how often to trigger rollout restart.
+                      # Set to 0s to disable.
+                      # Uses standard Go `time.ParseDuration` duration string.
+                      # A duration string is a possibly signed sequence of
+                      # decimal numbers, each with optional fraction and a unit suffix,
+                      # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
 
 # Global values to override chart values.
 global:

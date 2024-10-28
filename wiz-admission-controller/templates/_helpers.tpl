@@ -215,7 +215,6 @@ Use for debug purpose only.
 {{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
 {{- end -}}
 
-
 {{- define "autoUpdate.deployments" -}}
 {{- $list := list -}}
 {{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled -}}
@@ -224,5 +223,13 @@ Use for debug purpose only.
 {{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
 {{- $list = append $list (include "wiz-kubernetes-audit-log-collector.name" . ) -}}
 {{- end -}}
---auto-update-deployments={{ $list | toJson }}
+{{- $list | toJson -}}
+{{- end -}}
+
+{{- define "autoUpdate.deployments.arg" -}}
+{{- $x := include "autoUpdate.deployments" .  -}}
+{{- $x = replace "[" "" $x -}}
+{{- $x = replace "]" "" $x -}}
+{{- $x = replace "\"" "" $x -}}
+- "--update-deployments={{ $x }}"
 {{- end -}}
