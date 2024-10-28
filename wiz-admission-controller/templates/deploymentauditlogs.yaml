@@ -196,7 +196,7 @@ spec:
       volumes:
         - name: server-certs
           secret:
-            defaultMode: 4
+            defaultMode: 444
             secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
         {{- with .Values.customVolumes }}
           {{- toYaml . | nindent 8 }}
