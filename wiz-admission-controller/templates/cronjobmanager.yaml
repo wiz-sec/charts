@@ -82,7 +82,7 @@ spec:
                 - "--wiz-force-update-enabled={{ .Values.wizManager.rolloutRestart.wizForceEnabled }}"
                 - "--periodic-restart-interval={{ .Values.wizManager.rolloutRestart.interval }}"
                 - "--release-namespace={{ .Release.Namespace }}"
-                {{- include "autoUpdate.deployments.arg" . | trim | nindent 16 -}}
+                {{- include "autoUpdate.deployments.arg" . | trim | nindent 16 }}
                 # Server flags
                 - "--tls-private-key-file=/var/server-certs/tls.key"
                 - "--tls-cert-file=/var/server-certs/tls.crt"

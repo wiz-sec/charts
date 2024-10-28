@@ -226,6 +226,9 @@ Use for debug purpose only.
 {{- $list | toJson -}}
 {{- end -}}
 
+{{/*
+Clean the list of deployments for the auto-update flag, removing quotes and brackets
+*/}}
 {{- define "autoUpdate.deployments.arg" -}}
 {{- $x := include "autoUpdate.deployments" .  -}}
 {{- $x = replace "[" "" $x -}}
