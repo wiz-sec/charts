@@ -41,13 +41,11 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{- define "wiz-hpa-enforcer.name" -}}
-{{- $name := printf "%s-hpa" (include "wiz-admission-controller.fullname" .) }}
-{{- printf "%s" $name | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-hpa" (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "wiz-hpa-audit-logs.name" -}}
-{{- $name := printf "%s-hpa" (include "wiz-kubernetes-audit-log-collector.name" .) }}
-{{- printf "%s" $name | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-hpa" (include "wiz-kubernetes-audit-log-collector.name" .) | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
