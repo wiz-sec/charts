@@ -443,6 +443,7 @@ wizManager:
     # If empty, a name is generated using the nameOverride
     name: ""
 
+#  autoUpda
   rolloutRestart:
     wizForceEnabled: true # Wiz initiated remote updates.
     interval: "168h"  # 1 week
