@@ -392,7 +392,7 @@ tlsCertificate:
 
 # Remove the comment below to provide custom requests and limits to the Wiz pods.
 #
-# resources: {}
+# resources:
   ## The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
   ## To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
   # requests:
@@ -431,6 +431,8 @@ probes: # Probes config for the container
 # Horizontal Pod Autoscaling support.
 hpa:
   enabled: false
+  enforcerNameOverride: "" # Override the HPA name for the Wiz Admission Controller deployment.
+  auditLogsNameOverride: "" # Override the HPA name for the Wiz Audit Log Collector deployment.
   minReplicas: 2
   maxReplicas: 5
   enableCPU: true
