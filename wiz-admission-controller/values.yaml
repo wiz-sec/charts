@@ -431,8 +431,6 @@ probes: # Probes config for the container
 # Horizontal Pod Autoscaling support.
 hpa:
   enabled: false
-  enforcerNameOverride: "" # Override the HPA name for the Wiz Admission Controller deployment.
-  auditLogsNameOverride: "" # Override the HPA name for the Wiz Audit Log Collector deployment.
   minReplicas: 2
   maxReplicas: 5
   enableCPU: true

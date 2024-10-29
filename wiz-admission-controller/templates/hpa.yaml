@@ -32,8 +32,8 @@ spec:
           type: Utilization
           averageUtilization: {{ .Values.hpa.targetMemoryUtilizationPercentage }}
     {{- end }}
-    {{- if hasKey .Values.hpa "customMetrics" }}
-    {{- toYaml .Values.hpa.customMetrics | nindent 4 }}
+    {{- with .Values.hpa.customMetrics }}
+      {{- toYaml . | nindent 4 }}
     {{- end }}
   {{- if hasKey .Values.hpa "behavior" }}
   behavior:
@@ -73,8 +73,8 @@ spec:
           type: Utilization
           averageUtilization: {{ .Values.hpa.targetMemoryUtilizationPercentage }}
     {{- end }}
-    {{- if hasKey .Values.hpa "customMetrics" }}
-    {{- toYaml .Values.hpa.customMetrics | nindent 4 }}
+    {{- with .Values.hpa.customMetrics }}
+      {{- toYaml . | nindent 4 }}
     {{- end }}
   {{- if hasKey .Values.hpa "behavior" }}
   behavior:
