@@ -443,16 +443,8 @@ wizManager:
     # If empty, a name is generated using the nameOverride
     name: ""
 
-#  autoUpda
-  rolloutRestart:
-    wizForceEnabled: true # Wiz initiated remote updates.
-    interval: "168h"  # 1 week
-                      # how often to trigger rollout restart.
-                      # Set to 0s to disable.
-                      # Uses standard Go `time.ParseDuration` duration string.
-                      # A duration string is a possibly signed sequence of
-                      # decimal numbers, each with optional fraction and a unit suffix,
-                      # Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+  autoRolloutRestart:
+    enabled: true # Should the manager trigger rollout restarts.
 
 # Global values to override chart values.
 global:

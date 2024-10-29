@@ -61,8 +61,7 @@ spec:
                 - "/usr/bin/wiz-admission-controller"
                 - "manager"
                 # Auto update flags
-                - "--wiz-force-update-enabled={{ .Values.wizManager.rolloutRestart.wizForceEnabled }}"
-                - "--periodic-restart-interval={{ .Values.wizManager.rolloutRestart.interval }}"
+                - "--auto-update-enabled={{ .Values.wizManager.autoRolloutRestart.enabled }}"
                 - "--release-namespace={{ .Release.Namespace }}"
                 {{- include "autoUpdate.deployments.arg" . | trim | nindent 16 }}
                 # Server flags
