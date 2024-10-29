@@ -41,7 +41,7 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{- define "wiz-hpa-enforcer.name" -}}
-{{- $name := "wiz-hpa-enforcer" }}
+{{- $name := printf "%s-hpa" (include "wiz-admission-controller.fullname" .) }}
 {{- default $name .Values.hpa.enforcerNameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -216,19 +216,15 @@ Use for debug purpose only.
 {{- end -}}
 
 {{- define "wiz-admission-controller.resources" -}}
-{{- if not .Values.hpa.enabled }}
 {{- if hasKey .Values "resources" }}
 {{- toYaml .Values.resources }}
 {{- else -}}
-{}
-{{- end -}}
-{{- else }}
-{{- if hasKey .Values "resources" }}
-{{- toYaml .Values.resources }}
-{{- else -}}
+{{- if .Values.hpa.enabled }}
 requests:
     cpu: 500m
     memory: 300Mi
+{{- else }}
+{}
 {{- end -}}
 {{- end -}}
 {{- end -}}
