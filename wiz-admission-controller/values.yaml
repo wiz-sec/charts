@@ -432,6 +432,17 @@ wizManager:
   schedule: "0 * * * *"  # Every 1 hour
   timeoutSeconds: 240 # The timeout for the manager job in seconds.
   cleanupJobSeconds: 600 # The time in seconds after which the job should be deleted.
+
+  # K8s service account to be used by the manager
+  serviceAccount:
+    # If `create` is set to `false`` an existing service account will be used
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If empty, a name is generated using the nameOverride
+    name: ""
+
   rolloutRestart:
     wizForceEnabled: true # Wiz initiated remote updates.
     interval: "168h"  # 1 week

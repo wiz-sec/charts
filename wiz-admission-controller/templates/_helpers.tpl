@@ -135,6 +135,11 @@ Create the name of the service account to use
 {{ coalesce (.Values.serviceAccount.name) (include "wiz-admission-controller.fullname" .) }}
 {{- end }}
 
+{{- define "wiz-admission-controller.manager.serviceAccountName" -}}
+{{ coalesce (.Values.wizManager.serviceAccount.name) (include "wiz-admission-controller-manager.name" .) }}
+{{- end }}
+
+
 {{- define "wiz-admission-controller.secretApiTokenName" -}}
 {{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
 {{- end }}

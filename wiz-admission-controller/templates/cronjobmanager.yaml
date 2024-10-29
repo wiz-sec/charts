@@ -36,7 +36,7 @@ spec:
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          serviceAccountName: {{ include "wiz-admission-controller.serviceAccountName" . }}
+          serviceAccountName: {{ include "wiz-admission-controller.manager.serviceAccountName" . }}
           securityContext:
             {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
               {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 12 }}
