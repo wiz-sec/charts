@@ -230,9 +230,9 @@ Use for debug purpose only.
 Clean the list of deployments for the auto-update flag, removing quotes and brackets
 */}}
 {{- define "autoUpdate.deployments.arg" -}}
-{{- $x := include "autoUpdate.deployments" .  -}}
-{{- $x = replace "[" "" $x -}}
-{{- $x = replace "]" "" $x -}}
-{{- $x = replace "\"" "" $x -}}
-- "--update-deployments={{ $x }}"
+{{- $deployments := include "autoUpdate.deployments" .  -}}
+{{- $deployments = replace "[" "" $deployments -}}
+{{- $deployments = replace "]" "" $deployments -}}
+{{- $deployments = replace "\"" "" $deployments -}}
+- "--update-deployments={{ $deployments }}"
 {{- end -}}
