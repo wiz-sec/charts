@@ -18,7 +18,6 @@ spec:
           annotations:
             rollme.proxyHash: {{ include "wiz-admission-controller.proxyHash" . }}
             rollme.wizApiTokenHash: {{ include "wiz-admission-controller.wizApiTokenHash" . }}
-            rollme.webhookCert: {{ include (print $.Template.BasePath "/opawebhook.yaml") . | sha256sum }}
             {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -43,9 +42,6 @@ spec:
             {{- else }}
               {{- toYaml .Values.podSecurityContext | nindent 12 }}
             {{- end }}
-          {{- if .Values.hostNetwork }}
-          hostNetwork: true
-          {{- end }}
           terminationGracePeriodSeconds: {{ .Values.global.podTerminationGracePeriodSeconds }}
           containers:
             - name: {{ .Chart.Name }}
@@ -64,9 +60,6 @@ spec:
                 - "--auto-update-enabled={{ .Values.wizManager.autoRolloutRestart.enabled }}"
                 - "--release-namespace={{ .Release.Namespace }}"
                 {{- include "autoUpdate.deployments.arg" . | trim | nindent 16 }}
-                # Server flags
-                - "--tls-private-key-file=/var/server-certs/tls.key"
-                - "--tls-cert-file=/var/server-certs/tls.crt"
                 # Cluster identification flags
                 - "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId }}"
               {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
@@ -150,10 +143,6 @@ spec:
                   value: "{{ .Values.global.podTerminationGracePeriodSeconds }}s"
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
-              volumeMounts:
-                - mountPath: /var/server-certs
-                  name: server-certs
-                  readOnly: true
               {{- with .Values.customVolumeMounts }}
                 {{- toYaml . | nindent 14 }}
               {{- end }}
@@ -161,10 +150,6 @@ spec:
                 {{- toYaml . | nindent 14 }}
               {{- end }}
           volumes:
-            - name: server-certs
-              secret:
-                defaultMode: 444
-                secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
             {{- with .Values.customVolumes }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
