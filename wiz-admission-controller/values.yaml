@@ -430,8 +430,8 @@ wizManager:
   enabled: true # Should the Wiz Manager be deployed.
   nameOverride: "" # Override the manager deployment name.
   schedule: "0 * * * *"  # Every 1 hour
-  timeoutSeconds: 240 # The timeout for the manager job in seconds.
-  cleanupJobSeconds: 600 # The time in seconds after which the job should be deleted.
+  timeoutSeconds: 300 # The timeout for the manager job in seconds.
+  cleanupJobSeconds: 300 # The time in seconds after which the job should be deleted.
 
   # K8s service account to be used by the manager
   serviceAccount:
