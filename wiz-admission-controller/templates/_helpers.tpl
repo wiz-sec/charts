@@ -40,6 +40,14 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-hpa-enforcer.name" -}}
+{{- printf "%s-hpa" (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "wiz-hpa-audit-logs.name" -}}
+{{- printf "%s-hpa" (include "wiz-kubernetes-audit-log-collector.name" .) | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -100,6 +108,21 @@ app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-kubernetes-audit-log-collector.selectorLabels" . }}
 {{- end }}
+
+{{/*
+Wiz Horizontal Pod Autoscaler labels
+*/}}
+
+{{- define "wiz-hpa-enforcer.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+app.kubernetes.io/name: {{ include "wiz-hpa-enforcer.name" . }}
+{{- end }}
+
+{{- define "wiz-hpa-audit-logs.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+app.kubernetes.io/name: {{ include "wiz-hpa-audit-logs.name" . }}
+{{- end }}
+
 
 {{/*
 
@@ -189,3 +212,25 @@ Use for debug purpose only.
 {{- define "helpers.var_dump" -}}
 {{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
 {{- end -}}
+
+{{- define "wiz-admission-controller.resources" -}}
+{{- if hasKey .Values "resources" }}
+{{- toYaml .Values.resources }}
+{{- else -}}
+{{- if .Values.hpa.enabled }}
+requests:
+    cpu: 500m
+    memory: 300Mi
+{{- else }}
+{}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.isEnforcerEnabled" -}}
+  {{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled }}
+    true
+  {{- else }}
+    false
+  {{- end }}
+{{- end }}

@@ -390,9 +390,11 @@ tlsCertificate:
   tlsCertificate: ""
   tlsKey: ""
 
-resources: {}
-  # The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
-  # To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
+# Remove the comment below to provide custom requests and limits to the Wiz pods.
+#
+# resources:
+  ## The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
+  ## To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
   # requests:
   #   cpu: 0.5
   #   memory: 256M
@@ -425,6 +427,20 @@ probes: # Probes config for the container
     initialDelaySeconds: 5
     timeoutSeconds: 30
     failureThreshold: 3
+
+# Horizontal Pod Autoscaling support.
+hpa:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  enableCPU: true
+  targetCPUUtilizationPercentage: 50
+  enableMemory: false
+  targetMemoryUtilizationPercentage: 50
+  customMetrics: []
+  # Uncomment to customize the behavior.
+  # If not set, the default HPAScalingRules for scale up and scale down are used.
+  #behavior: {}
 
 # Global values to override chart values.
 global:
