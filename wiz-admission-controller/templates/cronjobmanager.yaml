@@ -42,6 +42,9 @@ spec:
             {{- else }}
               {{- toYaml .Values.podSecurityContext | nindent 12 }}
             {{- end }}
+          {{- if .Values.hostNetwork }}
+          hostNetwork: true
+          {{- end }}
           terminationGracePeriodSeconds: {{ .Values.global.podTerminationGracePeriodSeconds }}
           containers:
             - name: {{ .Chart.Name }}
@@ -62,18 +65,18 @@ spec:
                 {{- include "autoUpdate.deployments.arg" . | trim | nindent 16 }}
                 # Cluster identification flags
                 - "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId }}"
-              {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
+                {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
                 - --subscription-external-id
                 - {{ . | quote }}
-              {{- end }}
-              {{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
+                {{- end }}
+                {{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
                 - --cluster-tags
                 - {{ . | toJson | quote }}
-              {{- end }}
-              {{- with (coalesce .Values.global.subscriptionTags .Values.webhook.subscriptionTags) }}
+                {{- end }}
+                {{- with (coalesce .Values.global.subscriptionTags .Values.webhook.subscriptionTags) }}
                 - --subscription-tags
                 - {{ . | toJson | quote }}
-              {{- end }}
+                {{- end }}
               env:
               {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
                 - name: WIZ_CLIENT_ID
@@ -141,6 +144,12 @@ spec:
                       fieldPath: metadata.namespace
                 - name: WIZ_TERMINATION_GRACE_PERIOD
                   value: "{{ .Values.global.podTerminationGracePeriodSeconds }}s"
+              {{- if .Values.global.istio.enabled }}
+                - name: WIZ_ISTIO_PROXY_ENABLED
+                  value: "true"
+                - name: WIZ_ISTIO_PROXY_PORT
+                  value: "{{ .Values.global.istio.proxySidecarPort }}"
+              {{- end }}
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
               {{- with .Values.customVolumeMounts }}

@@ -181,6 +181,12 @@ spec:
           - name: WIZ_DEBUG_WEBHOOK_ENABLED
             value: "true"
           {{- end }}
+          {{- if .Values.global.istio.enabled }}
+          - name: WIZ_ISTIO_PROXY_ENABLED
+            value: "true"
+          - name: WIZ_ISTIO_PROXY_PORT
+            value: "{{ .Values.global.istio.proxySidecarPort }}"
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
