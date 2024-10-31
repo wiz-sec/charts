@@ -392,7 +392,6 @@ tlsCertificate:
   tlsCertificate: ""
   tlsKey: ""
 
-# 
 # When Horizontal Pod Autoscaling (`hpa.enabled`) is:
 # 1. Disabled (`false`, the default), `resources` is set to an empty value {}.
 # 2. Enabled (`true`), `resources` is set to the following defaults:
