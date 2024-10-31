@@ -39,6 +39,8 @@ httpProxyConfiguration:
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
   noProxyAddress: # Comma or space-separated list of machine or domain names.
 
+# When Horizontal Pod Autoscaling (`hpa.enabled`) is enabled (`true`),
+# this field is discarded and set to an empty value.
 replicaCount: 2
 
 # Use PodDisruptionBudget for the admission controller enforcer deployment.
@@ -390,7 +392,11 @@ tlsCertificate:
   tlsCertificate: ""
   tlsKey: ""
 
-# Remove the comment below to provide custom requests and limits to the Wiz pods.
+# Uncomment the `resources` section below to specify custom resource requests and limits.
+# If left blank, and Horizontal Pod Autoscaling (`hpa.enabled`) is enabled, the following defaults will be applied:
+#   requests:
+#     cpu: 500m
+#     memory: 300Mi
 #
 # resources:
   ## The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
@@ -428,7 +434,10 @@ probes: # Probes config for the container
     timeoutSeconds: 30
     failureThreshold: 3
 
-# Horizontal Pod Autoscaling support.
+# Horizontal Pod Autoscaling.
+# Prerequisites: metrics-server installed on the cluster:
+# https://github.com/kubernetes-sigs/metrics-server
+#
 hpa:
   enabled: false
   minReplicas: 2
