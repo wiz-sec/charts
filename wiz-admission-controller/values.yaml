@@ -392,15 +392,11 @@ tlsCertificate:
   tlsCertificate: ""
   tlsKey: ""
 
-# When Horizontal Pod Autoscaling (`hpa.enabled`) is:
-# 1. Disabled (`false`, the default), `resources` is set to an empty value {}.
-# 2. Enabled (`true`), `resources` is set to the following defaults:
-#    requests:
-#      cpu: 500m
-#      memory: 300Mi
-#
-# In either cases, you may remove the comment below `resources` to provide custom
-# resource requests and limits to the Wiz Pods.
+# Uncomment the `resources` section below to specify custom resource requests and limits.
+# If left blank, and Horizontal Pod Autoscaling (`hpa.enabled`) is enabled, the following defaults will be applied:
+#   requests:
+#     cpu: 500m
+#     memory: 300Mi
 #
 # resources:
   ## The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
