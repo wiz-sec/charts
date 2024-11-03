@@ -447,9 +447,17 @@ hpa:
   enableMemory: false
   targetMemoryUtilizationPercentage: 50
   customMetrics: []
-  # Uncomment to customize the behavior.
-  # If not set, the default HPAScalingRules for scale up and scale down are used.
-  #behavior: {}
+  # Uncomment the `behavior` section below to specify custom scaling policies and behavior.
+  # If left blank, the following is applied:
+  # behavior:
+  #   scaleUp:
+  #     stabilizationWindowSeconds: 300
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 300
+  #     policies:
+  #     - type: Pods
+  #       value: 1
+  #       periodSeconds: 300
 
 # Global values to override chart values.
 global:
