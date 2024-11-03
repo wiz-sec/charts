@@ -448,7 +448,7 @@ hpa:
   targetMemoryUtilizationPercentage: 50
   customMetrics: []
   # Uncomment the `behavior` section below to specify custom scaling policies and behavior.
-  # If left blank, the following is applied:
+  # If left blank, the following default settings are applied:
   # behavior:
   #   scaleUp:
   #     stabilizationWindowSeconds: 300
