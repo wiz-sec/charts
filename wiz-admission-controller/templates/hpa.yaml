@@ -35,10 +35,7 @@ spec:
     {{- with .Values.hpa.customMetrics }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- if hasKey .Values.hpa "behavior" }}
-  behavior:
-    {{- toYaml .Values.hpa.behavior | nindent 4 }}
-  {{- end }}
+  behavior: {{ include "wiz-admission-controller.hpaBehavior" . | nindent 4 }}
 ---
 {{- end }}
 {{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
@@ -76,9 +73,6 @@ spec:
     {{- with .Values.hpa.customMetrics }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- if hasKey .Values.hpa "behavior" }}
-  behavior:
-    {{- toYaml .Values.hpa.behavior | nindent 4 }}
-  {{- end }}
+  behavior: {{ include "wiz-admission-controller.hpaBehavior" . | nindent 4 }}
 {{- end }}
 {{- end }}

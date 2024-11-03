@@ -234,3 +234,18 @@ requests:
     false
   {{- end }}
 {{- end }}
+
+{{- define "wiz-admission-controller.hpaBehavior" -}}
+{{- if hasKey .Values.hpa "behavior" }}
+{{- toYaml .Values.hpa.behavior }}
+{{- else -}}
+scaleUp:
+  stabilizationWindowSeconds: 300
+scaleDown:
+  stabilizationWindowSeconds: 300
+  policies:
+  - type: Pods
+    value: 1
+    periodSeconds: 300
+{{- end -}}
+{{- end -}}

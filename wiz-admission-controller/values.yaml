@@ -437,19 +437,26 @@ probes: # Probes config for the container
 # Horizontal Pod Autoscaling.
 # Prerequisites: metrics-server installed on the cluster:
 # https://github.com/kubernetes-sigs/metrics-server
-#
 hpa:
   enabled: false
   minReplicas: 2
   maxReplicas: 5
   enableCPU: true
-  targetCPUUtilizationPercentage: 50
+  targetCPUUtilizationPercentage: 80
   enableMemory: false
-  targetMemoryUtilizationPercentage: 50
+  targetMemoryUtilizationPercentage: 80
   customMetrics: []
-  # Uncomment to customize the behavior.
-  # If not set, the default HPAScalingRules for scale up and scale down are used.
-  #behavior: {}
+  # Uncomment the `behavior` section below to specify custom scaling policies and behavior.
+  # If left blank, the following default settings are applied:
+  # behavior:
+  #   scaleUp:
+  #     stabilizationWindowSeconds: 300
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 300
+  #     policies:
+  #     - type: Pods
+  #       value: 1
+  #       periodSeconds: 300
 
 # Global values to override chart values.
 global:
