@@ -25,7 +25,7 @@ spec:
   backoffLimit: 1
   template:
     metadata:
-      {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
+      {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations .Values.autoCreateConnector.deleteJobPodAnnotations) }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
