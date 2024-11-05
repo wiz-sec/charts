@@ -67,7 +67,7 @@ spec:
               env:
               {{- include "spec.common.envVars" . | trim | nindent 14 }}
               resources:
-            {{- include "wiz-admission-controller.resources" . | trim | nindent 16 }}
+              {{- include "wiz-admission-controller.resources" . | trim | nindent 16 }}
               {{- with .Values.customVolumeMounts }}
                 {{- toYaml . | nindent 14 }}
               {{- end }}
