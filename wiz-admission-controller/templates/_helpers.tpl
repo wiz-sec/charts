@@ -283,7 +283,6 @@ scaleDown:
 {{- define "autoUpdate.deployments" -}}
 {{- $list := list -}}
 {{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
-{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled -}}
 {{- $list = append $list (include "wiz-admission-controller.fullname" . ) -}}
 {{- end -}}
 {{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
