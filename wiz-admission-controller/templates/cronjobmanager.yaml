@@ -57,101 +57,17 @@ spec:
               image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               command:
-                - "/usr/bin/wiz-admission-controller"
-                - "manager"
-                # Auto update flags
-                - "--auto-update-enabled={{ .Values.wizManager.autoRolloutRestart.enabled }}"
-                - "--release-namespace={{ .Release.Namespace }}"
-                {{- include "autoUpdate.deployments.arg" . | trim | nindent 16 }}
-                # Cluster identification flags
-                - "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId }}"
-                {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
-                - --subscription-external-id
-                - {{ . | quote }}
-                {{- end }}
-                {{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
-                - --cluster-tags
-                - {{ . | toJson | quote }}
-                {{- end }}
-                {{- with (coalesce .Values.global.subscriptionTags .Values.webhook.subscriptionTags) }}
-                - --subscription-tags
-                - {{ . | toJson | quote }}
-                {{- end }}
+              - "/usr/bin/wiz-admission-controller"
+              - "manager"
+              {{- include "spec.common.commandArgs" . | trim | nindent 14 }}
+              {{- include "autoUpdate.deployments.arg" . | trim | nindent 14 }}
+              # Auto update flags
+              - "--auto-update-enabled={{ .Values.wizManager.autoRolloutRestart.enabled }}"
+              - "--release-namespace={{ .Release.Namespace }}"
               env:
-              {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-                - name: WIZ_CLIENT_ID
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-                      key: clientId
-                      optional: false
-                - name: WIZ_CLIENT_TOKEN
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-                      key: clientToken
-                      optional: false
-              {{- end }}
-                - name: WIZ_ENV
-                  value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
-              {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-                - name: HTTP_PROXY
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                      key: httpProxy
-                      optional: false
-                - name: HTTPS_PROXY
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                      key: httpsProxy
-                      optional: false
-                - name: NO_PROXY
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                      key: noProxyAddress
-                      optional: false
-              {{- end }}
-              {{- if .Values.logLevel }}
-                - name: LOG_LEVEL
-                  value: {{ .Values.logLevel }}
-              {{- end }}
-              {{- with .Values.podCustomEnvironmentVariables }}
-                {{- toYaml . | nindent 14 }}
-              {{- end }}
-              {{- with .Values.global.podCustomEnvironmentVariables }}
-                {{- toYaml . | nindent 14 }}
-              {{- end }}
-              {{- if .Values.podCustomEnvironmentVariablesFile }}
-                - name: CLI_ENV_FILE
-                  value: {{ .Values.podCustomEnvironmentVariablesFile }}
-                - name: USE_CLI_ENV_FILE
-                  value: "true"
-              {{- end }}
-                - name: WIZ_RUNTIME_METADATA_POD_NAME
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.name
-                - name: WIZ_RUNTIME_METADATA_NODE_NAME
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: spec.nodeName
-                - name: K8S_NAMESPACE
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.namespace
-                - name: WIZ_TERMINATION_GRACE_PERIOD
-                  value: "{{ .Values.global.podTerminationGracePeriodSeconds }}s"
-              {{- if .Values.global.istio.enabled }}
-                - name: WIZ_ISTIO_PROXY_ENABLED
-                  value: "true"
-                - name: WIZ_ISTIO_PROXY_PORT
-                  value: "{{ .Values.global.istio.proxySidecarPort }}"
-              {{- end }}
+              {{- include "spec.common.envVars" . | trim | nindent 14 }}
               resources:
-                {{- toYaml .Values.resources | nindent 16 }}
+            {{- include "wiz-admission-controller.resources" . | trim | nindent 16 }}
               {{- with .Values.customVolumeMounts }}
                 {{- toYaml . | nindent 14 }}
               {{- end }}
