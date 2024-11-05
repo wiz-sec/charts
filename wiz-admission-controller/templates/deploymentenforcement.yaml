@@ -1,4 +1,5 @@
-{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled}}
+{{- $isEnabled := include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower }}
+{{- if eq $isEnabled "true" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
