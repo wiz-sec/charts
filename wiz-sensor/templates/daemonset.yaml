@@ -405,6 +405,10 @@ spec:
         - name: METRICS_PORT
           value: "{{ .Values.metricsPort }}"
         {{- end }}
+        {{- if .Values.apiSecurity.enabled }}
+        - name: ENABLE_API_SECURITY
+          value: "true"
+        {{- end}}
         {{- with .Values.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -446,9 +450,16 @@ spec:
 
         {{- if .Values.daemonset.resources }}
         resources:
+          {{- if .Values.apiSecurity.enabled }}
+          {{- if .Values.daemonset.resources.apiSecurityLimits }}
+          limits:
+{{ toYaml .Values.daemonset.resources.apiSecurityLimits | indent 12 }}
+          {{- end }}
+          {{- else }}
           {{- if .Values.daemonset.resources.limits }}
           limits:
 {{ toYaml .Values.daemonset.resources.limits | indent 12 }}
+          {{- end }}
           {{- end }}
           {{- if and (not .Values.gkeAutopilot) .Values.daemonset.resources.requests }}
           requests:

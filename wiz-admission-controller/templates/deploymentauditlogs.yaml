@@ -7,7 +7,9 @@ metadata:
   labels:
     {{- include "wiz-kubernetes-audit-log-collector.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.hpa.enabled }}
   replicas: {{ .Values.kubernetesAuditLogsWebhook.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
@@ -188,7 +190,7 @@ spec:
             value: "{{ .Values.global.istio.proxySidecarPort }}"
           {{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- include "wiz-admission-controller.resources" . | nindent 12 }}
           volumeMounts:
           - mountPath: /var/server-certs
             name: server-certs

@@ -39,6 +39,8 @@ httpProxyConfiguration:
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
   noProxyAddress: # Comma or space-separated list of machine or domain names.
 
+# When Horizontal Pod Autoscaling (`hpa.enabled`) is enabled (`true`),
+# this field is discarded and set to an empty value.
 replicaCount: 2
 
 # Use PodDisruptionBudget for the admission controller enforcer deployment.
@@ -390,9 +392,15 @@ tlsCertificate:
   tlsCertificate: ""
   tlsKey: ""
 
-resources: {}
-  # The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
-  # To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
+# Uncomment the `resources` section below to specify custom resource requests and limits.
+# If left blank, and Horizontal Pod Autoscaling (`hpa.enabled`) is enabled, the following defaults will be applied:
+#   requests:
+#     cpu: 500m
+#     memory: 300Mi
+#
+# resources:
+  ## The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
+  ## To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
   # requests:
   #   cpu: 0.5
   #   memory: 256M
@@ -426,6 +434,30 @@ probes: # Probes config for the container
     timeoutSeconds: 30
     failureThreshold: 3
 
+# Horizontal Pod Autoscaling.
+# Prerequisites: metrics-server installed on the cluster:
+# https://github.com/kubernetes-sigs/metrics-server
+hpa:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  enableCPU: true
+  targetCPUUtilizationPercentage: 80
+  enableMemory: false
+  targetMemoryUtilizationPercentage: 80
+  customMetrics: []
+  # Uncomment the `behavior` section below to specify custom scaling policies and behavior.
+  # If left blank, the following default settings are applied:
+  # behavior:
+  #   scaleUp:
+  #     stabilizationWindowSeconds: 300
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 300
+  #     policies:
+  #     - type: Pods
+  #       value: 1
+  #       periodSeconds: 300
+
 wizManager:
   enabled: true # Should the Wiz Manager be deployed.
 
@@ -446,9 +478,6 @@ wizManager:
     # The name of the service account to use.
     # If empty, a name is generated using the nameOverride
     name: ""
-
-
-
 
 # Global values to override chart values.
 global:

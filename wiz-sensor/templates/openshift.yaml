@@ -24,6 +24,8 @@ allowedCapabilities:
   - SYS_PTRACE # eBPF
   - KILL # forensics
   - SYSLOG # syslog
+  - CHOWN # Access filesystem with overlayFS.
+  - SETPCAP # Drop capabilities when not needed.
 requiredDropCapabilities: null
 fsGroup:
   type: RunAsAny
