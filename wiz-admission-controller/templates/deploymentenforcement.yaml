@@ -1,5 +1,4 @@
-{{- $isEnabled := include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower }}
-{{- if eq $isEnabled "true" }}
+{{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

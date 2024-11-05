@@ -1,6 +1,4 @@
-{{- if .Values.hpa.enabled }}
-{{- $isEnabled := include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower }}
-{{- if eq $isEnabled "true" }}
+{{- if and .Values.hpa.enabled (eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true") }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -74,5 +72,4 @@ spec:
       {{- toYaml . | nindent 4 }}
     {{- end }}
   behavior: {{ include "wiz-admission-controller.hpaBehavior" . | nindent 4 }}
-{{- end }}
 {{- end }}
