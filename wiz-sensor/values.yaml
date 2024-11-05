@@ -160,6 +160,7 @@ image:
   # "registry/repository:tag" and here this is "wizio.azurecr.io/sensor:v1".
   # For FEDRAMP use wizfedramp.azurecr.us, for a final URL of "wizfedramp.azurecr.us/sensor:v1".
   registry: wizio.azurecr.io
+  fedRegistry: wizfedramp.azurecr.us
   repository: sensor
   args: {}
   tag: "v1"
@@ -290,3 +291,6 @@ global:
   subscriptionExternalId: ""
   clusterTags: {}
   subscriptionTags: {}
+
+  # Set to true to use FedRamp endpoints and FIPS-compliant images.
+  isFedRamp: false

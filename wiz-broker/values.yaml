@@ -9,9 +9,9 @@ commonLabels: {} # Labels applied on all the resources (not used for selection)
 
 image:
   registry: wiziopublic.azurecr.io/wiz-app
-  # Use this if you are deploying on federal environments with FIPS endpoints.
-  # repository: wiz-broker-fips
+  fedRegistry: publicregistryfedrampwizio.azurecr.us/wiz-app
   repository: wiz-broker
+  fedRepository: wiz-broker-fips
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -116,6 +116,7 @@ global:
 
   image:
     registry: wiziopublic.azurecr.io/wiz-app
+    fedRegistry: publicregistryfedrampwizio.azurecr.us/wiz-app
     # Use this if you are deploying on federal environments with FIPS endpoints.
     # repository: wiz-broker-fips
     repository: wiz-broker
@@ -159,3 +160,6 @@ global:
     enabled: false # Should the components use a proxy.
     create: false # Secret created by wiz-broker.
     secretName: "" # The name of the proxy Secret.
+
+  # Set to true to use FedRamp endpoints and FIPS-compliant images.
+  isFedRamp: false

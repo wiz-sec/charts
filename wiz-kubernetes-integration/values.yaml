@@ -76,6 +76,9 @@ global:
   # lowPrivilegePodSecurityPolicy: {}
   # lowPrivilegeSecurityPolicy: {}
 
+  # Set to true to use FedRamp endpoints and FIPS-compliant images.
+  isFedRamp: false
+
 # Wiz Kubernetes Connector
 # Configuration values for the wiz-kubernetes-connector dependency
 # ref: https://github.com/wiz-sec/charts/blob/master/wiz-kubernetes-connector/values.yaml

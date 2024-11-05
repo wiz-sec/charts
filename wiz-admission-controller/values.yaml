@@ -53,12 +53,13 @@ podDisruptionBudget:
 
 image:
   registry: wiziopublic.azurecr.io/wiz-app
-  # Use this if you are deploying on federal environments with FIPS endpoints.
-  # repository: wiz-admission-controller-fips
+  fedRegistry: publicregistryfedrampwizio.azurecr.us/wiz-app
   repository: wiz-admission-controller
+  fedRepository: wiz-admission-controller-fips
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+
 imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
 priorityClassName: ""
@@ -556,3 +557,6 @@ global:
   #
   # lowPrivilegePodSecurityPolicy: {}
   # lowPrivilegeSecurityPolicy: {}
+
+  # Set to true to use FedRamp endpoints and FIPS-compliant images.
+  isFedRamp: false

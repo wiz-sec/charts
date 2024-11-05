@@ -58,7 +58,7 @@ spec:
             {{- else }}
             {{- toYaml .Values.securityContext | nindent 12 }}
             {{- end }}
-          image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: {{ include "wiz-admission-controller.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
           - containerPort: {{ .Values.service.targetPort }}

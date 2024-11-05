@@ -225,3 +225,11 @@ delete-kubernetes-connector
   - >
     {{- printf "%s" $output | nindent 2 }}
 {{- end }}
+
+{{- define "wiz-broker.image" -}}
+{{- if .Values.global.isFedRamp -}}
+{{ .Values.image.fedRegistry }}/{{ .Values.image.fedRepository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+{{- else -}}
+{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+{{- end -}}
+{{- end -}}

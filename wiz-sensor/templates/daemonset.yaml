@@ -73,11 +73,7 @@ spec:
       containers:
       {{- if .Values.diskScan.enabled }}
       - name: wiz-disk-scanner
-        {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
-        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository .Values.image.diskScanTag }}
-        {{- else }}
-        image: {{ printf "%s:%s" .Values.image.diskScanRepository .Values.image.diskScanTag }}
-        {{- end }}
+        image: {{ include "wiz-sensor-disk-scanner.image" . }}
         imagePullPolicy: {{ .Values.image.diskScanPullPolicy }}
         {{- with .Values.image.diskScanArgs }}
         args:
@@ -223,11 +219,7 @@ spec:
       {{- end }}
 
       - name: wiz-sensor
-        {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
-        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.tag }}
-        {{- else }}
-        image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
-        {{- end }}
+        image: {{ include "wiz-sensor.image" . }}
         imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
         {{- with .Values.image.args }}
         args:
