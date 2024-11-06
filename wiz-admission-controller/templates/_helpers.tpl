@@ -46,9 +46,9 @@ If release name contains chart name it will be used as a full name.
 {{- else }}
 {{- $name := "wiz-admission-controller-manager" }}
 {{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- .Release.Name | trunc 52 | trimSuffix "-" }}
 {{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" .Release.Name $name | trunc 52 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 {{- end }}
