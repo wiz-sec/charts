@@ -112,7 +112,7 @@ spec:
           {{- include "spec.common.envVars" . | trim | nindent 10 }}
           - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
             value: {{ .Values.imageIntegrityWebhook.patchImageDigestAnnotation | quote }}
-           # For running pod with read only file system we write all the cache files to /var/cache volume mount
+           # For running pod with read only file system we write all the cache files to /var/cache volume mount, used by image integrity hook
           - name: TUF_ROOT
             value: "/var/cache/.sigstore"
           - name: AWS_ECR_CACHE_DIR
