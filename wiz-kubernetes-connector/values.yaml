@@ -54,7 +54,9 @@ autoCreateConnector:
   customVolumes: [] # Additional volumes to add to the components Pods
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
   createJobAnnotations: {}
+  createJobPodAnnotations: {}
   deleteJobAnnotations: {}
+  deleteJobPodAnnotations: {}
   roleAnnotations: {}
   roleBindingAnnotations: {}
 
