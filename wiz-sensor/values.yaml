@@ -90,8 +90,7 @@ wizApiToken:
   # The chart will refuse to install unless these are set to valid values
   clientId: ""
   clientToken: ""
-  clientEndpoint: "" # Defaults to commercial. Leave blank for most cases.
-                     # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
+  clientEndpoint: "" # Set custom endpoint - should be "fedramp" for FEDRAMP environments
 
 httpProxyConfiguration:
   # set to true to enable the use of a proxy. creates a secret with proxy configuration
@@ -291,6 +290,3 @@ global:
   subscriptionExternalId: ""
   clusterTags: {}
   subscriptionTags: {}
-
-  # Set to true to use FedRamp endpoints and FIPS-compliant images.
-  isFedRamp: false
