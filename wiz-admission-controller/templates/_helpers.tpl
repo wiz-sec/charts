@@ -40,6 +40,19 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller-manager.name" -}}
+{{- if .Values.wizManager.nameOverride }}
+{{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := "wiz-admission-controller-manager" }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{- define "wiz-hpa-enforcer.name" -}}
 {{- printf "%s-hpa" (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
 {{- end }}
@@ -99,6 +112,13 @@ Wiz kubernetes audit logs webhook server selector labels
 app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
 {{- end }}
 
+{{/*
+Wiz manager selector labels
+*/}}
+{{- define "wiz-admission-controller-manager.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-admission-controller-manager.name" . }}
+{{- end }}
+
 {{- define "wiz-admission-controller-enforcement.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-admission-controller-enforcement.selectorLabels" . }}
@@ -107,6 +127,11 @@ app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }
 {{- define "wiz-kubernetes-audit-log-collector.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-kubernetes-audit-log-collector.selectorLabels" . }}
+{{- end }}
+
+{{- define "wiz-admission-controller-manager.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-admission-controller-manager.selectorLabels" . }}
 {{- end }}
 
 {{/*
@@ -132,6 +157,11 @@ Create the name of the service account to use
 {{- define "wiz-admission-controller.serviceAccountName" -}}
 {{ coalesce (.Values.serviceAccount.name) (include "wiz-admission-controller.fullname" .) }}
 {{- end }}
+
+{{- define "wiz-admission-controller.manager.serviceAccountName" -}}
+{{ coalesce (.Values.wizManager.serviceAccount.name) (include "wiz-admission-controller-manager.name" .) }}
+{{- end }}
+
 
 {{- define "wiz-admission-controller.secretApiTokenName" -}}
 {{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
@@ -248,4 +278,125 @@ scaleDown:
     value: 1
     periodSeconds: 300
 {{- end -}}
+{{- end -}}
+
+{{- define "autoUpdate.deployments" -}}
+{{- $list := list -}}
+{{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
+{{- $list = append $list (include "wiz-admission-controller.fullname" . ) -}}
+{{- end -}}
+{{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
+{{- $list = append $list (include "wiz-kubernetes-audit-log-collector.name" . ) -}}
+{{- end -}}
+{{- $list | toJson -}}
+{{- end -}}
+
+{{/*
+Clean the list of deployments for the auto-update flag, removing quotes and brackets
+*/}}
+{{- define "autoUpdate.deployments.arg" -}}
+{{- $deployments := include "autoUpdate.deployments" .  -}}
+{{- $deployments = replace "[" "" $deployments -}}
+{{- $deployments = replace "]" "" $deployments -}}
+{{- $deployments = replace "\"" "" $deployments -}}
+- "--update-deployments={{ $deployments }}"
+{{- end -}}
+
+{{- define "spec.common.commandArgs" -}}
+# Cluster identification flags
+- "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId }}"
+- "--subscription-external-id={{ coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId }}"
+{{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
+- --cluster-tags
+- {{ . | toJson | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.subscriptionTags .Values.webhook.subscriptionTags) }}
+- --subscription-tags
+- {{ . | toJson | quote }}
+{{- end }}
+{{- end -}}
+
+{{- define "spec.admissionControllerRunner.commandArgs" -}}
+# Server flags
+- "--port={{ .Values.service.targetPort }}"
+- "--tls-private-key-file=/var/server-certs/tls.key"
+- "--tls-cert-file=/var/server-certs/tls.crt"
+- "--readiness-port={{ .Values.healthPort }}"
+# Kubernetes API server flags
+- "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
+{{- end -}}
+
+{{- define "spec.common.envVars" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+- name: WIZ_CLIENT_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
+      key: clientId
+      optional: false
+- name: WIZ_CLIENT_TOKEN
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
+      key: clientToken
+      optional: false
+{{- end }}
+- name: WIZ_ENV
+  value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+- name: HTTP_PROXY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
+      key: httpProxy
+      optional: false
+- name: HTTPS_PROXY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
+      key: httpsProxy
+      optional: false
+- name: NO_PROXY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
+      key: noProxyAddress
+      optional: false
+{{- end }}
+{{- if .Values.logLevel }}
+- name: LOG_LEVEL
+  value: {{ .Values.logLevel }}
+{{- end }}
+{{- with .Values.podCustomEnvironmentVariables }}
+{{- toYaml . | nindent 14 }}
+{{- end }}
+{{- with .Values.global.podCustomEnvironmentVariables }}
+{{- toYaml . | nindent 14 }}
+{{- end }}
+{{- if .Values.podCustomEnvironmentVariablesFile }}
+- name: CLI_ENV_FILE
+  value: {{ .Values.podCustomEnvironmentVariablesFile }}
+- name: USE_CLI_ENV_FILE
+  value: "true"
+{{- end }}
+- name: WIZ_RUNTIME_METADATA_POD_NAME
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.name
+- name: WIZ_RUNTIME_METADATA_NODE_NAME
+  valueFrom:
+    fieldRef:
+      fieldPath: spec.nodeName
+- name: K8S_NAMESPACE
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.namespace
+- name: WIZ_TERMINATION_GRACE_PERIOD
+  value: "{{ .Values.global.podTerminationGracePeriodSeconds }}s"
+{{- if .Values.global.istio.enabled }}
+- name: WIZ_ISTIO_PROXY_ENABLED
+  value: "true"
+- name: WIZ_ISTIO_PROXY_PORT
+  value: "{{ .Values.global.istio.proxySidecarPort }}"
+{{- end }}
 {{- end -}}

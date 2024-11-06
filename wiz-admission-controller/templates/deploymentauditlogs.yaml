@@ -80,113 +80,27 @@ spec:
               port: {{ .Values.healthPort }}
               scheme: HTTPS
             {{- toYaml .Values.probes.startupProbe | nindent 12 }}
-
           command:
           - "/usr/bin/wiz-admission-controller"
-          - "--readiness-port={{ .Values.healthPort }}"
-          # Server flags
-          - "--port={{ .Values.service.targetPort }}"
-          - "--tls-private-key-file=/var/server-certs/tls.key"
-          - "--tls-cert-file=/var/server-certs/tls.crt"
+          {{- include "spec.common.commandArgs" . | trim | nindent 10 }}
+          {{- include "spec.admissionControllerRunner.commandArgs" . | trim | nindent 10 }}
           # Webhook flags
           - "--error-enforcement-method=AUDIT"
           - "--policy-enforcement-method=AUDIT"
-          - "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId }}"
-          {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
-          - --subscription-external-id
-          - {{ . | quote }}
-          {{- end }}
-          {{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
-          - --cluster-tags
-          - {{ . | toJson | quote }}
-          {{- end }}
-          {{- with (coalesce .Values.global.subscriptionTags .Values.webhook.subscriptionTags) }}
-          - --subscription-tags
-          - {{ . | toJson | quote }}
-          {{- end }}
-          # Kubernetes API server flags
-          - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
           # K8S audit logs webhook flags
           - "--kubernetes-audit-logs-enabled=true"
           # Disable other webhooks
           - "--misconfiguration-enabled=false"
           - "--image-integrity-enabled=false"
           env:
-          - name: WIZ_UPLOAD_BACKEND_STORAGE # TODO: remove once this is removed from the code
-            value: "true"
-          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-          - name: WIZ_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-                key: clientId
-                optional: false
-          - name: WIZ_CLIENT_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-                key: clientToken
-                optional: false
-          {{- end }}
-          - name: WIZ_ENV
-            value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
-          {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-          - name: HTTP_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                key: httpProxy
-                optional: false
-          - name: HTTPS_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                key: httpsProxy
-                optional: false
-          - name: NO_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                key: noProxyAddress
-                optional: false
-          {{- end }}
-          {{- if .Values.logLevel }}
-          - name: LOG_LEVEL
-            value: {{ .Values.logLevel }}
-          {{- end }}
-          {{- with .Values.podCustomEnvironmentVariables }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
-          {{- with .Values.global.podCustomEnvironmentVariables }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
-          {{- if .Values.podCustomEnvironmentVariablesFile }}
-          - name: CLI_ENV_FILE
-            value: {{ .Values.podCustomEnvironmentVariablesFile }}
-          - name: USE_CLI_ENV_FILE
-            value: "true"
-          {{- end }}
-          - name: WIZ_RUNTIME_METADATA_POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: WIZ_RUNTIME_METADATA_NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-          - name: K8S_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: WIZ_TERMINATION_GRACE_PERIOD
-            value: "{{ .Values.global.podTerminationGracePeriodSeconds }}s"
+          {{- include "spec.common.envVars" . | trim | nindent 10 }}
           ## Enable debug webhook that only logs the request
           {{- if .Values.debugWebhook.enabled }}
           - name: WIZ_DEBUG_WEBHOOK_ENABLED
             value: "true"
           {{- end }}
           resources:
-            {{- include "wiz-admission-controller.resources" . | nindent 12 }}
+            {{- include "wiz-admission-controller.resources" . | trim | nindent 12 }}
           volumeMounts:
           - mountPath: /var/server-certs
             name: server-certs

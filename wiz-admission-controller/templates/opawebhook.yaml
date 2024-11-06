@@ -163,8 +163,7 @@ webhooks:
   failurePolicy: {{ .Values.debugWebhook.failurePolicy }}
   sideEffects: {{ .Values.debugWebhook.sideEffects }}
 {{- end }}
-{{- $isEnabled := include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower }}
-{{- if and (eq $isEnabled "true") (not $useCertManagerCerts) }}
+{{- if and (eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true") (not $useCertManagerCerts) }}
 ---
 apiVersion: v1
 kind: Secret

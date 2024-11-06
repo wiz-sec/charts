@@ -1,5 +1,4 @@
-{{- $isEnabled := include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower }}
-{{- if eq $isEnabled "true" }}
+{{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -84,11 +83,8 @@ spec:
 
           command:
           - "/usr/bin/wiz-admission-controller"
-          - "--readiness-port={{ .Values.healthPort }}"
-          # Server flags
-          - "--port={{ .Values.service.targetPort }}"
-          - "--tls-private-key-file=/var/server-certs/tls.key"
-          - "--tls-cert-file=/var/server-certs/tls.crt"
+          {{- include "spec.common.commandArgs" . | trim | nindent 10 }}
+          {{- include "spec.admissionControllerRunner.commandArgs" . | trim | nindent 10 }}
           # Webhook flags
           {{- with (coalesce .Values.opaWebhook.errorEnforcementMethod .Values.webhook.errorEnforcementMethod) }} # check opaWebhook for backward compatibility
           - "--error-enforcement-method={{ . }}"
@@ -96,114 +92,32 @@ spec:
           {{- with (coalesce .Values.webhook.policyEnforcementMethod .Values.opaWebhook.policyEnforcementMethod) }} # check opaWebhook for backward compatibility
           - "--policy-enforcement-method={{ . }}"
           {{- end }}
-          {{- with (coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }} # check opaWebhook for backward compatibility
-          - "--cluster-external-id={{ . }}"
-          {{- end }}
-          {{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
-          - --subscription-external-id
-          - {{ . | quote }}
-          {{- end }}
-          {{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
-          - --cluster-tags
-          - {{ . | toJson | quote }}
-          {{- end }}
-          {{- with (coalesce .Values.global.subscriptionTags .Values.webhook.subscriptionTags) }}
-          - --subscription-tags
-          - {{ . | toJson | quote }}
-          {{- end }}
-          # Kubernetes API server flags
-          - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
           # OPA webhook flags
           - "--misconfiguration-enabled={{ .Values.opaWebhook.enabled }}"
-          {{ include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}  
+          {{-  include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}
           # Image integrity webhook flags
           {{- if .Values.imageIntegrityWebhook.enabled }}
           - "--image-integrity-enabled=true"
           - "--image-integrity-cache-digest-ttl={{ .Values.imageIntegrityWebhook.cacheImageDigestTTL }}"
           - "--image-integrity-cache-verify-ttl={{ .Values.imageIntegrityWebhook.cacheImageVerifyTTL }}"
-          {{ include "wiz-admission-controller.imageIntegrityCliParams.policies" . | trim | nindent 10 }}
+          {{- include "wiz-admission-controller.imageIntegrityCliParams.policies" . | trim | nindent 10 }}
           ## Image registry client flags
           - "--registry-image-pull-secret-namespace={{ .Values.imageRegistryClient.secretsNamespace }}"
-          {{ include "wiz-admission-controller.imageRegistryClient.pullSecrets" . | trim | nindent 10 }}
-          {{ include "wiz-admission-controller.imageRegistryClient.credentialHelpersSecrets" . | trim | nindent 10 }}
-          {{- end }}
+          {{- include "wiz-admission-controller.imageRegistryClient.pullSecrets" . | trim | nindent 10 }}
+          {{- include "wiz-admission-controller.imageRegistryClient.credentialHelpersSecrets" . | trim | nindent 10 }}
+          {{- end -}}
           # Disable K8S audit logs webhook
           - "--kubernetes-audit-logs-enabled=false"
           env:
-          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-          - name: WIZ_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-                key: clientId
-                optional: false
-          - name: WIZ_CLIENT_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-                key: clientToken
-                optional: false
-          {{- end }}
-          - name: WIZ_ENV
-            value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+          {{- include "spec.common.envVars" . | trim | nindent 10 }}
           - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
             value: {{ .Values.imageIntegrityWebhook.patchImageDigestAnnotation | quote }}
-          {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-          - name: HTTP_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                key: httpProxy
-                optional: false
-          - name: HTTPS_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                key: httpsProxy
-                optional: false
-          - name: NO_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                key: noProxyAddress
-                optional: false
-          {{- end }}
-          {{- if .Values.logLevel }}
-          - name: LOG_LEVEL
-            value: {{ .Values.logLevel }}
-          {{- end }}
-          {{- with .Values.podCustomEnvironmentVariables }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
-          {{- with .Values.global.podCustomEnvironmentVariables }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
-          {{- if .Values.podCustomEnvironmentVariablesFile }}
-          - name: CLI_ENV_FILE
-            value: {{ .Values.podCustomEnvironmentVariablesFile }}
-          - name: USE_CLI_ENV_FILE
-            value: "true"
-          {{- end }}
-          # For running pod with read only file system we write all the cache files to /var/cache volume mount
+           # For running pod with read only file system we write all the cache files to /var/cache volume mount, used by image integrity hook
           - name: TUF_ROOT
             value: "/var/cache/.sigstore"
           - name: AWS_ECR_CACHE_DIR
             value: "/var/cache/.ecr"
-          - name: WIZ_RUNTIME_METADATA_POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: WIZ_RUNTIME_METADATA_NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-          - name: K8S_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-          - name: WIZ_TERMINATION_GRACE_PERIOD
-            value: "{{ .Values.global.podTerminationGracePeriodSeconds }}s"
-          ## Image registry client flags
+           ## Image registry client flags
           - name: WIZ_REGISTRY_IGNORE_SECRET_MISSING_ERROR
             value: {{ .Values.imageRegistryClient.ignoreMissingSecretError | quote }}
           - name: WIZ_REGISTRY_IMAGE_PULL_SECRET_RELOAD_INTERVAL
@@ -214,7 +128,7 @@ spec:
             value: "true"
           {{- end }}
           resources:
-            {{- include "wiz-admission-controller.resources" . | nindent 12 }}
+            {{- include "wiz-admission-controller.resources" . | trim | nindent 12 }}
           volumeMounts:
           - mountPath: /var/cache
             name: cache
