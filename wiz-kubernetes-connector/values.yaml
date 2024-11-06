@@ -7,10 +7,7 @@ commonLabels: {} # Labels applied on all the resources (not used for selection)
 
 image:
   registry: wiziopublic.azurecr.io/wiz-app
-  fedRegistry: publicregistryfedrampwizio.azurecr.us/wiz-app
-  # Use this if you are deploying on federal environments with FIPS endpoints.
   repository: wiz-broker
-  fedRepository: wiz-broker-fips
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -79,7 +76,8 @@ autoCreateConnector:
 wizApiToken:
   clientId: "" # Client ID of the Wiz Service Account.
   clientToken: "" # Client secret of the Wiz Service Account.
-  clientEndpoint: "" # Set to 'gov' or 'fedramp' for gov/fedramp tenants only, otherwise leave blank.
+  clientEndpoint: "" # Defaults to commercial.
+                     # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
 
   secret:
     # Should a Secret be created by the chart or not.
@@ -132,7 +130,8 @@ wiz-broker:
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
 
   wizApiToken:
-    clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
+    clientEndpoint: "" # Defaults to commercial.
+                       # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
     secret:
       create: false # Secret created by wiz-kubernetes-connector.
     secretName: ""
@@ -182,9 +181,7 @@ httpProxyConfiguration:
 global:
   image:
     registry: wiziopublic.azurecr.io/wiz-app
-    fedRegistry: publicregistryfedrampwizio.azurecr.us/wiz-app
     repository: wiz-broker
-    fedRepository: wiz-broker-fips
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
@@ -237,7 +234,8 @@ global:
     allowPrivilegeEscalation: false
 
   wizApiToken:
-    clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
+    clientEndpoint: "" # Defaults to commercial.
+                       # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
     secret:
       name: "" # Override with parent secret name
 
