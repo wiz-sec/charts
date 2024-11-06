@@ -117,9 +117,8 @@ global:
   image:
     registry: wiziopublic.azurecr.io/wiz-app
     fedRegistry: publicregistryfedrampwizio.azurecr.us/wiz-app
-    # Use this if you are deploying on federal environments with FIPS endpoints.
-    # repository: wiz-broker-fips
     repository: wiz-broker
+    fedRepository: wiz-broker-fips
     pullPolicy: Always  # Always pull the image on every deployment
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""

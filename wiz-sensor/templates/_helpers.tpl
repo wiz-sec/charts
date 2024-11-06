@@ -149,7 +149,7 @@ log levels
 
 {{- define "wiz-sensor-disk-scanner.image" -}}
   {{- if .Values.global.isFedRamp -}}
-    {{ .Values.image.fedRegistry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+    {{ .Values.image.fedRegistry }}/{{ .Values.image.diskScanRepository }}:{{ .Values.image.diskScanTag }}
   {{- else -}}
     {{- if (coalesce .Values.global.image.registry .Values.image.registry) -}}
       {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository .Values.image.diskScanTag }}
@@ -161,7 +161,7 @@ log levels
 
 {{- define "wiz-sensor.image" -}}
   {{- if .Values.global.isFedRamp -}}
-    {{ .Values.image.fedRegistry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+    {{ .Values.image.fedRegistry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
   {{- else -}}
     {{- if (coalesce .Values.global.image.registry .Values.image.registry) -}}
       {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.tag }}
