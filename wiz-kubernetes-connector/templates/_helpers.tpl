@@ -233,3 +233,12 @@ publicregistryfedrampwizio.azurecr.us/wiz-app/wiz-broker-fips:{{ .Values.image.t
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 {{- end -}}
+
+{{- define "wiz-broker.clientEndpoint" -}}
+{{- $clientEndpoint := coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote -}}
+{{- if and (empty $clientEndpoint) .Values.global.isFedRamp -}}
+  "fedramp"
+{{- else -}}
+  {{ $clientEndpoint }}
+{{- end -}}
+{{- end -}}

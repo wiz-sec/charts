@@ -105,7 +105,7 @@ spec:
             value: {{ .Values.global.logLevel }}
           {{- end }}
           - name: WIZ_ENV
-            value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+            value: {{ include "wiz-broker.clientEndpoint" . }}
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: WIZ_CLIENT_ID
             valueFrom:

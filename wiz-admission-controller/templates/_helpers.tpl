@@ -348,7 +348,7 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
       optional: false
 {{- end }}
 - name: WIZ_ENV
-  value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+  value: {{ include "wiz-admission-controller.clientEndpoint" . }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
 - name: HTTP_PROXY
   valueFrom:
@@ -412,5 +412,14 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 publicregistryfedrampwizio.azurecr.us/wiz-app/wiz-admission-controller-fips:{{ .Values.image.tag | default .Chart.AppVersion }}
 {{- else -}}
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.clientEndpoint" -}}
+{{- $clientEndpoint := coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote -}}
+{{- if and (empty $clientEndpoint) .Values.global.isFedRamp -}}
+  "fedramp"
+{{- else -}}
+  {{ $clientEndpoint }}
 {{- end -}}
 {{- end -}}
