@@ -368,10 +368,10 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
   value: {{ .Values.logLevel }}
 {{- end }}
 {{- with .Values.podCustomEnvironmentVariables }}
-{{- toYaml . | nindent 14 }}
+{{ toYaml . }}
 {{- end }}
 {{- with .Values.global.podCustomEnvironmentVariables }}
-{{- toYaml . | nindent 14 }}
+{{ toYaml . }}
 {{- end }}
 {{- if .Values.podCustomEnvironmentVariablesFile }}
 - name: CLI_ENV_FILE
