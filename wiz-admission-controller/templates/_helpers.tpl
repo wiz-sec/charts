@@ -304,8 +304,14 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 
 {{- define "spec.common.commandArgs" -}}
 # Cluster identification flags
-- "--cluster-external-id={{ coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId }}"
-- "--subscription-external-id={{ coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId }}"
+{{- with (coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }}
+- --cluster-external-id
+- {{ . | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
+- --subscription-external-id
+- {{ . | quote }}
+{{- end }}
 {{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
 - --cluster-tags
 - {{ . | toJson | quote }}
