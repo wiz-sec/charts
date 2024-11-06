@@ -6,7 +6,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.543392232Z"
+    created: "2024-11-06T18:28:53.995353347Z"
     description: A Helm chart for flux2
     digest: e3957642dd0a5d4952b846ecca4e4e6affdfc281f3bce02eef7a3a7c7f6cf498
     name: flux2
@@ -21,7 +21,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.539192277Z"
+    created: "2024-11-06T18:28:53.992023003Z"
     description: A Helm chart for flux2
     digest: b5ef0930e0a5509c2343a851b95fa3465c991a33adbce0109cc1758ea208915f
     name: flux2
@@ -36,7 +36,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.528844958Z"
+    created: "2024-11-06T18:28:53.983777074Z"
     description: A Helm chart for flux2
     digest: d2c22ec6cf2b9832a3ccb74aac33346cbbf1b5cc0657a416407a59d4d4d87250
     name: flux2
@@ -51,7 +51,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.52358959Z"
+    created: "2024-11-06T18:28:53.97982785Z"
     description: A Helm chart for flux2
     digest: 88468ed49712f078b178e83b9a649d20d7c64fbf1a818a0b072cfaa23e6fbc8b
     name: flux2
@@ -66,7 +66,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.518042549Z"
+    created: "2024-11-06T18:28:53.973238088Z"
     description: A Helm chart for flux2
     digest: 7b2a24cc948ba8f6f5c6e6c1c08670dff0866641fb9f01885fb127687d428f80
     name: flux2
@@ -81,7 +81,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.513445846Z"
+    created: "2024-11-06T18:28:53.967824624Z"
     description: A Helm chart for flux2
     digest: c9eac5eabc7af4f47132e64a89994173df3aa7a795e1e8353a683925c44ea4d7
     name: flux2
@@ -96,7 +96,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.510123069Z"
+    created: "2024-11-06T18:28:53.962320671Z"
     description: A Helm chart for flux2
     digest: 387f354c62ea2c43b125665fd684b6f5f3864a4c35cf4e9f9cf190a90fb45ae1
     name: flux2
@@ -111,7 +111,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.506090641Z"
+    created: "2024-11-06T18:28:53.956243267Z"
     description: A Helm chart for flux2
     digest: e28719713f12f1512744e888524eccc3b1f40431662c2a6766aa3922cfe75c0e
     name: flux2
@@ -126,7 +126,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.502669925Z"
+    created: "2024-11-06T18:28:53.9510571Z"
     description: A Helm chart for flux2
     digest: 2b234cfbc0e7c00d3a5ea4675bed6b06a8acbd7d98b00f18a540538c782e1ab9
     name: flux2
@@ -141,7 +141,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.495995095Z"
+    created: "2024-11-06T18:28:53.945397418Z"
     description: A Helm chart for flux2
     digest: d912dfaba70e8bac86899bb7320d8b63e7d9a655633d15cf2102faf60f428d4a
     name: flux2
@@ -156,7 +156,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.534236284Z"
+    created: "2024-11-06T18:28:53.987914607Z"
     description: A Helm chart for flux2
     digest: de851f137337b1fd503cf46ed8154c33e76156cad3b0b5cf962e0947888f3348
     name: flux2
@@ -171,7 +171,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.490561211Z"
+    created: "2024-11-06T18:28:53.941173098Z"
     description: A Helm chart for flux2
     digest: aa2af255e87928d323e3969f3580e4a80622bdd45f32694b0578ff39410049c1
     name: flux2
@@ -186,7 +186,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.485615399Z"
+    created: "2024-11-06T18:28:53.93589152Z"
     description: A Helm chart for flux2
     digest: 832d7920af132bb7ce76ef99622858a8043a9078390799e98ea8b6be595beb1d
     name: flux2
@@ -201,7 +201,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.481357369Z"
+    created: "2024-11-06T18:28:53.931072711Z"
     description: A Helm chart for flux2
     digest: 06133ecdba99cbc81d5c73563e03231aebe24d59d5580048311bf0b9ced0bbba
     name: flux2
@@ -216,7 +216,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.477712547Z"
+    created: "2024-11-06T18:28:53.925668801Z"
     description: A Helm chart for flux2
     digest: e9d6c5bdb32e209d40c5f1b3ed5dcc28efcc555f8ac160c91cbbb9baa2e35ce0
     name: flux2
@@ -231,7 +231,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.473394364Z"
+    created: "2024-11-06T18:28:53.920086005Z"
     description: A Helm chart for flux2
     digest: 156320edf01aa0a6cd04605ba6c29b56a80d574924fa6afca0afac97bbfae487
     name: flux2
@@ -246,7 +246,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.468581495Z"
+    created: "2024-11-06T18:28:53.915819169Z"
     description: A Helm chart for flux2
     digest: 12fce4e760ed10f6c64bcdad5ba7c3920f3dc8ff2f1fdb6ca13b735a5527890c
     name: flux2
@@ -261,7 +261,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.463198554Z"
+    created: "2024-11-06T18:28:53.910583922Z"
     description: A Helm chart for flux2
     digest: 914ece0996c09ba0ff11bbfe2a52bc424a71fd1a2e6399043204e935e32d1fd3
     name: flux2
@@ -276,7 +276,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.459803225Z"
+    created: "2024-11-06T18:28:53.905549016Z"
     description: A Helm chart for flux2
     digest: bcbebcc17e0ad0a252e9859149bdd2fb92279cd508b303937d0eaac448a7e4d6
     name: flux2
@@ -291,7 +291,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.455630575Z"
+    created: "2024-11-06T18:28:53.901971654Z"
     description: A Helm chart for flux2
     digest: 61e2b1f1e37b6554efe473236020b1d26a99f6a19b90bb7ab95f54bef18ccda1
     name: flux2
@@ -306,7 +306,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.452314435Z"
+    created: "2024-11-06T18:28:53.89808006Z"
     description: A Helm chart for flux2
     digest: a1bbc54bf6af9e1f500d1657fdb71cdbc2248d316f21f0d4277248da1a5473ea
     name: flux2
@@ -321,7 +321,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.448068205Z"
+    created: "2024-11-06T18:28:53.892858467Z"
     description: A Helm chart for flux2
     digest: 92317b96adee5061c9cf28b9f33064a1ead20afc72bfcb44574bec465ccf7d31
     name: flux2
@@ -336,7 +336,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.444068465Z"
+    created: "2024-11-06T18:28:53.887170567Z"
     description: A Helm chart for flux2
     digest: db9c6c2d8401cf21130eed7d5f3f65db47e5ca03b4d979de8b576bd4d1bc692e
     name: flux2
@@ -351,7 +351,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.439318962Z"
+    created: "2024-11-06T18:28:53.882637327Z"
     description: A Helm chart for flux2
     digest: 5eb9651f22073d1c48f20b556e4887210a477912e53c04c0daadf3136d2b2ca9
     name: flux2
@@ -366,7 +366,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.434690954Z"
+    created: "2024-11-06T18:28:53.878156028Z"
     description: A Helm chart for flux2
     digest: 6bf0c287172ceec7a81221ba1d657f745cba83697ebd1992b651154309a4d7a3
     name: flux2
@@ -381,7 +381,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.429807355Z"
+    created: "2024-11-06T18:28:53.874146646Z"
     description: A Helm chart for flux2
     digest: ee62c64371a11fe25695e1f8b1e371889f2d83db3c0e8f9a08fb2e0d3c8b3141
     name: flux2
@@ -396,7 +396,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.426794278Z"
+    created: "2024-11-06T18:28:53.870138475Z"
     description: A Helm chart for flux2
     digest: cb2ca496a58a0dd5e8fe33f68dfbc86fd11dde4ee3bd71409345222bc924e761
     name: flux2
@@ -411,7 +411,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.422868601Z"
+    created: "2024-11-06T18:28:53.865938313Z"
     description: A Helm chart for flux2
     digest: f411d05c5e46de758190aaff5c62d5b523e136033928428686f40673e4afd3e2
     name: flux2
@@ -426,7 +426,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.418624244Z"
+    created: "2024-11-06T18:28:53.860497837Z"
     description: A Helm chart for flux2
     digest: 296c8851f70b09e3992c8fc95ce39102ec7da8dadb4e540e0492d3d5424da219
     name: flux2
@@ -441,7 +441,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.414020971Z"
+    created: "2024-11-06T18:28:53.856092486Z"
     description: A Helm chart for flux2
     digest: 756b12ab717bcb2f3dc0df8290c660eeb711e1a6efa863714618d49b5433e7e3
     name: flux2
@@ -456,7 +456,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.410264784Z"
+    created: "2024-11-06T18:28:53.851702374Z"
     description: A Helm chart for flux2
     digest: 1b845ca7ebda071a44c6b6cfccd2645cda8c29e9eb417670228e0591a13b3dfe
     name: flux2
@@ -471,7 +471,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.406552192Z"
+    created: "2024-11-06T18:28:53.847179133Z"
     description: A Helm chart for flux2
     digest: 3a7fd7325526ce8fb7a2ec5d4b76faef7f030d0013f2442c3f4f0f3d99c225f0
     name: flux2
@@ -486,7 +486,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.403629953Z"
+    created: "2024-11-06T18:28:53.842527804Z"
     description: A Helm chart for flux2
     digest: dcc0c86aba90e94863057174e7d18d6654f255dfdd3a1d87dd05ffcf68254c07
     name: flux2
@@ -501,7 +501,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.400245234Z"
+    created: "2024-11-06T18:28:53.836174531Z"
     description: A Helm chart for flux2
     digest: 7fec52116c3222e66f55fa430ae2342ca93e283b779439b374f2b8b500fbc339
     name: flux2
@@ -516,7 +516,7 @@ entries:
         - "[Chore]: Update App Version to upstream 2.2.3"
     apiVersion: v2
     appVersion: 2.2.3
-    created: "2024-11-06T18:27:29.396610593Z"
+    created: "2024-11-06T18:28:53.831720444Z"
     description: A Helm chart for flux2
     digest: 3865b68dabac50da445cba7f5a5d9f9db9303f8951d9b411091a0bef611cb7a7
     name: flux2
@@ -528,7 +528,7 @@ entries:
     version: 2024.03.05
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.393760656Z"
+    created: "2024-11-06T18:28:53.826408002Z"
     description: A Helm chart for Kubernetes
     digest: f973ffb19ba827e1e0a7b57873b607d5518976ce8218b61e5fbe0676a7526933
     name: flux2
@@ -538,7 +538,7 @@ entries:
     version: 2024.03.03
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.391878935Z"
+    created: "2024-11-06T18:28:53.824505298Z"
     description: A Helm chart for Kubernetes
     digest: 6b307408765b01a8fabdc2ae34ba10826f589b54d67cdddf788c8bbdabcb4676
     name: flux2
@@ -548,7 +548,7 @@ entries:
     version: 2024.02.20
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.390707084Z"
+    created: "2024-11-06T18:28:53.822584829Z"
     description: A Helm chart for Kubernetes
     digest: 29a98b0361f89a0c24855f620a4b9dfcdd90143cc0f0ab777672ddbef1e1475d
     name: flux2
@@ -558,7 +558,7 @@ entries:
     version: 2024.01.17
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.389496869Z"
+    created: "2024-11-06T18:28:53.82068793Z"
     description: A Helm chart for Kubernetes
     digest: 627eb9ee6640236a468a2bf321c01246be22d092db581755777e9543f3e4ca46
     name: flux2
@@ -568,7 +568,7 @@ entries:
     version: 2023.12.10
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.388274471Z"
+    created: "2024-11-06T18:28:53.817232642Z"
     description: A Helm chart for Kubernetes
     digest: 0504b5b2cc1f98a799c8a5fcdb80b6a6cb4fe25aaaf5469b3721c033d9c0fa16
     name: flux2
@@ -578,7 +578,7 @@ entries:
     version: 2023.11.07
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.387089438Z"
+    created: "2024-11-06T18:28:53.816048713Z"
     description: A Helm chart for Kubernetes
     digest: eb991db538b5808db11517d92cbd60fc447255d0bd1c3d37552e4b162cccba8b
     name: flux2
@@ -588,7 +588,7 @@ entries:
     version: 2023.11.03
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.385234948Z"
+    created: "2024-11-06T18:28:53.814825933Z"
     description: A Helm chart for Kubernetes
     digest: 47407a5b4704c62391fe94582d1d1d8bae75251673719f21d09d13222841cbc8
     name: flux2
@@ -598,7 +598,7 @@ entries:
     version: 2023.10.25
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.383963079Z"
+    created: "2024-11-06T18:28:53.813624123Z"
     description: A Helm chart for Kubernetes
     digest: 1ed9965bbe4095316fa7a532a9dc244aea7cee0444e78a755728f3bb895f48de
     name: flux2
@@ -608,7 +608,7 @@ entries:
     version: 2023.10.22
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.382783257Z"
+    created: "2024-11-06T18:28:53.81237337Z"
     description: A Helm chart for Kubernetes
     digest: 41082bbccaff85ed65511f68a3dd12c69c47d29722f811254cf6742e7e60a0ea
     name: flux2
@@ -618,7 +618,7 @@ entries:
     version: 2023.10.17
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.381564556Z"
+    created: "2024-11-06T18:28:53.810412462Z"
     description: A Helm chart for Kubernetes
     digest: 8a15bc1af25b24280c23c23ad95402ab168cce5245a44eeae71a932d2340c8d2
     name: flux2
@@ -628,7 +628,7 @@ entries:
     version: 2023.10.04
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.379942519Z"
+    created: "2024-11-06T18:28:53.808820856Z"
     description: A Helm chart for Kubernetes
     digest: c74c3ce9ef862bcddc8b2d72a57feb73648feef600574ef886f97fc3db7d25a1
     name: flux2
@@ -638,7 +638,7 @@ entries:
     version: 2023.10.02
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.378477152Z"
+    created: "2024-11-06T18:28:53.80737028Z"
     description: A Helm chart for Kubernetes
     digest: 5223c8896ebe1d0be5fdc1409b8dd2467be58b4a41b305c2006af44026817402
     name: flux2
@@ -648,7 +648,7 @@ entries:
     version: 2023.09.28
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.376599241Z"
+    created: "2024-11-06T18:28:53.805723831Z"
     description: A Helm chart for Kubernetes
     digest: 3b3a4c1d5fad8e5dedc4ab1dd23719d01a12d852ef23758d842902d539b58c97
     name: flux2
@@ -658,7 +658,7 @@ entries:
     version: 2023.09.12
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.37540303Z"
+    created: "2024-11-06T18:28:53.803689161Z"
     description: A Helm chart for Kubernetes
     digest: 9666f66fb1da776e8a705de08a1db8a3307d18e941fae3b8b007f640b6e8900b
     name: flux2
@@ -668,7 +668,7 @@ entries:
     version: 2023.08.21
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.374190388Z"
+    created: "2024-11-06T18:28:53.802345708Z"
     description: A Helm chart for Kubernetes
     digest: c8636233f27015954ad671ea6d41254f353f4d3ef6ae42b39174bfc0f93059cd
     name: flux2
@@ -678,7 +678,7 @@ entries:
     version: 2023.08.13
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.372319124Z"
+    created: "2024-11-06T18:28:53.801023153Z"
     description: A Helm chart for Kubernetes
     digest: 49132f0f87f8ddf7ef21a877757c3ff17e2d0965f525ae3293fd1013fdc83a67
     name: flux2
@@ -688,7 +688,7 @@ entries:
     version: 2023.07.27
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.370935735Z"
+    created: "2024-11-06T18:28:53.799800971Z"
     description: A Helm chart for Kubernetes
     digest: 6e9350c80160906fd5b1cf79f333dba557602841fbf4f84ed1a3c50740deaff9
     name: flux2
@@ -698,7 +698,7 @@ entries:
     version: 2023.07.11
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.369681884Z"
+    created: "2024-11-06T18:28:53.79842045Z"
     description: A Helm chart for Kubernetes
     digest: 4856d5cbbdb1c80316ec827baa510b75318ec117c3fca7d91e9ba83e5667cd97
     name: flux2
@@ -708,7 +708,7 @@ entries:
     version: 0.86.1
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.36838193Z"
+    created: "2024-11-06T18:28:53.796060081Z"
     description: A Helm chart for Kubernetes
     digest: a32a126e4547c67204ac091253b8bef62150e54813df128f8e8f90ae36dcb4c3
     name: flux2
@@ -718,7 +718,7 @@ entries:
     version: 0.86.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.367072967Z"
+    created: "2024-11-06T18:28:53.794750476Z"
     description: A Helm chart for Kubernetes
     digest: a1621c2a5046cced427c2ed940ffe30f96f1356bd483eb8fca51427d9fc0c7d1
     name: flux2
@@ -728,7 +728,7 @@ entries:
     version: 0.84.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.365255641Z"
+    created: "2024-11-06T18:28:53.793247041Z"
     description: A Helm chart for Kubernetes
     digest: d766a42213c36ee622b424d3ea3afa37514bca7932d4a0c652af93c1e415b22d
     name: flux2
@@ -738,7 +738,7 @@ entries:
     version: 0.83.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.364003821Z"
+    created: "2024-11-06T18:28:53.791769062Z"
     description: A Helm chart for Kubernetes
     digest: 0a61dc26be1bf5f47ef5aea7be15166708d2a124b83e2a790d5039f5a78590c5
     name: flux2
@@ -748,7 +748,7 @@ entries:
     version: 0.82.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.362801091Z"
+    created: "2024-11-06T18:28:53.790352651Z"
     description: A Helm chart for Kubernetes
     digest: 8ec71e35c0a10d7bd351dbb00d19481552aaa509750199704336e3c7e2eb6962
     name: flux2
@@ -758,7 +758,7 @@ entries:
     version: 0.81.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.3615086Z"
+    created: "2024-11-06T18:28:53.788312252Z"
     description: A Helm chart for Kubernetes
     digest: 14e0ebd3b2f33c15852d0d8c3785fff307da5d5bdc1c8bd242859957e0a5d316
     name: flux2
@@ -768,7 +768,7 @@ entries:
     version: 0.80.2
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.35960018Z"
+    created: "2024-11-06T18:28:53.787243225Z"
     description: A Helm chart for Kubernetes
     digest: 35565ae5952e7b30c8f7611c982d859d0f2f2182dbfecf6eedb5f56b416a4f1c
     name: flux2
@@ -778,7 +778,7 @@ entries:
     version: 0.80.1
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.357902275Z"
+    created: "2024-11-06T18:28:53.786192995Z"
     description: A Helm chart for Kubernetes
     digest: 6c22fc1275f7d1fb61977a82e2d2e87f69fa61ce30f25aaa9274e4a30d328c13
     name: flux2
@@ -788,7 +788,7 @@ entries:
     version: 0.80.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.356748829Z"
+    created: "2024-11-06T18:28:53.785083231Z"
     description: A Helm chart for Kubernetes
     digest: d35c36bfd16612715311621a9662362e44d59055feaebb0c1325dcbb91c10a25
     name: flux2
@@ -798,7 +798,7 @@ entries:
     version: 0.70.1
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.355660855Z"
+    created: "2024-11-06T18:28:53.78338054Z"
     description: A Helm chart for Kubernetes
     digest: b36b3d4438811654477b56485c89bd7c1b57fd906684418b5371be516240d089
     name: flux2
@@ -808,7 +808,7 @@ entries:
     version: 0.70.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.354273046Z"
+    created: "2024-11-06T18:28:53.782166109Z"
     description: A Helm chart for Kubernetes
     digest: 2f5330a35915edb17f3484ba56d80d7e332510c9c912a34ad12bf1cdd9cd14d5
     name: flux2
@@ -818,7 +818,7 @@ entries:
     version: 0.60.3
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.353420661Z"
+    created: "2024-11-06T18:28:53.78130148Z"
     description: A Helm chart for Kubernetes
     digest: 67e4c0412e2a562557c94198fe26b19b805ea3c9be6fb07ea1c091a2a587f55f
     name: flux2
@@ -828,7 +828,7 @@ entries:
     version: 0.60.2
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.352615068Z"
+    created: "2024-11-06T18:28:53.780512845Z"
     description: A Helm chart for Kubernetes
     digest: c61bfb6e18a6d877f39218287ea75a2acfe90a8dc15e3815d5cc370433148b1a
     name: flux2
@@ -838,7 +838,7 @@ entries:
     version: 0.60.1
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.351115335Z"
+    created: "2024-11-06T18:28:53.779735089Z"
     description: A Helm chart for Kubernetes
     digest: 10461060828d6d2b44dcf90de855bbe773ac3bd038e2f37ab16fad5d7973a3f2
     name: flux2
@@ -848,7 +848,7 @@ entries:
     version: 0.60.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.350264435Z"
+    created: "2024-11-06T18:28:53.778701951Z"
     description: A Helm chart for Kubernetes
     digest: a4fbac3ceb5b2b831053907fa294b2d73652d5f3dd05fa9878aad2f6061b416c
     name: flux2
@@ -858,7 +858,7 @@ entries:
     version: 0.50.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.349556311Z"
+    created: "2024-11-06T18:28:53.77763685Z"
     description: A Helm chart for Kubernetes
     digest: aeadd4881469910f0ad9ab9fe9ae54ae3bb9189ea04e7208786f4e5cb5017152
     name: flux2
@@ -868,7 +868,7 @@ entries:
     version: 0.40.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.348597952Z"
+    created: "2024-11-06T18:28:53.776362616Z"
     description: A Helm chart for Kubernetes
     digest: 26cbac1757434e3655eade1ae94626435c7674679a23609599fa542eb7e8541d
     name: flux2
@@ -878,7 +878,7 @@ entries:
     version: 0.30.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.347940478Z"
+    created: "2024-11-06T18:28:53.775525479Z"
     description: A Helm chart for Kubernetes
     digest: ef45d44c8ef712bd79aabe2167de191a40adb667b043d80b4adc40a61c657cb5
     name: flux2
@@ -888,7 +888,7 @@ entries:
     version: 0.20.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.347236492Z"
+    created: "2024-11-06T18:28:53.774674177Z"
     description: A Helm chart for Kubernetes
     digest: ecad7b37a7ee94ef9cbfc9a3f4ced3a7d04ade419e388d65506f0372825c9332
     name: flux2
@@ -899,7 +899,7 @@ entries:
   git-proxy:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.587680771Z"
+    created: "2024-11-06T18:28:54.037181029Z"
     description: A Helm chart for Kubernetes
     digest: 5302c5653e56e30043bf33a31694da7950f71df5e273eec46158a808d4f5ce5a
     name: git-proxy
@@ -909,7 +909,7 @@ entries:
     version: 2024.11.05
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.586999136Z"
+    created: "2024-11-06T18:28:54.036171941Z"
     description: A Helm chart for Kubernetes
     digest: 047deff2087908cc70fd9c7b4047f663deaaebf3aa51e08a4dfb6bff60678bda
     name: git-proxy
@@ -919,7 +919,7 @@ entries:
     version: 2024.11.05-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.586270205Z"
+    created: "2024-11-06T18:28:54.035692346Z"
     description: A Helm chart for Kubernetes
     digest: 8f61023b8c863b0be3294071052fa2f0fb50c5ab6b2486c9420bde4a86bb11d6
     name: git-proxy
@@ -929,7 +929,7 @@ entries:
     version: 2024.10.30
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.585521207Z"
+    created: "2024-11-06T18:28:54.035171959Z"
     description: A Helm chart for Kubernetes
     digest: 943d33295dca8be2952f2bc39ebd94ca9c47c5869cd52b7eed1f89c302e51e8e
     name: git-proxy
@@ -939,7 +939,7 @@ entries:
     version: 2024.10.30-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.584805822Z"
+    created: "2024-11-06T18:28:54.034695706Z"
     description: A Helm chart for Kubernetes
     digest: 4cfff959c4b1fba7f82f676bcc69da211fc5028f5b861674e976d5ee6e1cb842
     name: git-proxy
@@ -949,7 +949,7 @@ entries:
     version: 2024.10.22
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.583763563Z"
+    created: "2024-11-06T18:28:54.034210722Z"
     description: A Helm chart for Kubernetes
     digest: 8bbfcbe4832d337c405bba9e760b86a67931f02039a84ea25d016567c6ce0644
     name: git-proxy
@@ -959,7 +959,7 @@ entries:
     version: 2024.10.22-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.582723542Z"
+    created: "2024-11-06T18:28:54.0335233Z"
     description: A Helm chart for Kubernetes
     digest: 04815cd8ec6a66de8e87d4720b40eefffec35fc091bf95e6b81e9fce5f4b0038
     name: git-proxy
@@ -969,7 +969,7 @@ entries:
     version: 2024.10.21-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.582086509Z"
+    created: "2024-11-06T18:28:54.032761436Z"
     description: A Helm chart for Kubernetes
     digest: c1955d5e47a614915daa81708f82f66d9707d6f23b0fa7cc4ea786061cbfa9b6
     name: git-proxy
@@ -979,7 +979,7 @@ entries:
     version: 2024.10.20-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.581600882Z"
+    created: "2024-11-06T18:28:54.031970373Z"
     description: A Helm chart for Kubernetes
     digest: fe6377ad446305eba33b26b6031b94628be280cf35e0430b52cd72a14bb00c8f
     name: git-proxy
@@ -989,7 +989,7 @@ entries:
     version: 2024.10.08
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.580981017Z"
+    created: "2024-11-06T18:28:54.031161914Z"
     description: A Helm chart for Kubernetes
     digest: ccdbbc6289e96fc9fae721937b70499af4025e2916d67c504a43aa1e32a14fc5
     name: git-proxy
@@ -999,7 +999,7 @@ entries:
     version: 2024.10.08-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.580381788Z"
+    created: "2024-11-06T18:28:54.030424574Z"
     description: A Helm chart for Kubernetes
     digest: 682ec2d81c0c1da7703cd690393a73d2929292d95c8c31ceeba1e186b67759b2
     name: git-proxy
@@ -1009,7 +1009,7 @@ entries:
     version: 2024.10.06
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.579713946Z"
+    created: "2024-11-06T18:28:54.029686767Z"
     description: A Helm chart for Kubernetes
     digest: 9caa8a4c00588058b4a354097afe8d9c8fdd35b28e4dd88f8c22c7d7e995b426
     name: git-proxy
@@ -1019,7 +1019,7 @@ entries:
     version: 2024.09.12
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.57898528Z"
+    created: "2024-11-06T18:28:54.028869759Z"
     description: A Helm chart for Kubernetes
     digest: e3355a7b681418d789209727ed9c56b5b62da8fb73bd267cfe8fc7ec7574afd3
     name: git-proxy
@@ -1029,7 +1029,7 @@ entries:
     version: 2024.09.12-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.578253304Z"
+    created: "2024-11-06T18:28:54.028084844Z"
     description: A Helm chart for Kubernetes
     digest: 22c5b781316a6c17a20c19fc3c419df1402e59a3b42a070a4f5e654f89227765
     name: git-proxy
@@ -1039,7 +1039,7 @@ entries:
     version: 2024.09.10-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.577520082Z"
+    created: "2024-11-06T18:28:54.027265244Z"
     description: A Helm chart for Kubernetes
     digest: 4fe9d508cd6988649b589c43658ff727f2d378189682e784d063d07d935316b5
     name: git-proxy
@@ -1049,7 +1049,7 @@ entries:
     version: 2024.09.05
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.576799212Z"
+    created: "2024-11-06T18:28:54.026476064Z"
     description: A Helm chart for Kubernetes
     digest: 6a13c0a3fe9477c99c55771d32dfc81725265f25e87a856c9ebbefefe1df168e
     name: git-proxy
@@ -1059,7 +1059,7 @@ entries:
     version: 2024.07.16
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.576058845Z"
+    created: "2024-11-06T18:28:54.025676328Z"
     description: A Helm chart for Kubernetes
     digest: b9632cdda99822dbd4b959ec09c9817e78b89d8a9966a863b050d1c18f42ab46
     name: git-proxy
@@ -1069,7 +1069,7 @@ entries:
     version: 2024.07.16-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.575340945Z"
+    created: "2024-11-06T18:28:54.024773522Z"
     description: A Helm chart for Kubernetes
     digest: cb9701d7734987fa0fbe2e349057ed9c064f1b33d192faee265b930d86d12bd0
     name: git-proxy
@@ -1079,7 +1079,7 @@ entries:
     version: 2024.07.02
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.574619175Z"
+    created: "2024-11-06T18:28:54.02210175Z"
     description: A Helm chart for Kubernetes
     digest: 1ab6670071505822bca1be3a7ead278bc38c995e044479b2841e424db3874cba
     name: git-proxy
@@ -1089,7 +1089,7 @@ entries:
     version: 2024.07.02-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.573876481Z"
+    created: "2024-11-06T18:28:54.021351499Z"
     description: A Helm chart for Kubernetes
     digest: fdd1f44567b5b47096bf1ef9a0cb1a1bf759e8b3a75d3573f10323a0c351b7d0
     name: git-proxy
@@ -1099,7 +1099,7 @@ entries:
     version: 2024.06.30-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.573164237Z"
+    created: "2024-11-06T18:28:54.020879223Z"
     description: A Helm chart for Kubernetes
     digest: a9d85f9400506bbce41ff16876dc9882e0f92f35b7b247874467a13a817b6abe
     name: git-proxy
@@ -1109,7 +1109,7 @@ entries:
     version: 2024.05.21
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.572437971Z"
+    created: "2024-11-06T18:28:54.020408569Z"
     description: A Helm chart for Kubernetes
     digest: 5a4adb26ab86271412a9b0acc0c0009861455f423fd99c3a0b46ea2299a4544f
     name: git-proxy
@@ -1119,7 +1119,7 @@ entries:
     version: 2024.05.21-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.571693074Z"
+    created: "2024-11-06T18:28:54.01993591Z"
     description: A Helm chart for Kubernetes
     digest: 54febb085298852b04250391fe3e5d6a2734940e5fdd92a29707038ed3371545
     name: git-proxy
@@ -1129,7 +1129,7 @@ entries:
     version: 2024.05.20
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.570685414Z"
+    created: "2024-11-06T18:28:54.019451942Z"
     description: A Helm chart for Kubernetes
     digest: b377ce75f67e2422a602d153c79da3d7633db7974486629023cba20e76bbf0f9
     name: git-proxy
@@ -1139,7 +1139,7 @@ entries:
     version: 2024.05.09
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.569699936Z"
+    created: "2024-11-06T18:28:54.018979478Z"
     description: A Helm chart for Kubernetes
     digest: 96cbcb177c039b4c84a2d8e21df67bb174873491df2e737c9ed1c3315c9b6693
     name: git-proxy
@@ -1149,7 +1149,7 @@ entries:
     version: 2024.05.08
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.568995046Z"
+    created: "2024-11-06T18:28:54.018495008Z"
     description: A Helm chart for Kubernetes
     digest: 85439cb2a51c98c6ea95a6ea704918dc00f9b2b9865e56e9e8d4eb4aec7d9c82
     name: git-proxy
@@ -1159,7 +1159,7 @@ entries:
     version: 2024.05.08-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.568211491Z"
+    created: "2024-11-06T18:28:54.018005116Z"
     description: A Helm chart for Kubernetes
     digest: 2fbf897bc5d4ad71d7a4006623195282280a39ab11223661b56c31dfd23ad120
     name: git-proxy
@@ -1169,7 +1169,7 @@ entries:
     version: 2024.05.06
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.567574446Z"
+    created: "2024-11-06T18:28:54.017500969Z"
     description: A Helm chart for Kubernetes
     digest: 1497ed100492fb92d6efa81964c8c2d57117126c7c57016c196a5eab460f3d65
     name: git-proxy
@@ -1179,7 +1179,7 @@ entries:
     version: 2024.05.01
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.566953432Z"
+    created: "2024-11-06T18:28:54.017003033Z"
     description: A Helm chart for Kubernetes
     digest: f26500b07e48d06888d073a890ff5a13ad833e148889a20d23f1952e31d09603
     name: git-proxy
@@ -1189,7 +1189,7 @@ entries:
     version: 2024.04.30
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.566328695Z"
+    created: "2024-11-06T18:28:54.016520221Z"
     description: A Helm chart for Kubernetes
     digest: c0c9c6ca79c9644fcf3a244aae3afb5e8a465c14afa68704e94d9d8670e40d46
     name: git-proxy
@@ -1199,7 +1199,7 @@ entries:
     version: 2024.04.30-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.565718101Z"
+    created: "2024-11-06T18:28:54.016018265Z"
     description: A Helm chart for Kubernetes
     digest: 0d54dfb1880586beb5c6eb9f3bae779b94ac04865227d234254a34cb8636bc61
     name: git-proxy
@@ -1209,7 +1209,7 @@ entries:
     version: 2024.04.16
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.565123909Z"
+    created: "2024-11-06T18:28:54.015551322Z"
     description: A Helm chart for Kubernetes
     digest: 762d9b0a4a01cbd25ca610c624716902048681eab9a6f34380c4e548259a687f
     name: git-proxy
@@ -1219,7 +1219,7 @@ entries:
     version: 2024.04.14
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.56451557Z"
+    created: "2024-11-06T18:28:54.015068137Z"
     description: A Helm chart for Kubernetes
     digest: aedf1c8d82b1cfb5a669bb28483cd8b1bdce67e195e6c9e6ed85162b145f16b3
     name: git-proxy
@@ -1229,7 +1229,7 @@ entries:
     version: 2024.04.14-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.56393013Z"
+    created: "2024-11-06T18:28:54.014631673Z"
     description: A Helm chart for Kubernetes
     digest: d366862af56a91e1f7422c314d69662a683db8f6a03d033255a269830cc52aa4
     name: git-proxy
@@ -1239,7 +1239,7 @@ entries:
     version: 2024.04.04
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.563381364Z"
+    created: "2024-11-06T18:28:54.014187114Z"
     description: A Helm chart for Kubernetes
     digest: 5de91707be4e5ac70d0c503d596ebbedf06cad89c2b45e335f663f828c3ec211
     name: git-proxy
@@ -1249,7 +1249,7 @@ entries:
     version: 2024.03.31
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.562817142Z"
+    created: "2024-11-06T18:28:54.013725329Z"
     description: A Helm chart for Kubernetes
     digest: 8bd17e896891f16d7d54c541a92c30bc687b09f0f019e9e0f680dcacb8a2bdee
     name: git-proxy
@@ -1259,7 +1259,7 @@ entries:
     version: 2024.03.21
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.562222183Z"
+    created: "2024-11-06T18:28:54.012882999Z"
     description: A Helm chart for Kubernetes
     digest: 6be90a1fe8ddacae4f5aa31f39697a4ceaa113fdab7d916dc8de9b134f2a6b2d
     name: git-proxy
@@ -1269,7 +1269,7 @@ entries:
     version: 2024.03.21-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.561666028Z"
+    created: "2024-11-06T18:28:54.011967436Z"
     description: A Helm chart for Kubernetes
     digest: 5a33f577e73b0cfc515e2c9f230b1cea6f29560921739b685cd568679432ee92
     name: git-proxy
@@ -1279,7 +1279,7 @@ entries:
     version: 2024.03.04
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.561071364Z"
+    created: "2024-11-06T18:28:54.011478565Z"
     description: A Helm chart for Kubernetes
     digest: a648aa643ec94c4675f63fc852dd60e12607a40364d5e491a2db06c694e4ace7
     name: git-proxy
@@ -1289,7 +1289,7 @@ entries:
     version: 2024.02.20
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.560476249Z"
+    created: "2024-11-06T18:28:54.01096554Z"
     description: A Helm chart for Kubernetes
     digest: e6a99bc266305049884b13cc33c6ed306fb8971a637cf769f9743eb1a1f5954a
     name: git-proxy
@@ -1299,7 +1299,7 @@ entries:
     version: 2024.01.17
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.559935037Z"
+    created: "2024-11-06T18:28:54.010492662Z"
     description: A Helm chart for Kubernetes
     digest: e586592e960801529446acfb2a86bbf2a7d2f0801f2353fc8e2ff4f04a57839d
     name: git-proxy
@@ -1309,7 +1309,7 @@ entries:
     version: 2023.12.10
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.559365197Z"
+    created: "2024-11-06T18:28:54.010010571Z"
     description: A Helm chart for Kubernetes
     digest: 25b8677b44320f9385ea6e680c6a07d235f60afb13a26ca68164a212c5057825
     name: git-proxy
@@ -1319,7 +1319,7 @@ entries:
     version: 2023.11.16
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.557966971Z"
+    created: "2024-11-06T18:28:54.009492482Z"
     description: A Helm chart for Kubernetes
     digest: 482547500946822dcab89b7c2cc901dbb781253ef7de2c08c6ed27ed4f087998
     name: git-proxy
@@ -1329,7 +1329,7 @@ entries:
     version: 2023.11.07
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.557516349Z"
+    created: "2024-11-06T18:28:54.008967815Z"
     description: A Helm chart for Kubernetes
     digest: 169be1ec29c3d4999d2418ea4de106bfdec44d0473712fc8d0f77dae7bd4bdae
     name: git-proxy
@@ -1339,7 +1339,7 @@ entries:
     version: 2023.11.03
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.557035099Z"
+    created: "2024-11-06T18:28:54.008452088Z"
     description: A Helm chart for Kubernetes
     digest: 1b917a92fef5e09a6993241c98ff905ee0b28d6dfdaa0982f2b1807bcfb784b1
     name: git-proxy
@@ -1349,7 +1349,7 @@ entries:
     version: 2023.10.25
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.5565377Z"
+    created: "2024-11-06T18:28:54.00796279Z"
     description: A Helm chart for Kubernetes
     digest: 9f7635246ee413ff7d8bfa9ef451fac699a4a4c0e46688d0251cd1599802ede5
     name: git-proxy
@@ -1359,7 +1359,7 @@ entries:
     version: 2023.10.22
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.556061788Z"
+    created: "2024-11-06T18:28:54.007454661Z"
     description: A Helm chart for Kubernetes
     digest: 60d2041e0b436b114421dbdc5b9f11f3fdd4a689659057b122b180bef399b824
     name: git-proxy
@@ -1369,7 +1369,7 @@ entries:
     version: 2023.10.17
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.555596722Z"
+    created: "2024-11-06T18:28:54.00694212Z"
     description: A Helm chart for Kubernetes
     digest: 35281f427bf855e4662b90f5fcbc55a27dd8e82298c9fff10aa2e92bbc4310a0
     name: git-proxy
@@ -1379,7 +1379,7 @@ entries:
     version: 2023.10.04
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.555165457Z"
+    created: "2024-11-06T18:28:54.006489704Z"
     description: A Helm chart for Kubernetes
     digest: 42e1be6f2cda992c1402c59ef5d5f2be0003fd4436dbf7a5b9febc9c5fe30f8d
     name: git-proxy
@@ -1389,7 +1389,7 @@ entries:
     version: 2023.10.02
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.554739208Z"
+    created: "2024-11-06T18:28:54.006036974Z"
     description: A Helm chart for Kubernetes
     digest: bad93fc28130b0fc46f99e0b92f61db77b7cd9b89110f85d1eb916e64c0dc6ea
     name: git-proxy
@@ -1399,7 +1399,7 @@ entries:
     version: 2023.09.28
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.554293671Z"
+    created: "2024-11-06T18:28:54.005572128Z"
     description: A Helm chart for Kubernetes
     digest: 90ae1286b49cad924d2c3e158d4c5751337d2f7a907cc4231d6dc96c53a8764c
     name: git-proxy
@@ -1409,7 +1409,7 @@ entries:
     version: 2023.09.12
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.553876453Z"
+    created: "2024-11-06T18:28:54.004988285Z"
     description: A Helm chart for Kubernetes
     digest: 6bd06fd1e62088c60a179130db140cbe86f041451932f4ee86c456ba7d84585b
     name: git-proxy
@@ -1419,7 +1419,7 @@ entries:
     version: 2023.08.22
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.553461387Z"
+    created: "2024-11-06T18:28:54.004485073Z"
     description: A Helm chart for Kubernetes
     digest: c4b7dec4913b931ccdff730a043730d7d44c9197280cfdbbe17ffa4b44ee0352
     name: git-proxy
@@ -1429,7 +1429,7 @@ entries:
     version: 2023.08.21
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.553042241Z"
+    created: "2024-11-06T18:28:54.003259771Z"
     description: A Helm chart for Kubernetes
     digest: ee4e72b25b5cf2fa61f14d2140fc16e2bcc231789a79311d10bccbd896def78d
     name: git-proxy
@@ -1439,7 +1439,7 @@ entries:
     version: 2023.08.13
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.552577846Z"
+    created: "2024-11-06T18:28:54.002793028Z"
     description: A Helm chart for Kubernetes
     digest: bc18330446fd6b3d022f6f9017e9c744006b62eda1916123b13a21a7a8a89fbc
     name: git-proxy
@@ -1449,7 +1449,7 @@ entries:
     version: 2023.07.27
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.548524224Z"
+    created: "2024-11-06T18:28:53.999458389Z"
     description: A Helm chart for Kubernetes
     digest: 3ce229e363125683d87f849bbe4e2d7ba13c13c434b8bbaec2d85c9dc2ba6e69
     name: git-proxy
@@ -1459,7 +1459,7 @@ entries:
     version: 0.0.17
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.547851671Z"
+    created: "2024-11-06T18:28:53.998988275Z"
     description: A Helm chart for Kubernetes
     digest: 0a7592f743263df9e6c64156ba56a47199f94f0123ef457528933aff3a680255
     name: git-proxy
@@ -1469,7 +1469,7 @@ entries:
     version: 0.0.16
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.54722217Z"
+    created: "2024-11-06T18:28:53.998553563Z"
     description: A Helm chart for Kubernetes
     digest: cbc9217e31d243d8fc473c6831e85353c62bc4baecd0ac82edc8a22f801eff78
     name: git-proxy
@@ -1479,7 +1479,7 @@ entries:
     version: 0.0.15
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.546697417Z"
+    created: "2024-11-06T18:28:53.998147043Z"
     description: A Helm chart for Kubernetes
     digest: 5190274ee43f38422edb7fa5facaa45c33ba30935ec55d3e3727d7c19000d1d5
     name: git-proxy
@@ -1489,7 +1489,7 @@ entries:
     version: 0.0.14
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.546086968Z"
+    created: "2024-11-06T18:28:53.997743147Z"
     description: A Helm chart for Kubernetes
     digest: fb0eb986d1cd7b3b7b4baefea4ea556dafe1b8b4b289b3d10d2e7364097b327b
     name: git-proxy
@@ -1499,7 +1499,7 @@ entries:
     version: 0.0.13
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.545508864Z"
+    created: "2024-11-06T18:28:53.997301465Z"
     description: A Helm chart for Kubernetes
     digest: 9beccd887d8f1a4d5e7fa90d57a689cd20f9067f61b34d495619a2b1c88d3808
     name: git-proxy
@@ -1509,7 +1509,7 @@ entries:
     version: 0.0.12
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.54498254Z"
+    created: "2024-11-06T18:28:53.996862294Z"
     description: A Helm chart for Kubernetes
     digest: eeaf27426fbfc7f44cba12fa9238924bdc91932f774f57513008e3155080d7d7
     name: git-proxy
@@ -1519,7 +1519,7 @@ entries:
     version: 0.0.11
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.544451857Z"
+    created: "2024-11-06T18:28:53.996021706Z"
     description: A Helm chart for Kubernetes
     digest: 7cd8ed241edd4e8900b7c1267d90243e7826247d332dacd24956f0320c75723c
     name: git-proxy
@@ -1529,7 +1529,7 @@ entries:
     version: 0.0.10
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.552151873Z"
+    created: "2024-11-06T18:28:54.002330163Z"
     description: A Helm chart for Kubernetes
     digest: b03a81a22c44c45c4a041b132d26646e0ac54e236986e08f1a9476debe6298a9
     name: git-proxy
@@ -1539,7 +1539,7 @@ entries:
     version: 0.0.9
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.551825001Z"
+    created: "2024-11-06T18:28:54.001952859Z"
     description: A Helm chart for Kubernetes
     digest: fc9562e7d09e4386abcacee3509616ebfc0a4827eeb143cedb5007d6fc8fb9f2
     name: git-proxy
@@ -1549,7 +1549,7 @@ entries:
     version: 0.0.8
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.551505017Z"
+    created: "2024-11-06T18:28:54.001564971Z"
     description: A Helm chart for Kubernetes
     digest: b4d8523f4d21fe7eb9df52e520d9f7749438dab8215058a08b4f6cfef06be22d
     name: git-proxy
@@ -1559,7 +1559,7 @@ entries:
     version: 0.0.7
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.551159062Z"
+    created: "2024-11-06T18:28:54.001174356Z"
     description: A Helm chart for Kubernetes
     digest: e39c4adda474eb21c4de53c02443f6d19f5a2d791b21552bbb92cfdbf8dbd182
     name: git-proxy
@@ -1569,7 +1569,7 @@ entries:
     version: 0.0.6
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.55062798Z"
+    created: "2024-11-06T18:28:54.000797888Z"
     description: A Helm chart for Kubernetes
     digest: 1535042e9ea94ec4b6ba8958fba421015d9104118fee83fb3c206a491886bd36
     name: git-proxy
@@ -1579,7 +1579,7 @@ entries:
     version: 0.0.5
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.550268981Z"
+    created: "2024-11-06T18:28:54.000455035Z"
     description: A Helm chart for Kubernetes
     digest: 1258a03c03379abfbaf4a78d9b29b13a483fcb5dc945f37f58eedb445126a686
     name: git-proxy
@@ -1589,7 +1589,7 @@ entries:
     version: 0.0.4
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.54922283Z"
+    created: "2024-11-06T18:28:54.000116871Z"
     description: A Helm chart for Kubernetes
     digest: 8d942684d72e03fd72f2d3159605e4050cf13e74ef6bc15aa42627f959d44e6e
     name: git-proxy
@@ -1599,7 +1599,7 @@ entries:
     version: 0.0.3
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.548878453Z"
+    created: "2024-11-06T18:28:53.999789265Z"
     description: A Helm chart for Kubernetes
     digest: 7ba28a785c7972e04c2ce7741ec9f6915a6f7bfded5f15c11de4522b09d78879
     name: git-proxy
@@ -1609,7 +1609,7 @@ entries:
     version: 0.0.2
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.543902502Z"
+    created: "2024-11-06T18:28:53.995688515Z"
     description: A Helm chart for Kubernetes
     digest: 129b87410c51092058eb71747c858ea463c48990a09d30baea6342033291585c
     name: git-proxy
@@ -1620,7 +1620,7 @@ entries:
   wiz-admission-controller:
   - apiVersion: v2
     appVersion: "2.7"
-    created: "2024-11-06T18:27:29.680240958Z"
+    created: "2024-11-06T18:28:54.143166796Z"
     description: Wiz admission controller
     digest: 74453a484e94110a4b86a4e84e89d959d7b23c00ac7dbbd20d2cc1a5ba3cf5c0
     name: wiz-admission-controller
@@ -1630,7 +1630,7 @@ entries:
     version: 3.7.0-preview
   - apiVersion: v2
     appVersion: "2.6"
-    created: "2024-11-06T18:27:29.678516832Z"
+    created: "2024-11-06T18:28:54.1407664Z"
     description: Wiz admission controller
     digest: b9c22d24c96b11dc3d3bb28a86f641981965cc69ae4d9e683c61b83cee20ab30
     name: wiz-admission-controller
@@ -1640,7 +1640,7 @@ entries:
     version: 3.6.1
   - apiVersion: v2
     appVersion: "2.6"
-    created: "2024-11-06T18:27:29.676952884Z"
+    created: "2024-11-06T18:28:54.138143329Z"
     description: Wiz admission controller
     digest: a6b0fef620e2d56106f4bf58e4dc1110bd36fc00e66ff3f2e75abf813b678bee
     name: wiz-admission-controller
@@ -1650,7 +1650,7 @@ entries:
     version: 3.6.1-preview
   - apiVersion: v2
     appVersion: "2.6"
-    created: "2024-11-06T18:27:29.67462035Z"
+    created: "2024-11-06T18:28:54.135470347Z"
     description: Wiz admission controller
     digest: 1bf9878df1cf1098e8eb57174a54b5c150ccbd8e010b9ff92499c7ed665ae019
     name: wiz-admission-controller
@@ -1660,7 +1660,7 @@ entries:
     version: 3.6.0
   - apiVersion: v2
     appVersion: "2.6"
-    created: "2024-11-06T18:27:29.673115641Z"
+    created: "2024-11-06T18:28:54.13292231Z"
     description: Wiz admission controller
     digest: 125e24adf254878792f16ed63dc9b53ed5cf08ee67ae0e45401877d25518f33d
     name: wiz-admission-controller
@@ -1670,7 +1670,7 @@ entries:
     version: 3.6.0-preview
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.659006253Z"
+    created: "2024-11-06T18:28:54.114476686Z"
     description: Wiz admission controller
     digest: 807e151cf811df70b88f0f3be615be0db77a84b6be628001253093fd8eb92b39
     name: wiz-admission-controller
@@ -1680,7 +1680,7 @@ entries:
     version: 3.5.11
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.657553488Z"
+    created: "2024-11-06T18:28:54.11279816Z"
     description: Wiz admission controller
     digest: eecaf286409de2367d3d1a81e10d5a114a1ec49a98870a430b3c0bc3e133b054
     name: wiz-admission-controller
@@ -1690,7 +1690,7 @@ entries:
     version: 3.5.10
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.671535509Z"
+    created: "2024-11-06T18:28:54.130392889Z"
     description: Wiz admission controller
     digest: 85f1644fecfd5135606fb6a61f7c3ea1e222fdd71ae220d7a755b86f1cbe9989
     name: wiz-admission-controller
@@ -1700,7 +1700,7 @@ entries:
     version: 3.5.9
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.670016162Z"
+    created: "2024-11-06T18:28:54.12785864Z"
     description: Wiz admission controller
     digest: 7d208e51e5b463a1f3711323a15e0f24b8a54a626550101735acfdeb5407a0e8
     name: wiz-admission-controller
@@ -1710,7 +1710,7 @@ entries:
     version: 3.5.8
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.668461468Z"
+    created: "2024-11-06T18:28:54.125317514Z"
     description: Wiz admission controller
     digest: 3030d96fa8baab96847fafde55413ddd7455c26c2ffdb42cc11b7bcc711bbd44
     name: wiz-admission-controller
@@ -1720,7 +1720,7 @@ entries:
     version: 3.5.7
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.667001409Z"
+    created: "2024-11-06T18:28:54.123369194Z"
     description: Wiz admission controller
     digest: 4d66822a3b6c299a96e590bc596be9147a591f6c56b313308ea3dec55f59a7e0
     name: wiz-admission-controller
@@ -1730,7 +1730,7 @@ entries:
     version: 3.5.5
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.665451992Z"
+    created: "2024-11-06T18:28:54.120897745Z"
     description: Wiz admission controller
     digest: 5924f8a8ae1ba912087ef0ceee494fe8c2ce319aad8fa68851cbe8fcff5d4f8c
     name: wiz-admission-controller
@@ -1740,7 +1740,7 @@ entries:
     version: 3.5.4
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.662958088Z"
+    created: "2024-11-06T18:28:54.118674576Z"
     description: Wiz admission controller
     digest: f12886ea6b71a760d8cc2a04321c5b5602875ea270f1c80b00a2d4e9f0c58036
     name: wiz-admission-controller
@@ -1750,7 +1750,7 @@ entries:
     version: 3.5.3
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.660593607Z"
+    created: "2024-11-06T18:28:54.116755548Z"
     description: Wiz admission controller
     digest: 9d866f5b95ce92e8874fdfd9117aa16293a0e1500a55c4d3cc259ec0983e85a7
     name: wiz-admission-controller
@@ -1760,7 +1760,7 @@ entries:
     version: 3.5.2
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.656066674Z"
+    created: "2024-11-06T18:28:54.111333245Z"
     description: Wiz admission controller
     digest: 88d4aeedb3fdfbbedb52ad540689d788db8db1766974b7a2e268c7f8f83196da
     name: wiz-admission-controller
@@ -1770,7 +1770,7 @@ entries:
     version: 3.5.1
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.654769644Z"
+    created: "2024-11-06T18:28:54.109989209Z"
     description: Wiz admission controller
     digest: 1f25a3999b3093db1f160a3b62204a34d734f8b90534e1fc11bc5456b6767767
     name: wiz-admission-controller
@@ -1780,7 +1780,7 @@ entries:
     version: 3.5.0
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.653454743Z"
+    created: "2024-11-06T18:28:54.107807352Z"
     description: Wiz admission controller
     digest: dff1adee082915e7826b62afc7b409717e91f12036bf7438e558504c7f483560
     name: wiz-admission-controller
@@ -1790,7 +1790,7 @@ entries:
     version: 3.5.0-alpha
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.640139949Z"
+    created: "2024-11-06T18:28:54.096123733Z"
     description: Wiz admission controller
     digest: 30face85586a537f2692890c03ba6be9de385a39b5f421ce35be28641b8a94e8
     name: wiz-admission-controller
@@ -1800,7 +1800,7 @@ entries:
     version: 3.4.13
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.639002311Z"
+    created: "2024-11-06T18:28:54.094152809Z"
     description: Wiz admission controller
     digest: 8da13f9a25752a7fee3f813fb68affe5a36df710164ac660a276849427b887cf
     name: wiz-admission-controller
@@ -1810,7 +1810,7 @@ entries:
     version: 3.4.12
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.637129861Z"
+    created: "2024-11-06T18:28:54.092303559Z"
     description: Wiz admission controller
     digest: 0186cdc4cd522eacd48bbe1514cae93addbb03128134b7b52bcb4bbac5102eda
     name: wiz-admission-controller
@@ -1820,7 +1820,7 @@ entries:
     version: 3.4.11
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.636014566Z"
+    created: "2024-11-06T18:28:54.090776705Z"
     description: Wiz admission controller
     digest: dd335cec07b0e10cba1621c8f5d10e845dcda8de92a788606efeb023c69874de
     name: wiz-admission-controller
@@ -1830,7 +1830,7 @@ entries:
     version: 3.4.10
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.652111192Z"
+    created: "2024-11-06T18:28:54.106483795Z"
     description: Wiz admission controller
     digest: dbf32df5b584721942cd19c6776bbc639ee0c182b16b52bdcd3b3dcc9f49bd89
     name: wiz-admission-controller
@@ -1840,7 +1840,7 @@ entries:
     version: 3.4.9
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.650231717Z"
+    created: "2024-11-06T18:28:54.10507337Z"
     description: Wiz admission controller
     digest: 780f2aad4135d041af2465a61e4bb0d7bdec9a4796dbe2980a26eef0b77014ab
     name: wiz-admission-controller
@@ -1850,7 +1850,7 @@ entries:
     version: 3.4.8
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.648492708Z"
+    created: "2024-11-06T18:28:54.104006086Z"
     description: Wiz admission controller
     digest: f3d42b4eab4e29f14dcb59cae0708b293ae98457ffce259651331effd1504b6e
     name: wiz-admission-controller
@@ -1860,7 +1860,7 @@ entries:
     version: 3.4.7
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.646870027Z"
+    created: "2024-11-06T18:28:54.102985396Z"
     description: Wiz admission controller
     digest: b29da8e662c02149db58b6b5cc14b58f07404b686453cb9a8a58dd72b04b31c5
     name: wiz-admission-controller
@@ -1870,7 +1870,7 @@ entries:
     version: 3.4.6
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.645370727Z"
+    created: "2024-11-06T18:28:54.101975328Z"
     description: Wiz admission controller
     digest: 71b29dd78e80088e74391a674199c4b341a63aa055ab169989b08d1108e02ba0
     name: wiz-admission-controller
@@ -1880,7 +1880,7 @@ entries:
     version: 3.4.5
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.644280347Z"
+    created: "2024-11-06T18:28:54.100901606Z"
     description: Wiz admission controller
     digest: 89e4fd52a9ccab9812147544b08d70ec2aae0c8c54fc776ede5ba60a2fb7643c
     name: wiz-admission-controller
@@ -1890,7 +1890,7 @@ entries:
     version: 3.4.4
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.643195547Z"
+    created: "2024-11-06T18:28:54.09991235Z"
     description: Wiz admission controller
     digest: 357ef8bb7c02d645018734c6aa77bea6919b484e7f818fe310f6cf3fbb1726ca
     name: wiz-admission-controller
@@ -1900,7 +1900,7 @@ entries:
     version: 3.4.3
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.642122021Z"
+    created: "2024-11-06T18:28:54.098904937Z"
     description: Wiz admission controller
     digest: 490b1a83601b1b9e7ffa30a4f5f6dbbca1a9011eba81015cb914904124419884
     name: wiz-admission-controller
@@ -1910,7 +1910,7 @@ entries:
     version: 3.4.2
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.641138397Z"
+    created: "2024-11-06T18:28:54.097922582Z"
     description: Wiz admission controller
     digest: b13820be308793356267e1600913830aad93eeb06ca44b3651ae88389ccac114
     name: wiz-admission-controller
@@ -1920,7 +1920,7 @@ entries:
     version: 3.4.2-alpha
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.635003309Z"
+    created: "2024-11-06T18:28:54.089060211Z"
     description: Wiz admission controller
     digest: 9ac8cd8dbf41b6072911c45b2ee85d77432953aa8d7d60efb1b9fc0dbe63ba24
     name: wiz-admission-controller
@@ -1930,7 +1930,7 @@ entries:
     version: 3.4.1-alpha
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.634019656Z"
+    created: "2024-11-06T18:28:54.087377258Z"
     description: Wiz admission controller
     digest: 0b8f95bca3bb38afdf464fe980627874abc582af3f08a9c0cd76902da86abfbd
     name: wiz-admission-controller
@@ -1940,7 +1940,7 @@ entries:
     version: 3.4.0-alpha
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.633024484Z"
+    created: "2024-11-06T18:28:54.085706272Z"
     description: Wiz admission controller
     digest: a37f87958944c5ac9f0eb8e087b30c9726e4def963a06d30eee0dcdc31ba09ea
     name: wiz-admission-controller
@@ -1950,7 +1950,7 @@ entries:
     version: 3.3.2
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.632048682Z"
+    created: "2024-11-06T18:28:54.084030885Z"
     description: Wiz admission controller
     digest: cfcd0388622640f59b8af7a6ec23869161b0766dbfb325041cc2cc99cdc5c3ac
     name: wiz-admission-controller
@@ -1960,7 +1960,7 @@ entries:
     version: 3.3.1
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.631094768Z"
+    created: "2024-11-06T18:28:54.082345162Z"
     description: Wiz admission controller
     digest: 537518295a1c2bb2dc5b9ca7368877daae5d9d4ee28d197be332896c6a14ee87
     name: wiz-admission-controller
@@ -1970,7 +1970,7 @@ entries:
     version: 3.3.0
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.630081419Z"
+    created: "2024-11-06T18:28:54.080611158Z"
     description: Wiz admission controller
     digest: a2b8d930d9cb33b6c31cbd71015d66d08a7c7fb4659c21e050f208ced8fe63a7
     name: wiz-admission-controller
@@ -1980,7 +1980,7 @@ entries:
     version: 3.2.1
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.629084661Z"
+    created: "2024-11-06T18:28:54.078050982Z"
     description: Wiz admission controller
     digest: 210851d2d652540a38ff840d41febec8f9291a99a884b4ce0db57bcf92929b8e
     name: wiz-admission-controller
@@ -1990,7 +1990,7 @@ entries:
     version: 3.2.0
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.628049703Z"
+    created: "2024-11-06T18:28:54.076937301Z"
     description: Wiz admission controller
     digest: 40b6b0b1b6d94887c49ae44c8fb6abe206bc891e1facbb27a939b5b41a0d6622
     name: wiz-admission-controller
@@ -2000,7 +2000,7 @@ entries:
     version: 3.1.6
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.627104882Z"
+    created: "2024-11-06T18:28:54.075931553Z"
     description: Wiz admission controller
     digest: 8fe8f0aeda81207ab0dc31be236d87072dbc5418d3bf759892ced1e4499f0940
     name: wiz-admission-controller
@@ -2010,7 +2010,7 @@ entries:
     version: 3.1.5
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.625241338Z"
+    created: "2024-11-06T18:28:54.07488972Z"
     description: Wiz admission controller
     digest: 8101d887c8989420d1d78d772714843be70a2b38e63705a7cfaf6b6c270c5e4e
     name: wiz-admission-controller
@@ -2020,7 +2020,7 @@ entries:
     version: 3.1.4
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.62421395Z"
+    created: "2024-11-06T18:28:54.073902676Z"
     description: Wiz admission controller
     digest: e1af3f8ef7d0b28596a6859cacd39ecf3daae689c71986915bf147ea8fe79ee8
     name: wiz-admission-controller
@@ -2030,7 +2030,7 @@ entries:
     version: 3.1.3
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.623280663Z"
+    created: "2024-11-06T18:28:54.072864688Z"
     description: Wiz admission controller
     digest: d3ebc0e2408e75cb182bb8d03f64bda03b39ae0637d1653300d25361ba179feb
     name: wiz-admission-controller
@@ -2040,7 +2040,7 @@ entries:
     version: 3.1.2
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.622368235Z"
+    created: "2024-11-06T18:28:54.071869789Z"
     description: Wiz admission controller
     digest: c0054ce92ad3d0a97b9909500c5530074de2bc1a3aec896fcc3e570ab3b1d4e7
     name: wiz-admission-controller
@@ -2050,7 +2050,7 @@ entries:
     version: 3.1.1
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.621458398Z"
+    created: "2024-11-06T18:28:54.070874405Z"
     description: Wiz admission controller
     digest: d163f9b22597ccc42f07aa684cbebf3ec7460d65c906acc70df36c5dd38af4c5
     name: wiz-admission-controller
@@ -2060,7 +2060,7 @@ entries:
     version: 3.1.0
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.619563472Z"
+    created: "2024-11-06T18:28:54.068905075Z"
     description: Wiz admission controller
     digest: 333aa42772aa3b811e96dc346555d665f5d53857e77ec9e57fdde59d786ae745
     name: wiz-admission-controller
@@ -2070,7 +2070,7 @@ entries:
     version: 3.1.0-beta.1
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.620477528Z"
+    created: "2024-11-06T18:28:54.069903628Z"
     description: Wiz admission controller
     digest: 88eaa8d835b28efd827240e074dc19cab54e1d390422f51ac3b0f608951a1ce8
     name: wiz-admission-controller
@@ -2080,7 +2080,7 @@ entries:
     version: 3.1.0-beta
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.618669259Z"
+    created: "2024-11-06T18:28:54.067937433Z"
     description: Wiz admission controller
     digest: e5c042bcd40dc2b7ad8146a2d22f8d501903bdea73f23425661ba946106452da
     name: wiz-admission-controller
@@ -2090,7 +2090,7 @@ entries:
     version: 3.1.0-alpha
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.617737276Z"
+    created: "2024-11-06T18:28:54.066299741Z"
     description: Wiz admission controller
     digest: a8991d2c94a47dd4cc10370817857606fe7fd150cf8a0b5f43b4a1ca191bbda1
     name: wiz-admission-controller
@@ -2100,7 +2100,7 @@ entries:
     version: 3.0.2
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.6169895Z"
+    created: "2024-11-06T18:28:54.065370914Z"
     description: Wiz admission controller
     digest: 6df18d696b3a0daa605d68197a4bd634bdb6ad9c1a154aa87a7dd303545b6cbc
     name: wiz-admission-controller
@@ -2110,7 +2110,7 @@ entries:
     version: 3.0.1
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.616167724Z"
+    created: "2024-11-06T18:28:54.064483573Z"
     description: Wiz admission controller
     digest: 7ebcedf33949a2e9cb90a51ae0cd4543f7c9f0f092a903acecee7ad17fb58b7c
     name: wiz-admission-controller
@@ -2120,7 +2120,7 @@ entries:
     version: 3.0.1-alpha
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.614668028Z"
+    created: "2024-11-06T18:28:54.063507316Z"
     description: Wiz admission controller
     digest: f4e995ce0a68fecfcd10fdd3eb52a2ca1d98d94ad4fbec0123749b9bc534bc4e
     name: wiz-admission-controller
@@ -2130,7 +2130,7 @@ entries:
     version: 3.0.0-alpha
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.613458608Z"
+    created: "2024-11-06T18:28:54.062313852Z"
     description: Wiz admission controller
     digest: ff77719973977145422698204e6799a8cc92f798428b83612a1d74db02479e1b
     name: wiz-admission-controller
@@ -2140,7 +2140,7 @@ entries:
     version: 2.3.2
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.612462691Z"
+    created: "2024-11-06T18:28:54.06127287Z"
     description: Wiz admission controller
     digest: 3a88002bfd71ef4237837ae3f6e24a84678f4d7feb86f58daccd1326e0f109c8
     name: wiz-admission-controller
@@ -2150,7 +2150,7 @@ entries:
     version: 2.3.1
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.611494431Z"
+    created: "2024-11-06T18:28:54.060252436Z"
     description: Wiz admission controller
     digest: 80569b82f8635d0e7c04f5676e951cfe6774e4a0583cc08ddb28a99949398229
     name: wiz-admission-controller
@@ -2160,7 +2160,7 @@ entries:
     version: 2.3.1-alpha
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.610486089Z"
+    created: "2024-11-06T18:28:54.059232727Z"
     description: Wiz admission controller
     digest: 90ddba1abc2472e8c74f8616cbcb0bebc57c4d7e0d82872847a7a952487c78c0
     name: wiz-admission-controller
@@ -2170,7 +2170,7 @@ entries:
     version: 2.3.0-alpha
   - apiVersion: v2
     appVersion: "2"
-    created: "2024-11-06T18:27:29.60951363Z"
+    created: "2024-11-06T18:28:54.058325884Z"
     description: Wiz admission controller
     digest: 7a531c4a76daa0af2e40e870082b72fdb12cbb496225be2278d18d576df69e9e
     name: wiz-admission-controller
@@ -2180,7 +2180,7 @@ entries:
     version: 2.2.1
   - apiVersion: v2
     appVersion: "2"
-    created: "2024-11-06T18:27:29.608439231Z"
+    created: "2024-11-06T18:28:54.05745038Z"
     description: Wiz admission controller
     digest: 3663c3c319c35ef2f715d68f8e68544dfd6afd2dee5b950382ecfa14d5523239
     name: wiz-admission-controller
@@ -2190,7 +2190,7 @@ entries:
     version: 2.2.0
   - apiVersion: v2
     appVersion: 2.0.165188
-    created: "2024-11-06T18:27:29.607437207Z"
+    created: "2024-11-06T18:28:54.056498209Z"
     description: Wiz admission controller
     digest: f85cb24d7814028351fea8934af8e3b7ccb8068379ff8b18dafe4f4ca706f678
     name: wiz-admission-controller
@@ -2200,7 +2200,7 @@ entries:
     version: 2.1.0
   - apiVersion: v2
     appVersion: 2.0.165188
-    created: "2024-11-06T18:27:29.606483054Z"
+    created: "2024-11-06T18:28:54.055543048Z"
     description: Wiz admission controller
     digest: ab7f177bcbb6dad5b1823a88e5601504ce33aac345ec4294912f3aded30460ac
     name: wiz-admission-controller
@@ -2210,7 +2210,7 @@ entries:
     version: 2.0.1
   - apiVersion: v2
     appVersion: 2.0.162274
-    created: "2024-11-06T18:27:29.605558809Z"
+    created: "2024-11-06T18:28:54.05477663Z"
     description: Wiz admission controller
     digest: 10e2afacc417a36010632a67f9b991523c455f2891eef62681fd7dbde5b68a5c
     name: wiz-admission-controller
@@ -2220,7 +2220,7 @@ entries:
     version: 2.0.0
   - apiVersion: v2
     appVersion: 1.0.156226
-    created: "2024-11-06T18:27:29.604616721Z"
+    created: "2024-11-06T18:28:54.054075121Z"
     description: Wiz admission controller
     digest: d04b65512428c45fe9f8479a0968ec9d456083d068f839d460f4827da1caa6f4
     name: wiz-admission-controller
@@ -2230,7 +2230,7 @@ entries:
     version: 1.2.3
   - apiVersion: v2
     appVersion: 1.0.156226
-    created: "2024-11-06T18:27:29.603745201Z"
+    created: "2024-11-06T18:28:54.052677909Z"
     description: Wiz admission controller
     digest: 754c5a7b59ba275788b33d17737e7b4e2e6bc55d8ff757b5c32854914e3883cd
     name: wiz-admission-controller
@@ -2240,7 +2240,7 @@ entries:
     version: 1.2.2
   - apiVersion: v2
     appVersion: 1.0.156226
-    created: "2024-11-06T18:27:29.602836626Z"
+    created: "2024-11-06T18:28:54.052077712Z"
     description: Wiz admission controller
     digest: 190ee5e5fe24783e64b15da4af918bb8641f35536eea495ac7edc7da599d6de5
     name: wiz-admission-controller
@@ -2250,7 +2250,7 @@ entries:
     version: 1.2.1
   - apiVersion: v2
     appVersion: 1.0.155789
-    created: "2024-11-06T18:27:29.601978993Z"
+    created: "2024-11-06T18:28:54.051469687Z"
     description: Wiz admission controller
     digest: de8450abdafbbf7ef0e1e03fdb89e3b735c3b6a584dcdd9a3656d9ef939c0256
     name: wiz-admission-controller
@@ -2260,7 +2260,7 @@ entries:
     version: 1.2.0
   - apiVersion: v2
     appVersion: 1.0.155789
-    created: "2024-11-06T18:27:29.601153562Z"
+    created: "2024-11-06T18:28:54.050870827Z"
     description: Wiz admission controller
     digest: 90fac2a9bdc8f368139473ef471ea1105ca06a949b631bb70493cb1f1ddeb209
     name: wiz-admission-controller
@@ -2270,7 +2270,7 @@ entries:
     version: 1.1.0
   - apiVersion: v2
     appVersion: 1.0.155789
-    created: "2024-11-06T18:27:29.600191061Z"
+    created: "2024-11-06T18:28:54.050235097Z"
     description: Wiz admission controller
     digest: b2106f8d7f1ce4b3558d55dd80cc44c268040f8a1917357002686ae1498231e1
     name: wiz-admission-controller
@@ -2280,7 +2280,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: 1.0.152921
-    created: "2024-11-06T18:27:29.598759076Z"
+    created: "2024-11-06T18:28:54.049334528Z"
     description: Wiz admission controller
     digest: 31dcf6b7c71c62d1c2b4aaf2f82b1061eb2021d1d33e0c723d2d310e5a0c67c2
     name: wiz-admission-controller
@@ -2290,7 +2290,7 @@ entries:
     version: 1.0.0
   - apiVersion: v2
     appVersion: 0.2.119420
-    created: "2024-11-06T18:27:29.591030131Z"
+    created: "2024-11-06T18:28:54.04106366Z"
     description: Wiz admission controller
     digest: 6f254c4c1e6a77276e5c2e86f528e7e8687fe1394b448778775a5597d8019d9d
     name: wiz-admission-controller
@@ -2300,7 +2300,7 @@ entries:
     version: 0.0.12
   - apiVersion: v2
     appVersion: 0.2.119420
-    created: "2024-11-06T18:27:29.590206344Z"
+    created: "2024-11-06T18:28:54.040155603Z"
     description: Wiz admission controller
     digest: 024c6ee8fe5ef4bdfcb7a8beb7772e5984dae098b1d95d8029bbbcad4d594ea7
     name: wiz-admission-controller
@@ -2310,7 +2310,7 @@ entries:
     version: 0.0.11
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.589368837Z"
+    created: "2024-11-06T18:28:54.039173021Z"
     description: Wiz admission controller
     digest: c287f3ea15165aba452dd33b1c4384eefa0b47626af23fc057cc63421110925c
     name: wiz-admission-controller
@@ -2320,7 +2320,7 @@ entries:
     version: 0.0.10
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.597930088Z"
+    created: "2024-11-06T18:28:54.048435922Z"
     description: Wiz admission controller
     digest: 7ff61c87a9e452c81e31d25cf5eba710cf9c3c16aec116378e355564adaa6e57
     name: wiz-admission-controller
@@ -2330,7 +2330,7 @@ entries:
     version: 0.0.9
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.597058438Z"
+    created: "2024-11-06T18:28:54.047525714Z"
     description: Wiz admission controller
     digest: 0bb2daa35304ecdbe76ef6a66b3b14fbcfae10dcd54a68d12e58bf12889e75d5
     name: wiz-admission-controller
@@ -2340,7 +2340,7 @@ entries:
     version: 0.0.8
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.596183934Z"
+    created: "2024-11-06T18:28:54.046612298Z"
     description: Wiz admission controller
     digest: f05a21613ee03eee5107e522863b854ccdb79122d3b79a3d7a0009fc62688fd6
     name: wiz-admission-controller
@@ -2350,7 +2350,7 @@ entries:
     version: 0.0.7
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.595299074Z"
+    created: "2024-11-06T18:28:54.045676229Z"
     description: Wiz admission controller
     digest: 243f8cfb989c1421e388af644fc3e674c6be8e46e2a649af3d9b9d57a842ebad
     name: wiz-admission-controller
@@ -2360,7 +2360,7 @@ entries:
     version: 0.0.6
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.59439418Z"
+    created: "2024-11-06T18:28:54.04468022Z"
     description: Wiz admission controller
     digest: 5a436ed03c3d477f704f454d165d5896d4d7708525db0a5265adf10089c241e0
     name: wiz-admission-controller
@@ -2370,7 +2370,7 @@ entries:
     version: 0.0.5
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.593508166Z"
+    created: "2024-11-06T18:28:54.04376817Z"
     description: Wiz admission controller
     digest: ed402adbae7188da36ab3a3803246b8180e3a9009d05ff48039c2e5d1a1e9abd
     name: wiz-admission-controller
@@ -2380,7 +2380,7 @@ entries:
     version: 0.0.4
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.592626896Z"
+    created: "2024-11-06T18:28:54.042860662Z"
     description: Wiz admission controller
     digest: c8433839459cd9192e0a7d3d8980dd99b4f4a2ac843b704b30e0745fa6a77152
     name: wiz-admission-controller
@@ -2390,7 +2390,7 @@ entries:
     version: 0.0.3
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.591793668Z"
+    created: "2024-11-06T18:28:54.041960022Z"
     description: Wiz admission controller
     digest: b7d5c57a7e87836773fcede03d0d2960f2f5a3addc57015ce19e3710f12302a6
     name: wiz-admission-controller
@@ -2400,7 +2400,7 @@ entries:
     version: 0.0.2
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:29.588502135Z"
+    created: "2024-11-06T18:28:54.038252022Z"
     description: Wiz admission controller
     digest: a854fc8f7c08e0a500ce998c898e265426a14a1539eabdad760426c7789814f4
     name: wiz-admission-controller
@@ -2411,7 +2411,7 @@ entries:
   wiz-broker:
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.700180796Z"
+    created: "2024-11-06T18:28:54.166531705Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 8562a9479b1bec227ca7f51aad5f8f8a9b31e6396faf19c8b520a251f38519a2
     name: wiz-broker
@@ -2421,7 +2421,7 @@ entries:
     version: 2.2.0
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.699548359Z"
+    created: "2024-11-06T18:28:54.16554607Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 02864f8461005796b536f5bef0c30e188f308c30d11cfcbe6959a5d6bb153800
     name: wiz-broker
@@ -2431,7 +2431,7 @@ entries:
     version: 2.1.0
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.698980495Z"
+    created: "2024-11-06T18:28:54.164460752Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: ae11750e1e36bb317f0101015f9d9c9228a732f50aba7b4f166ddc4160c1de35
     name: wiz-broker
@@ -2441,7 +2441,7 @@ entries:
     version: 2.1.0-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.698383004Z"
+    created: "2024-11-06T18:28:54.163008019Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: ae0efefe17128e68e293de1900954751a95302640aa9c5a26f2d9b2246f4f16f
     name: wiz-broker
@@ -2451,7 +2451,7 @@ entries:
     version: 2.0.8-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.697793826Z"
+    created: "2024-11-06T18:28:54.162071984Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: b4d722c8d5768c844301e034b17cf4abf54eaa409677d05aff387417661b75a4
     name: wiz-broker
@@ -2461,7 +2461,7 @@ entries:
     version: 2.0.7-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.697221863Z"
+    created: "2024-11-06T18:28:54.161417603Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 1950a823f65ab18da688fa92a133cd6d2e37d485c8ff627181e7475736afabfe
     name: wiz-broker
@@ -2471,7 +2471,7 @@ entries:
     version: 2.0.6-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.696546251Z"
+    created: "2024-11-06T18:28:54.160841008Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 86d7a85adfca4ac6b62648e3cc4717fe6d6782313807e7e0fcd4a1c379a7741d
     name: wiz-broker
@@ -2481,7 +2481,7 @@ entries:
     version: 2.0.5-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.695254879Z"
+    created: "2024-11-06T18:28:54.160250692Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: c2ffd86ba23f771e9463f1cd0f51e01fe0006c7f0ff2706eb3051665ac1e316c
     name: wiz-broker
@@ -2491,7 +2491,7 @@ entries:
     version: 2.0.4-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.694684722Z"
+    created: "2024-11-06T18:28:54.159661723Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: bd32ce286390a4edbda95008e7302d5fd1ae57cd8b960c1c0b415acc793270fc
     name: wiz-broker
@@ -2501,7 +2501,7 @@ entries:
     version: 2.0.3-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.69412742Z"
+    created: "2024-11-06T18:28:54.159093787Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 3afd05bda16e3d4f6e192f7c3bdbde97778bbf7c07e96fc2d6a924884bf10aa3
     name: wiz-broker
@@ -2511,7 +2511,7 @@ entries:
     version: 2.0.2-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.693633784Z"
+    created: "2024-11-06T18:28:54.158572228Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 685efca89c19c1d87532cc7602e2b2fc89d528f541a2e408708429928954a9b2
     name: wiz-broker
@@ -2521,7 +2521,7 @@ entries:
     version: 2.0.1-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.693141403Z"
+    created: "2024-11-06T18:28:54.158062802Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: ad9901d86666a989dada9931c59c27d132263695c2724ebfd919336a77f13beb
     name: wiz-broker
@@ -2531,7 +2531,7 @@ entries:
     version: 2.0.0-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.68989167Z"
+    created: "2024-11-06T18:28:54.153845938Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 9cdc0ced61e67108ea76bb2f40b28e4309f19a6a97e0b94c1cb08856f73c5e0f
     name: wiz-broker
@@ -2541,7 +2541,7 @@ entries:
     version: 1.0.20
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.689021637Z"
+    created: "2024-11-06T18:28:54.152763706Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: d013f1a6efe1c252ed1af8c5ea5ebca99e4369ca8a3f44fe114ed9f64a3b4ebe
     name: wiz-broker
@@ -2551,7 +2551,7 @@ entries:
     version: 1.0.19
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.688494126Z"
+    created: "2024-11-06T18:28:54.151774104Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: ae472e15dc1de6051cec7e79ebf24f820ee88cef73456cba94ff605f08fb55d2
     name: wiz-broker
@@ -2561,7 +2561,7 @@ entries:
     version: 1.0.18
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.687994501Z"
+    created: "2024-11-06T18:28:54.151063044Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 806f3aa8f44ee6495e1d388081e4288da447096b8f0fd7beac5ba555a047eecc
     name: wiz-broker
@@ -2571,7 +2571,7 @@ entries:
     version: 1.0.17
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.68741901Z"
+    created: "2024-11-06T18:28:54.150521386Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: ee095ecba0cadf78ce504e6fb84b037b9dea1b8493510a5fafb4994d16297c9b
     name: wiz-broker
@@ -2581,7 +2581,7 @@ entries:
     version: 1.0.16
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.686179102Z"
+    created: "2024-11-06T18:28:54.149942233Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: da97694f457de7c7e096a15d24077dd98b0f8db2319a37967de7609e06120ea8
     name: wiz-broker
@@ -2591,7 +2591,7 @@ entries:
     version: 1.0.15
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.685644502Z"
+    created: "2024-11-06T18:28:54.149383401Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 7fd792baacfacbc924b8c1513827cdf107391c123c0f49dd56e3d5794c8f5cd2
     name: wiz-broker
@@ -2601,7 +2601,7 @@ entries:
     version: 1.0.14
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.685144949Z"
+    created: "2024-11-06T18:28:54.148874694Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 6558d21aed99872332d3f18feaa25f975689994014ddeada10016c5dce3944df
     name: wiz-broker
@@ -2611,7 +2611,7 @@ entries:
     version: 1.0.13
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.684641068Z"
+    created: "2024-11-06T18:28:54.148383267Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 88ebcf10645c9eabe0a5dfb3ecb7cd6525caba82561d9a0b700987cfff079f61
     name: wiz-broker
@@ -2621,7 +2621,7 @@ entries:
     version: 1.0.12
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.68419966Z"
+    created: "2024-11-06T18:28:54.147872408Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: c20eaef028128375fb1ada105fe59ad1023853de85e15a7cda91fb887a28efd1
     name: wiz-broker
@@ -2631,7 +2631,7 @@ entries:
     version: 1.0.11
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.683753086Z"
+    created: "2024-11-06T18:28:54.147307532Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 3f479c38229c3dc4966d30db280a71501fb7d94102327773cab0d041f4538b58
     name: wiz-broker
@@ -2641,7 +2641,7 @@ entries:
     version: 1.0.10
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.692609287Z"
+    created: "2024-11-06T18:28:54.157527944Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 1816770dc586ee0d1787648eca74177bf56b4cb11207da1b449c3e04f9306145
     name: wiz-broker
@@ -2651,7 +2651,7 @@ entries:
     version: 1.0.9
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.692203835Z"
+    created: "2024-11-06T18:28:54.156892645Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 13f7c154fbfafffd5abcd98fee2b5f5b2ceb9b5dd12e13f4c013ff028e2d3bc2
     name: wiz-broker
@@ -2661,7 +2661,7 @@ entries:
     version: 1.0.8
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.691815274Z"
+    created: "2024-11-06T18:28:54.156271736Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 652ce50042a9c442e599d6db0e847fc3ac304c6979b6df4e54095a02346c2944
     name: wiz-broker
@@ -2671,7 +2671,7 @@ entries:
     version: 1.0.7
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.691428796Z"
+    created: "2024-11-06T18:28:54.155817737Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 60c46386280dac4f6d70dbc642e343a55e1115e96d52cf91060e39777e696d90
     name: wiz-broker
@@ -2681,7 +2681,7 @@ entries:
     version: 1.0.6
   - apiVersion: v2
     appVersion: 2.0.162274
-    created: "2024-11-06T18:27:29.691050894Z"
+    created: "2024-11-06T18:28:54.155345501Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: feb1eec74e72a772bf70074dc93642c9afb81c036f59da374916187633f818d2
     name: wiz-broker
@@ -2691,7 +2691,7 @@ entries:
     version: 1.0.5
   - apiVersion: v2
     appVersion: 2.0.162274
-    created: "2024-11-06T18:27:29.690665435Z"
+    created: "2024-11-06T18:28:54.154857706Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: c187132d6f41a271eac8049517404f86e3d615f8bfc1a06f4403a955fc4479e5
     name: wiz-broker
@@ -2701,7 +2701,7 @@ entries:
     version: 1.0.4
   - apiVersion: v2
     appVersion: 2.0.162274
-    created: "2024-11-06T18:27:29.690272025Z"
+    created: "2024-11-06T18:28:54.154271399Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 59b1e011159b396b655d51ae905924fc435f2939abf04d383113c83402435690
     name: wiz-broker
@@ -2711,7 +2711,7 @@ entries:
     version: 1.0.3
   - apiVersion: v2
     appVersion: 2.0.162274
-    created: "2024-11-06T18:27:29.689406144Z"
+    created: "2024-11-06T18:28:54.153237793Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 53752fa098c53c4a196c7b464a8724f20f9452013f5ca3ea1256975763b11855
     name: wiz-broker
@@ -2721,7 +2721,7 @@ entries:
     version: 1.0.2
   - apiVersion: v2
     appVersion: 2.0.162274
-    created: "2024-11-06T18:27:29.683330763Z"
+    created: "2024-11-06T18:28:54.146740635Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 01fc68630a1c9c4694f5330e8dd60caf08a4a9173c368357be0787a8c1e31e1e
     name: wiz-broker
@@ -2731,7 +2731,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: 2.0.162274
-    created: "2024-11-06T18:27:29.682939248Z"
+    created: "2024-11-06T18:28:54.146311959Z"
     description: Wiz Broker for tunneling http traffic to Wiz backend
     digest: 6250d2e27fc6dd133ca616d6e89a4b365d545fe9c58e11618962e6777aaeaebd
     name: wiz-broker
@@ -2741,7 +2741,7 @@ entries:
     version: 1.0.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.682527766Z"
+    created: "2024-11-06T18:28:54.145855671Z"
     description: A Helm chart for Kubernetes
     digest: bd55ac3d649bca74b0326168b32c6f6cda974980750dd7afe7c9b5beba63f6f4
     name: wiz-broker
@@ -2751,7 +2751,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.682148779Z"
+    created: "2024-11-06T18:28:54.145388805Z"
     description: A Helm chart for Kubernetes
     digest: 87173006876e27d5456fd81205891da5a03f68d36c7cc2a7ef5f9330a405e7b7
     name: wiz-broker
@@ -2761,7 +2761,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.681792403Z"
+    created: "2024-11-06T18:28:54.144941019Z"
     description: A Helm chart for Kubernetes
     digest: d2328f10b15cfa9791c99742b94ca9141d655dbc7262934bb11fd7e24113e0d5
     name: wiz-broker
@@ -2771,7 +2771,7 @@ entries:
     version: 0.2.3
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.681468737Z"
+    created: "2024-11-06T18:28:54.144568338Z"
     description: A Helm chart for Kubernetes
     digest: 44809a7f36319539c35e0ae9682de6e1cfae9866404eddb44643b077d1f837fb
     name: wiz-broker
@@ -2781,7 +2781,7 @@ entries:
     version: 0.2.2
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.681169155Z"
+    created: "2024-11-06T18:28:54.144158209Z"
     description: A Helm chart for Kubernetes
     digest: ebcdf62833ed348c9ea459a3b297bb91a1f1ac4783c1c4fbfcde9b964d87afa0
     name: wiz-broker
@@ -2791,7 +2791,7 @@ entries:
     version: 0.2.1
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.680858997Z"
+    created: "2024-11-06T18:28:54.143773434Z"
     description: A Helm chart for Kubernetes
     digest: 7b27c6ff5b500b1e9c6b11a4df2a25093bfac04ccc49a47c3fa4824497286ee6
     name: wiz-broker
@@ -2801,7 +2801,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-11-06T18:27:29.680544239Z"
+    created: "2024-11-06T18:28:54.143488418Z"
     description: A Helm chart for Kubernetes
     digest: 9f1c07b12950105745587962a75f13adcd818400abe1ef9afe307c0317a9e943
     name: wiz-broker
@@ -2812,7 +2812,22 @@ entries:
   wiz-kubernetes-connector:
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.768817236Z"
+    created: "2024-11-06T18:28:54.257240825Z"
+    dependencies:
+    - condition: wiz-broker.enabled
+      name: wiz-broker
+      repository: https://wiz-sec.github.io/charts
+      version: '>=2.1.0'
+    description: A Helm chart for connecting Kubernetes clusters to Wiz
+    digest: 9a37fb4a80691c86c30f6fb24e821f16c50a3efb1d8dd9a6088a0b8260f812bd
+    name: wiz-kubernetes-connector
+    type: application
+    urls:
+    - https://wiz-sec.github.io/charts/wiz-kubernetes-connector-3.2.1.tgz
+    version: 3.2.1
+  - apiVersion: v2
+    appVersion: "2.5"
+    created: "2024-11-06T18:28:54.254705844Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2827,7 +2842,7 @@ entries:
     version: 3.2.0
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.766492419Z"
+    created: "2024-11-06T18:28:54.252255469Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2842,7 +2857,7 @@ entries:
     version: 3.1.1
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.765007662Z"
+    created: "2024-11-06T18:28:54.249794549Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2857,7 +2872,7 @@ entries:
     version: 3.1.0
   - apiVersion: v2
     appVersion: "2.5"
-    created: "2024-11-06T18:27:29.763535765Z"
+    created: "2024-11-06T18:28:54.247339765Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2872,7 +2887,7 @@ entries:
     version: 3.1.0-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.753774952Z"
+    created: "2024-11-06T18:28:54.231349419Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2887,7 +2902,7 @@ entries:
     version: 3.0.20-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.751114791Z"
+    created: "2024-11-06T18:28:54.22684771Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2902,7 +2917,7 @@ entries:
     version: 3.0.19-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.749607826Z"
+    created: "2024-11-06T18:28:54.224420331Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2917,7 +2932,7 @@ entries:
     version: 3.0.18-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.748167529Z"
+    created: "2024-11-06T18:28:54.221990903Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2932,7 +2947,7 @@ entries:
     version: 3.0.17-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.746712689Z"
+    created: "2024-11-06T18:28:54.21969332Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2947,7 +2962,7 @@ entries:
     version: 3.0.16-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.745214004Z"
+    created: "2024-11-06T18:28:54.218233308Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2962,7 +2977,7 @@ entries:
     version: 3.0.15-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.742963353Z"
+    created: "2024-11-06T18:28:54.216053858Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2977,7 +2992,7 @@ entries:
     version: 3.0.14-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.741593243Z"
+    created: "2024-11-06T18:28:54.214382123Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -2992,7 +3007,7 @@ entries:
     version: 3.0.13-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.74024329Z"
+    created: "2024-11-06T18:28:54.212662768Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3007,7 +3022,7 @@ entries:
     version: 3.0.11-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.762108089Z"
+    created: "2024-11-06T18:28:54.24495956Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3022,7 +3037,7 @@ entries:
     version: 3.0.9-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.760716181Z"
+    created: "2024-11-06T18:28:54.242774411Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3037,7 +3052,7 @@ entries:
     version: 3.0.7-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.759447438Z"
+    created: "2024-11-06T18:28:54.239736943Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3052,7 +3067,7 @@ entries:
     version: 3.0.6-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.75822718Z"
+    created: "2024-11-06T18:28:54.237671195Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3067,7 +3082,7 @@ entries:
     version: 3.0.5-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.757006311Z"
+    created: "2024-11-06T18:28:54.235582929Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3082,7 +3097,7 @@ entries:
     version: 3.0.4-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.755031111Z"
+    created: "2024-11-06T18:28:54.233496733Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3097,7 +3112,7 @@ entries:
     version: 3.0.3-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.75233161Z"
+    created: "2024-11-06T18:28:54.228916956Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3112,7 +3127,7 @@ entries:
     version: 3.0.2-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.738903149Z"
+    created: "2024-11-06T18:28:54.211114045Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3127,7 +3142,7 @@ entries:
     version: 3.0.1-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.737692387Z"
+    created: "2024-11-06T18:28:54.209799152Z"
     dependencies:
     - condition: wiz-broker.enabled
       name: wiz-broker
@@ -3142,7 +3157,7 @@ entries:
     version: 3.0.0-preview
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.736390008Z"
+    created: "2024-11-06T18:28:54.207684722Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 1f4c4d092dddab67609baac06a5d252a1ed58017ff761b3c0ff700385f05eccc
     name: wiz-kubernetes-connector
@@ -3152,7 +3167,7 @@ entries:
     version: 2.4.9
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.735662954Z"
+    created: "2024-11-06T18:28:54.20621372Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 56ba37f5e0533e7224e49ae807b7e46225f6fbbd93bafd2c1b25081876b1ca98
     name: wiz-kubernetes-connector
@@ -3162,7 +3177,7 @@ entries:
     version: 2.4.8
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.734920246Z"
+    created: "2024-11-06T18:28:54.204937262Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: f269bb146e77528d7ebbda5451abf09fd9bf39df188a217d5a4c9c5ec3770e6b
     name: wiz-kubernetes-connector
@@ -3172,7 +3187,7 @@ entries:
     version: 2.4.7
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.733450455Z"
+    created: "2024-11-06T18:28:54.203697821Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 9552ecd1769e5d6057f37135beef567da7fbd95fdcc0797394e42976aade5c1e
     name: wiz-kubernetes-connector
@@ -3182,7 +3197,7 @@ entries:
     version: 2.4.6
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.732631054Z"
+    created: "2024-11-06T18:28:54.202452902Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 3a78c4bcb359959e4cc616ae7c898e78ceaea1c41efe2b104a9f581c8894eaa0
     name: wiz-kubernetes-connector
@@ -3192,7 +3207,7 @@ entries:
     version: 2.4.5
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.731602686Z"
+    created: "2024-11-06T18:28:54.201177028Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 75072251783d7505916ce136d1126ecacaaf31ed2d81e3169efd243344df9cfc
     name: wiz-kubernetes-connector
@@ -3202,7 +3217,7 @@ entries:
     version: 2.4.4
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.730796914Z"
+    created: "2024-11-06T18:28:54.199944197Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 20ad4ee4d6120463748eeedd65d70a75869ae30e65ccba68618c058d637e726c
     name: wiz-kubernetes-connector
@@ -3212,7 +3227,7 @@ entries:
     version: 2.4.3
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.730041912Z"
+    created: "2024-11-06T18:28:54.198694618Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 0bf364b1f63ef06e109133dfcf9442f5bc62bf37bda6f763559e656481912cde
     name: wiz-kubernetes-connector
@@ -3222,7 +3237,7 @@ entries:
     version: 2.4.2
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.729266151Z"
+    created: "2024-11-06T18:28:54.197432831Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: d3ec5d7be470e9a894b3c58f6d899bdec2fe2d9b3a3ba4a213cbbe99bfff3e2d
     name: wiz-kubernetes-connector
@@ -3232,7 +3247,7 @@ entries:
     version: 2.4.1
   - apiVersion: v2
     appVersion: "2.4"
-    created: "2024-11-06T18:27:29.728516341Z"
+    created: "2024-11-06T18:28:54.196227329Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 74e9deba875ee852630fe65cfaccbdba22a1a66cfbdd82ce3dd00e33833e8447
     name: wiz-kubernetes-connector
@@ -3242,7 +3257,7 @@ entries:
     version: 2.4.0
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.727568686Z"
+    created: "2024-11-06T18:28:54.195010635Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 180239c4bdd5fe32c16fb0a7b71aac48578e62129ef986d7122cbd9913cec0b5
     name: wiz-kubernetes-connector
@@ -3252,7 +3267,7 @@ entries:
     version: 2.3.4
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.726718957Z"
+    created: "2024-11-06T18:28:54.193830779Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: e7e1f9c53628087dedd64215ceaa2e38fb29b7eef67ee767ee769884f1657b26
     name: wiz-kubernetes-connector
@@ -3262,7 +3277,7 @@ entries:
     version: 2.3.3
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.725891031Z"
+    created: "2024-11-06T18:28:54.192588807Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 8d6e392c2775b2711a770399d08a597ca5516ffdc458509cfa6da61b8ad23f88
     name: wiz-kubernetes-connector
@@ -3272,7 +3287,7 @@ entries:
     version: 2.3.2
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.724885802Z"
+    created: "2024-11-06T18:28:54.190543828Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 1ae0b5e4b5dac6d02c9783e3872f6d7dfc163e6478a426f60ff422366fb929a1
     name: wiz-kubernetes-connector
@@ -3282,7 +3297,7 @@ entries:
     version: 2.3.1
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.723946349Z"
+    created: "2024-11-06T18:28:54.189762324Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 6330a282534b0522dcf08de8162c380a72fe8a4d09a4a10a671925bf04cb1ce3
     name: wiz-kubernetes-connector
@@ -3292,7 +3307,7 @@ entries:
     version: 2.3.0
   - apiVersion: v2
     appVersion: "2.3"
-    created: "2024-11-06T18:27:29.713240301Z"
+    created: "2024-11-06T18:28:54.182415048Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: e19debb6165d76e0c76264c4a1cf48b2843dddd7835cc23cf3b9d39f183a3aab
     name: wiz-kubernetes-connector
@@ -3302,7 +3317,7 @@ entries:
     version: 2.2.12
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.712059973Z"
+    created: "2024-11-06T18:28:54.181649257Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: e043a571a6a5e7c95dffeba6c295bbd62a96657c9ed8b70a5121ec3febf0b1be
     name: wiz-kubernetes-connector
@@ -3312,7 +3327,7 @@ entries:
     version: 2.2.11
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.710893631Z"
+    created: "2024-11-06T18:28:54.180817985Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 4884dec7a3c51ef29e35506523a1ef1c5f74b2bac36455e51bc4c0ba89ed69ec
     name: wiz-kubernetes-connector
@@ -3322,7 +3337,7 @@ entries:
     version: 2.2.10
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.723234616Z"
+    created: "2024-11-06T18:28:54.188962477Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 46077eb697b76487c77d9ae486aac95342d453385956896bfd60bdc4ea7915af
     name: wiz-kubernetes-connector
@@ -3332,7 +3347,7 @@ entries:
     version: 2.2.9
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.722305915Z"
+    created: "2024-11-06T18:28:54.188195053Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 3f10d9a01f9ec603ea95e303334e1fb921998e3c1de07193314defce5397839a
     name: wiz-kubernetes-connector
@@ -3342,7 +3357,7 @@ entries:
     version: 2.2.8
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.720687162Z"
+    created: "2024-11-06T18:28:54.187380706Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 6ddcfc9dffd2552e73deeb304649026032046af7d45123bf0bef1b330720bb53
     name: wiz-kubernetes-connector
@@ -3352,7 +3367,7 @@ entries:
     version: 2.2.8-alpha
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.719490529Z"
+    created: "2024-11-06T18:28:54.186580875Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: dec1267a33b8d76cb1b7e95ba937b5125f41ff7948e8f42c2195ba06cbece884
     name: wiz-kubernetes-connector
@@ -3362,7 +3377,7 @@ entries:
     version: 2.2.7-alpha
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.718292003Z"
+    created: "2024-11-06T18:28:54.185747159Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: b91067cd781f681025b10532c9327f1aac3416e31fe7efa0e21bbdc6baf30f77
     name: wiz-kubernetes-connector
@@ -3372,7 +3387,7 @@ entries:
     version: 2.2.6
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.717289226Z"
+    created: "2024-11-06T18:28:54.185038709Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 53e95b7d8013155be0004a5fd2ddf95693c4916d05ef83b7fea01284f4e99e25
     name: wiz-kubernetes-connector
@@ -3382,7 +3397,7 @@ entries:
     version: 2.2.5
   - apiVersion: v2
     appVersion: "2.2"
-    created: "2024-11-06T18:27:29.716255761Z"
+    created: "2024-11-06T18:28:54.184369937Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: ba0c11b294a0e0f5b287ad2d2b267c9060fefb84172c8296b5926c09d470a2fa
     name: wiz-kubernetes-connector
@@ -3392,7 +3407,7 @@ entries:
     version: 2.2.4
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.715237629Z"
+    created: "2024-11-06T18:28:54.183714498Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: e518195c8221836d647290a6ab718fb317b5ef6dfe9934c004143a8364c3cd63
     name: wiz-kubernetes-connector
@@ -3402,7 +3417,7 @@ entries:
     version: 2.2.3
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.714223318Z"
+    created: "2024-11-06T18:28:54.183071854Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 3d048ee72f2be37953443b703dc1ae4c122043faeac66c3af640077082df5914
     name: wiz-kubernetes-connector
@@ -3412,7 +3427,7 @@ entries:
     version: 2.2.2
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.709717194Z"
+    created: "2024-11-06T18:28:54.179139081Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 0a6456af06cfff9d1edb8c82bb0d38d6403e77f5b7c14d7d88e1ef3535a2d7a7
     name: wiz-kubernetes-connector
@@ -3422,7 +3437,7 @@ entries:
     version: 2.2.1-alpha
   - apiVersion: v2
     appVersion: "2.1"
-    created: "2024-11-06T18:27:29.70874971Z"
+    created: "2024-11-06T18:28:54.17815967Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 35c06522827a5622c7a8676665e35425230b503aa0069e3111ae530a76170bb0
     name: wiz-kubernetes-connector
@@ -3432,7 +3447,7 @@ entries:
     version: 2.2.0-alpha
   - apiVersion: v2
     appVersion: "2"
-    created: "2024-11-06T18:27:29.707750553Z"
+    created: "2024-11-06T18:28:54.177151519Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 4934e05349b859745dcb7f91566f8bcc13758379fb0b6f6f2632d07b0cdb545e
     name: wiz-kubernetes-connector
@@ -3442,7 +3457,7 @@ entries:
     version: 2.1.1
   - apiVersion: v2
     appVersion: "2"
-    created: "2024-11-06T18:27:29.705924162Z"
+    created: "2024-11-06T18:28:54.176165424Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: f36dd5a172e42b99ac5621aead14e17819fa37dd33a257975e83ac9b9e1b5b86
     name: wiz-kubernetes-connector
@@ -3452,7 +3467,7 @@ entries:
     version: 2.1.0
   - apiVersion: v2
     appVersion: 2.0.162274
-    created: "2024-11-06T18:27:29.705271275Z"
+    created: "2024-11-06T18:28:54.175157175Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 6e15d42f2e7eeb39aca22293cc240c989ea0e3036a814e3ce3f6854bea873a60
     name: wiz-kubernetes-connector
@@ -3462,7 +3477,7 @@ entries:
     version: 2.0.1
   - apiVersion: v2
     appVersion: 2.0.162274
-    created: "2024-11-06T18:27:29.704671594Z"
+    created: "2024-11-06T18:28:54.174189411Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 16e45f0319e19e3da60ca50a4795c70008610d1bd8eec43c0108c79e335807ab
     name: wiz-kubernetes-connector
@@ -3472,7 +3487,7 @@ entries:
     version: 2.0.0
   - apiVersion: v2
     appVersion: 1.0.150465
-    created: "2024-11-06T18:27:29.704122676Z"
+    created: "2024-11-06T18:28:54.17319774Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 19105a4828c1e6248ecbe275e5528a4390e4a138a8f564dcb0ac61eda1294ab0
     name: wiz-kubernetes-connector
@@ -3482,7 +3497,7 @@ entries:
     version: 1.2.2
   - apiVersion: v2
     appVersion: 1.0.150465
-    created: "2024-11-06T18:27:29.703603283Z"
+    created: "2024-11-06T18:28:54.172314513Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 605acb4fe59f31e3c75640ed56a384322c562b7599d023f1184d38280b026b4c
     name: wiz-kubernetes-connector
@@ -3492,7 +3507,7 @@ entries:
     version: 1.2.1
   - apiVersion: v2
     appVersion: 1.0.150465
-    created: "2024-11-06T18:27:29.703095291Z"
+    created: "2024-11-06T18:28:54.171400781Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 04665a3485670cc6a31b23e98d882641e1a5feda5c9c79913ae7f1104ffac371
     name: wiz-kubernetes-connector
@@ -3502,7 +3517,7 @@ entries:
     version: 1.2.0
   - apiVersion: v2
     appVersion: 1.0.150465
-    created: "2024-11-06T18:27:29.702603721Z"
+    created: "2024-11-06T18:28:54.170579967Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 3775f42735a25d6bcd4351c1766971527328d3d997057599feec6dce31c8fcd2
     name: wiz-kubernetes-connector
@@ -3512,7 +3527,7 @@ entries:
     version: 1.1.0
   - apiVersion: v2
     appVersion: 1.0.150465
-    created: "2024-11-06T18:27:29.702122203Z"
+    created: "2024-11-06T18:28:54.169788289Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 885e06ca36197543bd6d86fceed8be659b9b1c45c2e4af1d446c94fd76e1a303
     name: wiz-kubernetes-connector
@@ -3522,7 +3537,7 @@ entries:
     version: 1.0.6
   - apiVersion: v2
     appVersion: 1.0.150465
-    created: "2024-11-06T18:27:29.701666987Z"
+    created: "2024-11-06T18:28:54.16898052Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 7f1c24bcced82c36ef5a6f82d3368230b7a70a9f6a846c5b494364421c99856c
     name: wiz-kubernetes-connector
@@ -3532,7 +3547,7 @@ entries:
     version: 1.0.5
   - apiVersion: v2
     appVersion: 1.0.135029
-    created: "2024-11-06T18:27:29.701212528Z"
+    created: "2024-11-06T18:28:54.168168378Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: 85563edc19195d3d09fb801a5413afd21716a16c94a16e9ec26adb3daa19f1cf
     name: wiz-kubernetes-connector
@@ -3542,7 +3557,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: 1.0.135029
-    created: "2024-11-06T18:27:29.700688278Z"
+    created: "2024-11-06T18:28:54.167334477Z"
     description: A Helm chart for connecting Kubernetes clusters to Wiz
     digest: f1b69b67d0d81bcc0178f9a752e3b131874dde434b0917bec7f4b3f0278e8f83
     name: wiz-kubernetes-connector
@@ -3552,7 +3567,7 @@ entries:
     version: 1.0.0
   wiz-kubernetes-integration:
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.258199591Z"
+    created: "2024-11-06T18:28:54.793820179Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3574,7 +3589,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.16.tgz
     version: 0.2.16
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.254035983Z"
+    created: "2024-11-06T18:28:54.788945289Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3596,7 +3611,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.15.tgz
     version: 0.2.15
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.249831679Z"
+    created: "2024-11-06T18:28:54.782109951Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3618,7 +3633,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.14.tgz
     version: 0.2.14
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.244287515Z"
+    created: "2024-11-06T18:28:54.774588731Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3640,7 +3655,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.13.tgz
     version: 0.2.13
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.239731853Z"
+    created: "2024-11-06T18:28:54.767121101Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3662,7 +3677,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.12.tgz
     version: 0.2.12
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.235500054Z"
+    created: "2024-11-06T18:28:54.760801545Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3684,7 +3699,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.11.tgz
     version: 0.2.11
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.23035094Z"
+    created: "2024-11-06T18:28:54.756056092Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3706,7 +3721,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.10.tgz
     version: 0.2.10
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.301713384Z"
+    created: "2024-11-06T18:28:54.848640451Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3728,7 +3743,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.9.tgz
     version: 0.2.9
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.297000392Z"
+    created: "2024-11-06T18:28:54.841402049Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3750,7 +3765,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.8.tgz
     version: 0.2.8
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.292472497Z"
+    created: "2024-11-06T18:28:54.833465984Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3772,7 +3787,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.7.tgz
     version: 0.2.7
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.287600586Z"
+    created: "2024-11-06T18:28:54.826504872Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3794,7 +3809,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.6.tgz
     version: 0.2.6
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.283414312Z"
+    created: "2024-11-06T18:28:54.820627389Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3816,7 +3831,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.5.tgz
     version: 0.2.5
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.279243766Z"
+    created: "2024-11-06T18:28:54.815453723Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3838,7 +3853,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.4.tgz
     version: 0.2.4
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.274106636Z"
+    created: "2024-11-06T18:28:54.810399108Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3860,7 +3875,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.3.tgz
     version: 0.2.3
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.269442437Z"
+    created: "2024-11-06T18:28:54.805010443Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3882,7 +3897,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.2.tgz
     version: 0.2.2
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.263412324Z"
+    created: "2024-11-06T18:28:54.798727086Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3904,7 +3919,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.2-preview.tgz
     version: 0.2.2-preview
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.22602065Z"
+    created: "2024-11-06T18:28:54.751537861Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3926,7 +3941,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.1-preview.tgz
     version: 0.2.1-preview
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.220900191Z"
+    created: "2024-11-06T18:28:54.746052386Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3948,7 +3963,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.2.0-preview.tgz
     version: 0.2.0-preview
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.903047255Z"
+    created: "2024-11-06T18:28:54.427412867Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3970,7 +3985,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.136.tgz
     version: 0.1.136
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.897877112Z"
+    created: "2024-11-06T18:28:54.421852168Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -3992,7 +4007,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.135.tgz
     version: 0.1.135
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.894329282Z"
+    created: "2024-11-06T18:28:54.417355358Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4014,7 +4029,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.134.tgz
     version: 0.1.134
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.890706868Z"
+    created: "2024-11-06T18:28:54.411831319Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4036,7 +4051,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.133.tgz
     version: 0.1.133
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.886268183Z"
+    created: "2024-11-06T18:28:54.405852106Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4058,7 +4073,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.131.tgz
     version: 0.1.131
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.881940724Z"
+    created: "2024-11-06T18:28:54.399779166Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4080,7 +4095,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.130.tgz
     version: 0.1.130
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.875794929Z"
+    created: "2024-11-06T18:28:54.392993086Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4102,7 +4117,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.128.tgz
     version: 0.1.128
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.869514837Z"
+    created: "2024-11-06T18:28:54.38737046Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4124,7 +4139,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.127.tgz
     version: 0.1.127
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.865318515Z"
+    created: "2024-11-06T18:28:54.382941645Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4146,7 +4161,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.126.tgz
     version: 0.1.126
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.861842937Z"
+    created: "2024-11-06T18:28:54.377961628Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4168,7 +4183,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.125.tgz
     version: 0.1.125
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.858387701Z"
+    created: "2024-11-06T18:28:54.372427842Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4190,7 +4205,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.124.tgz
     version: 0.1.124
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.854214489Z"
+    created: "2024-11-06T18:28:54.368454Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4212,7 +4227,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.123.tgz
     version: 0.1.123
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.850737815Z"
+    created: "2024-11-06T18:28:54.364864961Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4234,7 +4249,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.122.tgz
     version: 0.1.122
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.847343296Z"
+    created: "2024-11-06T18:28:54.360557189Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4256,7 +4271,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.121.tgz
     version: 0.1.121
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.84300904Z"
+    created: "2024-11-06T18:28:54.356452497Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4278,7 +4293,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.120.tgz
     version: 0.1.120
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.839407452Z"
+    created: "2024-11-06T18:28:54.350991013Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4300,7 +4315,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.119.tgz
     version: 0.1.119
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.835875742Z"
+    created: "2024-11-06T18:28:54.345522352Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4322,7 +4337,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.118.tgz
     version: 0.1.118
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.832271514Z"
+    created: "2024-11-06T18:28:54.340294399Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4344,7 +4359,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.117.tgz
     version: 0.1.117
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.828026718Z"
+    created: "2024-11-06T18:28:54.336121641Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4366,7 +4381,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.116.tgz
     version: 0.1.116
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.824687777Z"
+    created: "2024-11-06T18:28:54.330318743Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4388,7 +4403,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.115.tgz
     version: 0.1.115
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.821408097Z"
+    created: "2024-11-06T18:28:54.324164751Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4410,7 +4425,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.114.tgz
     version: 0.1.114
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.817224502Z"
+    created: "2024-11-06T18:28:54.320301802Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4432,7 +4447,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.113.tgz
     version: 0.1.113
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.811404093Z"
+    created: "2024-11-06T18:28:54.316748441Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4454,7 +4469,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.112.tgz
     version: 0.1.112
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.807676144Z"
+    created: "2024-11-06T18:28:54.312907338Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4476,7 +4491,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.111.tgz
     version: 0.1.111
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.803464697Z"
+    created: "2024-11-06T18:28:54.307340339Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4498,7 +4513,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.110.tgz
     version: 0.1.110
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.800008571Z"
+    created: "2024-11-06T18:28:54.302294849Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4520,7 +4535,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.109.tgz
     version: 0.1.109
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.796593026Z"
+    created: "2024-11-06T18:28:54.297234698Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4542,7 +4557,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.108.tgz
     version: 0.1.108
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.793306226Z"
+    created: "2024-11-06T18:28:54.290519588Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4564,7 +4579,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.107.tgz
     version: 0.1.107
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.789175605Z"
+    created: "2024-11-06T18:28:54.284755694Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4586,7 +4601,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.106.tgz
     version: 0.1.106
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.785871586Z"
+    created: "2024-11-06T18:28:54.279208888Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4608,7 +4623,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.104.tgz
     version: 0.1.104
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.782649239Z"
+    created: "2024-11-06T18:28:54.273089958Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4630,7 +4645,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.103.tgz
     version: 0.1.103
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.778559395Z"
+    created: "2024-11-06T18:28:54.269139837Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4652,7 +4667,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.102.tgz
     version: 0.1.102
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.775310354Z"
+    created: "2024-11-06T18:28:54.265526994Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4674,7 +4689,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.101.tgz
     version: 0.1.101
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.772060063Z"
+    created: "2024-11-06T18:28:54.261884309Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4696,7 +4711,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.100.tgz
     version: 0.1.100
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.216319084Z"
+    created: "2024-11-06T18:28:54.741165597Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4718,7 +4733,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.99.tgz
     version: 0.1.99
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.212908726Z"
+    created: "2024-11-06T18:28:54.73691478Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4740,7 +4755,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.98.tgz
     version: 0.1.98
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.209442379Z"
+    created: "2024-11-06T18:28:54.732463034Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4762,7 +4777,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.97.tgz
     version: 0.1.97
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.204528877Z"
+    created: "2024-11-06T18:28:54.729115257Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4784,7 +4799,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.96.tgz
     version: 0.1.96
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.19984235Z"
+    created: "2024-11-06T18:28:54.725795544Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4806,7 +4821,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.95.tgz
     version: 0.1.95
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.195924367Z"
+    created: "2024-11-06T18:28:54.72164055Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4828,7 +4843,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.94.tgz
     version: 0.1.94
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.191207804Z"
+    created: "2024-11-06T18:28:54.716585398Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4850,7 +4865,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.93.tgz
     version: 0.1.93
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.187931985Z"
+    created: "2024-11-06T18:28:54.711552775Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4872,7 +4887,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.92.tgz
     version: 0.1.92
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.184638614Z"
+    created: "2024-11-06T18:28:54.706533477Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4894,7 +4909,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.91.tgz
     version: 0.1.91
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.180541213Z"
+    created: "2024-11-06T18:28:54.700923217Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4916,7 +4931,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.90.tgz
     version: 0.1.90
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.175458993Z"
+    created: "2024-11-06T18:28:54.697757412Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4938,7 +4953,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.89.tgz
     version: 0.1.89
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.172267471Z"
+    created: "2024-11-06T18:28:54.69455972Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4960,7 +4975,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.88.tgz
     version: 0.1.88
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.16912095Z"
+    created: "2024-11-06T18:28:54.691320018Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -4982,7 +4997,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.87.tgz
     version: 0.1.87
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.165864648Z"
+    created: "2024-11-06T18:28:54.687320745Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5004,7 +5019,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.86.tgz
     version: 0.1.86
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.161968226Z"
+    created: "2024-11-06T18:28:54.684123429Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5026,7 +5041,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.85.tgz
     version: 0.1.85
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.158975545Z"
+    created: "2024-11-06T18:28:54.68010799Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5048,7 +5063,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.84.tgz
     version: 0.1.84
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.155066957Z"
+    created: "2024-11-06T18:28:54.675041372Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5070,7 +5085,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.83.tgz
     version: 0.1.83
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.150248034Z"
+    created: "2024-11-06T18:28:54.669299634Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5092,7 +5107,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.82.tgz
     version: 0.1.82
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.146497364Z"
+    created: "2024-11-06T18:28:54.664496465Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5114,7 +5129,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.81.tgz
     version: 0.1.81
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.143604581Z"
+    created: "2024-11-06T18:28:54.659635688Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5136,7 +5151,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.80.tgz
     version: 0.1.80
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.140654792Z"
+    created: "2024-11-06T18:28:54.654665492Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5158,7 +5173,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.79.tgz
     version: 0.1.79
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.137925275Z"
+    created: "2024-11-06T18:28:54.649233094Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5180,7 +5195,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.78.tgz
     version: 0.1.78
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.135111643Z"
+    created: "2024-11-06T18:28:54.646172236Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5202,7 +5217,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.77.tgz
     version: 0.1.77
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.129964406Z"
+    created: "2024-11-06T18:28:54.643128364Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5224,7 +5239,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.76.tgz
     version: 0.1.76
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.125336507Z"
+    created: "2024-11-06T18:28:54.640016284Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5246,7 +5261,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.75.tgz
     version: 0.1.75
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.120647508Z"
+    created: "2024-11-06T18:28:54.636598171Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5268,7 +5283,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.74.tgz
     version: 0.1.74
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.11586977Z"
+    created: "2024-11-06T18:28:54.632954824Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5290,7 +5305,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.73.tgz
     version: 0.1.73
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.110300309Z"
+    created: "2024-11-06T18:28:54.630008819Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5312,7 +5327,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.72.tgz
     version: 0.1.72
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.105051006Z"
+    created: "2024-11-06T18:28:54.626904311Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5334,7 +5349,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.71.tgz
     version: 0.1.71
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.100361381Z"
+    created: "2024-11-06T18:28:54.623022145Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5356,7 +5371,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.70.tgz
     version: 0.1.70
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.095706595Z"
+    created: "2024-11-06T18:28:54.620194947Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5378,7 +5393,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.69.tgz
     version: 0.1.69
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.090782892Z"
+    created: "2024-11-06T18:28:54.617385945Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5400,7 +5415,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.68.tgz
     version: 0.1.68
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.087882836Z"
+    created: "2024-11-06T18:28:54.614586049Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5422,7 +5437,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.67.tgz
     version: 0.1.67
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.084918678Z"
+    created: "2024-11-06T18:28:54.611698068Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5444,7 +5459,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.66.tgz
     version: 0.1.66
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.082026395Z"
+    created: "2024-11-06T18:28:54.608282936Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5466,7 +5481,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.65.tgz
     version: 0.1.65
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.078015052Z"
+    created: "2024-11-06T18:28:54.605509906Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5488,7 +5503,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.64.tgz
     version: 0.1.64
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.073262093Z"
+    created: "2024-11-06T18:28:54.602723405Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5510,7 +5525,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.63.tgz
     version: 0.1.63
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.068472421Z"
+    created: "2024-11-06T18:28:54.599934482Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5532,7 +5547,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.62.tgz
     version: 0.1.62
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.063794175Z"
+    created: "2024-11-06T18:28:54.59589953Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5554,7 +5569,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.61.tgz
     version: 0.1.61
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.059061202Z"
+    created: "2024-11-06T18:28:54.593083793Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5576,7 +5591,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.60.tgz
     version: 0.1.60
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.054642994Z"
+    created: "2024-11-06T18:28:54.590329807Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5598,7 +5613,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.59.tgz
     version: 0.1.59
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.05180595Z"
+    created: "2024-11-06T18:28:54.587575529Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5620,7 +5635,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.58.tgz
     version: 0.1.58
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.048955813Z"
+    created: "2024-11-06T18:28:54.583166068Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5642,7 +5657,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.57.tgz
     version: 0.1.57
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.045923951Z"
+    created: "2024-11-06T18:28:54.57996528Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5664,7 +5679,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.56.tgz
     version: 0.1.56
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.042176207Z"
+    created: "2024-11-06T18:28:54.577182581Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5686,7 +5701,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.55.tgz
     version: 0.1.55
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.039513313Z"
+    created: "2024-11-06T18:28:54.574393244Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5708,7 +5723,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.54.tgz
     version: 0.1.54
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.036820052Z"
+    created: "2024-11-06T18:28:54.571534083Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5730,7 +5745,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.53.tgz
     version: 0.1.53
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.033596963Z"
+    created: "2024-11-06T18:28:54.567794998Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5752,7 +5767,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.52.tgz
     version: 0.1.52
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.029258029Z"
+    created: "2024-11-06T18:28:54.563215205Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5774,7 +5789,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.51.tgz
     version: 0.1.51
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.026452127Z"
+    created: "2024-11-06T18:28:54.558671344Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5796,7 +5811,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.50.tgz
     version: 0.1.50
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.023761066Z"
+    created: "2024-11-06T18:28:54.554110541Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5818,7 +5833,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.49.tgz
     version: 0.1.49
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.020544779Z"
+    created: "2024-11-06T18:28:54.548602122Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5840,7 +5855,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.48.tgz
     version: 0.1.48
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.017473901Z"
+    created: "2024-11-06T18:28:54.54396361Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5862,7 +5877,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.47.tgz
     version: 0.1.47
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.012315079Z"
+    created: "2024-11-06T18:28:54.539350918Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5884,7 +5899,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.46.tgz
     version: 0.1.46
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.007629979Z"
+    created: "2024-11-06T18:28:54.534789166Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5906,7 +5921,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.45.tgz
     version: 0.1.45
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.002971563Z"
+    created: "2024-11-06T18:28:54.530224994Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5928,7 +5943,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.44.tgz
     version: 0.1.44
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.998227922Z"
+    created: "2024-11-06T18:28:54.525247565Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5950,7 +5965,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.43.tgz
     version: 0.1.43
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.992749537Z"
+    created: "2024-11-06T18:28:54.522307246Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5972,7 +5987,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.42.tgz
     version: 0.1.42
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.988115001Z"
+    created: "2024-11-06T18:28:54.51864637Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -5994,7 +6009,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.41.tgz
     version: 0.1.41
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.98350724Z"
+    created: "2024-11-06T18:28:54.515540571Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6016,7 +6031,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.40.tgz
     version: 0.1.40
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.979042821Z"
+    created: "2024-11-06T18:28:54.511943797Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6038,7 +6053,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.39.tgz
     version: 0.1.39
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.974527154Z"
+    created: "2024-11-06T18:28:54.50922452Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6060,7 +6075,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.38.tgz
     version: 0.1.38
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.971130345Z"
+    created: "2024-11-06T18:28:54.506509337Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6082,7 +6097,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.37.tgz
     version: 0.1.37
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.968469387Z"
+    created: "2024-11-06T18:28:54.502595049Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6104,7 +6119,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.36.tgz
     version: 0.1.36
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.96500502Z"
+    created: "2024-11-06T18:28:54.497874266Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6126,7 +6141,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.35.tgz
     version: 0.1.35
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.960888102Z"
+    created: "2024-11-06T18:28:54.493525546Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6148,7 +6163,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.34.tgz
     version: 0.1.34
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.956573447Z"
+    created: "2024-11-06T18:28:54.490727503Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6170,7 +6185,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.33.tgz
     version: 0.1.33
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.954004899Z"
+    created: "2024-11-06T18:28:54.487615389Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6192,7 +6207,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.32.tgz
     version: 0.1.32
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.95137463Z"
+    created: "2024-11-06T18:28:54.483843314Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6214,7 +6229,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.31.tgz
     version: 0.1.31
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.948910611Z"
+    created: "2024-11-06T18:28:54.479191528Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6236,7 +6251,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.30.tgz
     version: 0.1.30
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.946234603Z"
+    created: "2024-11-06T18:28:54.475068599Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6258,7 +6273,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.29.tgz
     version: 0.1.29
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.942630598Z"
+    created: "2024-11-06T18:28:54.470873536Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6280,7 +6295,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.28.tgz
     version: 0.1.28
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.940042849Z"
+    created: "2024-11-06T18:28:54.466611794Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6302,7 +6317,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.27.tgz
     version: 0.1.27
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.937355691Z"
+    created: "2024-11-06T18:28:54.462522408Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6324,7 +6339,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.26.tgz
     version: 0.1.26
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.934684233Z"
+    created: "2024-11-06T18:28:54.458429822Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6346,7 +6361,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.25.tgz
     version: 0.1.25
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.931925828Z"
+    created: "2024-11-06T18:28:54.45590023Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6368,7 +6383,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.24.tgz
     version: 0.1.24
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.928575567Z"
+    created: "2024-11-06T18:28:54.453339873Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6390,7 +6405,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.23.tgz
     version: 0.1.23
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.925981238Z"
+    created: "2024-11-06T18:28:54.450763822Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6412,7 +6427,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.22.tgz
     version: 0.1.22
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.923323688Z"
+    created: "2024-11-06T18:28:54.448193702Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6434,7 +6449,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.21.tgz
     version: 0.1.21
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.920631148Z"
+    created: "2024-11-06T18:28:54.444743807Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6456,7 +6471,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.20.tgz
     version: 0.1.20
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.917039442Z"
+    created: "2024-11-06T18:28:54.441825065Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6478,7 +6493,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.19.tgz
     version: 0.1.19
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.912915572Z"
+    created: "2024-11-06T18:28:54.438584252Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6500,7 +6515,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.18.tgz
     version: 0.1.18
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.908821674Z"
+    created: "2024-11-06T18:28:54.435153347Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6522,7 +6537,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-kubernetes-integration-0.1.17.tgz
     version: 0.1.17
   - apiVersion: v2
-    created: "2024-11-06T18:27:29.906436748Z"
+    created: "2024-11-06T18:28:54.431813572Z"
     dependencies:
     - condition: wiz-kubernetes-connector.enabled
       name: wiz-kubernetes-connector
@@ -6546,7 +6561,7 @@ entries:
   wiz-outpost-configuration:
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.313017696Z"
+    created: "2024-11-06T18:28:54.859414862Z"
     description: A Helm chart for Kubernetes
     digest: b9de0dad8017e8d424e10e41078ad12a1c9e5fd8ba15bee05ecb9921e2a4be58
     name: wiz-outpost-configuration
@@ -6556,7 +6571,7 @@ entries:
     version: 2024.11.05
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.312536017Z"
+    created: "2024-11-06T18:28:54.858979806Z"
     description: A Helm chart for Kubernetes
     digest: 81781328d1b0240e34b3771f9668decc7d1c795825bce4b1b11098936ddc85e3
     name: wiz-outpost-configuration
@@ -6566,7 +6581,7 @@ entries:
     version: 2024.11.05-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.312085983Z"
+    created: "2024-11-06T18:28:54.858539265Z"
     description: A Helm chart for Kubernetes
     digest: ededd6ac0f70b2320a0b7fd7fe21fbc2575d2b17d1796f117a8f6043919165cd
     name: wiz-outpost-configuration
@@ -6576,7 +6591,7 @@ entries:
     version: 2024.10.30
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.311671828Z"
+    created: "2024-11-06T18:28:54.858120853Z"
     description: A Helm chart for Kubernetes
     digest: bb39b4413c698e56b9f321eefefc36e6af997c1338c3d08b23f44beedc50c835
     name: wiz-outpost-configuration
@@ -6586,7 +6601,7 @@ entries:
     version: 2024.10.30-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.311246236Z"
+    created: "2024-11-06T18:28:54.857747506Z"
     description: A Helm chart for Kubernetes
     digest: cc74f0f9c69e40b23cd0a1434e6f465f876f3b5e2b57c014cbafa43cfdc91ec1
     name: wiz-outpost-configuration
@@ -6596,7 +6611,7 @@ entries:
     version: 2024.10.22
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.310807244Z"
+    created: "2024-11-06T18:28:54.857427413Z"
     description: A Helm chart for Kubernetes
     digest: 7840cebeab591ecfefd6dbb5ac1d6a82cc9fbc29961789f0c50e3d170607329f
     name: wiz-outpost-configuration
@@ -6606,7 +6621,7 @@ entries:
     version: 2024.10.22-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.310355109Z"
+    created: "2024-11-06T18:28:54.857160562Z"
     description: A Helm chart for Kubernetes
     digest: 544c9dc949ae8120e70d46eb25be5f882f183fd6e5e000194972bd2713e02ea9
     name: wiz-outpost-configuration
@@ -6616,7 +6631,7 @@ entries:
     version: 2024.10.21-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.309917251Z"
+    created: "2024-11-06T18:28:54.856890106Z"
     description: A Helm chart for Kubernetes
     digest: 88f05028b59e8e29ac5bc1f698899a7adfcec4959472aadc8ec8123094cadbcc
     name: wiz-outpost-configuration
@@ -6626,7 +6641,7 @@ entries:
     version: 2024.10.20-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.309492722Z"
+    created: "2024-11-06T18:28:54.8566105Z"
     description: A Helm chart for Kubernetes
     digest: 6a23e6dfad55a7b6ad916470625e94ba6efc1276015a050216e620c1a449f939
     name: wiz-outpost-configuration
@@ -6636,7 +6651,7 @@ entries:
     version: 2024.10.08
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.309074624Z"
+    created: "2024-11-06T18:28:54.856255629Z"
     description: A Helm chart for Kubernetes
     digest: 8142ae39df64e5715d8087bc780ea3de4441890d7f1744d9843c2bf07ade870f
     name: wiz-outpost-configuration
@@ -6646,7 +6661,7 @@ entries:
     version: 2024.10.08-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.308605618Z"
+    created: "2024-11-06T18:28:54.855855792Z"
     description: A Helm chart for Kubernetes
     digest: 5e5a6d201841f3a6fd50050f676c6098cbacd2cf170fd6eb1fdfd75737532d24
     name: wiz-outpost-configuration
@@ -6656,7 +6671,7 @@ entries:
     version: 2024.09.12
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.308172238Z"
+    created: "2024-11-06T18:28:54.855359459Z"
     description: A Helm chart for Kubernetes
     digest: 85e0350314888c21f73389d968d0d419bc4265b5b9f98df5f79d83340bf1ef9f
     name: wiz-outpost-configuration
@@ -6666,7 +6681,7 @@ entries:
     version: 2024.09.12-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.307737359Z"
+    created: "2024-11-06T18:28:54.854359174Z"
     description: A Helm chart for Kubernetes
     digest: b4248bbf75e7f10858f6e7f19d7a45fb5b6365dd04b058b07a16329ddc883ae4
     name: wiz-outpost-configuration
@@ -6676,7 +6691,7 @@ entries:
     version: 2024.09.10-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.307314157Z"
+    created: "2024-11-06T18:28:54.853565878Z"
     description: A Helm chart for Kubernetes
     digest: e655bb37b61eb85e2754fc6ebb010156ca3010ed6dce5d114c5ec00a47b8f63b
     name: wiz-outpost-configuration
@@ -6686,7 +6701,7 @@ entries:
     version: 2024.07.16
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.306894925Z"
+    created: "2024-11-06T18:28:54.853111849Z"
     description: A Helm chart for Kubernetes
     digest: 25f05bb7b4f3e62c7997d46b2aeb6c4b306283719cd30807f3ccbfbfe7569914
     name: wiz-outpost-configuration
@@ -6696,7 +6711,7 @@ entries:
     version: 2024.07.16-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.306475994Z"
+    created: "2024-11-06T18:28:54.852678969Z"
     description: A Helm chart for Kubernetes
     digest: 5e0350c309883310bcb2c22e74ed822a3602320399fa9b135f4bdaaa1e05ab0b
     name: wiz-outpost-configuration
@@ -6706,7 +6721,7 @@ entries:
     version: 2024.07.02
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.306033236Z"
+    created: "2024-11-06T18:28:54.852239804Z"
     description: A Helm chart for Kubernetes
     digest: 4ae8ed3dd054ea5a1d0bb541eb630de19b6db798c0947647484e8b57601dfc7f
     name: wiz-outpost-configuration
@@ -6716,7 +6731,7 @@ entries:
     version: 2024.07.02-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.305605257Z"
+    created: "2024-11-06T18:28:54.851794406Z"
     description: A Helm chart for Kubernetes
     digest: e3392fa27ff46e34cf3ee6ed6435e9e6e5c43ebc49c1268e30287be22842c406
     name: wiz-outpost-configuration
@@ -6726,7 +6741,7 @@ entries:
     version: 2024.06.30-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.30516433Z"
+    created: "2024-11-06T18:28:54.851327526Z"
     description: A Helm chart for Kubernetes
     digest: 3092433331b791b0b3d125d4d4dd203efe11fd1a303ae3bb1e2842efb53e14c4
     name: wiz-outpost-configuration
@@ -6736,7 +6751,7 @@ entries:
     version: 2024.05.26-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.304692728Z"
+    created: "2024-11-06T18:28:54.850888662Z"
     description: A Helm chart for Kubernetes
     digest: 451bc57a15171633285fbe3d5273562509c2d1b2c78534ded9514bbcecf9dc95
     name: wiz-outpost-configuration
@@ -6746,7 +6761,7 @@ entries:
     version: 2024.05.21
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.304247367Z"
+    created: "2024-11-06T18:28:54.850443306Z"
     description: A Helm chart for Kubernetes
     digest: 14e05f9f156fca4d3303f78d65803d45081d9d077f416f3773a636bd243e19b4
     name: wiz-outpost-configuration
@@ -6756,7 +6771,7 @@ entries:
     version: 2024.05.21-rc
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.303781143Z"
+    created: "2024-11-06T18:28:54.850041773Z"
     description: A Helm chart for Kubernetes
     digest: 106cd13bfd1530b86955337804e572077cfb862b7d7d71316d6a546e8920c471
     name: wiz-outpost-configuration
@@ -6766,7 +6781,7 @@ entries:
     version: 2024.05.09
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.303370645Z"
+    created: "2024-11-06T18:28:54.849657901Z"
     description: A Helm chart for Kubernetes
     digest: 8fdd0e2c14bd271cd504bd9b3d10217f5e195451be4b692852c8cffa6bab8356
     name: wiz-outpost-configuration
@@ -6776,7 +6791,7 @@ entries:
     version: 2024.05.06
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.30297741Z"
+    created: "2024-11-06T18:28:54.849284417Z"
     description: A Helm chart for Kubernetes
     digest: 80d569e79fa05e74267a3938a1476fbbe05cee08b08405f6aa1c047f9484624b
     name: wiz-outpost-configuration
@@ -6786,7 +6801,7 @@ entries:
     version: 2024.03.04
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2024-11-06T18:27:30.301990658Z"
+    created: "2024-11-06T18:28:54.848972405Z"
     description: A Helm chart for Kubernetes
     digest: 23ade0965276779418725728ef51201c342894e9875194434a31114e7fbf8d4a
     name: wiz-outpost-configuration
@@ -6797,7 +6812,7 @@ entries:
   wiz-outpost-lite:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2024-11-06T18:27:30.31468403Z"
+    created: "2024-11-06T18:28:54.860696632Z"
     description: A Helm chart for Kubernetes
     digest: 7990cbf7c81bf2b420acd0f401315c0a44e153ffcb082ae2ebac1f17be4bcd58
     name: wiz-outpost-lite
@@ -6807,7 +6822,7 @@ entries:
     version: 0.1.20241028
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2024-11-06T18:27:30.314138421Z"
+    created: "2024-11-06T18:28:54.860355074Z"
     description: A Helm chart for Kubernetes
     digest: a3748db68b87d7ab4bddf7ff2be4fe1c4fe772098dee1b470af7a79a75b4b589
     name: wiz-outpost-lite
@@ -6817,7 +6832,7 @@ entries:
     version: 0.1.20241027
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2024-11-06T18:27:30.313561466Z"
+    created: "2024-11-06T18:28:54.859924109Z"
     description: A Helm chart for Kubernetes
     digest: 8c6c78d342dd8361e729bd414d93b5a0be650a3564c0522302cd6e63e28b9e80
     name: wiz-outpost-lite
@@ -6828,7 +6843,7 @@ entries:
   wiz-sensor:
   - apiVersion: v2
     appVersion: 1.0.4708
-    created: "2024-11-06T18:27:30.350268619Z"
+    created: "2024-11-06T18:28:54.898169754Z"
     description: Wiz Sensor helm chart
     digest: 2fbd1511a42af7b51b0da968872670e29e76192385549d2c4dbd2e04c3ed36d5
     home: https://www.wiz.io/
@@ -6839,7 +6854,7 @@ entries:
     version: 1.0.4760
   - apiVersion: v2
     appVersion: 1.0.4708
-    created: "2024-11-06T18:27:30.349023148Z"
+    created: "2024-11-06T18:28:54.897163535Z"
     description: Wiz Sensor helm chart
     digest: c7a3f8870ebef46b72164a491928ae18052ed66d688d0c511124885ecdb5e481
     home: https://www.wiz.io/
@@ -6850,7 +6865,7 @@ entries:
     version: 1.0.4708
   - apiVersion: v2
     appVersion: 1.0.4677
-    created: "2024-11-06T18:27:30.34725487Z"
+    created: "2024-11-06T18:28:54.89619643Z"
     description: Wiz Sensor helm chart
     digest: 75ae10150cd072327baf95ae094726878024cac87c67da640537f5a7201908d0
     home: https://www.wiz.io/
@@ -6861,7 +6876,7 @@ entries:
     version: 1.0.4677
   - apiVersion: v2
     appVersion: 1.0.4673
-    created: "2024-11-06T18:27:30.345606539Z"
+    created: "2024-11-06T18:28:54.895148705Z"
     description: Wiz Sensor helm chart
     digest: 072c7a12292d4366e7c6a75ab7fbf07bc7fb34381c3ea9b3318cabf1e43f4aa7
     home: https://www.wiz.io/
@@ -6872,7 +6887,7 @@ entries:
     version: 1.0.4673
   - apiVersion: v2
     appVersion: 1.0.4413
-    created: "2024-11-06T18:27:30.343201267Z"
+    created: "2024-11-06T18:28:54.894176047Z"
     description: Wiz Sensor helm chart
     digest: a05ce8cd4a9fc9efc480f05555f003fb35fa862bfa6845b30acc39c93211118c
     home: https://www.wiz.io/
@@ -6883,7 +6898,7 @@ entries:
     version: 1.0.4483
   - apiVersion: v2
     appVersion: 1.0.4413
-    created: "2024-11-06T18:27:30.341631957Z"
+    created: "2024-11-06T18:28:54.893194251Z"
     description: Wiz Sensor helm chart
     digest: ce74b6c5bd13293048b6478422dd6667bb54d72e2c567aad6fed242c845d0fff
     home: https://www.wiz.io/
@@ -6894,7 +6909,7 @@ entries:
     version: 1.0.4470
   - apiVersion: v2
     appVersion: 1.0.4413
-    created: "2024-11-06T18:27:30.340070048Z"
+    created: "2024-11-06T18:28:54.892246986Z"
     description: Wiz Sensor helm chart
     digest: 9ac6eb0a5d2dcda7fb9a721f77706117d3cda2494681a3038bc592c7d51c5549
     home: https://www.wiz.io/
@@ -6905,7 +6920,7 @@ entries:
     version: 1.0.4423
   - apiVersion: v2
     appVersion: 1.0.4413
-    created: "2024-11-06T18:27:30.338566724Z"
+    created: "2024-11-06T18:28:54.891302223Z"
     description: Wiz Sensor helm chart
     digest: 80a811fb08a3633384c519f0e08dd6079896d1280ddfa47a1f341144966ef532
     home: https://www.wiz.io/
@@ -6916,7 +6931,7 @@ entries:
     version: 1.0.4413
   - apiVersion: v2
     appVersion: 1.0.4334
-    created: "2024-11-06T18:27:30.33706411Z"
+    created: "2024-11-06T18:28:54.89037704Z"
     description: Wiz Sensor helm chart
     digest: cabd046996d6ce9b96696f9e9713a75b331088899b024af2a2a600f317434c60
     home: https://www.wiz.io/
@@ -6927,7 +6942,7 @@ entries:
     version: 1.0.4365
   - apiVersion: v2
     appVersion: 1.0.4334
-    created: "2024-11-06T18:27:30.335877018Z"
+    created: "2024-11-06T18:28:54.889440966Z"
     description: Wiz Sensor helm chart
     digest: 0172b5e69ead0411eb0ad3bf5a6df96a463028a4c2fc4eca826aeef6bb257025
     home: https://www.wiz.io/
@@ -6938,7 +6953,7 @@ entries:
     version: 1.0.4334
   - apiVersion: v2
     appVersion: 1.0.4250
-    created: "2024-11-06T18:27:30.334977155Z"
+    created: "2024-11-06T18:28:54.888500921Z"
     description: Wiz Sensor helm chart
     digest: 32c7267d880111fd9711479ebc36e73a5624dad73062323638a9377bfe6bcd03
     home: https://www.wiz.io/
@@ -6949,7 +6964,7 @@ entries:
     version: 1.0.4250
   - apiVersion: v2
     appVersion: 1.0.4199
-    created: "2024-11-06T18:27:30.334027628Z"
+    created: "2024-11-06T18:28:54.88653079Z"
     description: Wiz Sensor helm chart
     digest: 0473a01a5e1e391f619118823ea39239eb600fbb327402d3a3e4c3f9ac6ba58b
     home: https://www.wiz.io/
@@ -6960,7 +6975,7 @@ entries:
     version: 1.0.4199
   - apiVersion: v2
     appVersion: 1.0.4152
-    created: "2024-11-06T18:27:30.333129605Z"
+    created: "2024-11-06T18:28:54.884954594Z"
     description: Wiz Sensor helm chart
     digest: 6d3943779668cd43abc5449c6444393c04177b9f0263248d4ccd32c7ba94bd47
     home: https://www.wiz.io/
@@ -6971,7 +6986,7 @@ entries:
     version: 1.0.4152
   - apiVersion: v2
     appVersion: 1.0.3999
-    created: "2024-11-06T18:27:30.332024766Z"
+    created: "2024-11-06T18:28:54.883423209Z"
     description: Wiz Sensor helm chart
     digest: 7557391258b417943414dd37b9ecfad44b134ad9d33eadefcb5ea4d9c1c78950
     home: https://www.wiz.io/
@@ -6981,7 +6996,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.3999.tgz
     version: 1.0.3999
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.330675079Z"
+    created: "2024-11-06T18:28:54.882018031Z"
     description: Wiz Sensor helm chart
     digest: 7ab44847465834cc55ff77a0df54222f07559a9643203579bae9cbbf31a31b6d
     home: https://www.wiz.io/
@@ -6991,7 +7006,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.3891.tgz
     version: 1.0.3891
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.329543395Z"
+    created: "2024-11-06T18:28:54.880617462Z"
     description: Wiz Sensor helm chart
     digest: 20c2b56521fcfc577563326ede426ee397876bea14fbe1bb876e0f1beae936e8
     home: https://www.wiz.io/
@@ -7001,7 +7016,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.3828.tgz
     version: 1.0.3828
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.327785962Z"
+    created: "2024-11-06T18:28:54.879222025Z"
     description: Wiz Sensor helm chart
     digest: eb7a3c7e09ade1378c5d2925d1fb4cd75154d8103dbc7e8189bd6cccf91bf767
     home: https://www.wiz.io/
@@ -7011,7 +7026,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.3492.tgz
     version: 1.0.3492
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.326859677Z"
+    created: "2024-11-06T18:28:54.877893402Z"
     description: Wiz Sensor helm chart
     digest: 70843de36c9b098a486ee4ffd79edf3f7e45aa20e805300a53d1d4f2026d540b
     home: https://www.wiz.io/
@@ -7021,7 +7036,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.3369.tgz
     version: 1.0.3369
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.326103079Z"
+    created: "2024-11-06T18:28:54.87653014Z"
     description: Wiz Sensor helm chart
     digest: d371d7030216ce104f8f4e96fcf1254e620638cd2e05535b4d920f551fdccb16
     home: https://www.wiz.io/
@@ -7031,7 +7046,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.3011.tgz
     version: 1.0.3011
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.325351693Z"
+    created: "2024-11-06T18:28:54.875151797Z"
     description: Wiz Sensor helm chart
     digest: 7553f74114c404866490abd9ff10138b67d23ca9771730c343bde3a1c1bbf6fe
     home: https://www.wiz.io/
@@ -7041,7 +7056,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2969.tgz
     version: 1.0.2969
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.324553325Z"
+    created: "2024-11-06T18:28:54.87382597Z"
     description: Wiz Sensor helm chart
     digest: 6e49dc1c90a4fcd476840d330c0405d0ac9a08eb16c4971f2b85677ce825c5f3
     home: https://www.wiz.io/
@@ -7051,7 +7066,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2864.tgz
     version: 1.0.2864
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.32382587Z"
+    created: "2024-11-06T18:28:54.872460962Z"
     description: Wiz Sensor helm chart
     digest: 1f01d5f3c26f6f19130d0b9fbfa8ddea01b48cfad981ddeca45eaa2bd6b04e7b
     home: https://www.wiz.io/
@@ -7061,7 +7076,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2823.tgz
     version: 1.0.2823
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.323100388Z"
+    created: "2024-11-06T18:28:54.871125259Z"
     description: Wiz Sensor helm chart
     digest: 43c257669c0b370800b0f836c2a1c052de92ed9d04d9cba2397ca04ae12361c9
     home: https://www.wiz.io/
@@ -7071,7 +7086,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2670.tgz
     version: 1.0.2670
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.32233861Z"
+    created: "2024-11-06T18:28:54.86978526Z"
     description: Wiz Sensor helm chart
     digest: 7144c455c75b185f08c6aa9d1e2d7a1132486c1d304b944a4579a531271779fd
     home: https://www.wiz.io/
@@ -7081,7 +7096,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2586.tgz
     version: 1.0.2586
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.321549855Z"
+    created: "2024-11-06T18:28:54.86761441Z"
     description: Wiz Sensor helm chart
     digest: a2bedb0d911c45b2bef937432ed73154ab10f957a82e554d89f6e3d4e98592b5
     home: https://www.wiz.io/
@@ -7091,7 +7106,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2484.tgz
     version: 1.0.2484
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.320850323Z"
+    created: "2024-11-06T18:28:54.86653368Z"
     description: Wiz Sensor helm chart
     digest: 386b254a3b70ae458e2a88a0a3083941f4edb6ae68c70222fd6ea9834ace05d0
     home: https://www.wiz.io/
@@ -7101,7 +7116,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2446.tgz
     version: 1.0.2446
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.320137038Z"
+    created: "2024-11-06T18:28:54.865434102Z"
     description: Wiz Sensor helm chart
     digest: b2339bcdcbc48c56c7ffc20eaf967ca215c24eb10f6f114286fb2db79f6a83f6
     home: https://www.wiz.io/
@@ -7111,7 +7126,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2304.tgz
     version: 1.0.2304
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.319484593Z"
+    created: "2024-11-06T18:28:54.864668238Z"
     description: Wiz Sensor helm chart
     digest: 387bf1253f19cb1cb1865da9ad792de22032444888f2cd8de4115d61f70f7978
     home: https://www.wiz.io/
@@ -7121,7 +7136,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2280.tgz
     version: 1.0.2280
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.318908832Z"
+    created: "2024-11-06T18:28:54.863962665Z"
     description: Wiz Sensor helm chart
     digest: ff187b69fcf793415f6ad39652837a6c33c8649f51a51d90f2e12b7cf09041dd
     home: https://www.wiz.io/
@@ -7131,7 +7146,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2142.tgz
     version: 1.0.2142
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.318343925Z"
+    created: "2024-11-06T18:28:54.863333586Z"
     description: Wiz Sensor helm chart
     digest: 7bce6e96dbd7ec7a3da1c696a3aa989b101ee81d4b65d421afcb71d284568086
     home: https://www.wiz.io/
@@ -7141,7 +7156,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2062.tgz
     version: 1.0.2062
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.317808096Z"
+    created: "2024-11-06T18:28:54.86276395Z"
     description: Wiz Sensor helm chart
     digest: b92bc7357ef8128024c5a69ddd6a0fa65c7051791d986f5b2a9a0816f8e8f863
     home: https://www.wiz.io/
@@ -7151,7 +7166,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2019.tgz
     version: 1.0.2019
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.316841983Z"
+    created: "2024-11-06T18:28:54.862080213Z"
     description: Wiz Sensor helm chart
     digest: 84f6122b9bfe4aad8211bd72b0ab626469383a36b7606ddccccc8efefd74c1cc
     home: https://www.wiz.io/
@@ -7161,7 +7176,7 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2006.tgz
     version: 1.0.2006
   - apiVersion: v2
-    created: "2024-11-06T18:27:30.31558977Z"
+    created: "2024-11-06T18:28:54.861320677Z"
     description: Wiz Sensor helm chart
     digest: 6d24381be35bbe69b3ef49715660e945daa527454b21dd33be0bbeea0ca772dd
     home: https://www.wiz.io/
@@ -7170,4 +7185,4 @@ entries:
     urls:
     - https://wiz-sec.github.io/charts/wiz-sensor-1.0.2002.tgz
     version: 1.0.2002
-generated: "2024-11-06T18:27:29.346343362Z"
+generated: "2024-11-06T18:28:53.773677194Z"
