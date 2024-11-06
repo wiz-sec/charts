@@ -10,7 +10,8 @@ commonLabels: {} # Labels applied on all the resources (not used for selection)
 wizApiToken:
   clientId: "" # Client ID of the Wiz Service Account.
   clientToken: "" # Client secret of the Wiz Service Account.
-  clientEndpoint: "" # Set to 'gov' or 'fedramp' for gov/fedramp tenants only, otherwise leave blank.
+  clientEndpoint: "" # Defaults to commercial.
+                     # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
 
   secret:
     # Should a Secret be created by the chart or not.
@@ -53,12 +54,11 @@ podDisruptionBudget:
 
 image:
   registry: wiziopublic.azurecr.io/wiz-app
-  # Use this if you are deploying on federal environments with FIPS endpoints.
-  # repository: wiz-admission-controller-fips
   repository: wiz-admission-controller
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+
 imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
 priorityClassName: ""
@@ -489,7 +489,8 @@ global:
   wizApiToken:
     clientId: "" 
     clientToken: ""
-    clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
+    clientEndpoint: "" # Defaults to commercial.
+                       # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
     
     secret:
       # The name of the Wiz Service Account Secret.
@@ -556,3 +557,6 @@ global:
   #
   # lowPrivilegePodSecurityPolicy: {}
   # lowPrivilegeSecurityPolicy: {}
+
+  # Set to true to use FedRamp endpoints and FIPS-compliant images.
+  isFedRamp: false
