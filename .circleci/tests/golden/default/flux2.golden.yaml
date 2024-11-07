@@ -1,0 +1,572 @@
+---
+# Source: flux2/templates/policies.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+  name: allow-egress
+spec:
+  egress:
+  - {}
+  ingress:
+  - from:
+    - podSelector: {}
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+# Source: flux2/templates/policies.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+  name: allow-scraping
+spec:
+  ingress:
+  - from:
+    - namespaceSelector: {}
+    ports:
+    - port: 8080
+      protocol: TCP
+  podSelector: {}
+  policyTypes:
+  - Ingress
+---
+# Source: flux2/templates/policies.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+  name: allow-webhooks
+spec:
+  ingress:
+  - from:
+    - namespaceSelector: {}
+  podSelector:
+    matchLabels:
+      app: notification-controller
+  policyTypes:
+  - Ingress
+---
+# Source: flux2/templates/helm-controller-sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: helm-controller
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+  name: helm-controller
+---
+# Source: flux2/templates/kustomize-controller-sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: kustomize-controller
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+  name: kustomize-controller
+---
+# Source: flux2/templates/source-controller-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: source-controller
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+  name: source-controller
+---
+# Source: flux2/templates/aggregate-clusterroles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: flux-edit
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+rules:
+  - apiGroups:
+      - notification.toolkit.fluxcd.io
+      - source.toolkit.fluxcd.io
+      - helm.toolkit.fluxcd.io
+      - image.toolkit.fluxcd.io
+      - kustomize.toolkit.fluxcd.io
+    resources: ["*"]
+    verbs:
+      - create
+      - delete
+      - deletecollection
+      - patch
+      - update
+---
+# Source: flux2/templates/aggregate-clusterroles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: flux-view
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+rules:
+  - apiGroups:
+      - notification.toolkit.fluxcd.io
+      - source.toolkit.fluxcd.io
+      - helm.toolkit.fluxcd.io
+      - image.toolkit.fluxcd.io
+      - kustomize.toolkit.fluxcd.io
+    resources: ["*"]
+    verbs:
+      - get
+      - list
+      - watch
+---
+# Source: flux2/templates/crd-controller-clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: crd-controller
+  labels:
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+rules:
+- apiGroups: ['source.toolkit.fluxcd.io']
+  resources: ['*']
+  verbs: ['*']
+- apiGroups: ['kustomize.toolkit.fluxcd.io']
+  resources: ['*']
+  verbs: ['*']
+- apiGroups: ['helm.toolkit.fluxcd.io']
+  resources: ['*']
+  verbs: ['*']
+- apiGroups: ['notification.toolkit.fluxcd.io']
+  resources: ['*']
+  verbs: ['*']
+- apiGroups: ['image.toolkit.fluxcd.io']
+  resources: ['*']
+  verbs: ['*']
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - secrets
+  - configmaps
+  - serviceaccounts
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+# required by leader election
+- apiGroups:
+    - ""
+  resources:
+    - configmaps
+  verbs:
+    - get
+    - list
+    - watch
+    - create
+    - update
+    - patch
+    - delete
+- apiGroups:
+    - ""
+  resources:
+    - configmaps/status
+  verbs:
+    - get
+    - update
+    - patch
+- apiGroups:
+  - "coordination.k8s.io"
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+---
+# Source: flux2/templates/cluster-reconciler-clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+  name: cluster-reconciler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: kustomize-controller
+  namespace: release-helm-namespace
+- kind: ServiceAccount
+  name: helm-controller
+  namespace: release-helm-namespace
+---
+# Source: flux2/templates/crd-controller-clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: crd-controller
+  labels:
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: crd-controller
+subjects:
+  - kind: ServiceAccount
+    name: kustomize-controller
+    namespace: release-helm-namespace
+  - kind: ServiceAccount
+    name: helm-controller
+    namespace: release-helm-namespace
+  - kind: ServiceAccount
+    name: source-controller
+    namespace: release-helm-namespace
+  - kind: ServiceAccount
+    name: notification-controller
+    namespace: release-helm-namespace
+  - kind: ServiceAccount
+    name: image-reflector-controller
+    namespace: release-helm-namespace
+  - kind: ServiceAccount
+    name: image-automation-controller
+    namespace: release-helm-namespace
+---
+# Source: flux2/templates/source-controller-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+    control-plane: controller
+  name: source-controller
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: source-controller
+  type: ClusterIP
+---
+# Source: flux2/templates/helm-controller.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: helm-controller
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+    control-plane: controller
+  name: helm-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helm-controller
+  template:
+    metadata:
+      annotations: 
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        app: helm-controller
+
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - args:
+        - --watch-all-namespaces=true
+        - --log-level=error
+        - --log-encoding=json
+        - --enable-leader-election
+        env:
+        - name: RUNTIME_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: wiziopublic.azurecr.io/wiz-helm-controller:v1.1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: healthz
+        name: manager
+        ports:
+        - containerPort: 8080
+          name: http-prom
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: healthz
+        resources: 
+          limits: {}
+          requests:
+            cpu: 20m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /tmp
+          name: temp
+      serviceAccountName: helm-controller
+      terminationGracePeriodSeconds: 600
+      volumes:
+      - emptyDir: {}
+        name: temp
+---
+# Source: flux2/templates/kustomize-controller.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: kustomize-controller
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+    control-plane: controller
+  name: kustomize-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kustomize-controller
+  template:
+    metadata:
+      annotations: 
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        app: kustomize-controller
+
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - args:
+        - --watch-all-namespaces=true
+        - --log-level=error
+        - --log-encoding=json
+        - --enable-leader-election
+        env:
+        - name: RUNTIME_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: wiziopublic.azurecr.io/wiz-kustomize-controller:v1.4.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: healthz
+        name: manager
+        ports:
+        - containerPort: 8080
+          name: http-prom
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: healthz
+        resources: 
+          limits: {}
+          requests:
+            cpu: 20m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /tmp
+          name: temp
+      securityContext:
+        fsGroup: 1337
+      serviceAccountName: kustomize-controller
+      terminationGracePeriodSeconds: 60
+      volumes:
+      - emptyDir: {}
+        name: temp
+---
+# Source: flux2/templates/source-controller.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: source-controller
+    app.kubernetes.io/instance: "release-helm-namespace"
+    app.kubernetes.io/managed-by: "Helm"
+    app.kubernetes.io/version: "2.2.3"
+    app.kubernetes.io/part-of: flux
+    control-plane: controller
+  name: source-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: source-controller
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations: 
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        app: source-controller
+
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - args:
+        - --watch-all-namespaces=true
+        - --log-level=error
+        - --log-encoding=json
+        - --enable-leader-election
+        - --storage-path=/data
+        - --storage-adv-addr=source-controller.$(RUNTIME_NAMESPACE).svc.cluster.local.
+        env:
+        - name: RUNTIME_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: wiziopublic.azurecr.io/wiz-source-controller:v1.4.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: healthz
+        name: manager
+        ports:
+        - containerPort: 9090
+          name: http
+          protocol: TCP
+        - containerPort: 8080
+          name: http-prom
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources: 
+          limits: {}
+          requests:
+            cpu: 20m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /tmp
+          name: tmp
+      securityContext:
+        fsGroup: 1337
+      serviceAccountName: source-controller
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - emptyDir: {}
+        name: data
+      - emptyDir: {}
+        name: tmp
+---
+# Source: flux2/templates/sync.yaml
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: outpost-state
+spec:
+  interval: 3m0s
+  ref:
+    branch: master
+  url: http://git-proxy.default.svc.cluster.local
+---
+# Source: flux2/templates/sync.yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: outpost-state
+spec:
+  interval: 10m0s
+  path: <required-path>
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: outpost-state

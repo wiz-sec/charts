@@ -1,130 +1,117 @@
 package tests
 
 import (
-	"fmt"
-	"io/ioutil"
+	"maps"
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	"helm.sh/helm/pkg/lint/support"
+	"github.com/stretchr/testify/suite"
 	"helm.sh/helm/v3/pkg/chartutil"
-	"helm.sh/helm/v3/pkg/lint"
 )
 
 const (
 	chartsRootDir = "../../."
 )
 
-var defaultNamespace = map[string]string{
-	"flux2":     "flux-system",
-	"git-proxy": "default",
+type ss struct {
+	suite.Suite
 }
 
-var generatedNamespace = map[string]string{
-	"flux2":     "wiz-flux-system",
-	"git-proxy": "wiz-default",
+func TestSs(t *testing.T) {
+	suite.Run(t, new(ss))
 }
 
-var defaultValuesKnownIssues = []string{
-	"Missing required value: git.path is required",
-	"Missing required value: storageService is required",
-	"icon is recommended",
-	"chart directory is missing these dependencies",
+func (s *ss) TestChartTemplateWithDefaultValues() {
+	charts := s.getCharts(chartsRootDir)
+
+	for _, chartName := range charts {
+		s.Run(chartName, func() {
+			chartDir := s.getChartDirectory(chartName)
+			chartDirFullPath, err := filepath.Abs(chartDir)
+			s.NoError(err)
+			defaultValuesFilePath := path.Join(chartDir, "values.yaml")
+
+			TestContainerGoldenTestDefaults(s.T(), &TemplateGoldenTest{
+				ChartPath:          chartDirFullPath,
+				Release:            "release-test",
+				Namespace:          "release-helm-namespace",
+				GoldenFileName:     chartName,
+				ValuesFile:         defaultValuesFilePath,
+				GoldenSubDirectory: "default",
+			})
+		})
+	}
 }
 
-var generatedValuesKnownIssues = []string{
-	"icon is recommended",
-	"chart directory is missing these dependencies",
+func (s *ss) TestChartTemplatesWithCustomValues() {
+	testFiles, err := os.ReadDir("testfiles")
+	s.NoError(err)
+
+	for _, testFile := range testFiles {
+		s.Run(testFile.Name(), func() {
+			chartName := strings.Split(strings.Split(testFile.Name(), ".")[0], "_")[0]
+			chartDir := s.getChartDirectory(chartName)
+
+			chartDirFullPath, err := filepath.Abs(chartDir)
+			s.NoError(err)
+
+			valuesFilePath := path.Join("testfiles", testFile.Name())
+			TestContainerGoldenTestDefaults(s.T(), &TemplateGoldenTest{
+				ChartPath:          chartDirFullPath,
+				Release:            "release-test",
+				Namespace:          "release-helm-namespace",
+				GoldenFileName:     chartName,
+				ValuesFile:         valuesFilePath,
+				GoldenSubDirectory: "custom",
+			})
+		})
+	}
 }
 
-func isLinterIssue(supportMessage support.Message, knownIssues []string) bool {
-	if supportMessage.Severity < support.InfoSev {
-		return false
+func (s *ss) getChartDirectory(chartName string) string {
+	chartDir := path.Join(chartsRootDir, chartName)
+	if _, err := os.Stat(path.Join(chartDir, "Chart.yaml")); os.IsNotExist(err) {
+		//	fail the test
+		s.Fail("Chart.yaml file not found in %s", chartDir)
 	}
 
-	for _, knownIssue := range knownIssues {
-		if strings.Contains(supportMessage.Err.Error(), knownIssue) {
-			return false
-		}
-	}
+	isChartDir, err := chartutil.IsChartDir(chartDir)
+	s.NoError(err)
+	s.True(isChartDir)
 
-	return true
+	return chartDir
 }
 
-func TestChartsWithDefaultValues(t *testing.T) {
-	files, err := ioutil.ReadDir(chartsRootDir)
-	require.NoError(t, err)
+func (s *ss) getCharts(dir string) []string {
+	// These charts are the "must" that we will fail the test if they do not exist
+	charts := map[string]struct{}{
+		"wiz-broker":                 {},
+		"wiz-sensor":                 {},
+		"wiz-admission-controller":   {},
+		"wiz-kubernetes-connector":   {},
+		"wiz-kubernetes-integration": {},
+	}
+
+	files, err := os.ReadDir(dir)
+	s.NoError(err)
 
 	for _, fileInfo := range files {
 		if !fileInfo.IsDir() {
 			continue
 		}
+
 		chartName := fileInfo.Name()
-		chartDir := path.Join(chartsRootDir, chartName)
-		chartFilePath := path.Join(chartDir, "Chart.yaml")
+		chartFilePath := path.Join(path.Join(chartsRootDir, chartName), "Chart.yaml")
 		if _, err := os.Stat(chartFilePath); os.IsNotExist(err) {
 			continue
 		}
 
-		_, err := chartutil.IsChartDir(chartDir)
-		require.NoError(t, err)
-
-		chartDirFullPath, err := filepath.Abs(chartDir)
-		require.NoError(t, err)
-		t.Run(chartDir, func(t *testing.T) {
-			fmt.Println(chartDirFullPath)
-			chart, err := chartutil.LoadChartfile(chartFilePath)
-			require.NoError(t, err)
-			require.NoError(t, chart.Validate())
-			defaultValuesFilePath := path.Join(chartDir, "values.yaml")
-			values, err := chartutil.ReadValuesFile(defaultValuesFilePath)
-			require.NoError(t, err)
-			linter := lint.All(chartDir, values.AsMap(), defaultNamespace[chartName], true)
-			fmt.Println(linter.Messages)
-
-			for _, supportMessage := range linter.Messages {
-				require.False(t, isLinterIssue(support.Message(supportMessage), defaultValuesKnownIssues), supportMessage.Error())
-			}
-		})
+		charts[chartName] = struct{}{}
 	}
-}
 
-func TestChartsWithGeneratedValues(t *testing.T) {
-	testFiles, err := ioutil.ReadDir("testfiles")
-	require.NoError(t, err)
-
-	for _, testFile := range testFiles {
-		chartName := strings.Split(strings.Split(testFile.Name(), ".")[0], "_")[0]
-		chartDir := path.Join(chartsRootDir, chartName)
-		chartFilePath := path.Join(chartDir, "Chart.yaml")
-		if _, err := os.Stat(chartFilePath); os.IsNotExist(err) {
-			continue
-		}
-
-		_, err := chartutil.IsChartDir(chartDir)
-		require.NoError(t, err)
-		t.Run(testFile.Name(), func(t *testing.T) {
-			fmt.Println(testFile.Name())
-			chartFilePath := path.Join(chartDir, "Chart.yaml")
-			chart, err := chartutil.LoadChartfile(chartFilePath)
-			require.NoError(t, err)
-			require.NoError(t, chart.Validate())
-
-			realValuesPath := path.Join("testfiles", testFile.Name())
-			values, err := chartutil.ReadValuesFile(realValuesPath)
-			require.NoError(t, err)
-			linter := lint.All(chartDir, values.AsMap(), generatedNamespace[chartName], true)
-			for _, supportMessage := range linter.Messages {
-				fmt.Println(supportMessage)
-			}
-
-			for _, supportMessage := range linter.Messages {
-				require.False(t, isLinterIssue(support.Message(supportMessage), generatedValuesKnownIssues), supportMessage.Error())
-			}
-		})
-	}
+	return slices.Collect(maps.Keys(charts))
 }

@@ -9,7 +9,7 @@ agent:
   env: ""
   clientId: ""
   clientSecret: ""
-  outpostId: ""
+  outpostId: "<required-outpost-id>"
   outpostRegion: partition-1
 
 secret:
