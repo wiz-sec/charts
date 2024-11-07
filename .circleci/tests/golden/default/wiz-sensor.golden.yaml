@@ -30,8 +30,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 type: Opaque
 stringData:
-  clientId: "<insert-clientId>"
-  clientToken: "<insert-clientToken>"
+  clientId: "<required-clientId>"
+  clientToken: "<required-clientToken>"
 ---
 # Source: wiz-sensor/templates/imagepullsecret.yaml
 apiVersion: v1
@@ -49,7 +49,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
   namespace: release-helm-namespace
 data:
-  .dockerconfigjson: eyJhdXRocyI6IHsid2l6aW8uYXp1cmVjci5pbyI6IHsiYXV0aCI6ICJQR2x1YzJWeWRDMTFjMlZ5Ym1GdFpUNDZQR2x1YzJWeWRDMXdZWE56ZDI5eVpEND0ifX19
+  .dockerconfigjson: eyJhdXRocyI6IHsid2l6aW8uYXp1cmVjci5pbyI6IHsiYXV0aCI6ICJQSEpsY1hWcGNtVmtMWFZ6WlhKdVlXMWxQam84Y21WeGRXbHlaV1F0Y0dGemMzZHZjbVErIn19fQ==
 ---
 # Source: wiz-sensor/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1

@@ -38,8 +38,8 @@ metadata:
     app.kubernetes.io/version: "2.7"
     app.kubernetes.io/managed-by: Helm
 stringData:
-  clientId: "<insert-client-id>"
-  clientToken: "<insert-client-token>"
+  clientId: "<required-client-id>"
+  clientToken: "<required-client-token>"
 ---
 # Source: wiz-admission-controller/templates/serviceaccount.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -207,7 +207,7 @@ spec:
     metadata:
       annotations:
         rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
-        rollme.wizApiTokenHash: be7f348cb8721e285ea80fa05ef524362ac46a57b0539e78b390db2bb0acb1be
+        rollme.wizApiTokenHash: cbb3aea2a985eff2a33543866bfc77f891c84358af93ca8653c159e043cf8ae4
         rollme.webhookCert: "REDACTED"
       labels:
         
@@ -362,7 +362,7 @@ spec:
         metadata:
           annotations:
             rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
-            rollme.wizApiTokenHash: be7f348cb8721e285ea80fa05ef524362ac46a57b0539e78b390db2bb0acb1be
+            rollme.wizApiTokenHash: cbb3aea2a985eff2a33543866bfc77f891c84358af93ca8653c159e043cf8ae4
           labels:
             helm.sh/chart: "REDACTED"
             app.kubernetes.io/chartName: wiz-admission-controller

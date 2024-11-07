@@ -12,5 +12,5 @@ metadata:
     app.kubernetes.io/managed-by: Helm
   annotations:
 stringData:
-  clientId: "<insert-client-id>"
-  clientToken: "<insert-client-token>"
+  clientId: "<required-client-id>"
+  clientToken: "<required-client-token>"

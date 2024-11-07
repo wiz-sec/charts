@@ -26,8 +26,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 type: Opaque
 stringData:
-  clientId: "<insert-clientId>"
-  clientToken: "<insert-clientToken>"
+  clientId: "<required-clientId>"
+  clientToken: "<required-clientToken>"
 ---
 # Source: wiz-sensor/templates/imagepullsecret.yaml
 apiVersion: v1

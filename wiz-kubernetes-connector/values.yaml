@@ -74,8 +74,8 @@ autoCreateConnector:
     proxySidecarPort: 15000
 
 wizApiToken:
-  clientId: "<insert-client-id>" # Client ID of the Wiz Service Account.
-  clientToken: "<insert-client-token>" # Client secret of the Wiz Service Account.
+  clientId: "<required-client-id>" # Client ID of the Wiz Service Account.
+  clientToken: "<required-client-token>" # Client secret of the Wiz Service Account.
   clientEndpoint: "" # Defaults to commercial.
                      # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
 

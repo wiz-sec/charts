@@ -13,7 +13,7 @@ import (
 
 var update = flag.Bool("update-golden", false, "update golden test output files")
 
-type TemplateGoldenTest struct {
+type goldenHelmTest struct {
 	ChartPath          string
 	Release            string
 	Namespace          string
@@ -24,8 +24,8 @@ type TemplateGoldenTest struct {
 	GoldenSubDirectory string
 }
 
-// TestContainerGoldenTestDefaults Code is based on the article here:  https://medium.com/@zelldon91/advanced-test-practices-for-helm-charts-587caeeb4cb
-func TestContainerGoldenTestDefaults(t *testing.T, testCase *TemplateGoldenTest) {
+// runGoldenHelmTest Code is based on the article here:  https://medium.com/@zelldon91/advanced-test-practices-for-helm-charts-587caeeb4cb
+func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 	r := require.New(t)
 
 	options := &helm.Options{

@@ -17,16 +17,16 @@ const (
 	chartsRootDir = "../../."
 )
 
-type ss struct {
+type helmRepoSuite struct {
 	suite.Suite
 }
 
 func TestSs(t *testing.T) {
-	suite.Run(t, new(ss))
+	suite.Run(t, new(helmRepoSuite))
 }
 
-func (s *ss) TestChartTemplateWithDefaultValues() {
-	charts := s.getCharts(chartsRootDir)
+func (s *helmRepoSuite) TestChartTemplateWithDefaultValues() {
+	charts := s.getChartsInDirectory(chartsRootDir)
 
 	for _, chartName := range charts {
 		s.Run(chartName, func() {
@@ -35,7 +35,7 @@ func (s *ss) TestChartTemplateWithDefaultValues() {
 			s.NoError(err)
 			defaultValuesFilePath := path.Join(chartDir, "values.yaml")
 
-			TestContainerGoldenTestDefaults(s.T(), &TemplateGoldenTest{
+			runGoldenHelmTest(s.T(), &goldenHelmTest{
 				ChartPath:          chartDirFullPath,
 				Release:            "release-test",
 				Namespace:          "release-helm-namespace",
@@ -47,7 +47,7 @@ func (s *ss) TestChartTemplateWithDefaultValues() {
 	}
 }
 
-func (s *ss) TestChartTemplatesWithCustomValues() {
+func (s *helmRepoSuite) TestChartTemplatesWithCustomValues() {
 	testFiles, err := os.ReadDir("testfiles")
 	s.NoError(err)
 
@@ -60,7 +60,7 @@ func (s *ss) TestChartTemplatesWithCustomValues() {
 			s.NoError(err)
 
 			valuesFilePath := path.Join("testfiles", testFile.Name())
-			TestContainerGoldenTestDefaults(s.T(), &TemplateGoldenTest{
+			runGoldenHelmTest(s.T(), &goldenHelmTest{
 				ChartPath:          chartDirFullPath,
 				Release:            "release-test",
 				Namespace:          "release-helm-namespace",
@@ -72,7 +72,7 @@ func (s *ss) TestChartTemplatesWithCustomValues() {
 	}
 }
 
-func (s *ss) getChartDirectory(chartName string) string {
+func (s *helmRepoSuite) getChartDirectory(chartName string) string {
 	chartDir := path.Join(chartsRootDir, chartName)
 	if _, err := os.Stat(path.Join(chartDir, "Chart.yaml")); os.IsNotExist(err) {
 		//	fail the test
@@ -86,8 +86,8 @@ func (s *ss) getChartDirectory(chartName string) string {
 	return chartDir
 }
 
-func (s *ss) getCharts(dir string) []string {
-	// These charts are the "must" that we will fail the test if they do not exist
+func (s *helmRepoSuite) getChartsInDirectory(dir string) []string {
+	// There's no need to add directories to this list, but this is for extra care, to ensure we don't miss these charts
 	charts := map[string]struct{}{
 		"wiz-broker":                 {},
 		"wiz-sensor":                 {},

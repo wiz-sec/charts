@@ -35,8 +35,8 @@ metadata:
     app.kubernetes.io/version: "2.7"
     app.kubernetes.io/managed-by: Helm
 stringData:
-  clientId: "<insert-client-id>"
-  clientToken: "<insert-client-token>"
+  clientId: "<required-client-id>"
+  clientToken: "<required-client-token>"
 ---
 # Source: wiz-admission-controller/templates/serviceaccount.yaml
 apiVersion: rbac.authorization.k8s.io/v1
