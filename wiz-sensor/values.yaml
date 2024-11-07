@@ -88,8 +88,8 @@ wizApiToken:
     name: ""
 
   # The chart will refuse to install unless these are set to valid values
-  clientId: ""
-  clientToken: ""
+  clientId: "<insert-clientId>"
+  clientToken: "<insert-clientToken>"
   clientEndpoint: "" # Set custom endpoint - should be "fedramp" for FEDRAMP environments
 
 httpProxyConfiguration:
@@ -133,8 +133,8 @@ imagePullSecret:
   # For general directions on how to pre-create this kind of secret please refer to:
   # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#registry-secret-existing-credentials
   # the default registry server URL to use in the secret is wizio.azurecr.io. For FEDRAMP use wizfedramp.azurecr.us.
-  username: ""
-  password: ""
+  username: "<insert-username>"
+  password: "<insert-password>"
 
   # override the default name of the pull secret
   # If not set and create is true, a name is generated using the fullname template
