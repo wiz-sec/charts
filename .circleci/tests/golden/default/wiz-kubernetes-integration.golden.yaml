@@ -6,7 +6,7 @@ metadata:
   name: wiz-api-token
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     app.kubernetes.io/name: wiz-kubernetes-integration
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/managed-by: Helm

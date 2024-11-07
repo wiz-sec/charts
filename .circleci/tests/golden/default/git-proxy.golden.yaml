@@ -5,7 +5,7 @@ kind: Service
 metadata:
   name: release-test-git-proxy
   labels:
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     app.kubernetes.io/name: git-proxy
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "0.0.1"
@@ -31,7 +31,7 @@ kind: Service
 metadata:
   name: git-proxy
   labels:
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     app.kubernetes.io/name: git-proxy
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "0.0.1"
@@ -57,7 +57,7 @@ kind: Deployment
 metadata:
   name: release-test-git-proxy
   labels:
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     app.kubernetes.io/name: git-proxy
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "0.0.1"

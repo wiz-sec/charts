@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
   name: allow-egress
 spec:
   egress:
@@ -30,7 +30,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
   name: allow-scraping
 spec:
   ingress:
@@ -52,7 +52,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
   name: allow-webhooks
 spec:
   ingress:
@@ -74,7 +74,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
   name: helm-controller
 ---
 # Source: flux2/templates/kustomize-controller-sa.yaml
@@ -87,7 +87,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
   name: kustomize-controller
 ---
 # Source: flux2/templates/source-controller-serviceaccount.yaml
@@ -100,7 +100,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
   name: source-controller
 ---
 # Source: flux2/templates/aggregate-clusterroles.yaml
@@ -158,7 +158,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
 rules:
 - apiGroups: ['source.toolkit.fluxcd.io']
   resources: ['*']
@@ -236,7 +236,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
   name: cluster-reconciler
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -260,7 +260,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -294,7 +294,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     control-plane: controller
   name: source-controller
 spec:
@@ -317,7 +317,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     control-plane: controller
   name: helm-controller
 spec:
@@ -396,7 +396,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     control-plane: controller
   name: kustomize-controller
 spec:
@@ -477,7 +477,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     control-plane: controller
   name: source-controller
 spec:

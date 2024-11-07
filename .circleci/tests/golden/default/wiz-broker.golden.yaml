@@ -6,7 +6,7 @@ metadata:
   name: release-test-api-token
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -23,7 +23,7 @@ metadata:
   name: release-test-agent
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -37,9 +37,9 @@ spec:
   template:
     metadata:
       annotations:
-        rollme: ""
+        rollme: "REDACTED"
       labels:
-        helm.sh/chart: ""
+        helm.sh/chart: "REDACTED"
         app.kubernetes.io/name: wiz-broker
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.5"
@@ -98,7 +98,7 @@ metadata:
   name: release-test-connector
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: ""
+    helm.sh/chart: "REDACTED"
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
