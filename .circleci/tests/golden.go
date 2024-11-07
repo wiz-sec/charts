@@ -25,6 +25,7 @@ type goldenHelmTest struct {
 }
 
 // runGoldenHelmTest Code is based on the article here:  https://medium.com/@zelldon91/advanced-test-practices-for-helm-charts-587caeeb4cb
+// This function allows to test rendering of helm charts with values and rendering specific templates.
 func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 	r := require.New(t)
 
