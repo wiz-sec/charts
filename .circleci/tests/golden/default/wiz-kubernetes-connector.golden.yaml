@@ -65,7 +65,7 @@ spec:
   template:
     metadata:
       annotations:
-        rollme: "MdCG2"
+        rollme: "it8fV"
       labels:
         app.kubernetes.io/name: wiz-broker
         app.kubernetes.io/instance: release-test

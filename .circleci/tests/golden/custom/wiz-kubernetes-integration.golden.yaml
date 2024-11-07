@@ -1,0 +1,725 @@
+---
+# Source: wiz-kubernetes-integration/charts/wiz-admission-controller/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: release-test-wiz-admission-controller
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.6"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/charts/wiz-broker/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: wiz-broker
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-broker
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: wiz-kubernetes-integration/charts/wiz-admission-controller/templates/serviceaccount.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: release-test-wiz-admission-controller-namespace-reader
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.6"
+    app.kubernetes.io/managed-by: Helm
+rules:
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list"]
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/service-account-cluster-reader.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: wiz-cluster-reader
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+---
+# Source: wiz-kubernetes-integration/charts/wiz-admission-controller/templates/serviceaccount.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: release-test-wiz-admission-controller-namespace
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.6"
+    app.kubernetes.io/managed-by: Helm
+subjects:
+- kind: ServiceAccount
+  name: release-test-wiz-admission-controller
+  namespace: "release-helm-namespace"
+roleRef:
+  kind: ClusterRole
+  name: release-test-wiz-admission-controller-namespace-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/service-account-cluster-reader.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: wiz-cluster-reader
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name:  wiz-cluster-reader
+subjects:
+- kind: ServiceAccount
+  name: wiz-cluster-reader
+  namespace: "release-helm-namespace"
+---
+# Source: wiz-kubernetes-integration/charts/wiz-admission-controller/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-test-wiz-admission-controller
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.6"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: wiz-admission-controller
+spec:
+  type: ClusterIP
+  ports:
+    - port: 443
+      targetPort: 10250
+      protocol: TCP
+  selector:
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/name: wiz-admission-controller
+---
+# Source: wiz-kubernetes-integration/charts/wiz-admission-controller/templates/deploymentenforcement.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-test-wiz-admission-controller
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.6"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: wiz-admission-controller
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/chartName: wiz-admission-controller
+      app.kubernetes.io/instance: release-test
+      app.kubernetes.io/name: wiz-admission-controller
+  template:
+    metadata:
+      annotations:
+        rollme.proxyHash: 08766d42378ee5793f5f58973d800d4b064e466ae67684e16b1a56ab1c5dedfc
+        rollme.wizApiTokenHash: 9f27ffdc43a7a5a113f02c056c1a93cc136b829b90f30a93d5527af25dd6e325
+        rollme.webhookCert: 82b342b6baa5546dde3009c2a841cc3a4e6019a6e560298c93cb7418162c0f59
+      labels:
+        app.kubernetes.io/chartName: wiz-admission-controller
+        app.kubernetes.io/instance: release-test
+        app.kubernetes.io/version: "2.6"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: wiz-admission-controller
+    spec:
+      imagePullSecrets:
+        - name: aaaa
+      serviceAccountName: release-test-wiz-admission-controller
+      securityContext:
+        {}
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: wiz-admission-controller
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: "wiziopublic.azurecr.io/wiz-app/wiz-admission-controller:2.6"
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 10250
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 1
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            timeoutSeconds: 30
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 30
+            initialDelaySeconds: 5
+            timeoutSeconds: 300
+
+          command:
+          - "/usr/bin/wiz-admission-controller"
+          - "--readiness-port=8000"
+          # Server flags
+          - "--port=10250"
+          - "--tls-private-key-file=/var/server-certs/tls.key"
+          - "--tls-cert-file=/var/server-certs/tls.crt"
+          # Webhook flags # check opaWebhook for backward compatibility
+          - "--error-enforcement-method=AUDIT"
+          # Kubernetes API server flags
+          - "--namespace-cache-ttl=10m"
+          # OPA webhook flags
+          - "--misconfiguration-enabled=true"
+          
+            
+          # Image integrity webhook flags
+          # Disable K8S audit logs webhook
+          - "--kubernetes-audit-logs-enabled=false"
+          env:
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: wiz-api-token
+                key: clientId
+                optional: false
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: wiz-api-token
+                key: clientToken
+                optional: false
+          - name: WIZ_ENV
+            value: 
+          - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
+            value: "true"
+          - name: LOG_LEVEL
+            value: info
+          # For running pod with read only file system we write all the cache files to /var/cache volume mount
+          - name: TUF_ROOT
+            value: "/var/cache/.sigstore"
+          - name: AWS_ECR_CACHE_DIR
+            value: "/var/cache/.ecr"
+          - name: WIZ_RUNTIME_METADATA_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: WIZ_RUNTIME_METADATA_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: WIZ_TERMINATION_GRACE_PERIOD
+            value: "60s"
+          ## Image registry client flags
+          - name: WIZ_REGISTRY_IGNORE_SECRET_MISSING_ERROR
+            value: "false"
+          - name: WIZ_REGISTRY_IMAGE_PULL_SECRET_RELOAD_INTERVAL
+            value: "5m"
+          ## Enable debug webhook that only logs the request
+          resources:
+            
+            {}
+          volumeMounts:
+          - mountPath: /var/cache
+            name: cache
+          - mountPath: /var/server-certs
+            name: server-certs
+            readOnly: true
+      volumes:
+        - name: cache
+          emptyDir: {}
+        - name: server-certs
+          secret:
+            defaultMode: 444
+            secretName: release-test-wiz-admission-controller-cert
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/charts/wiz-broker/templates/wiz-broker-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-test-agent
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-broker
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wiz-broker
+      app.kubernetes.io/instance: release-test
+  template:
+    metadata:
+      annotations:
+        rollme: "37E4M"
+      labels:
+        app.kubernetes.io/name: wiz-broker
+        app.kubernetes.io/instance: release-test
+        app.kubernetes.io/version: "2.5"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      imagePullSecrets:
+        - name: aaaa
+      serviceAccountName: wiz-broker
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+        - name: connector-data
+          secret:
+            secretName: release-test-connector
+            items:
+              - key: connectorData
+                path: data
+      containers:
+        - name: wiz-broker
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: wiziopublic.azurecr.io/wiz-app/wiz-broker:2.5
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: connector-data
+            mountPath: /etc/connectorData
+            readOnly: true
+          args: [
+            /etc/connectorData/data
+          ]
+          env:
+          - name: LOG_LEVEL
+            value: info
+          - name: WIZ_ENV
+            value: 
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: wiz-api-token
+                key: clientId
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: wiz-api-token
+                key: clientToken
+          - name: TARGET_IP
+            value: kubernetes.default.svc.cluster.local
+          - name: TARGET_PORT
+            value: "443"
+          resources:
+            null
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/service-account-cluster-reader.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: wiz-cluster-reader
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/service-account-modify-connector.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: wiz-auto-modify-connector
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,pre-delete
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-1"
+---
+# Source: wiz-kubernetes-integration/charts/wiz-admission-controller/templates/opawebhook.yaml
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: release-test-wiz-admission-controller-cert
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.6"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    # Using helm hook to create certs only for chart install
+    "helm.sh/hook": "pre-install, pre-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVWakNDQXo2Z0F3SUJBZ0lSQUlxV3pxcTM4WTdTYVlSZlF3ZW1COEF3RFFZSktvWklodmNOQVFFTEJRQXcKSmpFa01DSUdBMVVFQXhNYmQybDZMV0ZrYldsemMybHZiaTFqYjI1MGNtOXNiR1Z5TFdOaE1CNFhEVEkwTVRFdwpOekUxTkRVMU5sb1hEVE0wTVRFd05URTFORFUxTmxvd01ERXVNQ3dHQTFVRUF4TWxjbVZzWldGelpTMTBaWE4wCkxYZHBlaTFoWkcxcGMzTnBiMjR0WTI5dWRISnZiR3hsY2pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVAKQURDQ0FRb0NnZ0VCQVAzRklMKy9PQkQzdC93UFJJN2JyYlgzTFEwaVRYSmRQczFPeVhEOFA4akFEaTVGdE5QZApGR2NNZGtXUEgrcFhQV1dIeUhVVjFBVE9YRHFOZTVNQ3dnemNsQUxHcmZra2U1a2pWeFpjaVpmTkpGcUVBb0Y2CkZSWlBSWWhtOFllM09iaEQ4MXNpZExmR21mUlB2cStWbXdwV1Zpbmp5VXprZkkrck1zT1FxU3J4VEFGQU01THcKRzl6K2ZkTHpkRHdwYXV2QkM0Q3NSdEhQcjRNcGl0Zi8xanJhYklBRmRzTHVhVE8zbnowTmlDZUVFRlB4cTk2TwpSYm1XQVlwNVpkL0FWZTVGdFZoQlhzNHZCL1piaHBMRnplNUF6cmZ2V2szMEpUUGFHQXR6b0w0U3pOSDVtTWdpCjBiT0gyK1FVMTVvdVA2eHRQVW9mL1NyZ2JxSGpLTEp0eDRVQ0F3RUFBYU9DQVhNd2dnRnZNQTRHQTFVZER3RUIKL3dRRUF3SUZvREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0RBWURWUjBUQVFILwpCQUl3QURBZkJnTlZIU01FR0RBV2dCUnRrc1VMYkRyeUJ4Mk5WYkFucGtPRzl4c2lDakNDQVEwR0ExVWRFUVNDCkFRUXdnZ0VBZ2p4eVpXeGxZWE5sTFhSbGMzUXRkMmw2TFdGa2JXbHpjMmx2YmkxamIyNTBjbTlzYkdWeUxuSmwKYkdWaGMyVXRhR1ZzYlMxdVlXMWxjM0JoWTJXQ1FISmxiR1ZoYzJVdGRHVnpkQzEzYVhvdFlXUnRhWE56YVc5dQpMV052Ym5SeWIyeHNaWEl1Y21Wc1pXRnpaUzFvWld4dExXNWhiV1Z6Y0dGalpTNXpkbU9DUEhKbGJHVmhjMlV0CmRHVnpkQzEzYVhvdFlYVmthWFF0Ykc5bmN5MWpiMnhzWldOMGIzSXVjbVZzWldGelpTMW9aV3h0TFc1aGJXVnoKY0dGalpZSkFjbVZzWldGelpTMTBaWE4wTFhkcGVpMWhkV1JwZEMxc2IyZHpMV052Ykd4bFkzUnZjaTV5Wld4bApZWE5sTFdobGJHMHRibUZ0WlhOd1lXTmxMbk4yWXpBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQUhackxoYlJoClIxSUtsSnRSR1V5Y2x5VWMxaWV5QTdMQXpOdzFvb2RycXB5Qkp5U0p4UHdockRleHB5RXVhcUdJeXh3Z29kZU4KaURPRVltK01JVVAxbXBpNDdWakE4bUFoeVVNQ1VTWnphUE1GaVp1Y1BpbFdlTjJleSt0cFJ6TnlWK3B0SVQzWQplL2N2MzQ3eHRhZ0puemR6b1lRcTJxYnRVMzJ5N3VKWkNheXZSK1A5QnpQQzRDOEpNMndtM0ZzRVpEN3o2dGhVCngwUWlOVU12SHNzcTc4OGNGK21YN2hTWCtPamFjNk1NbHpDWVdaSWwydjc2ZnYwYUlROURwQ2dSazhrRTUzR3gKY2Rsa0szcmhFTzFNVy9iVzE1UE5zTWpDNFozTlF0cDJxNXVWb1RCajF3OTZOUHdSTm5VOE45Y2ZMNXk5TWFxNgphWTdRdWMvOHZ2clg1UT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBL2NVZ3Y3ODRFUGUzL0E5RWp0dXR0ZmN0RFNKTmNsMCt6VTdKY1B3L3lNQU9Ma1cwCjA5MFVad3gyUlk4ZjZsYzlaWWZJZFJYVUJNNWNPbzE3a3dMQ0ROeVVBc2F0K1NSN21TTlhGbHlKbDgwa1dvUUMKZ1hvVkZrOUZpR2J4aDdjNXVFUHpXeUowdDhhWjlFKytyNVdiQ2xaV0tlUEpUT1I4ajZzeXc1Q3BLdkZNQVVBegprdkFiM1A1OTB2TjBQQ2xxNjhFTGdLeEcwYyt2Z3ltSzEvL1dPdHBzZ0FWMnd1NXBNN2VmUFEySUo0UVFVL0dyCjNvNUZ1WllCaW5sbDM4QlY3a1cxV0VGZXppOEg5bHVHa3NYTjdrRE90KzlhVGZRbE05b1lDM09ndmhMTTBmbVkKeUNMUnM0ZmI1QlRYbWk0L3JHMDlTaC85S3VCdW9lTW9zbTNIaFFJREFRQUJBb0lCQVFDenRnVXlKUzJFUHBscApoRHB0M0w1UXpjRjJ1cU1UNlZyUE5BdE4yeVVrZW5YUWFRYmN2b1J6VVl6MFI1NDNheDZNcHpMYlQrRDhvbE1JCkdDZTUvVXNFcHJTZW5xcVhkREdmU2pxakdGZE1URGVCYmxrRDdqdSt0OWFxK1JQMG8xbloxeTBnamU4UU1qSFcKcFI2SjQ2MlBEWU1wV1NtMkxWelV0VTFXMXp3bHJxQzkxejdiMFN6Qzd0TTBka09SclliRkNKU0ZkQzNreEFPRQpHZThqNklQNzZ5OUtaSFhpRkxDeWdDRlprdWxqZzg0aWcxRTh3UG1mTUZtenpMaTVtLytHWjhlVC9ONkV3djFpCjVGNUpDVi9WYTluVEE3NHZEdUhxZVI2a2NRektzeUJ1VUhHQjYyUlZmM08rdVVEdHplSS9GK3RZWmt5WFdtS0QKM1UyVnF0ZGxBb0dCQVAvNWdremxiN2wzVXNMMHZzVVJncXJBOUNnVm9SSVo4bXJHTEExQVEvamdjL1N3QTNkQQpwVkxLRDZkSGRUZWw1dmVyTDhxckUxZGFjZmJyQ2tyTWJaM1o3cCtJeHJWL0QzOFRoZDFobVVjUGh4MzBXcVQzCjZvK3l5ZGdtU0pibDlMTzBsRFgwUnJqeUhnSmk0cTlVTjdKME1wS3JqazdZLzVteHg4ck1hMWJYQW9HQkFQM0wKa0NNVkZ5NW9ySHdnMEVuZlVIQzhFbEhpczl2MHhDbjRBaG0vNmU4d2MxNWVyeStUeWpkL0NXNHg3VVA5QVFmSwpLNTJ5VzBYcmJYeWIxZFRrK1dqckJpN2U0ZmRzR0hmTnl1MEpMSnc3L3ZyME85dEpiQkRNdzVKcjV1cFdyUFJkCmdMNzl4cUNXQStudzhYZm1wNENrdUoxcG1menNmdHBkUFp0emNQVURBb0dBV0hkcE94NUlvTGJHbWE1d2lEZG4KQzVDb1VYbzRNc05ZN3VJU3MzbTBoRDArbGlDRzhoNGJoU05raVpHK3h6N0ZObStwa3NmUlpXMVMyZDJkcndBOApHa1FKbm9Wczk2azBOOTBOZE5lWVcrRFg5OWhOdzVvVExSckRlN3F2ZDhkOTdPWEtHMk9UVmJRSC94Y2g5U3FNCkhWYmZhNlZ6QjNranpZQ041bDhEOGYwQ2dZQTdhYUlPZEd0KzA4WTlNTGxSOGRNMDhQSWc5VDlCcUtVYlpoR24KMFlPRUdRV0kvQVZxeitBdzZhNWRlNWFkcWViSjJnd24ySThCYVVHeVFCRG95OG1QUkNXb1owamkwUTFSVG4zSQp5N01EeUEvQzA5WUhXY0xRay83Y2tpSDJqZC9qUE5oYzNhL1gvQVppaDZNZmZJR04zZ0hSNTl6Q2x1S0RYL3lDCkhaNDkzUUtCZ0VBbzlGRHpNcUkvTWl4bkF4TGZhZk1wZXgrV3k1a3pRSXRsQXVoMG9GWHNlZ2pmTzlRZERUclUKVHFmSGcyZzV0aExBcTllbHI3aVRCNjg1dytYOGlhamtCTUJPMzhXU2VOL2JlcnhKM1k2endJZ1g5S0c5VzJLNQpUMy9laUdPUlhZREhhWk04UHRDMFFOSkNyZnRQUkQ5MWVVbDYxTWVNQndkWlZGZTVpVkhECi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/secret-connector.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: release-test-connector
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-weight": "-1"
+type: Opaque
+data:
+  connectorData: "e30="
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/service-account-cluster-reader.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wiz-cluster-reader-token
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+    kubernetes.io/service-account.name: wiz-cluster-reader
+type: kubernetes.io/service-account-token
+---
+# Source: wiz-kubernetes-integration/templates/secrets-wiz-api-token.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wiz-api-token
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-integration
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/managed-by: Helm
+  annotations: # Secret used by per-install hook in wiz-kubernetes-connector
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-1"
+stringData:
+  clientId: "abcd"
+  clientToken: "abcd"
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/service-account-modify-connector.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: wiz-auto-modify-connector
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,pre-delete
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-1"
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["release-test-connector"]
+    verbs: ["update", "get"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: [
+      "wiz-api-token",
+      "wiz-cluster-reader-token",
+    ]
+    verbs: ["get"]
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/service-account-modify-connector.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: wiz-auto-modify-connector
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,pre-delete
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "-1"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name:  wiz-auto-modify-connector
+subjects:
+- kind: ServiceAccount
+  name: wiz-auto-modify-connector
+  namespace: "release-helm-namespace"
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/job-create-connector.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wiz-kubernetes-connector-create-connector
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded 
+    rollme.wizApiTokenHash: ce8124bc1b0fbc0cb5cd47338ca0c7d5f5446d79936e443a201d96b192a7bd65
+    rollme.proxyHash: 9aa53d69075371b3fa23ebeea2fd2416ea81fb533499d071ca2d576f17c7c886
+    rollme.brokerHash: 115ba85431eeaf8db3ff2173aee02d16e67df1555d5e1ef74cfa7ac0d812cab2   
+
+spec:
+  ttlSecondsAfterFinished: 60
+  manualSelector: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wiz-kubernetes-connector
+      app.kubernetes.io/instance: release-test
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wiz-kubernetes-connector
+        app.kubernetes.io/instance: release-test
+        app.kubernetes.io/version: "2.5"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      imagePullSecrets:
+        - name: aaaa
+      serviceAccountName: wiz-auto-modify-connector
+      restartPolicy: "Never"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: wiz-connector-creator
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: wiziopublic.azurecr.io/wiz-app/wiz-broker:2.5
+          imagePullPolicy: Always
+          command:
+            - "wiz-broker"
+          args:
+            
+            - create-kubernetes-connector
+            - --api-server-endpoint
+            - "https://kubernetes.default.svc.cluster.local"
+            - --secrets-namespace
+            - "release-helm-namespace"
+            - --service-account-token-secret-name
+            - "wiz-cluster-reader-token"
+            - --output-secret-name
+            - "release-test-connector"
+            - --is-on-prem=true
+            - --connector-name
+            - "test"
+            - --service-type
+            - "eks"
+            - --wait=true
+          env:
+          - name: LOG_LEVEL
+            value: info
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: wiz-api-token
+                key: clientId
+                optional: false
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: wiz-api-token
+                key: clientToken
+                optional: false
+          - name: WIZ_ENV
+            value: 
+          resources:
+            null
+---
+# Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/job-delete-connector.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wiz-kubernetes-connector-delete-connector
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-connector
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    rollme.proxyHash: 9aa53d69075371b3fa23ebeea2fd2416ea81fb533499d071ca2d576f17c7c886
+    rollme.brokerHash: 115ba85431eeaf8db3ff2173aee02d16e67df1555d5e1ef74cfa7ac0d812cab2 
+
+spec:
+  ttlSecondsAfterFinished: 60
+  manualSelector: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wiz-kubernetes-connector
+      app.kubernetes.io/instance: release-test
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wiz-kubernetes-connector
+        app.kubernetes.io/instance: release-test
+        app.kubernetes.io/version: "2.5"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      imagePullSecrets:
+        - name: aaaa
+      serviceAccountName: wiz-auto-modify-connector
+      restartPolicy: "Never"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: wiz-connector-delete
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: wiziopublic.azurecr.io/wiz-app/wiz-broker:2.5
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c"]
+          args:
+            - >
+              wiz-broker delete-kubernetes-connector 
+              --input-secrets-namespace 
+              "release-helm-namespace" 
+              --input-secret-name 
+              "release-test-connector" 
+              || true
+          env:
+          - name: LOG_LEVEL
+            value: info
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: wiz-api-token
+                key: clientId
+                optional: false
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: wiz-api-token
+                key: clientToken
+                optional: false
+          - name: WIZ_ENV
+            value: ""
+          resources:
+            null
+---
+# Source: wiz-kubernetes-integration/charts/wiz-admission-controller/templates/opawebhook.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: release-test-wiz-admission-controller-misconfigurations
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.6"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": "post-install, post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+webhooks:
+- name: misconfigurationsadmissionvalidator.wiz.io
+  admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    service:
+      namespace: release-helm-namespace
+      name: release-test-wiz-admission-controller
+      path: /opa-validator
+      port: 443
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVWakNDQXo2Z0F3SUJBZ0lSQUlxV3pxcTM4WTdTYVlSZlF3ZW1COEF3RFFZSktvWklodmNOQVFFTEJRQXcKSmpFa01DSUdBMVVFQXhNYmQybDZMV0ZrYldsemMybHZiaTFqYjI1MGNtOXNiR1Z5TFdOaE1CNFhEVEkwTVRFdwpOekUxTkRVMU5sb1hEVE0wTVRFd05URTFORFUxTmxvd01ERXVNQ3dHQTFVRUF4TWxjbVZzWldGelpTMTBaWE4wCkxYZHBlaTFoWkcxcGMzTnBiMjR0WTI5dWRISnZiR3hsY2pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVAKQURDQ0FRb0NnZ0VCQVAzRklMKy9PQkQzdC93UFJJN2JyYlgzTFEwaVRYSmRQczFPeVhEOFA4akFEaTVGdE5QZApGR2NNZGtXUEgrcFhQV1dIeUhVVjFBVE9YRHFOZTVNQ3dnemNsQUxHcmZra2U1a2pWeFpjaVpmTkpGcUVBb0Y2CkZSWlBSWWhtOFllM09iaEQ4MXNpZExmR21mUlB2cStWbXdwV1Zpbmp5VXprZkkrck1zT1FxU3J4VEFGQU01THcKRzl6K2ZkTHpkRHdwYXV2QkM0Q3NSdEhQcjRNcGl0Zi8xanJhYklBRmRzTHVhVE8zbnowTmlDZUVFRlB4cTk2TwpSYm1XQVlwNVpkL0FWZTVGdFZoQlhzNHZCL1piaHBMRnplNUF6cmZ2V2szMEpUUGFHQXR6b0w0U3pOSDVtTWdpCjBiT0gyK1FVMTVvdVA2eHRQVW9mL1NyZ2JxSGpLTEp0eDRVQ0F3RUFBYU9DQVhNd2dnRnZNQTRHQTFVZER3RUIKL3dRRUF3SUZvREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0RBWURWUjBUQVFILwpCQUl3QURBZkJnTlZIU01FR0RBV2dCUnRrc1VMYkRyeUJ4Mk5WYkFucGtPRzl4c2lDakNDQVEwR0ExVWRFUVNDCkFRUXdnZ0VBZ2p4eVpXeGxZWE5sTFhSbGMzUXRkMmw2TFdGa2JXbHpjMmx2YmkxamIyNTBjbTlzYkdWeUxuSmwKYkdWaGMyVXRhR1ZzYlMxdVlXMWxjM0JoWTJXQ1FISmxiR1ZoYzJVdGRHVnpkQzEzYVhvdFlXUnRhWE56YVc5dQpMV052Ym5SeWIyeHNaWEl1Y21Wc1pXRnpaUzFvWld4dExXNWhiV1Z6Y0dGalpTNXpkbU9DUEhKbGJHVmhjMlV0CmRHVnpkQzEzYVhvdFlYVmthWFF0Ykc5bmN5MWpiMnhzWldOMGIzSXVjbVZzWldGelpTMW9aV3h0TFc1aGJXVnoKY0dGalpZSkFjbVZzWldGelpTMTBaWE4wTFhkcGVpMWhkV1JwZEMxc2IyZHpMV052Ykd4bFkzUnZjaTV5Wld4bApZWE5sTFdobGJHMHRibUZ0WlhOd1lXTmxMbk4yWXpBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQUhackxoYlJoClIxSUtsSnRSR1V5Y2x5VWMxaWV5QTdMQXpOdzFvb2RycXB5Qkp5U0p4UHdockRleHB5RXVhcUdJeXh3Z29kZU4KaURPRVltK01JVVAxbXBpNDdWakE4bUFoeVVNQ1VTWnphUE1GaVp1Y1BpbFdlTjJleSt0cFJ6TnlWK3B0SVQzWQplL2N2MzQ3eHRhZ0puemR6b1lRcTJxYnRVMzJ5N3VKWkNheXZSK1A5QnpQQzRDOEpNMndtM0ZzRVpEN3o2dGhVCngwUWlOVU12SHNzcTc4OGNGK21YN2hTWCtPamFjNk1NbHpDWVdaSWwydjc2ZnYwYUlROURwQ2dSazhrRTUzR3gKY2Rsa0szcmhFTzFNVy9iVzE1UE5zTWpDNFozTlF0cDJxNXVWb1RCajF3OTZOUHdSTm5VOE45Y2ZMNXk5TWFxNgphWTdRdWMvOHZ2clg1UT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  rules:
+    - apiGroups:
+      - '*'
+      apiVersions:
+      - '*'
+      operations:
+      - CREATE
+      - UPDATE
+      resources:
+      - namespaces
+      - configmaps
+      - ingresses
+      - services
+      - pods
+      - deployments
+      - jobs
+      - cronjobs
+      - replicasets
+      - statefulsets
+      - daemonsets
+  namespaceSelector:
+    matchExpressions:
+    - key: kubernetes.io/metadata.name
+      operator: NotIn
+      values:
+      - kube-system
+      - kube-node-lease
+  timeoutSeconds: 8
+  failurePolicy: Ignore
+  sideEffects: None
