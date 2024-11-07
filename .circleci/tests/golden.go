@@ -38,10 +38,12 @@ func TestContainerGoldenTestDefaults(t *testing.T, testCase *TemplateGoldenTest)
 
 	// Replacing expressions which change on every run so they won't be compared in the golden file
 	regexes := map[*regexp.Regexp]string{
-		regexp.MustCompile(`helm.sh/chart:\s+.*`): "helm.sh/chart: \"REDACTED\"",
-		regexp.MustCompile(`tls.crt:\s+.*`):       "tls.crt: \"REDACTED\"",
-		regexp.MustCompile(`tls.key:\s+.*`):       "tls.key: \"REDACTED\"",
-		regexp.MustCompile(`rollme:\s+.*`):        "rollme: \"REDACTED\"",
+		regexp.MustCompile(`helm.sh/chart:\s+.*`):      "helm.sh/chart: \"REDACTED\"",
+		regexp.MustCompile(`tls.crt:\s+.*`):            "tls.crt: \"REDACTED\"",
+		regexp.MustCompile(`tls.key:\s+.*`):            "tls.key: \"REDACTED\"",
+		regexp.MustCompile(`rollme:\s+.*`):             "rollme: \"REDACTED\"",
+		regexp.MustCompile(`rollme.webhookCert:\s+.*`): "rollme.webhookCert: \"REDACTED\"",
+		regexp.MustCompile(`caBundle:\s+.*`):           "caBundle: \"REDACTED\"",
 	}
 	for regex, replaced := range regexes {
 		bytes := regex.ReplaceAll([]byte(output), []byte(replaced))
