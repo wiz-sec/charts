@@ -4,7 +4,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: release-test-wiz-sensor
-  namespace: release-helm-s1ldd7
+  namespace: release-helm-namespace
   labels:
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
@@ -17,7 +17,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: release-test-wiz-sensor-apikey
-  namespace: release-helm-s1ldd7
+  namespace: release-helm-namespace
   labels:
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
@@ -41,7 +41,7 @@ metadata:
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "1.0.4708"
     app.kubernetes.io/managed-by: Helm
-  namespace: release-helm-s1ldd7
+  namespace: release-helm-namespace
 data:
   .dockerconfigjson: eyJhdXRocyI6IHsid2l6aW8uYXp1cmVjci5pbyI6IHsiYXV0aCI6ICJQR2x1YzJWeWRDMTFjMlZ5Ym1GdFpUNDZQR2x1YzJWeWRDMXdZWE56ZDI5eVpEND0ifX19
 ---
@@ -82,7 +82,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: release-test-wiz-sensor
-  namespace: release-helm-s1ldd7
+  namespace: release-helm-namespace
 roleRef:
   kind: ClusterRole
   name: release-test-wiz-sensor
@@ -99,7 +99,7 @@ metadata:
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "1.0.4708"
     app.kubernetes.io/managed-by: Helm
-  namespace: release-helm-s1ldd7
+  namespace: release-helm-namespace
 
 spec:
   selector:

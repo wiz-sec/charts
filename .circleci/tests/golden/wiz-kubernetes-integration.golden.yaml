@@ -1,0 +1,15 @@
+---
+# Source: wiz-kubernetes-integration/templates/secrets-wiz-api-token.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wiz-api-token
+  namespace: "release-helm-namespace"
+  labels:
+    app.kubernetes.io/name: wiz-kubernetes-integration
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+stringData:
+  clientId: "<insert-client-id>"
+  clientToken: "<insert-client-token>"

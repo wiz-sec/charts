@@ -4,10 +4,8 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 	"testing"
 
-	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/stretchr/testify/suite"
 	"helm.sh/helm/v3/pkg/chartutil"
 )
@@ -47,7 +45,7 @@ func (s *ss) TestChartTemplateWithDefaultValues() {
 			TestContainerGoldenTestDefaults(s.T(), &TemplateGoldenTest{
 				ChartPath:      chartDirFullPath,
 				Release:        "release-test",
-				Namespace:      "release-helm-" + strings.ToLower(random.UniqueId()),
+				Namespace:      "release-helm-namespace",
 				GoldenFileName: chartName,
 				ValuesFile:     defaultValuesFilePath,
 			})

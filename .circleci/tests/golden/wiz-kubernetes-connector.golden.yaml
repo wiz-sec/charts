@@ -4,7 +4,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: wiz-broker
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
@@ -43,14 +43,14 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: wiz-cluster-reader
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
 ---
 # Source: wiz-kubernetes-connector/charts/wiz-broker/templates/wiz-broker-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: release-test-agent
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
@@ -65,7 +65,7 @@ spec:
   template:
     metadata:
       annotations:
-        rollme: "f5VrS"
+        rollme: "MdCG2"
       labels:
         app.kubernetes.io/name: wiz-broker
         app.kubernetes.io/instance: release-test
@@ -125,7 +125,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: wiz-cluster-reader
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
@@ -140,7 +140,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: wiz-auto-modify-connector
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
@@ -156,7 +156,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: release-test-connector
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
@@ -174,7 +174,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: release-test-api-token
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
@@ -192,7 +192,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: wiz-cluster-reader-token
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
@@ -209,7 +209,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: wiz-auto-modify-connector
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
@@ -237,7 +237,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: wiz-auto-modify-connector
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
@@ -254,14 +254,14 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: wiz-auto-modify-connector
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
 ---
 # Source: wiz-kubernetes-connector/templates/job-create-connector.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: wiz-kubernetes-connector-create-connector
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
@@ -311,7 +311,7 @@ spec:
             - --api-server-endpoint
             - "https://kubernetes.default.svc.cluster.local"
             - --secrets-namespace
-            - "release-helm-7nkzgj"
+            - "release-helm-namespace"
             - --service-account-token-secret-name
             - "wiz-cluster-reader-token"
             - --output-secret-name
@@ -343,7 +343,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: wiz-kubernetes-connector-delete-connector
-  namespace: "release-helm-7nkzgj"
+  namespace: "release-helm-namespace"
   labels:
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
@@ -389,7 +389,7 @@ spec:
             - >
               wiz-broker delete-kubernetes-connector 
               --input-secrets-namespace 
-              "release-helm-7nkzgj" 
+              "release-helm-namespace" 
               --input-secret-name 
               "release-test-connector" 
               || true

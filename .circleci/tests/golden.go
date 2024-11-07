@@ -31,7 +31,7 @@ func TestContainerGoldenTestDefaults(t *testing.T, testCase *TemplateGoldenTest)
 		KubectlOptions:    k8s.NewKubectlOptions("", "", testCase.Namespace),
 		SetValues:         testCase.SetValues,
 		ValuesFiles:       []string{testCase.ValuesFile},
-		BuildDependencies: false,
+		BuildDependencies: true,
 	}
 	output := helm.RenderTemplate(t, options, testCase.ChartPath, testCase.Release, testCase.Templates)
 	regex := regexp.MustCompile(`\s+helm.sh/chart:\s+.*`)
