@@ -35,14 +35,23 @@ func TestContainerGoldenTestDefaults(t *testing.T, testCase *TemplateGoldenTest)
 		BuildDependencies: true,
 	}
 	output := helm.RenderTemplate(t, options, testCase.ChartPath, testCase.Release, testCase.Templates)
-	regex := regexp.MustCompile(`\s+helm.sh/chart:\s+.*`)
-	bytes := regex.ReplaceAll([]byte(output), []byte(""))
-	output = string(bytes)
+
+	// Replacing expressions which change on every run so they won't be compared in the golden file
+	regexes := map[*regexp.Regexp]string{
+		regexp.MustCompile(`helm.sh/chart:\s+.*`): "helm.sh/chart: \"REDACTED\"",
+		regexp.MustCompile(`tls.crt:\s+.*`):       "tls.crt: \"REDACTED\"",
+		regexp.MustCompile(`tls.key:\s+.*`):       "tls.key: \"REDACTED\"",
+		regexp.MustCompile(`rollme:\s+.*`):        "rollme: \"REDACTED\"",
+	}
+	for regex, replaced := range regexes {
+		bytes := regex.ReplaceAll([]byte(output), []byte(replaced))
+		output = string(bytes)
+	}
 
 	goldenFile := "golden/" + testCase.GoldenSubDirectory + "/" + testCase.GoldenFileName + ".golden.yaml"
 
 	if *update {
-		err := os.WriteFile(goldenFile, bytes, 0644)
+		err := os.WriteFile(goldenFile, []byte(output), 0644)
 		r.NoError(err, "Golden file was not writable")
 	}
 

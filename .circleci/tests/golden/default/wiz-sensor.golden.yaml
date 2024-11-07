@@ -6,6 +6,8 @@ metadata:
   name: release-test-wiz-sensor
   namespace: release-helm-namespace
   labels:
+    
+    helm.sh/chart: ""
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
@@ -19,6 +21,8 @@ metadata:
   name: release-test-wiz-sensor-apikey
   namespace: release-helm-namespace
   labels:
+    
+    helm.sh/chart: ""
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
@@ -36,6 +40,8 @@ type: kubernetes.io/dockerconfigjson
 metadata:
   name: release-test-wiz-sensor-imagepullkey
   labels:
+    
+    helm.sh/chart: ""
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
@@ -51,6 +57,8 @@ kind: ClusterRole
 metadata:
   name: release-test-wiz-sensor
   labels:
+    
+    helm.sh/chart: ""
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
@@ -74,6 +82,8 @@ kind: ClusterRoleBinding
 metadata:
   name: release-test-wiz-sensor
   labels:
+    
+    helm.sh/chart: ""
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
@@ -94,6 +104,8 @@ kind: DaemonSet
 metadata:
   name: release-test-wiz-sensor
   labels:
+    
+    helm.sh/chart: ""
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
@@ -113,6 +125,8 @@ spec:
   template:
     metadata:
       labels:
+        
+        helm.sh/chart: ""
         image/tag: v1
         app.kubernetes.io/name: wiz-sensor
         app.kubernetes.io/instance: release-test

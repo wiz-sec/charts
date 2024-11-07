@@ -6,6 +6,7 @@ metadata:
   name: release-test-wiz-admission-controller
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -18,6 +19,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -30,6 +32,7 @@ metadata:
   name: release-test-api-token
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -45,6 +48,7 @@ metadata:
   name: release-test-wiz-admission-controller-namespace-reader
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -61,6 +65,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager-event-creator
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -77,6 +82,7 @@ metadata:
   name: release-test-wiz-admission-controller-namespace
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -97,6 +103,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager-event-creator
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -117,6 +124,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager-pods-and-deployments-manager
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -137,6 +145,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager-pods-and-deployments
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -157,6 +166,7 @@ metadata:
   name: release-test-wiz-admission-controller
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -180,6 +190,7 @@ metadata:
   name: release-test-wiz-admission-controller
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -197,8 +208,10 @@ spec:
       annotations:
         rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
         rollme.wizApiTokenHash: be7f348cb8721e285ea80fa05ef524362ac46a57b0539e78b390db2bb0acb1be
-        rollme.webhookCert: f2a1572359fca2b60e12d219e335a3190926f67245c14bc328459f0a4e2f1719
+        rollme.webhookCert: fdc031ccf54dc3f306370c2d8537b947317131684d54fbda77f2d6ea0d4d082e
       labels:
+        
+        helm.sh/chart: ""
         app.kubernetes.io/chartName: wiz-admission-controller
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.7"
@@ -332,6 +345,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -350,6 +364,7 @@ spec:
             rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
             rollme.wizApiTokenHash: be7f348cb8721e285ea80fa05ef524362ac46a57b0539e78b390db2bb0acb1be
           labels:
+            helm.sh/chart: ""
             app.kubernetes.io/chartName: wiz-admission-controller
             app.kubernetes.io/instance: release-test
             app.kubernetes.io/version: "2.7"
@@ -423,6 +438,7 @@ metadata:
   name: release-test-wiz-admission-controller-cert
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -432,8 +448,8 @@ metadata:
     "helm.sh/hook": "pre-install, pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
 data:
-  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVWVENDQXoyZ0F3SUJBZ0lRUTJaTktmazl6T0FmWFlUMTFSbVF1ekFOQmdrcWhraUc5dzBCQVFzRkFEQW0KTVNRd0lnWURWUVFERXh0M2FYb3RZV1J0YVhOemFXOXVMV052Ym5SeWIyeHNaWEl0WTJFd0hoY05NalF4TVRBMwpNVFl5T0RNMVdoY05NelF4TVRBMU1UWXlPRE0xV2pBd01TNHdMQVlEVlFRREV5VnlaV3hsWVhObExYUmxjM1F0CmQybDZMV0ZrYldsemMybHZiaTFqYjI1MGNtOXNiR1Z5TUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEEKTUlJQkNnS0NBUUVBeU5TWFFlYkc3dFl3U1VCayt4RVRTL2hNcDkrTVVQMHl4MURvMTc2d04yRHUzSWpTa0crMgp4aTRQVXkxTVlCc3lOcTlDRTRId2VyNG0xQlJNRFEzYWFqRW51N3hwTTB2TGNPU3JGbGZZZW1WTGErKzl0aHIvCmwxUGhsU2xUcjVXd1FzR1Q4RXRkWEpBTmltYkFhMWVSUXVlUloxTms4K2NhbWFrUGhBNm1YTU9XOFVOZkxrNUcKQ2hWSVFXTTZqdWNScm9sbkxqMmFhWm92UFhKRDBNZXllSHA4VWZSYjNKVU5rMDRqb2tmNTVhQmdOSy91SVFJSQpDdXgxY1hWRXV4SlF1dDJMSlY0VjZKcGpVV3BaMSthaWVoOWNpc1FkNU41MTA0L3l3TzVvNEl0enpWM3RwSTFPCnc4ZjduUlVaVXZ4R1hJN1BxVFRCakRDVmZWWEk0bTBWR1FJREFRQUJvNElCY3pDQ0FXOHdEZ1lEVlIwUEFRSC8KQkFRREFnV2dNQjBHQTFVZEpRUVdNQlFHQ0NzR0FRVUZCd01CQmdnckJnRUZCUWNEQWpBTUJnTlZIUk1CQWY4RQpBakFBTUI4R0ExVWRJd1FZTUJhQUZFeUlZRWFETnE5RlZtc0V2OElTK0h0QzMzNllNSUlCRFFZRFZSMFJCSUlCCkJEQ0NBUUNDUEhKbGJHVmhjMlV0ZEdWemRDMTNhWG90WVdSdGFYTnphVzl1TFdOdmJuUnliMnhzWlhJdWNtVnMKWldGelpTMW9aV3h0TFc1aGJXVnpjR0ZqWllKQWNtVnNaV0Z6WlMxMFpYTjBMWGRwZWkxaFpHMXBjM05wYjI0dApZMjl1ZEhKdmJHeGxjaTV5Wld4bFlYTmxMV2hsYkcwdGJtRnRaWE53WVdObExuTjJZNEk4Y21Wc1pXRnpaUzEwClpYTjBMWGRwZWkxaGRXUnBkQzFzYjJkekxXTnZiR3hsWTNSdmNpNXlaV3hsWVhObExXaGxiRzB0Ym1GdFpYTncKWVdObGdrQnlaV3hsWVhObExYUmxjM1F0ZDJsNkxXRjFaR2wwTFd4dlozTXRZMjlzYkdWamRHOXlMbkpsYkdWaApjMlV0YUdWc2JTMXVZVzFsYzNCaFkyVXVjM1pqTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFDSUpOaFZUMHJWCmdQQkJoSFkrUmJZNTA2OVlyNFpGQm1xbUoxcjZacmdHR29TK0RMdGJHb3lieE5RbHVOdHJScmRhRURqWkhZSVMKd1B0MUw3cDRpUnAvSlIwblJpYncwLzYyeUp5VUY1dFBtLzdNeUNydTVmQXhJQU16L0VnWEMrUmZ6aUtkZjlnMQpPWXlkYlIzVWRpZThVajZMM084REhnTlFNcmo0c01zdjRJV2p1WlNIaWNoZ09IejNzaVQ5TXQrK0ZTZlI5R0xECitUODQ5SGlibUwwUlI1UmxYbkNxbG1WczVCSVpVanN2RHYyaUFINnptbWVCdUJWamFhdGhSY25LeThtd1BnRUQKVzFHOThFdVhEMCtiSWxwdThxak9ZYUdYdzNTa1NML3NsbUd2NzgyV0Z5SzJSRng2enhZUG5yeXpLYVFrS0hIRwpjU0Z4Wi85cVVoMUsKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
-  tls.key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBeU5TWFFlYkc3dFl3U1VCayt4RVRTL2hNcDkrTVVQMHl4MURvMTc2d04yRHUzSWpTCmtHKzJ4aTRQVXkxTVlCc3lOcTlDRTRId2VyNG0xQlJNRFEzYWFqRW51N3hwTTB2TGNPU3JGbGZZZW1WTGErKzkKdGhyL2wxUGhsU2xUcjVXd1FzR1Q4RXRkWEpBTmltYkFhMWVSUXVlUloxTms4K2NhbWFrUGhBNm1YTU9XOFVOZgpMazVHQ2hWSVFXTTZqdWNScm9sbkxqMmFhWm92UFhKRDBNZXllSHA4VWZSYjNKVU5rMDRqb2tmNTVhQmdOSy91CklRSUlDdXgxY1hWRXV4SlF1dDJMSlY0VjZKcGpVV3BaMSthaWVoOWNpc1FkNU41MTA0L3l3TzVvNEl0enpWM3QKcEkxT3c4ZjduUlVaVXZ4R1hJN1BxVFRCakRDVmZWWEk0bTBWR1FJREFRQUJBb0lCQVFDL1pTdktHS0FhV25LbQpQUUovNitRU0VNOHRaZlVaOGxTRWMrMlVQeDA5aWRuYXYySzlXRm8rUVFORjUvUFQyOWRkR21YRXBaK0R1dGpTCllZMmhHMFMrMDUza1kwbDNJNUw5UWxCeStNRk0xR0N1dTBwMzFQOGxQMEhMb0JrclMyTXlHNzViMGRkbU1idFYKM1ZzZ2NkSDBpekNkNG5KaHFDeEhxVUVxUDdQNHpwUVZ2TWtQc1pGUkdrTlhBVDZiSlB3T09nQmdvZDJ5cDlDQgp0bkZjejc5dDQ0eEJZbFZZVE5DdUE4d3FiQ2h0VjA3WG5Jc3FwZkdWZWtDZEkvZGpkT0w0UEdpeVBoQkZlNXpJCm1hMTk3ejRiNDBmaTI1L01TcTZDWWQ4T3c1K1ROQTBPdFBoZHRya2lCT0JnMktWbTA4VzJxSkovdDlaN0hENUcKOE9XWGtTVEpBb0dCQVByU1IxTCttTU1oZjJ6K2plRlNmcEhpNmRQNWFaU3B2N0lyVzJ1cHNvT0ovS2kvWGpZRApvbHozOXVFRGdvbmNQdlJJekVHUm5HMVVMZCtiL1J3Tmp2aGNGN0Z2L2lGbG9sYmsvQ0d2V2Z3UExyN1JqUE5oCk5maWlha3paY1h3MDA3UG1BYndwTk4wUkZOSmcrN2VHcW95Um1xcXZ5cnlUQWxxT3JIZ1RIbTVmQW9HQkFNejYKRllGN2lJMVZRTmFibmtOT1dKVTZGNzFsZG9sbU56aml2cWF4SkFEaEpuQy9jTnpTU24xSFh5KzlqVE1DSEVaYgpUL255ckNCbXRHVTVvZUhOOHhFNlJaclNudFB4MjJ2Mjh6MXVWUENMRFZNZ0oxTm5YL0lzbkw1bmJIaUFIL3p5CmpzemhFblZpUmlnOFhZOUhzZlEvV1ZScGZUVi9ySlMyK0l6eitMK0hBb0dCQUt4bUdHd3RYdWJRZ1h0elJDWVoKdzdHV25FMzg0dHN5Q2ZiMjRqR1FSSWt4TVI3ejJsZWFDK0dHOW9RWEc0U1NoQnI0WnB5eTd5Z2VjaUYrWUcwRgp6TDFjMzFRd3ZDWk1hMWI2c1dxZDBtWDBNWmNyQll6THhvTU5iNjgremtnbkwxUTV4ZnVFL3picjVMbnR1MWFjCkUySG5PcjRUY25CSFE1am05QmpjVzFCVkFvR0FOM0FIOHY0elAyNW9XK0s0MmlGTmFnYk5OdWRET1FRUk9XeHgKL2VsNUFGZmtxcWZNWVp6cWtwbUVFQWhuTVAySUlpcytKUzdTQ08xZUt1WjhkdkxabzdZcjd5UzUyajdXaG92QwoyOEdFYlk1ZUt6Wk9ESXV2OG5MSWJlTFEvb0pBcEl3QnZUMitYVXNZQ0hmVEloWlU5ZWRRUkxsSEtQbi85alRLClltejF3TzhDZ1lCU2VpenFmOHhFTit2Ny8zQTljUXhrNDQ2R3QzV0l3b3k5RWE1MFY4dXBJVitBcGI3R21FMmsKWmpINGJqTGFOa3B4YlRnVUpwTVkyLytoMEI4dUlPSnZMb3RsRDZPdXFjYVBkRmh6RlpLeWQyZGRDNXJEM0ZKegpOME1TR2FqejVDMnRGVi9aeFRsSHB3bk1UOC96REdzYWwyeHVuaVIwY2tZYVVGWTB0Ym5nREE9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+  tls.crt: ""
+  tls.key: ""
 ---
 # Source: wiz-admission-controller/templates/opawebhook.yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -442,6 +458,7 @@ metadata:
   name: release-test-wiz-admission-controller-misconfigurations
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -458,7 +475,7 @@ webhooks:
       name: release-test-wiz-admission-controller
       path: /opa-validator
       port: 443
-    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVWVENDQXoyZ0F3SUJBZ0lRUTJaTktmazl6T0FmWFlUMTFSbVF1ekFOQmdrcWhraUc5dzBCQVFzRkFEQW0KTVNRd0lnWURWUVFERXh0M2FYb3RZV1J0YVhOemFXOXVMV052Ym5SeWIyeHNaWEl0WTJFd0hoY05NalF4TVRBMwpNVFl5T0RNMVdoY05NelF4TVRBMU1UWXlPRE0xV2pBd01TNHdMQVlEVlFRREV5VnlaV3hsWVhObExYUmxjM1F0CmQybDZMV0ZrYldsemMybHZiaTFqYjI1MGNtOXNiR1Z5TUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEEKTUlJQkNnS0NBUUVBeU5TWFFlYkc3dFl3U1VCayt4RVRTL2hNcDkrTVVQMHl4MURvMTc2d04yRHUzSWpTa0crMgp4aTRQVXkxTVlCc3lOcTlDRTRId2VyNG0xQlJNRFEzYWFqRW51N3hwTTB2TGNPU3JGbGZZZW1WTGErKzl0aHIvCmwxUGhsU2xUcjVXd1FzR1Q4RXRkWEpBTmltYkFhMWVSUXVlUloxTms4K2NhbWFrUGhBNm1YTU9XOFVOZkxrNUcKQ2hWSVFXTTZqdWNScm9sbkxqMmFhWm92UFhKRDBNZXllSHA4VWZSYjNKVU5rMDRqb2tmNTVhQmdOSy91SVFJSQpDdXgxY1hWRXV4SlF1dDJMSlY0VjZKcGpVV3BaMSthaWVoOWNpc1FkNU41MTA0L3l3TzVvNEl0enpWM3RwSTFPCnc4ZjduUlVaVXZ4R1hJN1BxVFRCakRDVmZWWEk0bTBWR1FJREFRQUJvNElCY3pDQ0FXOHdEZ1lEVlIwUEFRSC8KQkFRREFnV2dNQjBHQTFVZEpRUVdNQlFHQ0NzR0FRVUZCd01CQmdnckJnRUZCUWNEQWpBTUJnTlZIUk1CQWY4RQpBakFBTUI4R0ExVWRJd1FZTUJhQUZFeUlZRWFETnE5RlZtc0V2OElTK0h0QzMzNllNSUlCRFFZRFZSMFJCSUlCCkJEQ0NBUUNDUEhKbGJHVmhjMlV0ZEdWemRDMTNhWG90WVdSdGFYTnphVzl1TFdOdmJuUnliMnhzWlhJdWNtVnMKWldGelpTMW9aV3h0TFc1aGJXVnpjR0ZqWllKQWNtVnNaV0Z6WlMxMFpYTjBMWGRwZWkxaFpHMXBjM05wYjI0dApZMjl1ZEhKdmJHeGxjaTV5Wld4bFlYTmxMV2hsYkcwdGJtRnRaWE53WVdObExuTjJZNEk4Y21Wc1pXRnpaUzEwClpYTjBMWGRwZWkxaGRXUnBkQzFzYjJkekxXTnZiR3hsWTNSdmNpNXlaV3hsWVhObExXaGxiRzB0Ym1GdFpYTncKWVdObGdrQnlaV3hsWVhObExYUmxjM1F0ZDJsNkxXRjFaR2wwTFd4dlozTXRZMjlzYkdWamRHOXlMbkpsYkdWaApjMlV0YUdWc2JTMXVZVzFsYzNCaFkyVXVjM1pqTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFDSUpOaFZUMHJWCmdQQkJoSFkrUmJZNTA2OVlyNFpGQm1xbUoxcjZacmdHR29TK0RMdGJHb3lieE5RbHVOdHJScmRhRURqWkhZSVMKd1B0MUw3cDRpUnAvSlIwblJpYncwLzYyeUp5VUY1dFBtLzdNeUNydTVmQXhJQU16L0VnWEMrUmZ6aUtkZjlnMQpPWXlkYlIzVWRpZThVajZMM084REhnTlFNcmo0c01zdjRJV2p1WlNIaWNoZ09IejNzaVQ5TXQrK0ZTZlI5R0xECitUODQ5SGlibUwwUlI1UmxYbkNxbG1WczVCSVpVanN2RHYyaUFINnptbWVCdUJWamFhdGhSY25LeThtd1BnRUQKVzFHOThFdVhEMCtiSWxwdThxak9ZYUdYdzNTa1NML3NsbUd2NzgyV0Z5SzJSRng2enhZUG5yeXpLYVFrS0hIRwpjU0Z4Wi85cVVoMUsKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVWakNDQXo2Z0F3SUJBZ0lSQUxTMEtUbWFSd2h6Z25LelNldXUyajB3RFFZSktvWklodmNOQVFFTEJRQXcKSmpFa01DSUdBMVVFQXhNYmQybDZMV0ZrYldsemMybHZiaTFqYjI1MGNtOXNiR1Z5TFdOaE1CNFhEVEkwTVRFdwpOekUyTlRjeU1sb1hEVE0wTVRFd05URTJOVGN5TWxvd01ERXVNQ3dHQTFVRUF4TWxjbVZzWldGelpTMTBaWE4wCkxYZHBlaTFoWkcxcGMzTnBiMjR0WTI5dWRISnZiR3hsY2pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVAKQURDQ0FRb0NnZ0VCQUsvVERaRWduRC9GSzZ5QnVNbzRranlVNE1ESGFldG1MdFgvS1JLSVhmMHZ1dmZueElhMQpSUWFnWTRyZXRldUZObStlSzI3WFpKR1J1akxsYjd6TEM3T0EwTTlGTFR5OVB0aXhSTjBJeTI4RDZrcU9KUzhCCk5KVjBRWFFWem1URnZob04rbklKN0pEazRDT3k0SVczZVdXejEyWUkvaVJMa2lBa081YmFvY2dPSi8vcWNTZ2kKQ2ZHUy9OVVhlZStHT2dNT1BsYmdEaDc1cHZXVkhWWFBPL1ZocEFlblhvNW02cVpzSmZFa2hQQk85WUxieTVtbApmZHl2b2wxVFpwcUdCYitqejhMOHFGaHlNK1oyZjEwQ0RWZHdWQVUrMTVtZ0lYU1FjbE1LZzBwRDFzeVlYSmFvCndHTFY0c1lUOEZsYUQvWDF6MVFiazFjdGFleFN2RzZHWFVVQ0F3RUFBYU9DQVhNd2dnRnZNQTRHQTFVZER3RUIKL3dRRUF3SUZvREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0RBWURWUjBUQVFILwpCQUl3QURBZkJnTlZIU01FR0RBV2dCU1JPK3hSZFlGaG1XVUlCeXRmVkVWSFhTK2syakNDQVEwR0ExVWRFUVNDCkFRUXdnZ0VBZ2p4eVpXeGxZWE5sTFhSbGMzUXRkMmw2TFdGa2JXbHpjMmx2YmkxamIyNTBjbTlzYkdWeUxuSmwKYkdWaGMyVXRhR1ZzYlMxdVlXMWxjM0JoWTJXQ1FISmxiR1ZoYzJVdGRHVnpkQzEzYVhvdFlXUnRhWE56YVc5dQpMV052Ym5SeWIyeHNaWEl1Y21Wc1pXRnpaUzFvWld4dExXNWhiV1Z6Y0dGalpTNXpkbU9DUEhKbGJHVmhjMlV0CmRHVnpkQzEzYVhvdFlYVmthWFF0Ykc5bmN5MWpiMnhzWldOMGIzSXVjbVZzWldGelpTMW9aV3h0TFc1aGJXVnoKY0dGalpZSkFjbVZzWldGelpTMTBaWE4wTFhkcGVpMWhkV1JwZEMxc2IyZHpMV052Ykd4bFkzUnZjaTV5Wld4bApZWE5sTFdobGJHMHRibUZ0WlhOd1lXTmxMbk4yWXpBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQVNYMnJnLzE2CkNaTEdDdUZoa3NvZTZSb0l4YjJCRjFnUENick9TNUc5UWxhUWFLbURrWkN6TGVZemFrcWJiQXBYa3NLbXdqQisKK2FFS1IvOUZ6ZnhuUUdRQ0hxbURwbW8yVnFtMVZ2T2pQMVIyU3dXVFRzcXhONjhPVCsyclp4SkIwaXRrTEVnSAorcU42WnIzRGxjNHI5TVRWbG5Ocm5yb0dXWGdmWUh0Qm5sUjhyNWFRMGsrZit5YlR6blRhbFlENVBUVlpITWhiCjBLM2ZpcUp5aDJzclFVUldsbnZnUUxvUEIwaUNnY21RVXVpeEEwekdnNDhCWkpqTDhuYnlaMEpKVm84WUxTUDMKNG93d3lLKzlXZmQzbVlJcnp6NERYb0Q2ZWJxbFMxV3ZyaVVETVprVnJodzZQV1BQNEpYQnRBUU1vZ2pPNnRwTQpMY1N6SUxwc3pleWhOUT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
   rules:
     - apiGroups:
       - '*'

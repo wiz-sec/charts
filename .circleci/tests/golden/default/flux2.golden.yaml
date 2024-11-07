@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
   name: allow-egress
 spec:
   egress:
@@ -29,6 +30,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
   name: allow-scraping
 spec:
   ingress:
@@ -50,6 +52,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
   name: allow-webhooks
 spec:
   ingress:
@@ -71,6 +74,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
   name: helm-controller
 ---
 # Source: flux2/templates/kustomize-controller-sa.yaml
@@ -83,6 +87,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
   name: kustomize-controller
 ---
 # Source: flux2/templates/source-controller-serviceaccount.yaml
@@ -95,6 +100,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
   name: source-controller
 ---
 # Source: flux2/templates/aggregate-clusterroles.yaml
@@ -152,6 +158,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
 rules:
 - apiGroups: ['source.toolkit.fluxcd.io']
   resources: ['*']
@@ -229,6 +236,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
   name: cluster-reconciler
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -252,6 +260,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -285,6 +294,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
     control-plane: controller
   name: source-controller
 spec:
@@ -307,6 +317,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
     control-plane: controller
   name: helm-controller
 spec:
@@ -385,6 +396,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
     control-plane: controller
   name: kustomize-controller
 spec:
@@ -465,6 +477,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
+    helm.sh/chart: ""
     control-plane: controller
   name: source-controller
 spec:

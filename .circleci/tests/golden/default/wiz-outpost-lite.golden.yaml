@@ -5,6 +5,7 @@ kind: Secret
 metadata:
   name: outpost-lite-agent-creds
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-outpost-lite
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "0.1.0"
@@ -17,6 +18,7 @@ kind: Deployment
 metadata:
   name: release-test-wiz-outpost-lite
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-outpost-lite
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "0.1.0"

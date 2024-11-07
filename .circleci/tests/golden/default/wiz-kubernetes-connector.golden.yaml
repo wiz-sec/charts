@@ -6,6 +6,7 @@ metadata:
   name: wiz-broker
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -17,6 +18,7 @@ kind: ClusterRole
 metadata:
   name: wiz-cluster-reader
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -32,6 +34,7 @@ kind: ClusterRoleBinding
 metadata:
   name: wiz-cluster-reader
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -52,6 +55,7 @@ metadata:
   name: release-test-agent
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -65,8 +69,9 @@ spec:
   template:
     metadata:
       annotations:
-        rollme: "SSYqh"
+        rollme: ""
       labels:
+        helm.sh/chart: ""
         app.kubernetes.io/name: wiz-broker
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.5"
@@ -127,6 +132,7 @@ metadata:
   name: wiz-cluster-reader
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -142,6 +148,7 @@ metadata:
   name: wiz-auto-modify-connector
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -158,6 +165,7 @@ metadata:
   name: release-test-connector
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -176,6 +184,7 @@ metadata:
   name: release-test-api-token
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -194,6 +203,7 @@ metadata:
   name: wiz-cluster-reader-token
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -211,6 +221,7 @@ metadata:
   name: wiz-auto-modify-connector
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -239,6 +250,7 @@ metadata:
   name: wiz-auto-modify-connector
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -263,6 +275,7 @@ metadata:
   name: wiz-kubernetes-connector-create-connector
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -285,6 +298,8 @@ spec:
   template:
     metadata:
       labels:
+        
+        helm.sh/chart: ""
         app.kubernetes.io/name: wiz-kubernetes-connector
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.5"
@@ -345,6 +360,7 @@ metadata:
   name: wiz-kubernetes-connector-delete-connector
   namespace: "release-helm-namespace"
   labels:
+    helm.sh/chart: ""
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -366,6 +382,8 @@ spec:
   template:
     metadata:
       labels:
+        
+        helm.sh/chart: ""
         app.kubernetes.io/name: wiz-kubernetes-connector
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.5"
