@@ -67,6 +67,11 @@ jobs:
             chmod 700 get_helm.sh
             ./get_helm.sh
       - run:
+          name: 'Adding helm repos'
+          command: |
+              helm repo add wiz-sec https://charts.wiz.io
+              helm repo update
+      - run:
           name: 'Creating directory for GOPATH and override it to be /go'
           command: |
             go env -w GOPATH=/go
