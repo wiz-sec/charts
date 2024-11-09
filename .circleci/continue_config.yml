@@ -81,7 +81,7 @@ jobs:
           command: |
             go test -v .
       - store_test_results:
-          path: test-results
+          path: /tmp/test-results
 
   package_and_index_charts:
     executor:
