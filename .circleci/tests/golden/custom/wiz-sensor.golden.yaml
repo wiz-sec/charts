@@ -134,7 +134,6 @@ spec:
         app.kubernetes.io/managed-by: Helm
 
       annotations:
-        container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
         cluster-autoscaler.kubernetes.io/enable-ds-eviction: "true"
 
     spec:
