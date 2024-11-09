@@ -62,5 +62,5 @@ func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 
 	// then
 	r.NoError(err, "Golden file doesn't exist or was not readable")
-	r.Equal(string(expected), output)
+	r.Equal(string(expected), output, "Rendered output does not match golden file. Please run tests with -update-golden flag to update the golden files.")
 }
