@@ -75,6 +75,8 @@ jobs:
           name: Run chart validation tests
           command: |
             go test -v .
+      - store_test_results:
+          path: test-results
 
   package_and_index_charts:
     executor:
