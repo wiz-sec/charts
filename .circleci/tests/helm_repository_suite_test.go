@@ -50,7 +50,7 @@ type goldenHelmTest struct {
 	GoldenFileName     string
 	Templates          []string
 	SetValues          map[string]string
-	ValuesFile         string
+	ValueFiles         []string
 	GoldenSubDirectory string
 }
 
@@ -62,7 +62,7 @@ func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 	options := &helm.Options{
 		KubectlOptions:    k8s.NewKubectlOptions("", "", testCase.Namespace),
 		SetValues:         testCase.SetValues,
-		ValuesFiles:       []string{testCase.ValuesFile},
+		ValuesFiles:       testCase.ValueFiles,
 		BuildDependencies: true,
 	}
 	output := helm.RenderTemplate(t, options, testCase.ChartPath, testCase.Release, testCase.Templates)

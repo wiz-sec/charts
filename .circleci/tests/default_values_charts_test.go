@@ -20,7 +20,7 @@ func (s *helmRepoSuite) TestChartWithDefaultValues() {
 				Release:            "release-test",
 				Namespace:          "release-helm-namespace",
 				GoldenFileName:     chartName,
-				ValuesFile:         defaultValuesFilePath,
+				ValueFiles:         []string{defaultValuesFilePath},
 				GoldenSubDirectory: "default",
 			})
 		})
