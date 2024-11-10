@@ -31,12 +31,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
 {{- .Values.kubernetesAuditLogsWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := "wiz-audit-logs-collector" }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
+{{- printf "%s-audit-log-collector" (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 
@@ -44,12 +39,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.wizManager.nameOverride }}
 {{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := "wiz-admission-controller-manager" }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 52 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 52 | trimSuffix "-" }}
-{{- end }}
+{{- printf "%s-manager" (include "wiz-admission-controller.fullname" .) | trunc 52 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 
