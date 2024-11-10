@@ -2,16 +2,46 @@ package tests
 
 import (
 	"flag"
+	"maps"
 	"os"
+	"path"
 	"regexp"
+	"slices"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
+	"helm.sh/helm/v3/pkg/chartutil"
+)
+
+const (
+	chartsRootDir = "../../."
 )
 
 var update = flag.Bool("update-golden", false, "update golden test output files")
+
+type helmRepoSuite struct {
+	suite.Suite
+}
+
+func TestHelmRepository(t *testing.T) {
+	suite.Run(t, new(helmRepoSuite))
+}
+
+func (s *helmRepoSuite) SetupSuite() {
+	// Run the helm repo add command
+	// helm repo add wiz-sec https://wiz-sec.github.io/charts
+	if _, err := helm.RunHelmCommandAndGetOutputE(s.T(), &helm.Options{}, "repo", "add", "wiz-chart-test", "https://wiz-sec.github.io/charts"); err != nil {
+		s.Failf("Failed to add helm repository", "error is %s", err)
+	}
+
+	//// Run the helm repo update command
+	if _, err := helm.RunHelmCommandAndGetOutputE(s.T(), &helm.Options{}, "repo", "update"); err != nil {
+		s.Failf("Failed to update helm repository", "error is %s", err)
+	}
+}
 
 type goldenHelmTest struct {
 	ChartPath          string
@@ -63,4 +93,48 @@ func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 	// then
 	r.NoError(err, "Golden file doesn't exist or was not readable")
 	r.Equal(string(expected), output, "Rendered output does not match golden file. Please run tests with -update-golden flag to update the golden files.")
+}
+
+func (s *helmRepoSuite) getChartDirectory(chartName string) string {
+	chartDir := path.Join(chartsRootDir, chartName)
+	if _, err := os.Stat(path.Join(chartDir, "Chart.yaml")); os.IsNotExist(err) {
+		//	fail the test
+		s.Fail("Chart.yaml file not found in %s", chartDir)
+	}
+
+	isChartDir, err := chartutil.IsChartDir(chartDir)
+	s.NoError(err)
+	s.True(isChartDir)
+
+	return chartDir
+}
+
+func (s *helmRepoSuite) getChartsInDirectory(dir string) []string {
+	// There's no need to add directories to this list, but this is for extra care, to ensure we don't miss these charts
+	charts := map[string]struct{}{
+		"wiz-broker":                 {},
+		"wiz-sensor":                 {},
+		"wiz-admission-controller":   {},
+		"wiz-kubernetes-connector":   {},
+		"wiz-kubernetes-integration": {},
+	}
+
+	files, err := os.ReadDir(dir)
+	s.NoError(err)
+
+	for _, fileInfo := range files {
+		if !fileInfo.IsDir() {
+			continue
+		}
+
+		chartName := fileInfo.Name()
+		chartFilePath := path.Join(path.Join(chartsRootDir, chartName), "Chart.yaml")
+		if _, err := os.Stat(chartFilePath); os.IsNotExist(err) {
+			continue
+		}
+
+		charts[chartName] = struct{}{}
+	}
+
+	return slices.Collect(maps.Keys(charts))
 }
