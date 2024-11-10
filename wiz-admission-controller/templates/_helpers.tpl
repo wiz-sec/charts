@@ -27,7 +27,7 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 
 {{- define "wiz-admission-controller-enforcer.name" -}}
-{{- printf "%s" (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "wiz-kubernetes-audit-log-collector.name" -}}
