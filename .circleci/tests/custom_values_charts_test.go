@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (s *helmRepoSuite) TestChartTemplatesWithCustomValues() {
+func (s *helmRepoSuite) TestChartWithCustomValues() {
 	testFiles, err := os.ReadDir("testfiles")
 	s.NoError(err)
 

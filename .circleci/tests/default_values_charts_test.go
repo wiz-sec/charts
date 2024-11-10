@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 )
 
-func (s *helmRepoSuite) TestChartTemplateWithDefaultValues() {
+func (s *helmRepoSuite) TestChartWithDefaultValues() {
 	charts := s.getChartsInDirectory(chartsRootDir)
 
 	for _, chartName := range charts {
