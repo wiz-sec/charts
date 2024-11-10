@@ -2,7 +2,7 @@
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
-{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) ( printf "%s.%s.svc" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) -}}
+{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace ) ( printf "%s.%s" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) ( printf "%s.%s.svc" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) -}}
 {{- $ca := genCA "wiz-admission-controller-ca" 3650 -}}
 {{- $cert := genSignedCert ( include "wiz-admission-controller.fullname" . ) nil $altNames 3650 $ca -}}
 {{- $tlsCrt = $cert.Cert | b64enc -}}
@@ -12,7 +12,7 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "misconfigurations" }}
+  name: {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "misconfigurations" }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
@@ -28,7 +28,7 @@ webhooks:
   clientConfig:
     service:
       namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller.fullname" . }}
+      name: {{ include "wiz-admission-controller-enforcer.name" . }}
       path: /opa-validator
       port: {{ .Values.service.port }}
 {{- if not $useCertManagerCerts }}
@@ -67,7 +67,7 @@ webhooks:
   clientConfig:
     service:
       namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller.fullname" . }}
+      name: {{ include "wiz-admission-controller-enforcer.name" . }}
       path: /image-integrity-validator
       port: {{ .Values.service.port }}
 {{- if not $useCertManagerCerts }}
@@ -90,7 +90,7 @@ webhooks:
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "kubernetes-audit-logs" }}
+  name: {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "kubernetes-audit-logs" }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
@@ -145,7 +145,7 @@ webhooks:
   clientConfig:
     service:
       namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller.fullname" . }}
+      name: {{ include "wiz-admission-controller-enforcer.name" . }}
       path: /dumper
       port: {{ .Values.service.port }}
 {{- if not $useCertManagerCerts }}

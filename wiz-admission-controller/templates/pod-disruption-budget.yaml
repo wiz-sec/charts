@@ -16,7 +16,7 @@ spec:
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "wiz-admission-controller.fullname" . }}
+  name: {{ include "wiz-admission-controller-enforcer.name" . }}
 spec:
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
   maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
