@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/suite"
 	"helm.sh/helm/v3/pkg/chartutil"
 )
@@ -23,6 +24,19 @@ type helmRepoSuite struct {
 
 func TestHelmRepository(t *testing.T) {
 	suite.Run(t, new(helmRepoSuite))
+}
+
+func (s *helmRepoSuite) SetupSuite() {
+	// Run the helm repo add command
+	// helm repo add wiz-sec https://wiz-sec.github.io/charts
+	if _, err := helm.RunHelmCommandAndGetOutputE(s.T(), &helm.Options{}, "repo", "add", "wiz-chart-test", "https://wiz-sec.github.io/charts"); err != nil {
+		s.Failf("Failed to add helm repository", "error is %s", err)
+	}
+
+	//// Run the helm repo update command
+	if _, err := helm.RunHelmCommandAndGetOutputE(s.T(), &helm.Options{}, "repo", "update"); err != nil {
+		s.Failf("Failed to update helm repository", "error is %s", err)
+	}
 }
 
 func (s *helmRepoSuite) TestChartTemplateWithDefaultValues() {
