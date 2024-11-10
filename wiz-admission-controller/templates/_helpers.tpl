@@ -398,6 +398,8 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 - name: WIZ_ISTIO_PROXY_PORT
   value: "{{ .Values.global.istio.proxySidecarPort }}"
 {{- end }}
+- name: WIZ_CHART_VERSION
+  value: "{{ .Chart.Version}}"
 {{- end -}}
 
 {{- define "wiz-admission-controller.image" -}}
