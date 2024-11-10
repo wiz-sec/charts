@@ -26,6 +26,9 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller-enforcer.name" -}}
+{{- printf "%s" (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{- define "wiz-kubernetes-audit-log-collector.name" -}}
 {{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
@@ -273,7 +276,7 @@ scaleDown:
 {{- define "autoUpdate.deployments" -}}
 {{- $list := list -}}
 {{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
-{{- $list = append $list (include "wiz-admission-controller.fullname" . ) -}}
+{{- $list = append $list (include "wiz-admission-controller-enforcer.name" . ) -}}
 {{- end -}}
 {{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
 {{- $list = append $list (include "wiz-kubernetes-audit-log-collector.name" . ) -}}
