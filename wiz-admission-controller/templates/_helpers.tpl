@@ -313,6 +313,8 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 - --subscription-tags
 - {{ . | toJson | quote }}
 {{- end }}
+- name: WIZ_HELM_CHART_VERSION
+  value: "{{ .Chart.Version }}"
 {{- end -}}
 
 {{- define "spec.admissionControllerRunner.commandArgs" -}}
