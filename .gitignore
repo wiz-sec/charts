@@ -1,7 +1,1 @@
 .idea
-/wiz-kubernetes-connector/charts/wiz-broker-*.tgz
-/wiz-kubernetes-connector/Chart.lock
-/wiz-kubernetes-integration/charts/wiz-admission-controller-*.tgz
-/wiz-kubernetes-integration/charts/wiz-kubernetes-connector-*.tgz
-/wiz-kubernetes-integration/charts/wiz-sensor-*.tgz
-/wiz-kubernetes-integration/Chart.lock
