@@ -328,4 +328,4 @@ prometheus:
 git:
   url: http://git-proxy.default.svc.cluster.local
   branch: master
-  path: "<required-path>"
+  path: #./replaceme/

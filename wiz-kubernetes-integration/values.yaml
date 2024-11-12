@@ -8,8 +8,8 @@ global:
 
   # Wiz Service Account used to authenticate to Wiz.
   wizApiToken:
-    clientId: "<required-client-id>" # Client ID of the Wiz Service Account.
-    clientToken: "<required-client-token>" # Client secret of the Wiz Service Account.
+    clientId: "" # Client ID of the Wiz Service Account.
+    clientToken: "" # Client secret of the Wiz Service Account.
     clientEndpoint: "" # Defaults to commercial.
                        # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
 
