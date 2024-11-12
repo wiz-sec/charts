@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiz-admission-controller.fullname" . }}
+  name: {{ include "wiz-admission-controller-enforcer.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller-enforcement.labels" . | nindent 4 }}

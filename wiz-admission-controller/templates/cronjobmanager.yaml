@@ -47,7 +47,7 @@ spec:
           {{- end }}
           terminationGracePeriodSeconds: {{ .Values.global.podTerminationGracePeriodSeconds }}
           containers:
-            - name: {{ .Chart.Name }}
+            - name: {{ .Chart.Name }}-manager
               securityContext:
                 {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
                 {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 16 }}

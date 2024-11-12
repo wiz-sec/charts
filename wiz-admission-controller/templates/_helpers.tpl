@@ -26,17 +26,15 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller-enforcer.name" -}}
+{{- (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{- define "wiz-kubernetes-audit-log-collector.name" -}}
 {{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
 {{- .Values.kubernetesAuditLogsWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := "wiz-audit-logs-collector" }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
+{{- printf "%s-audit-log-collector" (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 
@@ -44,12 +42,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.wizManager.nameOverride }}
 {{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := "wiz-admission-controller-manager" }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 52 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 52 | trimSuffix "-" }}
-{{- end }}
+{{- printf "%s-manager" (include "wiz-admission-controller.fullname" .) | trunc 52 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
 
@@ -283,7 +276,7 @@ scaleDown:
 {{- define "autoUpdate.deployments" -}}
 {{- $list := list -}}
 {{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
-{{- $list = append $list (include "wiz-admission-controller.fullname" . ) -}}
+{{- $list = append $list (include "wiz-admission-controller-enforcer.name" . ) -}}
 {{- end -}}
 {{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
 {{- $list = append $list (include "wiz-kubernetes-audit-log-collector.name" . ) -}}
@@ -405,6 +398,8 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 - name: WIZ_ISTIO_PROXY_PORT
   value: "{{ .Values.global.istio.proxySidecarPort }}"
 {{- end }}
+- name: WIZ_CHART_VERSION
+  value: "{{ .Chart.Version}}"
 {{- end -}}
 
 {{- define "wiz-admission-controller.image" -}}
