@@ -6,15 +6,15 @@ metadata:
   name: release-test-api-token
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
     app.kubernetes.io/managed-by: Helm
   annotations:
 data:
-  clientId: "PHJlcXVpcmVkLWNsaWVudC1pZD4="
-  clientToken: "PHJlcXVpcmVkLWNsaWVudC10b2tlbj4="
+  clientId: "PGNsaWVudC1pZD4="
+  clientToken: "PGNsaWVudC10b2tlbj4="
 ---
 # Source: wiz-broker/templates/wiz-broker-deployment.yaml
 apiVersion: apps/v1
@@ -23,7 +23,7 @@ metadata:
   name: release-test-agent
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -37,9 +37,9 @@ spec:
   template:
     metadata:
       annotations:
-        rollme: "REDACTED"
+        rollme: "GOLDEN_STATIC_VALUE"
       labels:
-        helm.sh/chart: "REDACTED"
+        helm.sh/chart: "GOLDEN_STATIC_VALUE"
         app.kubernetes.io/name: wiz-broker
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.5"
@@ -90,22 +90,3 @@ spec:
             value: "443"
           resources:
             null
----
-# Source: wiz-broker/templates/secrets.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: release-test-connector
-  namespace: "release-helm-namespace"
-  labels:
-    helm.sh/chart: "REDACTED"
-    app.kubernetes.io/name: wiz-broker
-    app.kubernetes.io/instance: release-test
-    app.kubernetes.io/version: "2.5"
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    "helm.sh/hook": pre-install, pre-upgrade
-    "helm.sh/hook-weight": "-1"
-type: Opaque
-data:
-  connectorData: "eyJDb25uZWN0b3JJZCI6Ilx1MDAzY3JlcXVpcmVkLWNvbm5lY3Rvci1pZFx1MDAzZSIsIlRhcmdldElwIjoiXHUwMDNjcmVxdWlyZWQtdGFyZ2V0LWlwXHUwMDNlIiwiVGFyZ2V0UG9ydCI6Ilx1MDAzY3JlcXVpcmVkLXRhcmdldC1wb3J0XHUwMDNlIiwiVHVubmVsRG9tYWluIjoiXHUwMDNjcmVxdWlyZWQtdGFyZ2V0LWRvbWFpblx1MDAzZSIsIlR1bm5lbFNlcnZlckRvbWFpbiI6Ilx1MDAzY3JlcXVpcmVkLXR1bm5lbC1zZXJ2ZXItZG9tYWluXHUwMDNlIiwiVHVubmVsU2VydmVyUG9ydCI6Ilx1MDAzY3JlcXVpcmVkLXR1bm5lbC1zZXJ2ZXItcG9ydFx1MDAzZSIsIlR1bm5lbFRva2VuIjoiXHUwMDNjcmVxdWlyZWQtY29ubmVjdG9yLXRva2VuXHUwMDNlIn0="

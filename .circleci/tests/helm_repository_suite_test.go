@@ -2,11 +2,9 @@ package tests
 
 import (
 	"flag"
-	"maps"
 	"os"
 	"path"
 	"regexp"
-	"slices"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
@@ -84,6 +82,11 @@ func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 	goldenFile := "golden/" + testCase.GoldenSubDirectory + "/" + testCase.GoldenFileName + ".golden.yaml"
 
 	if *update {
+		if _, err := os.Stat(path.Dir(goldenFile)); os.IsNotExist(err) {
+			err := os.MkdirAll(path.Dir(goldenFile), 0755)
+			r.NoError(err, "Golden file directory was not writable")
+		}
+
 		err := os.WriteFile(goldenFile, []byte(output), 0644)
 		r.NoError(err, "Golden file was not writable")
 	}
@@ -105,34 +108,4 @@ func (s *helmRepoSuite) getChartDirectory(chartName string) string {
 	s.True(isChartDir)
 
 	return chartDir
-}
-
-func (s *helmRepoSuite) getChartsInDirectory(dir string) []string {
-	// There's no need to add directories to this list, but this is for extra care, to ensure we don't miss these charts
-	charts := map[string]struct{}{
-		"wiz-broker":                 {},
-		"wiz-sensor":                 {},
-		"wiz-admission-controller":   {},
-		"wiz-kubernetes-connector":   {},
-		"wiz-kubernetes-integration": {},
-	}
-
-	files, err := os.ReadDir(dir)
-	s.NoError(err)
-
-	for _, fileInfo := range files {
-		if !fileInfo.IsDir() {
-			continue
-		}
-
-		chartName := fileInfo.Name()
-		chartFilePath := path.Join(path.Join(chartsRootDir, chartName), "Chart.yaml")
-		if _, err := os.Stat(chartFilePath); os.IsNotExist(err) {
-			continue
-		}
-
-		charts[chartName] = struct{}{}
-	}
-
-	return slices.Collect(maps.Keys(charts))
 }

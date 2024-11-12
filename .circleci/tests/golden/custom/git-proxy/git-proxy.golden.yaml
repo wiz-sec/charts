@@ -1,23 +1,11 @@
 ---
-# Source: git-proxy/templates/serviceaccount.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: wiz-git-proxy-sa
-  labels:
-    helm.sh/chart: "REDACTED"
-    app.kubernetes.io/name: git-proxy
-    app.kubernetes.io/instance: release-test
-    app.kubernetes.io/version: "0.0.1"
-    app.kubernetes.io/managed-by: Helm
----
 # Source: git-proxy/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: release-test-git-proxy
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: git-proxy
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "0.0.1"
@@ -43,7 +31,7 @@ kind: Service
 metadata:
   name: git-proxy
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: git-proxy
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "0.0.1"
@@ -69,7 +57,7 @@ kind: Deployment
 metadata:
   name: release-test-git-proxy
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: git-proxy
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "0.0.1"
@@ -91,7 +79,7 @@ spec:
     spec:
       imagePullSecrets:
         - name: test-secret
-      serviceAccountName: wiz-git-proxy-sa
+      serviceAccountName: default
       securityContext:
         fsGroup: 1000
         supplementalGroups:

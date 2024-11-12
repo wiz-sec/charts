@@ -6,7 +6,7 @@ metadata:
   name: release-test-wiz-admission-controller
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.6"
@@ -19,7 +19,7 @@ metadata:
   name: wiz-broker
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -32,7 +32,7 @@ metadata:
   name: release-test-wiz-admission-controller-namespace-reader
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.6"
@@ -48,7 +48,7 @@ kind: ClusterRole
 metadata:
   name: wiz-cluster-reader
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -65,7 +65,7 @@ metadata:
   name: release-test-wiz-admission-controller-namespace
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.6"
@@ -85,7 +85,7 @@ kind: ClusterRoleBinding
 metadata:
   name: wiz-cluster-reader
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -106,7 +106,7 @@ metadata:
   name: release-test-wiz-admission-controller
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.6"
@@ -130,7 +130,7 @@ metadata:
   name: release-test-wiz-admission-controller
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.6"
@@ -148,10 +148,10 @@ spec:
       annotations:
         rollme.proxyHash: 08766d42378ee5793f5f58973d800d4b064e466ae67684e16b1a56ab1c5dedfc
         rollme.wizApiTokenHash: 9f27ffdc43a7a5a113f02c056c1a93cc136b829b90f30a93d5527af25dd6e325
-        rollme.webhookCert: "REDACTED"
+        rollme.webhookCert: "GOLDEN_STATIC_VALUE"
       labels:
         
-        helm.sh/chart: "REDACTED"
+        helm.sh/chart: "GOLDEN_STATIC_VALUE"
         app.kubernetes.io/chartName: wiz-admission-controller
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.6"
@@ -289,7 +289,7 @@ metadata:
   name: release-test-agent
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -303,9 +303,9 @@ spec:
   template:
     metadata:
       annotations:
-        rollme: "REDACTED"
+        rollme: "GOLDEN_STATIC_VALUE"
       labels:
-        helm.sh/chart: "REDACTED"
+        helm.sh/chart: "GOLDEN_STATIC_VALUE"
         app.kubernetes.io/name: wiz-broker
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.5"
@@ -368,7 +368,7 @@ metadata:
   name: wiz-cluster-reader
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -384,7 +384,7 @@ metadata:
   name: wiz-auto-modify-connector
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -402,7 +402,7 @@ metadata:
   name: release-test-wiz-admission-controller-cert
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.6"
@@ -412,8 +412,8 @@ metadata:
     "helm.sh/hook": "pre-install, pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
 data:
-  tls.crt: "REDACTED"
-  tls.key: "REDACTED"
+  tls.crt: "GOLDEN_STATIC_VALUE"
+  tls.key: "GOLDEN_STATIC_VALUE"
 ---
 # Source: wiz-kubernetes-integration/charts/wiz-kubernetes-connector/templates/secret-connector.yaml
 apiVersion: v1
@@ -422,7 +422,7 @@ metadata:
   name: release-test-connector
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -441,7 +441,7 @@ metadata:
   name: wiz-cluster-reader-token
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -459,7 +459,7 @@ metadata:
   name: wiz-api-token
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-integration
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/managed-by: Helm
@@ -477,7 +477,7 @@ metadata:
   name: wiz-auto-modify-connector
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -506,7 +506,7 @@ metadata:
   name: wiz-auto-modify-connector
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -531,7 +531,7 @@ metadata:
   name: wiz-kubernetes-connector-create-connector
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -555,7 +555,7 @@ spec:
     metadata:
       labels:
         
-        helm.sh/chart: "REDACTED"
+        helm.sh/chart: "GOLDEN_STATIC_VALUE"
         app.kubernetes.io/name: wiz-kubernetes-connector
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.5"
@@ -622,7 +622,7 @@ metadata:
   name: wiz-kubernetes-connector-delete-connector
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-kubernetes-connector
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -645,7 +645,7 @@ spec:
     metadata:
       labels:
         
-        helm.sh/chart: "REDACTED"
+        helm.sh/chart: "GOLDEN_STATIC_VALUE"
         app.kubernetes.io/name: wiz-kubernetes-connector
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.5"
@@ -702,7 +702,7 @@ metadata:
   name: release-test-wiz-admission-controller-misconfigurations
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.6"
@@ -719,7 +719,7 @@ webhooks:
       name: release-test-wiz-admission-controller
       path: /opa-validator
       port: 443
-    caBundle: "REDACTED"
+    caBundle: "GOLDEN_STATIC_VALUE"
   rules:
     - apiGroups:
       - '*'

@@ -6,7 +6,7 @@ metadata:
   name: release-test-wiz-admission-controller
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -19,7 +19,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -32,14 +32,14 @@ metadata:
   name: release-test-api-token
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
     app.kubernetes.io/managed-by: Helm
 stringData:
-  clientId: "<required-client-id>"
-  clientToken: "<required-client-token>"
+  clientId: "<client-id>"
+  clientToken: "<client-token>"
 ---
 # Source: wiz-admission-controller/templates/serviceaccount.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -48,7 +48,7 @@ metadata:
   name: release-test-wiz-admission-controller-namespace-reader
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -65,7 +65,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager-event-creator
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -82,7 +82,7 @@ metadata:
   name: release-test-wiz-admission-controller-namespace
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -103,7 +103,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager-event-creator
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -124,7 +124,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager-pods-and-deployments-manager
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -145,7 +145,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager-pods-and-deployments
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -166,7 +166,7 @@ metadata:
   name: release-test-wiz-admission-controller
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -190,7 +190,7 @@ metadata:
   name: release-test-wiz-admission-controller
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -207,11 +207,11 @@ spec:
     metadata:
       annotations:
         rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
-        rollme.wizApiTokenHash: cbb3aea2a985eff2a33543866bfc77f891c84358af93ca8653c159e043cf8ae4
-        rollme.webhookCert: "REDACTED"
+        rollme.wizApiTokenHash: 7ab3d8e2e66c2b44c6e9ffbc1456bdec456ff9107abb86802d98d647a9ba96d3
+        rollme.webhookCert: "GOLDEN_STATIC_VALUE"
       labels:
         
-        helm.sh/chart: "REDACTED"
+        helm.sh/chart: "GOLDEN_STATIC_VALUE"
         app.kubernetes.io/chartName: wiz-admission-controller
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.7"
@@ -309,6 +309,8 @@ spec:
                 fieldPath: metadata.namespace
           - name: WIZ_TERMINATION_GRACE_PERIOD
             value: "60s"
+          - name: WIZ_CHART_VERSION
+            value: "3.7.0-preview"
           - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
             value: "true"
            # For running pod with read only file system we write all the cache files to /var/cache volume mount, used by image integrity hook
@@ -345,7 +347,7 @@ metadata:
   name: release-test-wiz-admission-controller-manager
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -362,9 +364,9 @@ spec:
         metadata:
           annotations:
             rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
-            rollme.wizApiTokenHash: cbb3aea2a985eff2a33543866bfc77f891c84358af93ca8653c159e043cf8ae4
+            rollme.wizApiTokenHash: 7ab3d8e2e66c2b44c6e9ffbc1456bdec456ff9107abb86802d98d647a9ba96d3
           labels:
-            helm.sh/chart: "REDACTED"
+            helm.sh/chart: "GOLDEN_STATIC_VALUE"
             app.kubernetes.io/chartName: wiz-admission-controller
             app.kubernetes.io/instance: release-test
             app.kubernetes.io/version: "2.7"
@@ -377,7 +379,7 @@ spec:
             {}
           terminationGracePeriodSeconds: 60
           containers:
-            - name: wiz-admission-controller
+            - name: wiz-admission-controller-manager
               securityContext:
                 capabilities:
                   drop:
@@ -426,6 +428,8 @@ spec:
                     fieldPath: metadata.namespace
               - name: WIZ_TERMINATION_GRACE_PERIOD
                 value: "60s"
+              - name: WIZ_CHART_VERSION
+                value: "3.7.0-preview"
               resources:
                 {}
           volumes:
@@ -438,7 +442,7 @@ metadata:
   name: release-test-wiz-admission-controller-cert
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -448,8 +452,8 @@ metadata:
     "helm.sh/hook": "pre-install, pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
 data:
-  tls.crt: "REDACTED"
-  tls.key: "REDACTED"
+  tls.crt: "GOLDEN_STATIC_VALUE"
+  tls.key: "GOLDEN_STATIC_VALUE"
 ---
 # Source: wiz-admission-controller/templates/opawebhook.yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -458,7 +462,7 @@ metadata:
   name: release-test-wiz-admission-controller-misconfigurations
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
@@ -475,7 +479,7 @@ webhooks:
       name: release-test-wiz-admission-controller
       path: /opa-validator
       port: 443
-    caBundle: "REDACTED"
+    caBundle: "GOLDEN_STATIC_VALUE"
   rules:
     - apiGroups:
       - '*'

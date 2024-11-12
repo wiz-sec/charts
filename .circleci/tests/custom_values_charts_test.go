@@ -8,30 +8,39 @@ import (
 )
 
 func (s *helmRepoSuite) TestChartWithCustomValues() {
-	testFilesDirectory := path.Join("testfiles", "custom_values")
-	testFiles, err := os.ReadDir(testFilesDirectory)
+	testFilesDirectory := "testfiles"
+	testChartsDirectory, err := os.ReadDir(testFilesDirectory)
 	s.NoError(err)
 
-	for _, testFile := range testFiles {
-		testFileName := testFile.Name()
+	for _, testChart := range testChartsDirectory {
+		if !testChart.IsDir() {
+			continue
+		}
 
-		s.Run(testFileName, func() {
-			chartName := strings.Split(strings.Split(testFileName, ".")[0], "_")[0]
-			chartDir := s.getChartDirectory(chartName)
+		chartName := testChart.Name()
 
-			chartDirFullPath, err := filepath.Abs(chartDir)
-			s.NoError(err)
+		chartDirectory, err := os.ReadDir(path.Join(testFilesDirectory, chartName))
+		s.NoError(err)
 
-			valuesFilePath := path.Join(testFilesDirectory, testFileName)
-			runGoldenHelmTest(s.T(), &goldenHelmTest{
-				ChartPath: chartDirFullPath,
-				Release:   "release-test",
-				Namespace: "release-helm-namespace",
-				// remove .yaml from the test file name
-				GoldenFileName:     strings.TrimSuffix(testFileName, ".yaml"),
-				ValueFiles:         []string{valuesFilePath},
-				GoldenSubDirectory: "custom",
+		for _, testFile := range chartDirectory {
+			testFileName := testFile.Name()
+			s.Run(testFileName, func() {
+				chartDir := s.getChartDirectory(chartName)
+
+				chartDirFullPath, err := filepath.Abs(chartDir)
+				s.NoError(err)
+
+				valuesFilePath := path.Join(testFilesDirectory, chartName, testFileName)
+				runGoldenHelmTest(s.T(), &goldenHelmTest{
+					ChartPath: chartDirFullPath,
+					Release:   "release-test",
+					Namespace: "release-helm-namespace",
+					// remove .yaml from the test file name
+					GoldenFileName:     strings.TrimSuffix(testFileName, ".yaml"),
+					ValueFiles:         []string{valuesFilePath},
+					GoldenSubDirectory: path.Join("custom", chartName),
+				})
 			})
-		})
+		}
 	}
 }

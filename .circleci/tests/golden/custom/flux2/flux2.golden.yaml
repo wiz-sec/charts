@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
   name: allow-egress
 spec:
   egress:
@@ -30,7 +30,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
   name: allow-scraping
 spec:
   ingress:
@@ -52,7 +52,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
   name: allow-webhooks
 spec:
   ingress:
@@ -74,7 +74,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
   name: helm-controller
 ---
 # Source: flux2/templates/kustomize-controller-sa.yaml
@@ -87,7 +87,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
   name: kustomize-controller
 ---
 # Source: flux2/templates/source-controller-serviceaccount.yaml
@@ -100,7 +100,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
   name: source-controller
 ---
 # Source: flux2/templates/aggregate-clusterroles.yaml
@@ -158,7 +158,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
 rules:
 - apiGroups: ['source.toolkit.fluxcd.io']
   resources: ['*']
@@ -236,7 +236,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
   name: cluster-reconciler
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -260,7 +260,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -294,7 +294,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     control-plane: controller
   name: source-controller
 spec:
@@ -317,7 +317,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     control-plane: controller
   name: helm-controller
 spec:
@@ -398,7 +398,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     control-plane: controller
   name: kustomize-controller
 spec:
@@ -481,7 +481,7 @@ metadata:
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/version: "2.2.3"
     app.kubernetes.io/part-of: flux
-    helm.sh/chart: "REDACTED"
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     control-plane: controller
   name: source-controller
 spec:
