@@ -1,0 +1,16 @@
+version: '3'
+
+tasks:
+  go:test:
+    cmds:
+      - go test {{.TEST_DIR}} {{.TEST_ARGS}}
+
+  test:
+    cmds:
+      - task: go:test
+
+  update-golden:
+    cmds:
+      - task: go:test
+        vars:
+          TEST_ARGS: '-update-golden'
