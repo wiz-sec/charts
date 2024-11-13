@@ -61,12 +61,6 @@ jobs:
       - checkout:
           path: ~/project
       - run:
-          name: 'Installing helm'
-          command: |
-            curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-            chmod 700 get_helm.sh
-            ./get_helm.sh
-      - run:
           name: 'Creating directory for GOPATH and override it to be /go'
           command: |
             go env -w GOPATH=/go
