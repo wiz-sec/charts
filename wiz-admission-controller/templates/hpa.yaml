@@ -22,14 +22,6 @@ spec:
           type: Utilization
           averageUtilization: {{ .Values.hpa.targetCPUUtilizationPercentage }}
     {{- end }}
-    {{- if .Values.hpa.enableMemory }}
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: {{ .Values.hpa.targetMemoryUtilizationPercentage }}
-    {{- end }}
     {{- with .Values.hpa.customMetrics }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -59,14 +51,6 @@ spec:
         target:
           type: Utilization
           averageUtilization: {{ .Values.hpa.targetCPUUtilizationPercentage }}
-    {{- end }}
-    {{- if .Values.hpa.enableMemory }}
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: {{ .Values.hpa.targetMemoryUtilizationPercentage }}
     {{- end }}
     {{- with .Values.hpa.customMetrics }}
       {{- toYaml . | nindent 4 }}

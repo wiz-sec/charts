@@ -443,8 +443,6 @@ hpa:
   maxReplicas: 5
   enableCPU: true
   targetCPUUtilizationPercentage: 80
-  enableMemory: false
-  targetMemoryUtilizationPercentage: 80
   customMetrics: []
   # Uncomment the `behavior` section below to specify custom scaling policies and behavior.
   # If left blank, the following default settings are applied:
