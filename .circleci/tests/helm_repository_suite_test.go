@@ -32,8 +32,6 @@ type goldenHelmTest struct {
 	Release            string
 	Namespace          string
 	GoldenFileName     string
-	Templates          []string
-	SetValues          map[string]string
 	ValueFiles         []string
 	GoldenSubDirectory string
 }
