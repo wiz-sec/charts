@@ -7,8 +7,7 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/gruntwork-io/terratest/modules/helm"
-	"github.com/gruntwork-io/terratest/modules/k8s"
+	"github.com/mittwald/go-helm-client"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"helm.sh/helm/v3/pkg/chartutil"
@@ -28,19 +27,6 @@ func TestHelmRepository(t *testing.T) {
 	suite.Run(t, new(helmRepoSuite))
 }
 
-func (s *helmRepoSuite) SetupSuite() {
-	// Run the helm repo add command
-	// helm repo add wiz-sec https://wiz-sec.github.io/charts
-	if _, err := helm.RunHelmCommandAndGetOutputE(s.T(), &helm.Options{}, "repo", "add", "wiz-chart-test", "https://wiz-sec.github.io/charts"); err != nil {
-		s.Failf("Failed to add helm repository", "error is %s", err)
-	}
-
-	//// Run the helm repo update command
-	if _, err := helm.RunHelmCommandAndGetOutputE(s.T(), &helm.Options{}, "repo", "update"); err != nil {
-		s.Failf("Failed to update helm repository", "error is %s", err)
-	}
-}
-
 type goldenHelmTest struct {
 	ChartPath          string
 	Release            string
@@ -57,13 +43,31 @@ type goldenHelmTest struct {
 func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 	r := require.New(t)
 
-	options := &helm.Options{
-		KubectlOptions:    k8s.NewKubectlOptions("", "", testCase.Namespace),
-		SetValues:         testCase.SetValues,
-		ValuesFiles:       testCase.ValueFiles,
-		BuildDependencies: true,
+	values := ""
+	for _, valuesFile := range testCase.ValueFiles {
+		valuesFileContent, err := os.ReadFile(valuesFile)
+		r.NoError(err, "Values file was not readable")
+		values += string(valuesFileContent)
+		values += "\n"
 	}
-	output := helm.RenderTemplate(t, options, testCase.ChartPath, testCase.Release, testCase.Templates)
+
+	chartSpec := helmclient.ChartSpec{
+		ReleaseName:      testCase.Release,
+		Namespace:        testCase.Namespace,
+		ChartName:        testCase.ChartPath,
+		DependencyUpdate: true,
+		ValuesYaml:       values,
+	}
+
+	client, err := helmclient.New(&helmclient.Options{
+		Debug:   true,
+		Linting: true,
+	})
+	r.NoError(err, "Failed to create helm client")
+
+	// run the helm template command
+	output, err := client.TemplateChart(&chartSpec, nil)
+	r.NoError(err, "Failed to render helm chart")
 
 	// Replacing expressions which change on every run so they won't be compared in the golden file
 	regexes := map[*regexp.Regexp]string{
@@ -75,8 +79,7 @@ func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 		regexp.MustCompile(`caBundle:\s+.*`):           "caBundle: \"GOLDEN_STATIC_VALUE\"",
 	}
 	for regex, replaced := range regexes {
-		bytes := regex.ReplaceAll([]byte(output), []byte(replaced))
-		output = string(bytes)
+		output = regex.ReplaceAll(output, []byte(replaced))
 	}
 
 	goldenFile := "golden/" + testCase.GoldenSubDirectory + "/" + testCase.GoldenFileName + ".golden.yaml"
@@ -87,14 +90,14 @@ func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 			r.NoError(err, "Golden file directory was not writable")
 		}
 
-		err := os.WriteFile(goldenFile, []byte(output), 0644)
+		err := os.WriteFile(goldenFile, output, 0644)
 		r.NoError(err, "Golden file was not writable")
 	}
 
 	expected, err := os.ReadFile(goldenFile)
 
 	r.NoError(err, "Golden file doesn't exist or was not readable")
-	r.Equal(string(expected), output, "Rendered output does not match golden file. Please run tests with -update-golden flag to update the golden files.")
+	r.Equal(string(expected), string(output), "Rendered output does not match golden file. Please run tests with -update-golden flag to update the golden files.")
 }
 
 func (s *helmRepoSuite) getChartDirectory(chartName string) string {
