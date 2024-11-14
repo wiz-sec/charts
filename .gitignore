@@ -1,2 +1,2 @@
-.idea
-!.idea/runConfigurations/*
+.idea/*
+!/.idea/runConfigurations
