@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (s *helmRepoSuite) TestChartWithCustomValues() {
+func (s *helmRepoSuite) TestCharts() {
 	testFilesDirectory := "testfiles"
 	testChartsDirectory, err := os.ReadDir(testFilesDirectory)
 	s.NoError(err)
@@ -24,7 +24,7 @@ func (s *helmRepoSuite) TestChartWithCustomValues() {
 
 		for _, testFile := range chartDirectory {
 			testFileName := testFile.Name()
-			s.Run(testFileName, func() {
+			s.Run(path.Join(chartName, testFileName), func() {
 				chartDir := s.getChartDirectory(chartName)
 
 				chartDirFullPath, err := filepath.Abs(chartDir)
@@ -38,7 +38,7 @@ func (s *helmRepoSuite) TestChartWithCustomValues() {
 					// remove .yaml from the test file name
 					GoldenFileName:     strings.TrimSuffix(testFileName, ".yaml"),
 					ValueFiles:         []string{valuesFilePath},
-					GoldenSubDirectory: path.Join("custom", chartName),
+					GoldenSubDirectory: path.Join(chartName),
 				})
 			})
 		}
