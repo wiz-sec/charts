@@ -37,7 +37,7 @@ executors:
       - image: dtzar/helm-kubectl:3.10.2
   golang:
     docker:
-      - image: golang:1.17
+      - image: golang:1.23
 
 commands:
   upload_new_chart:
@@ -69,6 +69,8 @@ jobs:
           name: Run chart validation tests
           command: |
             go test -v .
+      - store_test_results:
+          path: /tmp/test-results
 
   package_and_index_charts:
     executor:

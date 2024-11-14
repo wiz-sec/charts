@@ -1,0 +1,92 @@
+---
+# Source: wiz-broker/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: release-test-api-token
+  namespace: "release-helm-namespace"
+  labels:
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
+    app.kubernetes.io/name: wiz-broker
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+data:
+  clientId: "PGNsaWVudC1pZD4="
+  clientToken: "PGNsaWVudC10b2tlbj4="
+---
+# Source: wiz-broker/templates/wiz-broker-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-test-agent
+  namespace: "release-helm-namespace"
+  labels:
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
+    app.kubernetes.io/name: wiz-broker
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.5"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wiz-broker
+      app.kubernetes.io/instance: release-test
+  template:
+    metadata:
+      annotations:
+        rollme: "GOLDEN_STATIC_VALUE"
+      labels:
+        helm.sh/chart: "GOLDEN_STATIC_VALUE"
+        app.kubernetes.io/name: wiz-broker
+        app.kubernetes.io/instance: release-test
+        app.kubernetes.io/version: "2.5"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: 
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+        - name: connector-data
+          secret:
+            secretName: release-test-connector
+            items:
+              - key: connectorData
+                path: data
+      containers:
+        - name: wiz-broker
+          securityContext:
+            null
+          image: wiziopublic.azurecr.io/wiz-app/wiz-broker:2.5
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: connector-data
+            mountPath: /etc/connectorData
+            readOnly: true
+          args: [
+            /etc/connectorData/data
+          ]
+          env:
+          - name: LOG_LEVEL
+            value: info
+          - name: WIZ_ENV
+            value: 
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: release-test-api-token
+                key: clientId
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: release-test-api-token
+                key: clientToken
+          - name: TARGET_IP
+            value: 
+          - name: TARGET_PORT
+            value: "443"
+          resources:
+            null
