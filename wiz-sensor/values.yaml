@@ -70,6 +70,9 @@ privileged: false
 # for a production deployment.
 debug: false
 
+# force old-style annotation for AppArmor profile (compatibility with some gitops tools)
+oldAppArmorAnnotation: false
+
 clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
 subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
 clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation

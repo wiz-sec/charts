@@ -25,7 +25,7 @@ spec:
         prometheus.io/port: "{{ .Values.metricsPort }}"
       {{- end }}
 
-      {{- if semverCompare "<1.31" $kubeVersion }}
+      {{- if or (semverCompare "<1.31" $kubeVersion) (.Values.oldAppArmorAnnotation) }}
         container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
         {{- if .Values.diskScan.enabled }}
         container.apparmor.security.beta.kubernetes.io/wiz-disk-scanner: unconfined
@@ -104,7 +104,7 @@ spec:
           runAsGroup: 2202
         {{- end }}
           readOnlyRootFilesystem: true
-          {{- if semverCompare ">=1.30" $kubeVersion }}
+          {{- if and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation) }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
@@ -277,7 +277,7 @@ spec:
         {{- end }}
           readOnlyRootFilesystem: true
 
-          {{- if semverCompare ">=1.30" $kubeVersion }}
+          {{- if and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation) }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
