@@ -310,7 +310,7 @@ spec:
           - name: WIZ_TERMINATION_GRACE_PERIOD
             value: "60s"
           - name: WIZ_CHART_VERSION
-            value: "3.7.0-preview"
+            value: "3.7.0"
           - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
             value: "true"
            # For running pod with read only file system we write all the cache files to /var/cache volume mount, used by image integrity hook
@@ -429,7 +429,7 @@ spec:
               - name: WIZ_TERMINATION_GRACE_PERIOD
                 value: "60s"
               - name: WIZ_CHART_VERSION
-                value: "3.7.0-preview"
+                value: "3.7.0"
               resources:
                 {}
           volumes:
