@@ -22,7 +22,7 @@ wizApiToken:
     annotations: {}
     # The name of the Wiz Service Account Secret.
     name: ""
-  
+
   # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
   usePodCustomEnvironmentVariablesFile: false
 
@@ -49,7 +49,7 @@ replicaCount: 2
 # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 podDisruptionBudget:
   enabled: false # Should a PodDisruptionBudget be created by the chart or not.
-  minAvailable: 1 
+  minAvailable: 1
   maxUnavailable: null
 
 image:
@@ -150,17 +150,17 @@ opaWebhook:
                         #
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
-  policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, by default AC will get policies from Wiz based on projects.  
-  
+  policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, by default AC will get policies from Wiz based on projects.
+
   # Deprecated, don't use!
   errorEnforcementMethod: ""  # Deprecated, use `webhook.errorEnforcementMethod` instead
   policyEnforcementMethod: "" # Deprecated, use `webhook.policyEnforcementMethod` instead
   clusterExternalId: "" # Deprecated, use `webhook.clusterExternalId` instead
   secret: # Deprecated, use `webhook.secret` instead
-    annotations: {} 
+    annotations: {}
 
 imageIntegrityWebhook:
-  enabled: false 
+  enabled: false
   policies: [] # List of policies to enforce on the image integrity webhook. If not set, by default AC will get policies from Wiz based on projects.
 
     # Override to run admission controller on specific resources.
@@ -199,7 +199,7 @@ imageIntegrityWebhook:
 
 # This webhooks sends the audit logs to Wiz, and should never block any requests.
 kubernetesAuditLogsWebhook:
-  enabled: false 
+  enabled: false
 
   nameOverride: "" # Override the audit logs deployment name.
   replicaCount: 2
@@ -316,18 +316,18 @@ debugWebhook:
 # The following values are used for image integrity webhook.
 imageRegistryClient:
   # Should a Role and RoleBinding be created by the chart or not.
-  createRole: true 
+  createRole: true
   # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
-  pullSecrets: [] 
+  pullSecrets: []
   # Namespace of the pull secrets.
-  secretsNamespace: "default" 
-  # List of credential helpers to use, Can be one of amazon, azure, google, github. 
+  secretsNamespace: "default"
+  # List of credential helpers to use, Can be one of amazon, azure, google, github.
   credentialHelpers: []
   # The interval of the background reloader cache for image pull secrets. The cache is used to avoid querying the cluster for the same image pull secrets multiple times.
-  cacheImagePullSecretsInterval: 5m 
+  cacheImagePullSecretsInterval: 5m
   # Ignore missing secret error on startup, the admission controller will continue to run without the secret value and tries to fetch the secret every cacheImagePullSecretsInterval.
   # Useful when the secret is not available at the time of startup.
-  ignoreMissingSecretError: false 
+  ignoreMissingSecretError: false
 
 kubernetesApiServer:
   cacheNamespaceLabelsTTL: 10m # The interval of the background reloder cache for namespace labels. The cache is used to avoid querying cluster for the same namespace multiple times.
@@ -422,7 +422,7 @@ probes: # Probes config for the container
     initialDelaySeconds: 5
     timeoutSeconds: 300 # 5 minutes
     failureThreshold: 30 # 10s(default) * 30 attempts = 300 seconds for it to finish
-    
+
   readinessProbe:
     initialDelaySeconds: 5
     periodSeconds: 5
@@ -485,11 +485,11 @@ global:
 
   # Wiz Service Account used to authenticate to Wiz.
   wizApiToken:
-    clientId: "" 
+    clientId: ""
     clientToken: ""
     clientEndpoint: "" # Defaults to commercial.
                        # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
-    
+
     secret:
       # The name of the Wiz Service Account Secret.
       name: ""
@@ -498,7 +498,7 @@ global:
   httpProxyConfiguration:
     enabled: false # Should the components use a proxy.
     secretName: "" # The name of the proxy Secret.
-    
+
     httpProxy: ""
     httpsProxy: ""
     noProxyAddress: ""
