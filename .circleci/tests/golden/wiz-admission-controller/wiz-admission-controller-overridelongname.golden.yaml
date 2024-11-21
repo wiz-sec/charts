@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: release-test-wiz-admission-controller
+  name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -16,7 +16,7 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: release-test-wiz-admission-controller-manager
+  name: very-long-release-test-abcdefghijklmnopqrstu-manager
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -45,7 +45,7 @@ stringData:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: release-test-wiz-admission-controller-namespace-reader
+  name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa-namespace-reader
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -62,7 +62,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: release-test-wiz-admission-controller-manager-event-creator
+  name: very-long-release-test-abcdefghijklmnopqrstu-manager-event-creator
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -79,7 +79,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: release-test-wiz-admission-controller-namespace
+  name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa-namespace
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -89,18 +89,18 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 subjects:
 - kind: ServiceAccount
-  name: release-test-wiz-admission-controller
+  name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa
   namespace: "release-helm-namespace"
 roleRef:
   kind: ClusterRole
-  name: release-test-wiz-admission-controller-namespace-reader
+  name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa-namespace-reader
   apiGroup: rbac.authorization.k8s.io
 ---
 # Source: wiz-admission-controller/templates/serviceaccount.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: release-test-wiz-admission-controller-manager-event-creator
+  name: very-long-release-test-abcdefghijklmnopqrstu-manager-event-creator
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -110,18 +110,18 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 roleRef:
   kind: ClusterRole
-  name: release-test-wiz-admission-controller-manager-event-creator
+  name: very-long-release-test-abcdefghijklmnopqrstu-manager-event-creator
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: ServiceAccount
-    name: release-test-wiz-admission-controller-manager
+    name: very-long-release-test-abcdefghijklmnopqrstu-manager
     namespace: "release-helm-namespace"
 ---
 # Source: wiz-admission-controller/templates/serviceaccount.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: release-test-wiz-admission-controller-manager-pods-and-deployments-manager
+  name: very-long-release-test-abcdefghijklmnopqrstu-manager-pods-and-deployments-manager
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -132,7 +132,7 @@ metadata:
 rules:
   - apiGroups: ["apps"]
     resources: ["deployments"]
-    resourceNames: ["release-test-wiz-admission-controller"]
+    resourceNames: ["very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa"]
     verbs: ["get", "patch"]
   - apiGroups: [""]
     resources: ["pods"]
@@ -142,7 +142,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: release-test-wiz-admission-controller-manager-pods-and-deployments
+  name: very-long-release-test-abcdefghijklmnopqrstu-manager-pods-and-deployments
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -152,18 +152,18 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 subjects:
   - kind: ServiceAccount
-    name: release-test-wiz-admission-controller-manager
+    name: very-long-release-test-abcdefghijklmnopqrstu-manager
     namespace: "release-helm-namespace"
 roleRef:
   kind: Role
-  name: release-test-wiz-admission-controller-manager-pods-and-deployments-manager
+  name: very-long-release-test-abcdefghijklmnopqrstu-manager-pods-and-deployments-manager
   apiGroup: rbac.authorization.k8s.io
 ---
 # Source: wiz-admission-controller/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: release-test-wiz-admission-controller
+  name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -187,7 +187,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: release-test-wiz-admission-controller
+  name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -218,7 +218,7 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: wiz-admission-controller
     spec:
-      serviceAccountName: release-test-wiz-admission-controller
+      serviceAccountName: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa
       securityContext:
         {}
       terminationGracePeriodSeconds: 60
@@ -338,13 +338,13 @@ spec:
         - name: server-certs
           secret:
             defaultMode: 444
-            secretName: release-test-wiz-admission-controller-cert
+            secretName: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa-cert
 ---
 # Source: wiz-admission-controller/templates/cronjobmanager.yaml
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: release-test-wiz-admission-controller-manager
+  name: very-long-release-test-abcdefghijklmnopqrstu-manager
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -352,7 +352,7 @@ metadata:
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: release-test-wiz-admission-controller-manager
+    app.kubernetes.io/name: very-long-release-test-abcdefghijklmnopqrstu-manager
 spec:
   schedule: "0 * * * *"
   concurrencyPolicy: Forbid  # Ensures only one job instance runs at a time
@@ -371,10 +371,10 @@ spec:
             app.kubernetes.io/instance: release-test
             app.kubernetes.io/version: "2.7"
             app.kubernetes.io/managed-by: Helm
-            app.kubernetes.io/name: release-test-wiz-admission-controller-manager
+            app.kubernetes.io/name: very-long-release-test-abcdefghijklmnopqrstu-manager
         spec:
           restartPolicy: Never
-          serviceAccountName: release-test-wiz-admission-controller-manager
+          serviceAccountName: very-long-release-test-abcdefghijklmnopqrstu-manager
           securityContext:
             {}
           terminationGracePeriodSeconds: 60
@@ -393,7 +393,7 @@ spec:
               - "/usr/bin/wiz-admission-controller"
               - "manager"
               # Cluster identification flags
-              - "--update-deployments=release-test-wiz-admission-controller"
+              - "--update-deployments=very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa"
               # Auto update flags
               - "--auto-update-enabled=true"
               - "--release-namespace=release-helm-namespace"
@@ -439,7 +439,7 @@ apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls
 metadata:
-  name: release-test-wiz-admission-controller-cert
+  name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa-cert
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -459,7 +459,7 @@ data:
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: release-test-wiz-admission-controller-misconfigurations
+  name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa-misconfigurations
   namespace: "release-helm-namespace"
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
@@ -476,7 +476,7 @@ webhooks:
   clientConfig:
     service:
       namespace: release-helm-namespace
-      name: release-test-wiz-admission-controller
+      name: very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa
       path: /opa-validator
       port: 443
     caBundle: "GOLDEN_STATIC_VALUE"
