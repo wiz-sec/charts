@@ -45,6 +45,8 @@ mtls:
 rollmeAnnotation:
   enabled: true
 
+tolerations: []
+
 wizConnector:
   # Specifies whether a connector secret should be created
   # If createSecret is false you need to:
@@ -160,3 +162,5 @@ global:
 
   # Set to true to use FedRamp endpoints and FIPS-compliant images.
   isFedRamp: false
+
+  tolerations: []
