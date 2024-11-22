@@ -457,7 +457,7 @@ hpa:
   #       periodSeconds: 300
 
 wizManager:
-  enabled: true # Should the Wiz Manager be deployed.
+  enabled: false # Should the Wiz Manager be deployed.
 
   autoRolloutRestart:
     enabled: true # Should the manager trigger rollout restarts.
