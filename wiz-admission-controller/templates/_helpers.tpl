@@ -34,7 +34,9 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
 {{- .Values.kubernetesAuditLogsWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- printf "%s-audit-log-collector" (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- $suffix := "-audit-log-collector" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
 {{- end }}
 {{- end }}
 
@@ -42,16 +44,22 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.wizManager.nameOverride }}
 {{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- printf "%s-manager" (include "wiz-admission-controller.fullname" .) | trunc 52 | trimSuffix "-" }}
+{{- $suffix := "-manager" -}}
+{{- $maxLength := int (sub 52 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
 {{- end }}
 {{- end }}
 
 {{- define "wiz-hpa-enforcer.name" -}}
-{{- printf "%s-hpa" (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- $suffix := "-hpa" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
 {{- end }}
 
 {{- define "wiz-hpa-audit-logs.name" -}}
-{{- printf "%s-hpa" (include "wiz-kubernetes-audit-log-collector.name" .) | trunc 63 | trimSuffix "-" }}
+{{- $suffix := "-hpa" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-kubernetes-audit-log-collector.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
 {{- end }}
 
 {{/*
