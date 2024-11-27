@@ -28,7 +28,7 @@ spec:
   behavior: {{ include "wiz-admission-controller.hpaBehavior" . | nindent 4 }}
 ---
 {{- end }}
-{{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
+{{- if and .Values.hpa.enabled .Values.kubernetesAuditLogsWebhook.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
