@@ -1,0 +1,6 @@
+wizApiToken:
+  clientId: "<client-id>"
+  clientToken: "<client-token>"
+
+kubernetesAuditLogsWebhook:
+  enabled: true
