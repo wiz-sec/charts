@@ -333,7 +333,7 @@ spec:
           - name: WIZ_TERMINATION_GRACE_PERIOD
             value: "60s"
           - name: WIZ_CHART_VERSION
-            value: "3.7.4"
+            value: "GOLDEN_STATIC_VALUE"
           ## Enable debug webhook that only logs the request
           resources:
             requests:
@@ -475,7 +475,7 @@ spec:
           - name: WIZ_TERMINATION_GRACE_PERIOD
             value: "60s"
           - name: WIZ_CHART_VERSION
-            value: "3.7.4"
+            value: "GOLDEN_STATIC_VALUE"
           - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
             value: "true"
            # For running pod with read only file system we write all the cache files to /var/cache volume mount, used by image integrity hook
@@ -670,7 +670,7 @@ spec:
               - name: WIZ_TERMINATION_GRACE_PERIOD
                 value: "60s"
               - name: WIZ_CHART_VERSION
-                value: "3.7.4"
+                value: "GOLDEN_STATIC_VALUE"
               resources:
                 requests:
                     cpu: 500m
