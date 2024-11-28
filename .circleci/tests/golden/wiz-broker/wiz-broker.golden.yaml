@@ -6,7 +6,7 @@ metadata:
   name: release-test-api-token
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: GOLDEN_STATIC_VALUE
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -23,7 +23,7 @@ metadata:
   name: release-test-agent
   namespace: "release-helm-namespace"
   labels:
-    helm.sh/chart: GOLDEN_STATIC_VALUE
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-broker
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.5"
@@ -37,9 +37,9 @@ spec:
   template:
     metadata:
       annotations:
-        rollme: GOLDEN_STATIC_VALUE
+        rollme: "GOLDEN_STATIC_VALUE"
       labels:
-        helm.sh/chart: GOLDEN_STATIC_VALUE
+        helm.sh/chart: "GOLDEN_STATIC_VALUE"
         app.kubernetes.io/name: wiz-broker
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.5"

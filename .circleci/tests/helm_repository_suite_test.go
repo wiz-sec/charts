@@ -80,7 +80,7 @@ func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 
 	for _, regex := range regexes {
 		replaced := regex.ReplaceAllStringFunc(string(output), func(match string) string {
-			return regex.ReplaceAllString(match, "${1}GOLDEN_STATIC_VALUE")
+			return regex.ReplaceAllString(match, "${1}\"GOLDEN_STATIC_VALUE\"")
 		})
 		output = []byte(replaced)
 	}
