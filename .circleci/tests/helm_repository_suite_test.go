@@ -68,16 +68,21 @@ func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 	r.NoError(err, "Failed to render helm chart")
 
 	// Replacing expressions which change on every run so they won't be compared in the golden file
-	regexes := map[*regexp.Regexp]string{
-		regexp.MustCompile(`helm.sh/chart:\s+.*`):      "helm.sh/chart: \"GOLDEN_STATIC_VALUE\"",
-		regexp.MustCompile(`tls.crt:\s+.*`):            "tls.crt: \"GOLDEN_STATIC_VALUE\"",
-		regexp.MustCompile(`tls.key:\s+.*`):            "tls.key: \"GOLDEN_STATIC_VALUE\"",
-		regexp.MustCompile(`rollme:\s+.*`):             "rollme: \"GOLDEN_STATIC_VALUE\"",
-		regexp.MustCompile(`rollme.webhookCert:\s+.*`): "rollme.webhookCert: \"GOLDEN_STATIC_VALUE\"",
-		regexp.MustCompile(`caBundle:\s+.*`):           "caBundle: \"GOLDEN_STATIC_VALUE\"",
+	regexes := []*regexp.Regexp{
+		regexp.MustCompile(`(helm.sh/chart:\s+).*`),
+		regexp.MustCompile(`(tls.crt:\s+).*`),
+		regexp.MustCompile(`(tls.key:\s+).*`),
+		regexp.MustCompile(`(rollme:\s+).*`),
+		regexp.MustCompile(`(rollme.webhookCert:\s+).*`),
+		regexp.MustCompile(`(caBundle:\s+).*`),
+		regexp.MustCompile(`(- name: WIZ_CHART_VERSION\n\s+value: )".*"`),
 	}
-	for regex, replaced := range regexes {
-		output = regex.ReplaceAll(output, []byte(replaced))
+
+	for _, regex := range regexes {
+		replaced := regex.ReplaceAllStringFunc(string(output), func(match string) string {
+			return regex.ReplaceAllString(match, "${1}GOLDEN_STATIC_VALUE")
+		})
+		output = []byte(replaced)
 	}
 
 	goldenFile := "golden/" + testCase.GoldenSubDirectory + "/" + testCase.GoldenFileName + ".golden.yaml"
