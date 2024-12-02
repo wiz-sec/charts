@@ -13,7 +13,7 @@
         <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
       </ENTRIES>
     </EXTENSION>
-    <kind value="DIRECTORY" />
+    <kind value="PACKAGE" />
     <package value="tests" />
     <directory value="$PROJECT_DIR$/.circleci/tests" />
     <filePath value="$PROJECT_DIR$" />

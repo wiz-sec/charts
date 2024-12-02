@@ -132,7 +132,7 @@ metadata:
 rules:
   - apiGroups: ["apps"]
     resources: ["deployments"]
-    resourceNames: ["release-test-wiz-admission-controller"]
+    resourceNames: ["release-test-wiz-admission-controller","release-test-wiz-admission-controller-audit-log-collector"]
     verbs: ["get", "patch"]
   - apiGroups: [""]
     resources: ["pods"]
@@ -182,6 +182,171 @@ spec:
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/name: wiz-admission-controller
+---
+# Source: wiz-admission-controller/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-test-wiz-admission-controller-audit-log-collector
+  namespace: "release-helm-namespace"
+  labels:
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: release-test-wiz-admission-controller-audit-log-collector
+spec:
+  type: ClusterIP
+  ports:
+    - port: 443
+      targetPort: 10250
+      protocol: TCP
+  selector:
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/name: release-test-wiz-admission-controller-audit-log-collector
+---
+# Source: wiz-admission-controller/templates/deploymentauditlogs.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-test-wiz-admission-controller-audit-log-collector
+  namespace: "release-helm-namespace"
+  labels:
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.7"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: release-test-wiz-admission-controller-audit-log-collector
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/chartName: wiz-admission-controller
+      app.kubernetes.io/instance: release-test
+      app.kubernetes.io/name: release-test-wiz-admission-controller-audit-log-collector
+  template:
+    metadata:
+      annotations:
+        rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
+        rollme.wizApiTokenHash: 7ab3d8e2e66c2b44c6e9ffbc1456bdec456ff9107abb86802d98d647a9ba96d3
+        rollme.webhookCert: "GOLDEN_STATIC_VALUE"
+      labels:
+        
+        helm.sh/chart: "GOLDEN_STATIC_VALUE"
+        app.kubernetes.io/chartName: wiz-admission-controller
+        app.kubernetes.io/instance: release-test
+        app.kubernetes.io/version: "2.7"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: release-test-wiz-admission-controller-audit-log-collector
+    spec:
+      serviceAccountName: release-test-wiz-admission-controller
+      securityContext:
+        {}
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: wiz-admission-controller
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: wiziopublic.azurecr.io/wiz-app/wiz-admission-controller:2.7
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 10250
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 1
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            timeoutSeconds: 30
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 30
+            initialDelaySeconds: 5
+            timeoutSeconds: 300
+          command:
+          - "/usr/bin/wiz-admission-controller"
+          # Cluster identification flags
+          # Server flags
+          - "--port=10250"
+          - "--tls-private-key-file=/var/server-certs/tls.key"
+          - "--tls-cert-file=/var/server-certs/tls.crt"
+          - "--readiness-port=8000"
+          # Kubernetes API server flags
+          - "--namespace-cache-ttl=10m"
+          # Webhook flags
+          - "--error-enforcement-method=AUDIT"
+          - "--policy-enforcement-method=AUDIT"
+          # K8S audit logs webhook flags
+          - "--kubernetes-audit-logs-enabled=true"
+          # Disable other webhooks
+          - "--misconfiguration-enabled=false"
+          - "--image-integrity-enabled=false"
+          env:
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: release-test-api-token
+                key: clientId
+                optional: false
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: release-test-api-token
+                key: clientToken
+                optional: false
+          - name: WIZ_ENV
+            value: 
+          - name: LOG_LEVEL
+            value: info
+          - name: WIZ_RUNTIME_METADATA_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: WIZ_RUNTIME_METADATA_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: WIZ_TERMINATION_GRACE_PERIOD
+            value: "60s"
+          - name: WIZ_CHART_VERSION
+            value: "GOLDEN_STATIC_VALUE"
+          ## Enable debug webhook that only logs the request
+          resources:
+            {}
+          volumeMounts:
+          - mountPath: /var/server-certs
+            name: server-certs
+            readOnly: true
+      volumes:
+        - name: server-certs
+          secret:
+            defaultMode: 444
+            secretName: release-test-wiz-admission-controller-cert
 ---
 # Source: wiz-admission-controller/templates/deploymentenforcement.yaml
 apiVersion: apps/v1
@@ -393,7 +558,7 @@ spec:
               - "/usr/bin/wiz-admission-controller"
               - "manager"
               # Cluster identification flags
-              - "--update-deployments=release-test-wiz-admission-controller"
+              - "--update-deployments=release-test-wiz-admission-controller,release-test-wiz-admission-controller-audit-log-collector"
               # Auto update flags
               - "--auto-update-enabled=true"
               - "--release-namespace=release-helm-namespace"
@@ -500,6 +665,87 @@ webhooks:
       - replicasets
       - statefulsets
       - daemonsets
+  namespaceSelector:
+    matchExpressions:
+    - key: kubernetes.io/metadata.name
+      operator: NotIn
+      values:
+      - kube-system
+      - kube-node-lease
+  timeoutSeconds: 8
+  failurePolicy: Ignore
+  sideEffects: None
+---
+# Source: wiz-admission-controller/templates/opawebhook.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: release-test-wiz-admission-controller-kubernetes-audit-logs
+  namespace: "release-helm-namespace"
+  labels:
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "2.7"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": "post-install, post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+webhooks:
+- name: kubernetesauditlogs.wiz.io
+  admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    service:
+      namespace: release-helm-namespace
+      name: release-test-wiz-admission-controller-audit-log-collector
+      path: /kubernetes-audit-logs
+      port: 443
+    caBundle: "GOLDEN_STATIC_VALUE"
+  rules:
+    - apiGroups:
+      - '*'
+      apiVersions:
+      - '*'
+      operations:
+      - '*'
+      resources:
+      - namespaces
+      - secrets
+      - configmaps
+      - storageclasses
+      - persistentvolumes
+      - persistentvolumeclaims
+      - controllerrevisions
+      - ingresses
+      - services
+      - networkpolicies
+      - pods
+      - deployments
+      - jobs
+      - cronjobs
+      - replicasets
+      - statefulsets
+      - daemonsets
+      - replicationcontrollers
+      - subjectaccessreviews
+      - selfsubjectrulesreviews
+      - selfsubjectreviews
+      - pods/exec
+      - pods/portforward
+      - pods/attach
+      - clusterroles
+      - roles
+      - rolebindings
+      - clusterrolebindings
+      - serviceaccounts
+    - apiGroups:
+      - '*'
+      apiVersions:
+      - '*'
+      operations:
+      - DELETE
+      resources:
+      - events
   namespaceSelector:
     matchExpressions:
     - key: kubernetes.io/metadata.name
