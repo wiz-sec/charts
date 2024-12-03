@@ -50,7 +50,7 @@ metadata:
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
-    app.kubernetes.io/version: "1.0.4945"
+    app.kubernetes.io/version: "1.0.5145"
     app.kubernetes.io/managed-by: Helm
 ---
 # Source: wiz-kubernetes-integration/charts/wiz-sensor/templates/imagepullsecret.yaml
@@ -65,7 +65,7 @@ metadata:
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
-    app.kubernetes.io/version: "1.0.4945"
+    app.kubernetes.io/version: "1.0.5145"
     app.kubernetes.io/managed-by: Helm
   namespace: release-helm-namespace
 data:
@@ -83,7 +83,7 @@ metadata:
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
-    app.kubernetes.io/version: "1.0.4945"
+    app.kubernetes.io/version: "1.0.5145"
     app.kubernetes.io/managed-by: Helm
   namespace: release-helm-namespace
 
@@ -152,7 +152,7 @@ metadata:
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
-    app.kubernetes.io/version: "1.0.4945"
+    app.kubernetes.io/version: "1.0.5145"
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups: [""]
@@ -239,7 +239,7 @@ metadata:
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
-    app.kubernetes.io/version: "1.0.4945"
+    app.kubernetes.io/version: "1.0.5145"
     app.kubernetes.io/managed-by: Helm
 subjects:
 - kind: ServiceAccount
@@ -351,7 +351,7 @@ metadata:
     image/tag: v1
     app.kubernetes.io/name: wiz-sensor
     app.kubernetes.io/instance: release-test
-    app.kubernetes.io/version: "1.0.4945"
+    app.kubernetes.io/version: "1.0.5145"
     app.kubernetes.io/managed-by: Helm
   namespace: release-helm-namespace
 
@@ -372,7 +372,7 @@ spec:
         image/tag: v1
         app.kubernetes.io/name: wiz-sensor
         app.kubernetes.io/instance: release-test
-        app.kubernetes.io/version: "1.0.4945"
+        app.kubernetes.io/version: "1.0.5145"
         app.kubernetes.io/managed-by: Helm
 
       annotations:
