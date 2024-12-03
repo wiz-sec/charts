@@ -78,6 +78,32 @@ subscriptionExternalId: "" # Optional. Used to associate the installation with a
 clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
 subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
 
+# enable liveness probe for the sensor container
+livenessProbe:
+  enabled: false
+  config:
+    # delay before liveness probe starts
+    initialDelaySeconds: 15
+    # period between liveness probe checks
+    periodSeconds: 30
+    # timeout for liveness probe
+    timeoutSeconds: 10
+    # number of failures before sensor pod is considered unhealthy
+    failureThreshold: 3
+
+# readiness probe for the sensor container
+readinessProbe:
+  enabled: false
+  config:
+    # delay before readiness probe starts
+    initialDelaySeconds: 15
+    # period between readiness probe checks
+    periodSeconds: 30
+    # timeout for readiness probe
+    timeoutSeconds: 10
+    # number of failures before sensor pod is considered not ready
+    failureThreshold: 3
+
 # the API key identifying this installation (for comm with Wiz portal)
 wizApiToken:
   secret:

@@ -3,5 +3,5 @@ description: Wiz Sensor helm chart
 home: https://www.wiz.io/
 name: wiz-sensor
 type: application
-version: 1.0.4945
-appVersion: 1.0.4945
+version: 1.0.5145
+appVersion: 1.0.5145
