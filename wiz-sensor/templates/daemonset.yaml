@@ -360,7 +360,7 @@ spec:
           value: {{ .Values.tenantSuffix }}
         {{- end }}
         - name: SENSOR_CLUSTER_NAME
-          value: {{ coalesce .Values.global.clusterDisplayName .Values.sensorClusterName }}
+          value: {{ .Values.sensorClusterName }}
         - name: RUST_LOG
           value: {{ include "wiz-sensor.fileLogLevel" . }}
         - name: STDOUT_LOG
