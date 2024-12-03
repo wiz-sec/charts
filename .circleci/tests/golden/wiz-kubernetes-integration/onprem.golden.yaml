@@ -588,7 +588,7 @@ spec:
         - name: BACKEND_ENV
           value: prod
         - name: SENSOR_CLUSTER_NAME
-          value: "OnPrem-Cluster"
+          value: OnPrem-Cluster
         - name: RUST_LOG
           value: info
         - name: STDOUT_LOG

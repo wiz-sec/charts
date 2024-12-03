@@ -478,6 +478,8 @@ spec:
           value: 
         - name: BACKEND_ENV
           value: prod
+        - name: SENSOR_CLUSTER_NAME
+          value: 
         - name: RUST_LOG
           value: info
         - name: STDOUT_LOG
