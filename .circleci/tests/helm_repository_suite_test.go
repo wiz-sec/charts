@@ -2,15 +2,21 @@ package tests
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"path"
 	"regexp"
 	"testing"
 
-	"github.com/mittwald/go-helm-client"
+	helmclient "github.com/mittwald/go-helm-client"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
+)
+
+const (
+	thisRepo = "https://wiz-sec.github.io/charts"
 )
 
 const (
@@ -21,10 +27,48 @@ var update = flag.Bool("update-golden", false, "update golden test output files"
 
 type helmRepoSuite struct {
 	suite.Suite
+	localizedChartsDir string
 }
 
 func TestHelmRepository(t *testing.T) {
 	suite.Run(t, new(helmRepoSuite))
+}
+
+func (s *helmRepoSuite) SetupSuite() {
+	tmpDir, err := os.MkdirTemp("", "helmRepoSuite-")
+	s.NoError(err)
+	s.localizedChartsDir = tmpDir
+
+	subDirs, err := os.ReadDir(chartsRootDir)
+	s.NoError(err)
+	for _, d := range subDirs {
+		if !d.IsDir() {
+			continue
+		}
+		chartDir := path.Join(chartsRootDir, d.Name())
+		_, err := os.Stat(path.Join(chartDir, chartutil.ChartfileName))
+		if os.IsNotExist(err) {
+			continue
+		}
+		s.makeLocalizedChart(chartDir, s.localizedChartsDir)
+	}
+}
+
+func (s *helmRepoSuite) TearDownSuite() {
+	_ = os.RemoveAll(s.localizedChartsDir)
+}
+
+func (s *helmRepoSuite) makeLocalizedChart(srcChartDir string, dstDir string) {
+	chart, err := loader.Load(srcChartDir)
+	s.NoError(err)
+
+	s.T().Logf("Making localized version of %s in %s", chart.Name(), dstDir)
+	for _, d := range chart.Metadata.Dependencies {
+		if d.Repository == thisRepo {
+			d.Repository = fmt.Sprintf("file://../%s", d.Name)
+		}
+	}
+	s.NoError(chartutil.SaveDir(chart, dstDir))
 }
 
 type goldenHelmTest struct {
@@ -48,7 +92,6 @@ func runGoldenHelmTest(t *testing.T, testCase *goldenHelmTest) {
 		values += string(valuesFileContent)
 		values += "\n"
 	}
-
 	chartSpec := helmclient.ChartSpec{
 		ReleaseName:      testCase.Release,
 		Namespace:        testCase.Namespace,
