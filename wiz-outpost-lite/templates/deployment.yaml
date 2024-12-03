@@ -33,9 +33,14 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}:{{ .Values.image.tag }}{{ if .Values.agent.env }}-{{ .Values.agent.env }}{{ end }}"
+          image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}:{{ .Values.image.tag }}{{ .Values.image.tagSuffix }}"
           command: [ "/entrypoint"]
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.extraEnvConfigMap }}
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.extraEnvConfigMap | quote }}
+          {{- end }}
           env:
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}

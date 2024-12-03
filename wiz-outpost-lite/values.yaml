@@ -18,8 +18,10 @@ secret:
 image:
   repository: wizio.azurecr.io
   namePrefix: outpost-lite-runner
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "0.1-latest"
+  tagSuffix: ""
 
 autoUpdate: true
 
@@ -45,6 +47,7 @@ internetAccessCertificates:
   skipSslValidation: false
 
 extraEnv: {}
+extraEnvConfigMap: ""
 
 httpProxyConfiguration:
   enabled: false
