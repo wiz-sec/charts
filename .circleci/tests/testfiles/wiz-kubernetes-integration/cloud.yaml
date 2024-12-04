@@ -1,0 +1,29 @@
+global:
+  wizApiToken:
+    clientId: clientid
+    clientToken: clientsecret
+
+wiz-kubernetes-connector:
+  enabled: true
+  autoCreateConnector:
+    enabled: true
+    autoDeleteConnectorEnabled: true
+  broker:
+    enabled: true
+
+wiz-sensor:
+  enabled: true
+  imagePullSecret:
+    create: true
+    name: sensor-image-pull
+    username: pulluser
+    password: pullpassword
+  image:
+    registry: wizio.azurecr.io
+
+wiz-admission-controller:
+  enabled: true
+  opaWebhook:
+    enabled: true
+  kubernetesAuditLogsWebhook:
+    enabled: true

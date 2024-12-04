@@ -1,0 +1,39 @@
+global:
+  wizApiToken:
+    clientId: clientid
+    clientToken: clientsecret
+  clusterTags:
+    ctag: "onprem-ctag"
+  subscriptionExternalId: "OnPrem-Sub"
+  subscriptionTags:
+    stag: "onprem-stag"
+    environment: "OnPrem"
+  clusterDisplayName: "OnPrem-Cluster"
+
+wiz-kubernetes-connector:
+  enabled: true
+  autoCreateConnector:
+    enabled: true
+    autoDeleteConnectorEnabled: true
+    clusterFlavor: Kubernetes
+  broker:
+    enabled: true
+
+wiz-sensor:
+  enabled: true
+  imagePullSecret:
+    create: true
+    name: sensor-image-pull
+    username: pulluser
+    password: pullpassword
+  image:
+    registry: wizio.azurecr.io
+  diskScan:
+    enabled: true
+
+wiz-admission-controller:
+  enabled: true
+  opaWebhook:
+    enabled: true
+  kubernetesAuditLogsWebhook:
+    enabled: true

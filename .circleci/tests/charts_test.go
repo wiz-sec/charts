@@ -3,7 +3,6 @@ package tests
 import (
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 )
 
@@ -19,24 +18,26 @@ func (s *helmRepoSuite) TestCharts() {
 
 		chartName := testChart.Name()
 
-		chartDirectory, err := os.ReadDir(path.Join(testFilesDirectory, chartName))
+		valueFiles, err := os.ReadDir(path.Join(testFilesDirectory, chartName))
 		s.NoError(err)
 
-		for _, testFile := range chartDirectory {
-			testFileName := testFile.Name()
-			s.Run(path.Join(chartName, testFileName), func() {
-				chartDir := s.getChartDirectory(chartName)
-
-				chartDirFullPath, err := filepath.Abs(chartDir)
-				s.NoError(err)
-
-				valuesFilePath := path.Join(testFilesDirectory, chartName, testFileName)
+		for _, valueFileEnt := range valueFiles {
+			valueFileName := valueFileEnt.Name()
+			s.Run(path.Join(chartName, valueFileName), func() {
+				if chartName == "wiz-kubernetes-integration" {
+					//
+					// TODO remove this this when we fix the wiz-sensor chart release flow in the CI
+					//  https://wiz-io.atlassian.net/browse/WZ-59163
+					//
+					s.T().Skip("Skipped until WZ-59163 is done")
+				}
+				valuesFilePath := path.Join(testFilesDirectory, chartName, valueFileName)
 				runGoldenHelmTest(s.T(), &goldenHelmTest{
-					ChartPath: chartDirFullPath,
+					ChartPath: path.Join(s.localizedChartsDir, chartName),
 					Release:   "release-test",
 					Namespace: "release-helm-namespace",
 					// remove .yaml from the test file name
-					GoldenFileName:     strings.TrimSuffix(testFileName, ".yaml"),
+					GoldenFileName:     strings.TrimSuffix(valueFileName, ".yaml"),
 					ValueFiles:         []string{valuesFilePath},
 					GoldenSubDirectory: path.Join(chartName),
 				})
