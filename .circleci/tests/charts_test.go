@@ -24,6 +24,13 @@ func (s *helmRepoSuite) TestCharts() {
 		for _, valueFileEnt := range valueFiles {
 			valueFileName := valueFileEnt.Name()
 			s.Run(path.Join(chartName, valueFileName), func() {
+				if chartName == "wiz-kubernetes-integration" {
+					//
+					// TODO remove this this when we fix the wiz-sensor chart release flow in the CI
+					//  https://wiz-io.atlassian.net/browse/WZ-59163
+					//
+					s.T().Skip("Skipped until WZ-59163 is done")
+				}
 				valuesFilePath := path.Join(testFilesDirectory, chartName, valueFileName)
 				runGoldenHelmTest(s.T(), &goldenHelmTest{
 					ChartPath: path.Join(s.localizedChartsDir, chartName),

@@ -39,19 +39,31 @@ func (s *helmRepoSuite) SetupSuite() {
 	s.NoError(err)
 	s.localizedChartsDir = tmpDir
 
-	subDirs, err := os.ReadDir(chartsRootDir)
+	dirEntries, err := os.ReadDir(chartsRootDir)
 	s.NoError(err)
-	for _, d := range subDirs {
+	for _, d := range dirEntries {
 		if !d.IsDir() {
 			continue
 		}
 		chartDir := path.Join(chartsRootDir, d.Name())
-		_, err := os.Stat(path.Join(chartDir, chartutil.ChartfileName))
-		if os.IsNotExist(err) {
+		isChart, err := isChartDir(chartDir)
+		s.NoError(err)
+		if !isChart {
 			continue
 		}
 		s.makeLocalizedChart(chartDir, s.localizedChartsDir)
 	}
+}
+
+func isChartDir(dir string) (bool, error) {
+	_, err := os.Stat(path.Join(dir, chartutil.ChartfileName))
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (s *helmRepoSuite) TearDownSuite() {
