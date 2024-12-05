@@ -171,7 +171,7 @@ metadata:
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: wiz-admission-controller
+    app.kubernetes.io/name: abcwiz-admission-controller
 spec:
   type: ClusterIP
   ports:
@@ -181,7 +181,7 @@ spec:
   selector:
     app.kubernetes.io/chartName: wiz-admission-controller
     app.kubernetes.io/instance: release-test
-    app.kubernetes.io/name: wiz-admission-controller
+    app.kubernetes.io/name: abcwiz-admission-controller
 ---
 # Source: wiz-admission-controller/templates/deploymentenforcement.yaml
 apiVersion: apps/v1
@@ -195,14 +195,14 @@ metadata:
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "2.7"
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: wiz-admission-controller
+    app.kubernetes.io/name: abcwiz-admission-controller
 spec:
   replicas: 2
   selector:
     matchLabels:
       app.kubernetes.io/chartName: wiz-admission-controller
       app.kubernetes.io/instance: release-test
-      app.kubernetes.io/name: wiz-admission-controller
+      app.kubernetes.io/name: abcwiz-admission-controller
   template:
     metadata:
       annotations:
@@ -216,7 +216,7 @@ spec:
         app.kubernetes.io/instance: release-test
         app.kubernetes.io/version: "2.7"
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/name: wiz-admission-controller
+        app.kubernetes.io/name: abcwiz-admission-controller
     spec:
       serviceAccountName: release-test-wiz-admission-controller
       securityContext:
