@@ -116,10 +116,15 @@ spec:
             value: "/usr/local/share/ca-certificates/:/certificates/"
           args: [
             "--region", "{{ .Values.agent.outpostRegion }}",
+            "--metricsPort", "{{ .Values.service.metricsPort }}",
             {{- if .Values.autoUpdate }}
             "--autoUpdate",
             {{- end }}
           ]
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.service.metricsPort }}
+              protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
