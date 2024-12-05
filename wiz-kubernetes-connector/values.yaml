@@ -207,7 +207,6 @@ global:
   subscriptionExternalId: ""
   clusterTags: {}
   subscriptionTags: {}
-  clusterDisplayName: ""
 
   # Wiz Helm Charts process the security contexts
   # in the following order:
