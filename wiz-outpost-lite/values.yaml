@@ -52,7 +52,7 @@ extraEnvConfigMap: ""
 service:
   type: ClusterIP
   enabled: true
-  metricsPort: 8080
+  metricsPort: 9090
 
 httpProxyConfiguration:
   enabled: false
