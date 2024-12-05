@@ -49,6 +49,11 @@ internetAccessCertificates:
 extraEnv: {}
 extraEnvConfigMap: ""
 
+service:
+  type: ClusterIP
+  enabled: true
+  metricsPort: 9090
+
 httpProxyConfiguration:
   enabled: false
   name: wiz-http-proxy-configuration
