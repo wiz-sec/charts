@@ -103,7 +103,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Wiz admission controller enforcement webhook server selector labels
 */}}
 {{- define "wiz-admission-controller-enforcement.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "wiz-admission-controller.name" . }}
+app.kubernetes.io/name: abc{{ include "wiz-admission-controller.name" . }}
 {{- end }}
 
 {{/*

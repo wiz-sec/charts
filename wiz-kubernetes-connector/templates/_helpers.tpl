@@ -153,7 +153,7 @@ create-kubernetes-connector
 --output-secret-name
 {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
 --is-on-prem={{ include "wiz-kubernetes-connector.brokerEnabled" . | trim}}
-{{- with (coalesce .Values.global.clusterDisplayName .Values.autoCreateConnector.connectorName) }}
+{{- with .Values.autoCreateConnector.connectorName }}
 --connector-name
 {{ . | quote }}
 {{- end }}
