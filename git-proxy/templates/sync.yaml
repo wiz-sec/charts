@@ -3,6 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: outpost-state
+  namespace: {{ .Values.git.fluxNamespace }}
 spec:
   interval: 3m0s
   ref:
@@ -13,6 +14,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: outpost-state
+  namespace: {{ .Values.git.fluxNamespace }}
 spec:
   interval: 10m0s
   path: {{ required "git.path is required" .Values.git.path }}
