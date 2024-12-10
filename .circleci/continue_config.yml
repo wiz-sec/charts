@@ -151,19 +151,6 @@ jobs:
             - upload_new_chart:
                 package: wiz-kubernetes-integration
       - when:
-          # Update wiz-kubernetes-connector chart version if only wiz-broker was updated
-          condition:
-            and:
-              - not << pipeline.parameters.wiz-kubernetes-connector >> # Skipping auto update wiz-kubernetes-connector chart if user update it manually
-              - << pipeline.parameters.wiz-broker >>
-          steps:
-            - run:
-                name: Trigger update for wiz kubernetes connector chart
-                command: |
-                  pushd ~/project/charts/wiz-kubernetes-connector
-                  bash  ~/project/charts/.circleci/update_chart_version.sh
-                  popd
-      - when:
           condition:
             and:
               - not << pipeline.parameters.wiz-kubernetes-integration >> # Skipping auto update wiz-kubernetes-integration chart if user update it manually
