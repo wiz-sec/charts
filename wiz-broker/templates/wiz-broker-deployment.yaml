@@ -165,6 +165,28 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
+        {{ if .Values.openstack.enabled }}
+        - name: broker-proxy
+          securityContext:
+            {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+            {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.global.securityContext | nindent 12 }}
+            {{- end }}
+          image: {{ include "wiz-broker.proxyImage" . }}
+          imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
+{{/*          volumeMounts:*/}}
+{{/*            - name: connector-data*/}}
+{{/*              mountPath: {{ $mountPath }}*/}}
+{{/*              readOnly: true*/}}
+          {{- with .Values.global.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{ end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
