@@ -10,9 +10,11 @@ commonLabels: {} # Labels applied on all the resources (not used for selection)
 image:
   registry: wiziopublic.azurecr.io/wiz-app
   repository: wiz-broker
+  proxyRepository: wiz-broker-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+  proxyTag: "1.0"
 
 targetIp: ""
 targetPort: 443
@@ -108,6 +110,10 @@ managed:
   # Relevant only for wiz-managed brokers
   outpostId: ""
 
+openstack:
+  enabled: false
+  #targetPorts: []
+
 global:
   # Set the log level. Can be one of "debug", "info", "warn", or "error".
   # Warning: Do not set to `debug` in production environments, or sensitive data may be written to the logs.
@@ -116,9 +122,11 @@ global:
   image:
     registry: wiziopublic.azurecr.io/wiz-app
     repository: wiz-broker
+    proxyRepository: wiz-broker-proxy
     pullPolicy: Always  # Always pull the image on every deployment
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
+    proxyTag: "1.0"
   imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
   commonLabels: {} # Labels applied on all the resources (not used for selection)

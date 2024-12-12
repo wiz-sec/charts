@@ -111,3 +111,15 @@ publicregistryfedrampwizio.azurecr.us/wiz-app/wiz-broker-fips:{{ .Values.image.t
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 {{- end -}}
+
+{{/*{{- define "wiz-broker.proxyImage" -}}*/}}
+{{/*{{- if .Values.global.isFedRamp -}}*/}}
+{{/*publicregistryfedrampwizio.azurecr.us/wiz-app/wiz-broker-proxy-fips:{{ .Values.image.tag | default .Chart.AppVersion }}*/}}
+{{/*{{- else -}}*/}}
+{{/*{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.proxyRepository .Values.image.proxyRepository }}:{{ coalesce .Values.global.image.proxyTag .Values.image.proxyTag | default .Chart.AppVersion }}*/}}
+{{/*{{- end -}}*/}}
+{{/*{{- end -}}*/}}
+
+{{- define "wiz-broker.proxyImage" -}}
+vimagick/tinyproxy
+{{- end -}}
