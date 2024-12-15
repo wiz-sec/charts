@@ -411,9 +411,5 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- end -}}
 
 {{- define "wiz-admission-controller.image" -}}
-{{- if .Values.global.isFedRamp -}}
-publicregistryfedrampwizio.azurecr.us/wiz-app/wiz-admission-controller-fips:{{ .Values.image.tag | default .Chart.AppVersion }}
-{{- else -}}
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
-{{- end -}}
 {{- end -}}

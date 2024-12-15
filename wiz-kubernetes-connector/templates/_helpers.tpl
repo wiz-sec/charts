@@ -227,9 +227,5 @@ delete-kubernetes-connector
 {{- end }}
 
 {{- define "wiz-broker.image" -}}
-{{- if .Values.global.isFedRamp -}}
-publicregistryfedrampwizio.azurecr.us/wiz-app/wiz-broker-fips:{{ .Values.image.tag | default .Chart.AppVersion }}
-{{- else -}}
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
-{{- end -}}
 {{- end -}}

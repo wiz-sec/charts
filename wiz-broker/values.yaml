@@ -70,7 +70,6 @@ wizApiToken:
   clientId: "" # Client ID of the Wiz Service Account.
   clientToken: "" # Client secret of the Wiz Service Account.
   clientEndpoint: "" # Defaults to commercial.
-                     # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
 
   secret:
     # Should a Secret be created by the chart or not.
@@ -149,7 +148,6 @@ global:
 
   wizApiToken:
     clientEndpoint: "" # Defaults to commercial.
-                       # If `global.isFedRamp` is `true`, this field gets automatically set to `fedramp`.
     secret:
       name: "" # Override with parent secret name
 
@@ -157,6 +155,3 @@ global:
     enabled: false # Should the components use a proxy.
     create: false # Secret created by wiz-broker.
     secretName: "" # The name of the proxy Secret.
-
-  # Set to true to use FedRamp endpoints and FIPS-compliant images.
-  isFedRamp: false
