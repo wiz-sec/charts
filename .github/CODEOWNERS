@@ -4,4 +4,4 @@
 # the octocats team in the octo-org organization owns all .txt files.
 /wiz-admission-controller/ @wiz-sec/wiz-devops circleci@wiz.io
 /wiz-broker/ @wiz-sec/wiz-devops circleci@wiz.io
-/wiz-kubernetes-connector/ @wiz-sec/wiz-devops circleci@wiz.ios
+/wiz-kubernetes-connector/ @wiz-sec/wiz-devops circleci@wiz.io
