@@ -100,6 +100,8 @@ spec:
           imagePullPolicy: Always
 
           env:
+          - name: COMPONENT_NAME
+            value: wiz-git-proxy
           - name: AWS_REGION
             value: "test-region"
           - name: http_proxy
