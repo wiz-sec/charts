@@ -140,6 +140,8 @@ spec:
           imagePullPolicy: Always
 
           env:
+          - name: COMPONENT_NAME
+            value: wiz-git-proxy
           - name: http_proxy
             valueFrom:
               secretKeyRef: 

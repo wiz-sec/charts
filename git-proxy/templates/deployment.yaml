@@ -79,6 +79,8 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 
           env:
+          - name: COMPONENT_NAME
+            value: wiz-git-proxy
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
             value: "{{ $value }}"
