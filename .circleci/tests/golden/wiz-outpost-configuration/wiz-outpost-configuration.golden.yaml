@@ -1,0 +1,15 @@
+---
+# Source: wiz-outpost-configuration/templates/agent.secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wiz-outpost-agent-creds
+  labels:
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
+    app.kubernetes.io/name: wiz-outpost-configuration
+    app.kubernetes.io/instance: release-test
+    app.kubernetes.io/version: "0.0.1"
+    app.kubernetes.io/managed-by: Helm
+stringData:
+  clientId: "client-id"
+  clientSecret: "client-secret"
