@@ -137,6 +137,7 @@ opaWebhook:
       values:
       - kube-system
       - kube-node-lease
+      - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   failurePolicy: Ignore # Determines what to do when Wiz Admission Controller fails
@@ -186,6 +187,7 @@ imageIntegrityWebhook:
       values:
       - kube-system
       - kube-node-lease
+      - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
@@ -263,6 +265,7 @@ kubernetesAuditLogsWebhook:
       values:
       - kube-system
       - kube-node-lease
+      - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
@@ -306,6 +309,7 @@ debugWebhook:
       values:
       - kube-system
       - kube-node-lease
+      - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
