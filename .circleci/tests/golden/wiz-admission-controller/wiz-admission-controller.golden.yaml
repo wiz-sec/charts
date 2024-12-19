@@ -507,6 +507,7 @@ webhooks:
       values:
       - kube-system
       - kube-node-lease
+      - wiz
   timeoutSeconds: 8
   failurePolicy: Ignore
   sideEffects: None
