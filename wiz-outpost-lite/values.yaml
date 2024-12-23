@@ -66,3 +66,7 @@ httpProxyConfiguration:
   #   --- BEGIN CERTIFICATE ---
   #   replaceme
   #   --- END CERTIFICATE ---
+
+runners:
+  containerRegistry:
+    enabled: true
