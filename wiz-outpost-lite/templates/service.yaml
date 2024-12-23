@@ -1,4 +1,6 @@
-{{ if .Values.service.enabled }}
+{{- range $values := (include "wiz-outpost-lite.runners" . | fromJson) }}
+{{- with merge $values (omit $ "Values") }}
+{{- if and .Values.enabled .Values.service.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -14,4 +16,7 @@ spec:
       name: metrics
   selector:
     {{- include "wiz-outpost-lite.selectorLabels" . | nindent 4 }}
+---
+{{- end }}
+{{- end }}
 {{- end }}
