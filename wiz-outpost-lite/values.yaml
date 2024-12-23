@@ -17,7 +17,6 @@ secret:
 
 image:
   repository: wizio.azurecr.io
-  namePrefix: outpost-lite-runner
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "0.1-latest"
@@ -51,7 +50,7 @@ extraEnvConfigMap: ""
 
 service:
   type: ClusterIP
-  enabled: false
+  enabled: true
   metricsPort: 9090
 
 httpProxyConfiguration:
@@ -66,3 +65,15 @@ httpProxyConfiguration:
   #   --- BEGIN CERTIFICATE ---
   #   replaceme
   #   --- END CERTIFICATE ---
+
+runners:
+  container-registry:
+    enabled: false
+  vcs-scheduled:
+    enabled: false
+    image:
+      name: outpost-lite-runner-vcs
+  vcs-event-triggered:
+    enabled: false
+    image:
+      name: outpost-lite-runner-vcs

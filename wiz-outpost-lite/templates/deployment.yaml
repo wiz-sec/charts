@@ -1,3 +1,6 @@
+{{- range $values := (include "wiz-outpost-lite.runners" . | fromJson) }}
+{{- with merge $values (omit $ "Values") }}
+{{- if .Values.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,7 +18,7 @@ spec:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-        container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
+        container.apparmor.security.beta.kubernetes.io/{{ printf "%s-%s" .Chart.Name .runner }}: unconfined
       labels:
         {{- include "wiz-outpost-lite.selectorLabels" . | nindent 8 }}
         {{- with .Values.labels }}
@@ -32,8 +35,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}:{{ .Values.image.tag }}{{ .Values.image.tagSuffix }}"
+        - name: {{ printf "%s-%s" .Chart.Name .runner }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}{{ .Values.image.tagSuffix }}"
           command: [ "/entrypoint"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.extraEnvConfigMap }}
@@ -66,6 +69,8 @@ spec:
             value: "1"
           - name: WIZ_OUTPOST_ID
             value: {{ required "Missing required value agent.outpostId is required" .Values.agent.outpostId | quote }}
+          - name: WIZ_OUTPOST_RUNNER_ID
+            value: "{{ .runnerID }}"
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -76,53 +81,54 @@ spec:
               secretKeyRef:
                 name: {{ .Values.agent.secretName }}
                 key: clientSecret
+          - name: OUTPOST_LITE_RUNNER_REGION
+            value: "{{ .Values.agent.outpostRegion }}"
+          {{- if .Values.service.enabled }}
+          - name: OUTPOST_LITE_RUNNER_METRICS_PORT
+            value: "{{ .Values.service.metricsPort }}"
+          {{- end }}
+          {{- if .Values.autoUpdate }}
+          - name: OUTPOST_LITE_RUNNER_AUTO_UPDATE
+            value: "1"
+          {{- end }}
           - name: http_proxy
             valueFrom:
-              secretKeyRef: 
+              secretKeyRef:
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "httpProxy"
                 optional: true
           - name: HTTP_PROXY
             valueFrom:
-              secretKeyRef: 
+              secretKeyRef:
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "httpProxy"
                 optional: true
           - name: https_proxy
             valueFrom:
-              secretKeyRef: 
+              secretKeyRef:
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "httpsProxy"
                 optional: true
           - name: HTTPS_PROXY
             valueFrom:
-              secretKeyRef: 
+              secretKeyRef:
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "httpsProxy"
                 optional: true
           - name: no_proxy
             valueFrom:
-              secretKeyRef: 
+              secretKeyRef:
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "noProxyAddress"
                 optional: true
           - name: NO_PROXY
             valueFrom:
-              secretKeyRef: 
+              secretKeyRef:
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "noProxyAddress"
                 optional: true
           - name: SSL_CERT_DIR
             value: "/usr/local/share/ca-certificates/:/certificates/"
-          args: [
-            "--region", "{{ .Values.agent.outpostRegion }}",
-            {{- if .Values.service.enabled }}
-            "--metricsPort", "{{ .Values.service.metricsPort }}",
-            {{- end }}
-            {{- if .Values.autoUpdate }}
-            "--autoUpdate",
-            {{- end }}
-          ]
           {{- if .Values.service.enabled }}
           ports:
             - name: metrics
@@ -162,3 +168,7 @@ spec:
               - key: caCertificate
                 path: root.crt
             optional: true
+---
+{{- end }}
+{{- end }}
+{{- end }}
