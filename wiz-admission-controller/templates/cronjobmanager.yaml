@@ -68,11 +68,14 @@ spec:
               {{- include "spec.common.envVars" . | trim | nindent 14 }}
               resources:
               {{- include "wiz-admission-controller.resources" . | trim | nindent 16 }}
+              {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts }}
+              volumeMounts:
               {{- with .Values.customVolumeMounts }}
                 {{- toYaml . | nindent 14 }}
               {{- end }}
               {{- with .Values.global.customVolumeMounts }}
                 {{- toYaml . | nindent 14 }}
+              {{- end }}
               {{- end }}
           volumes:
             {{- with .Values.customVolumes }}
