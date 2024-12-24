@@ -5,11 +5,9 @@
 httpProxyConfiguration:
   enabled: false
   name: wiz-http-proxy-configuration
-  # httpProxy: replaceme
-  # httpsProxy: replaceme
+  # httpProxy:
+  # httpsProxy:
   # noProxy:
-  #   - replaceme
-  #   - replaceme2
   # caCertificate: |
   #   --- BEGIN CERTIFICATE ---
   #   replaceme
