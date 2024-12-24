@@ -196,7 +196,7 @@ metadata:
 stringData:
   httpProxy: ""
   httpsProxy: "https://test.com"
-  noProxyAddress: ""
+  noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
 ---
 # Source: wiz-kubernetes-connector/templates/secrets-wiz-api-token.yaml
 apiVersion: v1
@@ -305,7 +305,7 @@ metadata:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded 
     rollme.wizApiTokenHash: 59faeb3183e66e6dbdfd6bf29704925d34a319a1bc1b4825c528add0665508e1
-    rollme.proxyHash: 6835f86aa6b53c71927f39359059cab289b2de66ea902820651e9e9239d00a07
+    rollme.proxyHash: 610c52ccbe68d299c0fc885b5aa2b42bafa4a7850b3b6d58562eaa0f7711da6c
     rollme.brokerHash: 115ba85431eeaf8db3ff2173aee02d16e67df1555d5e1ef74cfa7ac0d812cab2   
 
 spec:
@@ -411,7 +411,7 @@ metadata:
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-    rollme.proxyHash: 6835f86aa6b53c71927f39359059cab289b2de66ea902820651e9e9239d00a07
+    rollme.proxyHash: 610c52ccbe68d299c0fc885b5aa2b42bafa4a7850b3b6d58562eaa0f7711da6c
     rollme.brokerHash: 115ba85431eeaf8db3ff2173aee02d16e67df1555d5e1ef74cfa7ac0d812cab2 
 
 spec:

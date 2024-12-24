@@ -230,7 +230,7 @@ spec:
   template:
     metadata:
       annotations:
-        rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
+        rollme.proxyHash: 87ac4cfc477c5fb7044983b253c60009e1ca9c2823574cf5353b6e8ce9f3c2b4
         rollme.wizApiTokenHash: 7ab3d8e2e66c2b44c6e9ffbc1456bdec456ff9107abb86802d98d647a9ba96d3
         rollme.webhookCert: "GOLDEN_STATIC_VALUE"
       labels:
@@ -371,7 +371,7 @@ spec:
   template:
     metadata:
       annotations:
-        rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
+        rollme.proxyHash: 87ac4cfc477c5fb7044983b253c60009e1ca9c2823574cf5353b6e8ce9f3c2b4
         rollme.wizApiTokenHash: 7ab3d8e2e66c2b44c6e9ffbc1456bdec456ff9107abb86802d98d647a9ba96d3
         rollme.webhookCert: "GOLDEN_STATIC_VALUE"
       labels:
@@ -528,7 +528,7 @@ spec:
       template:
         metadata:
           annotations:
-            rollme.proxyHash: 19514bab71d978154200cb24acbc4334cc95e5470ccab6e9216c99152171633a
+            rollme.proxyHash: 87ac4cfc477c5fb7044983b253c60009e1ca9c2823574cf5353b6e8ce9f3c2b4
             rollme.wizApiTokenHash: 7ab3d8e2e66c2b44c6e9ffbc1456bdec456ff9107abb86802d98d647a9ba96d3
           labels:
             helm.sh/chart: "GOLDEN_STATIC_VALUE"

@@ -173,7 +173,7 @@ httpProxyConfiguration:
   
   httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
-  noProxyAddress: "" # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
+  noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
 
 # Global values to override chart values.
 global:
