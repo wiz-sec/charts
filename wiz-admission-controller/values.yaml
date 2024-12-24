@@ -37,7 +37,7 @@ httpProxyConfiguration:
   annotations: {} # Annotations to be set on the secret
   httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
-  noProxyAddress: # Comma or space-separated list of machine or domain names.
+  noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
 
 # When Horizontal Pod Autoscaling (`hpa.enabled`) is enabled (`true`),
 # this field is discarded and set to an empty value.
@@ -503,7 +503,7 @@ global:
 
     httpProxy: ""
     httpsProxy: ""
-    noProxyAddress: ""
+    noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
 
   image:
     registry: "" # Registry to get the container images from.

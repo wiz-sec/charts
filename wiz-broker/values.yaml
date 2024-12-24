@@ -98,7 +98,7 @@ httpProxyConfiguration:
 
   httpProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
   httpsProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
-  noProxyAddress: "" # comma or space separated list of machine or domain names
+  noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
 
 # Specifies whether the broker is managed by Wiz or not.
 # Do not edit manually.
