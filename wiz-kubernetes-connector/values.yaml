@@ -20,6 +20,10 @@ clusterReader:
     annotations: {}
     # The name of the service account to use.
     name: "wiz-cluster-reader"
+    rules:
+      - apiGroups: ["*"]
+        resources: ["*"]
+        verbs: ["get", "list", "watch"]
   secret:
     # Annotations to add to the secret
     annotations: {}
