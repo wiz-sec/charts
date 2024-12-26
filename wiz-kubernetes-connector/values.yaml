@@ -245,3 +245,9 @@ global:
     enabled: false # Should the components use a proxy.
     create: false # Secret created by wiz-kubernetes-connector.
     secretName: "" # The name of the proxy Secret.
+
+shortLivedTokens:
+  enabled: false
+  schedule: "0 * * * *"  # Every 1 hour
+  timeoutSeconds: 300 # The timeout for the manager job in seconds.
+  cleanupJobSeconds: 300 # The time in seconds after which the job should be deleted.
