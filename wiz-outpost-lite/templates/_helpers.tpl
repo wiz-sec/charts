@@ -11,16 +11,21 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "wiz-outpost-lite.fullname" -}}
+{{ $name := "" }}
 {{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- $name = .Values.fullnameOverride }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- $name = default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- $name = .Release.Name }}
 {{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- $name = printf "%s-%s" .Release.Name $name }}
 {{- end }}
 {{- end }}
+{{- if .runner }}
+{{- $name = printf "%s-%s" $name .runner }}
+{{- end }}
+{{- $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -48,4 +53,29 @@ Selector labels
 {{- define "wiz-outpost-lite.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "wiz-outpost-lite.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .runner }}
+wiz.io/runner: {{ .runner | quote }}
 {{- end }}
+{{- end }}
+
+{{- define "wiz-outpost-lite.runners" -}}
+{{- $runnerValues := dict }}
+{{- range $runner, $values := $.Values.runners }}
+
+{{/* e.g. containerRegistry -> container-registry */}}
+{{- $runner = $runner | kebabcase }}
+{{- $runnerID := get $values "runnerID" | default $runner }}
+
+{{/* e.g. outpost-lite-runner-container-registry */}}
+{{- $imageName := dig "image" "name" (printf "outpost-lite-runner-%s" $runner) $values }}
+
+{{- $values = deepCopy $values }}
+{{- $values = merge $values (dict "image" (dict "name" $imageName)) }}
+
+{{/* Unify with global .Values to be used inside a "with" statement */}}
+{{- $values = dict "runner" $runner "runnerID" $runnerID "Values" (merge $values (omit $.Values "runners")) -}}
+{{- $runnerValues = set $runnerValues $runner $values }}
+{{- end }} {{/* range */}}
+
+{{ $runnerValues | toJson }}
+{{- end }} {{/* define */}}
