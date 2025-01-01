@@ -1,0 +1,9 @@
+apiVersion: v2
+name: "wiz-network-analyzer"
+description: A Helm chart for troubleshooting networking connectivity from Kubernetes clusters to Wiz
+
+type: application
+
+version: 0.1.0
+
+appVersion: "0.1"
