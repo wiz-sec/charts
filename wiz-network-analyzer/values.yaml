@@ -1,0 +1,159 @@
+# Default values for wiz-network-analyzer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: "" # Override the release’s name.
+commonLabels: {} # Labels applied on all the resources (not used for selection)
+
+image:
+  registry: wiziopublic.azurecr.io/wiz-app
+  repository: wiz-network-analyzer
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+clusterReader:
+  installRbac: true
+  serviceAccount:
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    name: "wiz-network-analyzer-cluster-reader"
+    rules:
+      - apiGroups: ["*"]
+        resources: ["*"]
+        verbs: ["get", "list", "watch"]
+
+istio:
+  enabled: false
+  sleepBeforeJobSecs: 15
+  proxySidecarPort: 15000
+
+wizApiToken:
+  clientId: "" # Client ID of the Wiz Service Account.
+  clientToken: "" # Client secret of the Wiz Service Account.
+  clientEndpoint: "" # Defaults to commercial.
+
+  secret:
+    # Should a Secret be created by the chart or not.
+    # Set this to false if you wish to create the Secret yourself or using another tool.
+    # The Secret should contain clientId for the ID and clientToken for the token.
+    create: true
+    # Annotations to add to the secret
+    annotations: {}
+    # The name of the secret to use.
+    # If not set, a name is generated using the fullname template
+    name: ""
+
+  # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  usePodCustomEnvironmentVariablesFile: false
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Redirect HTTP and/or HTTPS traffic through a proxy.
+httpProxyConfiguration:
+  enabled: false # Should the components use a proxy.
+
+  # Should a Secret be created by the chart or not.
+  # Set this to false if you wish to create the Secret yourself or using another tool.
+  # The Secret should contain httpProxy, httpsProxy and noProxyAddress.
+  create: true
+  secretName: "" # The name of the proxy Secret.
+  annotations: {} # Annotations to be set on the secret
+
+  httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
+  httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
+  noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
+
+# The address of the Kubernetes API server.
+# Override this if you are using a different endpoint for your Kubernetes API server.
+apiServerEndpoint: "https://kubernetes.default.svc.cluster.local"
+
+podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+podCustomEnvironmentVariablesFile: ""
+customVolumes: [] # Additional volumes to add to the components Pods
+customVolumeMounts: [] # Additional volume mounts to add to the components Pods
+
+# Global values to override chart values.
+global:
+  image:
+    registry: wiziopublic.azurecr.io/wiz-app
+    repository: wiz-network-analyzer
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
+
+  nameOverride: "" # Override the release’s name.
+  commonLabels: {} # Labels applied on all the resources (not used for selection)
+
+  # Set the log level. Can be one of "debug", "info", "warn", or "error".
+  # Warning: Do not set to `debug` in production environments, or sensitive data may be written to the logs.
+  logLevel: "info"
+
+  podAnnotations: {} # Annotations to add to the components Pods.
+
+  podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+  customVolumes: [] # Additional volumes to add to the components Pods
+  customVolumeMounts: [] # Additional volume mounts to add to the components Pods
+
+  nodeSelector: {} # custom assignment to nodes
+  affinity: {} # custom affinity rules for node assignment
+  tolerations: [] # custom tolerations
+  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  subscriptionExternalId: ""
+  clusterTags: {}
+  subscriptionTags: {}
+  clusterDisplayName: ""
+
+  # Wiz Helm Charts process the security contexts
+  # in the following order:
+  # 1. Pod security context
+  #    lowPrivilegePodSecurityPolicy -> podSecurityContext
+  # 2. Containers security context
+  #    lowPrivilegeSecurityPolicy -> securityContext
+  #
+  # Populating the following overrides lowPrivilegeSecurityPolicy to your user-supplied values.yaml
+  # allows you to customize and override the defaults
+  # (useful for e.g. OpenShift installations that automatically
+  #  mutate the Pod and use the first UID and first GID from
+  #  the allowed range to run the Pod).
+  #
+  # lowPrivilegePodSecurityPolicy: {}
+  # lowPrivilegeSecurityPolicy: {}
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    allowPrivilegeEscalation: false
+
+  wizApiToken:
+    clientEndpoint: "" # Defaults to commercial.
+    secret:
+      name: "" # Override with parent secret name
+
+  httpProxyConfiguration:
+    enabled: false # Should the components use a proxy.
+    create: false # Secret created by wiz-network-analyzer.
+    secretName: "" # The name of the proxy Secret.
