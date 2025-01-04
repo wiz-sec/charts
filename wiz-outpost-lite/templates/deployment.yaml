@@ -91,6 +91,10 @@ spec:
           - name: OUTPOST_LITE_RUNNER_AUTO_UPDATE
             value: "1"
           {{- end }}
+          {{- if .Values.concurrency }}
+          - name: OUTPOST_LITE_RUNNER_CONCURRENCY
+            value: "{{ .Values.concurrency }}"
+          {{- end }}
           - name: http_proxy
             valueFrom:
               secretKeyRef:
