@@ -153,6 +153,7 @@ spec:
             - mountPath: /usr/local/share/ca-certificates/
               name: ca-certificate
               readOnly: true
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

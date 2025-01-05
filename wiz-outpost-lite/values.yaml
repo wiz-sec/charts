@@ -69,6 +69,8 @@ httpProxyConfiguration:
   #   replaceme
   #   --- END CERTIFICATE ---
 
+terminationGracePeriodSeconds: 30
+
 runners:
   container-registry:
     enabled: false
@@ -81,3 +83,4 @@ runners:
     image:
       name: outpost-lite-runner-vcs
     concurrency: 4
+    terminationGracePeriodSeconds: 300 # 5 minutes
