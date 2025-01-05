@@ -24,6 +24,9 @@ image:
 
 autoUpdate: true
 
+# If set, controls the message processing concurrency of the runner
+concurrency: 0
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -77,3 +80,4 @@ runners:
     enabled: false
     image:
       name: outpost-lite-runner-vcs
+    concurrency: 4
