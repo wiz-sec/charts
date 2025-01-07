@@ -131,6 +131,9 @@ podCustomEnvironmentVariablesFile: ""
 customVolumes: [] # Additional volumes to add to the components Pods
 customVolumeMounts: [] # Additional volume mounts to add to the components Pods
 
+# The Outpost ID of the Wiz Outpost cluster.
+outpostId: ""
+
 # Global values to override chart values.
 global:
   image:

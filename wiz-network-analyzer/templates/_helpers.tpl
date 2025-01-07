@@ -110,6 +110,10 @@ Use for debug purpose only.
 
 {{- define "wiz-network-analyzer.argsList" -}}
 analyze
+{{- if .Values.outpostId }}
+--outpost-id
+"{{ .Values.outpostId }}"
+{{- end }}
 {{- end }}
 
 {{- define "wiz-kubernetes.pre-istio-sidecar" -}}
@@ -121,18 +125,18 @@ analyze
 {{- end -}}
 
 {{- define "wiz-network-analyzer.generateArgs" -}}
-{{- $args := include "wiz-network-analyzer.argsList" . | splitList "\n" -}}
+{{- $args := include "wiz-network-analyzer.argsList" . | trim | splitList "\n" -}}
 {{- if .Values.istio.enabled -}}
-{{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
-{{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
+{{- $first := include "wiz-kubernetes.pre-istio-sidecar" . | trim -}}
+{{- $last := include "wiz-kubernetes.post-istio-sidecar" . | trim -}}
 {{- $argsWithIstio := printf "%s &&\nwiz-network-analyzer %s &&\n%s" $first (join " \n" $args) $last -}}
   - >
     {{- printf "%s" $argsWithIstio | nindent 2 }}
 {{- else -}}
 {{- range $arg := $args }}
-- {{ $arg }}
+- {{ $arg | trim }}
 {{- end }}
-{{- end -}}
+{{- end }}
 {{- end }}
 
 {{- define "wiz-network-analyzer.image" -}}
