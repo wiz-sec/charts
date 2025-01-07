@@ -23,9 +23,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{/*
-        `labels` includes `selectorLabels`
-        */}}
         {{- include "wiz-network-analyzer.labels" . | nindent 8 }}
     spec:
       {{- with .Values.global.imagePullSecrets }}
@@ -40,8 +37,17 @@ spec:
         {{- else }}
         {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
         {{- end }}
-      {{- if or .Values.global.customVolumes .Values.customVolumes }}
+      {{- if or .Values.global.customVolumes .Values.customVolumes .Values.caCertificate.enabled }}
       volumes:
+      {{- if .Values.caCertificate.enabled }}
+      - name: additional-certs
+        secret:
+          secretName: {{ include "wiz-network-analyzer.caSecretName" . | trim }}
+          items:
+            - key: ca.crt
+              path: ca-certificates.crt
+          defaultMode: 420
+      {{- end }}
       {{ with .Values.global.customVolumes }}
         {{- toYaml . | nindent 6 }}
       {{- end }}
@@ -96,12 +102,6 @@ spec:
           - name: WIZ_ENV
             value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
           {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
-          - name: HTTP_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-network-analyzer.proxySecretName" . | trim }}
-                key: httpProxy
-                optional: false
           - name: HTTPS_PROXY
             valueFrom:
               secretKeyRef:
@@ -115,10 +115,20 @@ spec:
                 key: noProxyAddress
                 optional: false
           {{- end }}
+          {{- if .Values.caCertificate.enabled }}
+          - name: SSL_CERT_DIR
+            value: /usr/local/share/ca-certificates/:/certificates/:/etc/ssl/certs
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts }}
+          {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts .Values.caCertificate.enabled }}
           volumeMounts:
+          {{- if .Values.caCertificate.enabled }}
+          - name: additional-certs
+            mountPath: /certificates
+          - name: additional-certs
+            mountPath: /etc/ssl/certs
+          {{- end }}
           {{- with .Values.customVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end -}}

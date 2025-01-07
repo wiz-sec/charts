@@ -60,6 +60,10 @@ Secrets names
 {{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-na-proxy-configuration" .Release.Name) }}
 {{- end }}
 
+{{- define "wiz-network-analyzer.caSecretName" -}}
+{{ coalesce (.Values.caCertificate.secretName) (printf "%s-na-ca" .Release.Name) }}
+{{- end }}
+
 {{/*
 Input parameters
 */}}

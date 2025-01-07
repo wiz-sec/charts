@@ -25,6 +25,18 @@ clusterReader:
         resources: ["*"]
         verbs: ["get", "list", "watch"]
 
+# Set this to true if you are using Istio in sidecar mode.
+# When Istio uses sidecars, there are 2 issues when using Wiz:
+# 1) The creation and deletion Jobs never complete (due to istio-proxy sidecar)
+# 2) There is a race condition and possible network connectivity failures
+#    when contacting the Wiz backend.
+#
+# When either of this happens, either the installation, upgrade or uninstallation
+# of the charts fail.
+# Setting this to true ensures that the istio-proxy gets a graceful shutdown
+# and mitigates the networking race condition by sleeping before the Job starts.
+# Learn more:
+# https://istio.io/latest/blog/2023/native-sidecars/
 istio:
   enabled: false
   sleepBeforeJobSecs: 15
@@ -67,20 +79,48 @@ tolerations: []
 
 affinity: {}
 
-# Redirect HTTP and/or HTTPS traffic through a proxy.
+# Redirect HTTPS traffic through a proxy.
 httpProxyConfiguration:
-  enabled: false # Should the components use a proxy.
+  # Set to true to enable using a proxy.
+  enabled: false
 
   # Should a Secret be created by the chart or not.
-  # Set this to false if you wish to create the Secret yourself or using another tool.
-  # The Secret should contain httpProxy, httpsProxy and noProxyAddress.
+  # Set this to false if you wish to create the Secret yourself or using another tool
+  # (e.g. external secrets operator).
+  # The Secret should contain httpsProxy and noProxyAddress.
   create: true
   secretName: "" # The name of the proxy Secret.
   annotations: {} # Annotations to be set on the secret
 
-  httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
+  # URL to use as a proxy for outbound HTTPS traffic.
+  # Leave blank for transparent proxy.
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
   noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
+
+caCertificate:
+  # Set to true to enable using a custom CA certificate.
+  # Useful only in man-in-the-middle (MitM) / TLS inspection / SSL bumping scenarios.
+  # Regular/forward/CONNECT proxies do not require this.
+  enabled: false
+
+  # Should a Secret be created by the chart or not.
+  # Set this to false if you wish to create the Secret yourself or using another tool
+  # (e.g. external secrets operator).
+  # The Secret should contain a key called `ca.crt` and the value
+  # should be a certificate in PEM format.
+  create: true
+
+  # The certificate must be in PEM format.
+  # Simply copy-n-paste the contents of the certificate file.
+  certificate: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
+
+  # The name of the CA certificate Secret.
+  # Must have a key called `ca.crt` with the certificate in PEM format.
+  secretName: ""
+
+  annotations: {} # Annotations to be set on the secret.
 
 # The address of the Kubernetes API server.
 # Override this if you are using a different endpoint for your Kubernetes API server.
@@ -153,7 +193,20 @@ global:
     secret:
       name: "" # Override with parent secret name
 
+  # Redirect HTTPS traffic through a proxy.
   httpProxyConfiguration:
-    enabled: false # Should the components use a proxy.
-    create: false # Secret created by wiz-network-analyzer.
+    # Set to true to enable using a proxy.
+    enabled: false
+
+    # Should a Secret be created by the chart or not.
+    # Set this to false if you wish to create the Secret yourself or using another tool
+    # (e.g. external secrets operator).
+    # The Secret should contain httpsProxy and noProxyAddress.
+    create: true
     secretName: "" # The name of the proxy Secret.
+    annotations: {} # Annotations to be set on the secret
+
+    # URL to use as a proxy for outbound HTTPS traffic.
+    # Leave blank for transparent proxy.
+    httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
+    noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
