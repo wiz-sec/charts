@@ -71,157 +71,6 @@ spec:
       restartPolicy: Always
 
       containers:
-      {{- if .Values.diskScan.enabled }}
-      - name: wiz-disk-scanner
-        {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
-        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository .Values.image.diskScanTag }}
-        {{- else }}
-        image: {{ printf "%s:%s" .Values.image.diskScanRepository .Values.image.diskScanTag }}
-        {{- end }}
-        imagePullPolicy: {{ .Values.image.diskScanPullPolicy }}
-        {{- with .Values.image.diskScanArgs }}
-        args:
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-
-        securityContext:
-        {{- if .Values.privileged }}
-          privileged: true
-          runAsUser: 0
-          runAsGroup: 0
-        {{- else }}
-          capabilities:
-            add:
-            - SYS_ADMIN # Mount operations.
-            - DAC_OVERRIDE # Access filesystem with overlayFS.
-            - DAC_READ_SEARCH # Access filesystem with overlayFS.
-            - FOWNER # Access filesystem with overlayFS.
-            - CHOWN # Access filesystem with overlayFS.
-            - SETPCAP # Drop capabilities when not needed.
-          privileged: false
-          runAsNonRoot: true
-          runAsUser: 2202
-          runAsGroup: 2202
-        {{- end }}
-          readOnlyRootFilesystem: true
-          {{- if and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation) }}
-          appArmorProfile:
-            type: Unconfined
-          {{- end }}
-          {{- if semverCompare ">=1.19" $kubeVersion }}
-          seccompProfile:
-            type: Unconfined
-          {{- end }}
-          seLinuxOptions:
-            user: "system_u"
-            role: "system_r"
-            level: "s0"
-            {{- if .Values.flatcarLinuxNodes }}
-            type: "unconfined_t"
-            {{- else }}
-            type: "spc_t"
-            {{- end }}
-
-        env:
-        - name: POD_MEM_LIMITS
-          valueFrom:
-            resourceFieldRef:
-              containerName: wiz-disk-scanner
-              resource: limits.memory
-              divisor: "1Mi"
-        - name: POD_CPU_LIMITS
-          valueFrom:
-            resourceFieldRef:
-              containerName: wiz-disk-scanner
-              resource: limits.cpu
-              divisor: "1m"
-        - name: MY_NODE_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName
-        - name: MY_POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: MY_POD_UID
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.uid
-        - name: MY_POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
-        - name: https_proxy # Used by Go runtime to set https proxy
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "wiz-sensor.proxySecretName" . }}
-              key: httpsProxy
-        - name: SSL_CERT_DIR # Used by Go runtime to resolve additional certificates from this directory
-          value: "/proxy-config"
-        {{- end }}
-        {{- if .Values.startDelayRange }}
-        - name: WIZ_ONPREM_ORCHESTRATOR_MAX_JITTER_DELAY
-          value: "{{ .Values.startDelayRange }}s"
-        {{- end }}
-        - name: WIZ_BACKEND_ENV
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "wiz-sensor.secretName" . }}
-              key: clientEndpoint
-              optional: true
-        - name: WIZ_ONPREM_SCANNER_CONFIG
-          valueFrom:
-            configMapKeyRef:
-              name: {{ include "wiz-sensor.diskScanConfigName" . }}
-              key: config
-
-        {{- with .Values.podCustomEnvironmentVariables }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.global.podCustomEnvironmentVariables }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-
-        volumeMounts:
-        {{- with .Values.customVolumeMounts }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.global.customVolumeMounts }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-        - name: host-mount
-          mountPath: /host
-          readOnly: true
-          {{- if semverCompare ">=1.31" $kubeVersion }}
-          recursiveReadOnly: IfPossible
-          {{- end }}
-        - name: api-client-secret
-          mountPath: /api-client/
-        - name: api-endpoint-name-secret
-          mountPath: /api-endpoint-name/
-        - name: sensor-scanner-shared-vol
-          mountPath: /wiz-sensor-share/
-        - name: sensor-scanner-tmp-store
-          mountPath: /tmp/
-        {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
-        - name: proxy-secret
-          mountPath: /proxy-config/
-        {{- end }}
-
-        {{- if .Values.daemonset.resources }}
-        resources:
-          {{- if .Values.daemonset.resources.diskScanLimits }}
-          limits:
-{{ toYaml .Values.daemonset.resources.diskScanLimits | indent 12 }}
-          {{- end }}
-          {{- if and (not .Values.gkeAutopilot) .Values.daemonset.resources.diskScanRequests }}
-          requests:
-{{ toYaml .Values.daemonset.resources.diskScanRequests | indent 12 }}
-          {{- end }}
-        {{- end }}
-      {{- end }}
-
       - name: wiz-sensor
         {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
         image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.tag }}
@@ -363,6 +212,8 @@ spec:
         - name: HTTP_PROXY_CERT
           value: {{ .Values.daemonset.httpProxyCaCert }}
         {{- if .Values.diskScan.enabled }}
+        - name: DISK_SCANNER
+          value: "true"
         - name: DISK_SCAN_SHARED_VOL
           value: "/wiz-sensor-share/"
         {{- end }}
@@ -382,6 +233,16 @@ spec:
           value: {{ include "wiz-sensor.fileLogLevel" . }}
         - name: STDOUT_LOG
           value: {{ include "wiz-sensor.stdoutLogLevel" . }}
+        {{- if not .Values.gkeAutopilot }}
+        - name: POD_IMAGE_TAG
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['image/tag']
+        - name: POD_IMAGE_REGISTRY
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['image/registry']
+        {{- end }}
         - name: POD_MEM_LIMITS
           valueFrom:
             resourceFieldRef:
@@ -424,6 +285,10 @@ spec:
         {{- end }}
         {{- if .Values.apiSecurity.enabled }}
         - name: ENABLE_API_SECURITY
+          value: "true"
+        {{- end}}
+        {{- if .Values.openshift }}
+        - name: OPENSHIFT
           value: "true"
         {{- end}}
         {{- with .Values.podCustomEnvironmentVariables }}
@@ -483,6 +348,171 @@ spec:
 {{ toYaml .Values.daemonset.resources.requests | indent 12 }}
           {{- end }}
         {{- end }}
+
+      {{- if .Values.diskScan.enabled }}
+      - name: wiz-disk-scanner
+        {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
+        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository .Values.image.diskScanTag }}
+        {{- else }}
+        image: {{ printf "%s:%s" .Values.image.diskScanRepository .Values.image.diskScanTag }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.image.diskScanPullPolicy }}
+        {{- with .Values.image.diskScanArgs }}
+        args:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        securityContext:
+        {{- if .Values.privileged }}
+          privileged: true
+          runAsUser: 0
+          runAsGroup: 0
+        {{- else }}
+          capabilities:
+            add:
+            - SYS_ADMIN # Mount operations.
+            - DAC_OVERRIDE # Access filesystem with overlayFS.
+            - DAC_READ_SEARCH # Access filesystem with overlayFS.
+            - FOWNER # Access filesystem with overlayFS.
+            - CHOWN # Access filesystem with overlayFS.
+            - SETPCAP # Drop capabilities when not needed.
+          privileged: false
+          runAsNonRoot: true
+          runAsUser: 2202
+          runAsGroup: 2202
+        {{- end }}
+          readOnlyRootFilesystem: true
+          {{- if and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation) }}
+          appArmorProfile:
+            type: Unconfined
+          {{- end }}
+          {{- if semverCompare ">=1.19" $kubeVersion }}
+          seccompProfile:
+            type: Unconfined
+          {{- end }}
+          seLinuxOptions:
+            user: "system_u"
+            role: "system_r"
+            level: "s0"
+            {{- if .Values.flatcarLinuxNodes }}
+            type: "unconfined_t"
+            {{- else }}
+            type: "spc_t"
+            {{- end }}
+
+        env:
+        - name: WIZ_DISK_SCANNER_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['dsimage/tag']
+        - name: WIZ_DISK_SCANNER_REPOSITORY
+          value: "{{ .Values.image.diskScanRepository }}"
+        - name: WIZ_IMAGE_REGISTRY
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['image/registry']
+        - name: WIZ_HELM_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['helm.sh/chart']
+        - name: POD_MEM_LIMITS
+          valueFrom:
+            resourceFieldRef:
+              containerName: wiz-disk-scanner
+              resource: limits.memory
+              divisor: "1Mi"
+        - name: POD_CPU_LIMITS
+          valueFrom:
+            resourceFieldRef:
+              containerName: wiz-disk-scanner
+              resource: limits.cpu
+              divisor: "1m"
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+        - name: https_proxy # Used by Go runtime to set https proxy
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "wiz-sensor.proxySecretName" . }}
+              key: httpsProxy
+        - name: SSL_CERT_DIR # Used by Go runtime to resolve additional certificates from this directory
+          value: "/proxy-config"
+        {{- end }}
+        {{- if .Values.startDelayRange }}
+        - name: WIZ_ONPREM_ORCHESTRATOR_MAX_JITTER_DELAY
+          value: "{{ .Values.startDelayRange }}s"
+        {{- end }}
+        - name: WIZ_BACKEND_ENV
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "wiz-sensor.secretName" . }}
+              key: clientEndpoint
+              optional: true
+        - name: WIZ_ONPREM_SCANNER_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "wiz-sensor.diskScanConfigName" . }}
+              key: config
+
+        {{- with .Values.podCustomEnvironmentVariables }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.global.podCustomEnvironmentVariables }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        volumeMounts:
+        {{- with .Values.customVolumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.global.customVolumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        - name: host-mount
+          mountPath: /host
+          readOnly: true
+          {{- if semverCompare ">=1.31" $kubeVersion }}
+          recursiveReadOnly: IfPossible
+          {{- end }}
+        - name: api-client-secret
+          mountPath: /api-client/
+        - name: api-endpoint-name-secret
+          mountPath: /api-endpoint-name/
+        - name: sensor-scanner-shared-vol
+          mountPath: /wiz-sensor-share/
+        - name: sensor-scanner-tmp-store
+          mountPath: /tmp/
+        {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+        - name: proxy-secret
+          mountPath: /proxy-config/
+        {{- end }}
+
+        {{- if .Values.daemonset.resources }}
+        resources:
+          {{- if .Values.daemonset.resources.diskScanLimits }}
+          limits:
+{{ toYaml .Values.daemonset.resources.diskScanLimits | indent 12 }}
+          {{- end }}
+          {{- if and (not .Values.gkeAutopilot) .Values.daemonset.resources.diskScanRequests }}
+          requests:
+{{ toYaml .Values.daemonset.resources.diskScanRequests | indent 12 }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
 
       terminationGracePeriodSeconds: {{ .Values.daemonset.terminationGracePeriodSeconds }}
       {{- if .Values.imagePullSecret.required }}

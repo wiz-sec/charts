@@ -193,8 +193,8 @@ image:
   args: {}
   tag: "v1"
   pullPolicy: Always
-  # the default is "wizio.azurecr.io/wiz-app/onprem-scanner:v1"
-  diskScanRepository: wiz-app/onprem-scanner
+  # the default is "wizio.azurecr.io/wiz-app/wiz-workload-scanner:v1"
+  diskScanRepository: wiz-app/wiz-workload-scanner
   diskScanArgs: {}
   diskScanTag: "v1"
   diskScanPullPolicy: Always
