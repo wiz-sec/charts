@@ -1,0 +1,14 @@
+wizApiToken:
+  clientId: "client-id"
+  clientToken: "client-secret"
+
+httpProxyConfiguration:
+  enabled: true
+  httpsProxy: http://mitmweb:8080
+
+caCertificate:
+  enabled: true
+  certificate: |
+    -----BEGIN CERTIFICATE-----
+    abcd1234
+    -----END CERTIFICATE-----
