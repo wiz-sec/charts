@@ -1,0 +1,3 @@
+wizApiToken:
+  clientId: "client-id"
+  clientToken: "client-secret"

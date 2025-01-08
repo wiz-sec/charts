@@ -1,0 +1,10 @@
+wizApiToken:
+  clientId: "client-id"
+  clientToken: "client-secret"
+
+caCertificate:
+  enabled: true
+  certificate: |
+    -----BEGIN CERTIFICATE-----
+    abcd1234
+    -----END CERTIFICATE-----
