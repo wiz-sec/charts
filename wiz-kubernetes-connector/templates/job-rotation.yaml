@@ -1,0 +1,146 @@
+{{- if .Values.shortLivedTokens.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "wiz-kubernetes-connector.name" . }}-rotation
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-kubernetes-connector.labels" . | nindent 4 }}
+  annotations:
+    rollme.wizApiTokenHash: {{ include "wiz-kubernetes-connector.wizApiTokenHash" . }}
+    rollme.proxyHash: {{ include "wiz-kubernetes-connector.proxyHash" . }}
+    rollme.brokerHash: {{ include "wiz-kubernetes-connector.brokerHash" . }}
+    {{- with (.Values.autoCreateConnector.createJobAnnotations) }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+
+spec:
+  schedule: "{{ .Values.shortLivedTokens.schedule }}"
+  concurrencyPolicy: Forbid  # Ensures only one job instance runs at a time
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: {{ .Values.shortLivedTokens.timeoutSeconds }}
+      ttlSecondsAfterFinished: {{ .Values.shortLivedTokens.cleanupJobSeconds }}
+      template:
+        metadata:
+          {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          labels:
+            {{/*
+            `labels` includes `selectorLabels`
+            */}}
+            {{- include "wiz-kubernetes-connector.labels" . | nindent 12 }}
+        spec:
+          {{- with .Values.global.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          serviceAccountName: {{ .Values.clusterReader.serviceAccount.name }}
+          restartPolicy: "Never"
+          securityContext:
+            {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
+            {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.global.podSecurityContext | nindent 12 }}
+            {{- end }}
+          {{- if or .Values.autoCreateConnector.customVolumes  .Values.global.customVolumes}}
+          volumes:
+          {{ with .Values.global.customVolumes }}
+            {{- toYaml . | nindent 6 }}
+          {{- end }}
+          {{ with .Values.autoCreateConnector.customVolumes }}
+            {{- toYaml . | nindent 6 }}
+          {{- end }}
+          {{- end }}
+          containers:
+            - name: wiz-rotator
+              securityContext:
+                {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+                {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 16 }}
+                {{- else }}
+                {{- toYaml .Values.global.securityContext | nindent 16 }}
+                {{- end }}
+              image: {{ include "wiz-broker.image" . }}
+              imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
+              command:
+                {{- include "wiz-kubernetes-connector.entrypoint" . | nindent 16 }}
+              args: {{- include "wiz-kubernetes-connector.generateArgsRotation" . | nindent 16 }}
+              env:
+              {{- if .Values.global.logLevel }}
+                - name: LOG_LEVEL
+                  value: {{ .Values.global.logLevel }}
+              {{- end }}
+              {{- with .Values.global.podCustomEnvironmentVariables }}
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.autoCreateConnector.podCustomEnvironmentVariables }}
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- if .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+                - name: CLI_ENV_FILE
+                  value: {{ .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+                - name: USE_CLI_ENV_FILE
+                  value: "true"
+              {{- end }}
+              {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+                - name: WIZ_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                      key: clientId
+                      optional: false
+                - name: WIZ_CLIENT_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+                      key: clientToken
+                      optional: false
+              {{- end }}
+                - name: WIZ_ENV
+                  value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+              {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+                - name: HTTP_PROXY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+                      key: httpProxy
+                      optional: false
+                - name: HTTPS_PROXY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+                      key: httpsProxy
+                      optional: false
+                - name: NO_PROXY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+                      key: noProxyAddress
+                      optional: false
+              {{- end }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              {{- if or .Values.autoCreateConnector.customVolumeMounts .Values.global.customVolumeMounts }}
+              volumeMounts:
+              {{- with .Values.autoCreateConnector.customVolumeMounts }}
+                {{- toYaml . | nindent 16 }}
+              {{- end -}}
+              {{- with .Values.global.customVolumeMounts }}
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- end }}
+          {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (coalesce .Values.global.affinity .Values.affinity) }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (coalesce .Values.global.tolerations .Values.tolerations) }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
