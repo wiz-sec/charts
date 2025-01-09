@@ -29,7 +29,9 @@ parameters:
   wiz-outpost-lite:
     default: false
     type: boolean
-
+  wiz-network-analyzer:
+    default: false
+    type: boolean
 
 executors:
   ops:
@@ -88,6 +90,7 @@ jobs:
             - << pipeline.parameters.wiz-kubernetes-integration >>
             - << pipeline.parameters.wiz-outpost-configuration >>
             - << pipeline.parameters.wiz-outpost-lite >>
+            - << pipeline.parameters.wiz-network-analyzer >>
           steps:
             - checkout:
                 path: ~/project
@@ -129,6 +132,11 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-outpost-lite
+      - when:
+          condition: << pipeline.parameters.wiz-network-analyzer >>
+          steps:
+            - upload_new_chart:
+                package: wiz-network-analyzer
       - when:
           condition: << pipeline.parameters.wiz-admission-controller >>
           steps:

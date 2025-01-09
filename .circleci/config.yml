@@ -80,6 +80,7 @@ workflows:
             ^wiz-sensor/.* wiz-sensor true
             ^wiz-kubernetes-connector/.* wiz-kubernetes-connector true
             ^wiz-kubernetes-integration/.* wiz-kubernetes-integration true
+            ^wiz-network-analyzer/.* wiz-network-analyzer true
           base-revision: << pipeline.git.branch >>
           filters:
             branches:
