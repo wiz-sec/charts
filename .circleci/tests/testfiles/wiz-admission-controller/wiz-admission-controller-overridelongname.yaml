@@ -1,6 +1,0 @@
-wizApiToken:
-  clientId: "<client-id>"
-  clientToken: "<client-token>"
-
-
-fullnameOverride: "very-long-release-test-abcdefghijklmnopqrstuvwxyz-aaa"
