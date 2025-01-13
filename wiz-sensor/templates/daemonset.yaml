@@ -239,9 +239,7 @@ spec:
             fieldRef:
               fieldPath: metadata.labels['image/tag']
         - name: POD_IMAGE_REGISTRY
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['image/registry']
+          value: {{ coalesce .Values.global.image.registry .Values.image.registry }}
         {{- end }}
         - name: POD_MEM_LIMITS
           valueFrom:
@@ -408,9 +406,9 @@ spec:
         - name: WIZ_DISK_SCANNER_REPOSITORY
           value: "{{ .Values.image.diskScanRepository }}"
         - name: WIZ_IMAGE_REGISTRY
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['image/registry']
+          value: "{{ coalesce .Values.global.image.registry .Values.image.registry }}"
+        - name: WIZ_SENSOR_CLUSTER_NAME
+          value: "{{ coalesce .Values.global.clusterDisplayName .Values.sensorClusterName }}"
         - name: WIZ_HELM_VERSION
           valueFrom:
             fieldRef:

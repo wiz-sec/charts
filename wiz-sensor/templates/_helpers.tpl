@@ -40,7 +40,6 @@ Common labels
 {{- $dsimageparts:= split "@" .Values.image.diskScanTag }}
 helm.sh/chart: {{ include "wiz-sensor.chart" . }}
 image/tag: {{ $imageparts._0 }}
-image/registry: {{ coalesce .Values.global.image.registry .Values.image.registry }}
 dsimage/tag: {{ $dsimageparts._0 }}
 {{ include "wiz-sensor.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
