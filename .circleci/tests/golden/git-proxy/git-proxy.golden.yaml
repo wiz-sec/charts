@@ -94,7 +94,7 @@ spec:
             privileged: false
             allowPrivilegeEscalation: false
           
-          image: "wiziopublic.azurecr.io/wiz-git-proxy:57cdf2bb7736a50021e20609280f1f70457d02d8-multiarch"
+          image: "wiziopublic.azurecr.io/wiz-git-proxy:ec953f5a66aab4c8e195dfda12bdbaf26a24224a-multiarch"
           command: [ "/entrypoint"]
           
           imagePullPolicy: Always
