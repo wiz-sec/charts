@@ -1,3 +1,5 @@
 wizApiToken:
   clientId: "client-id"
   clientToken: "client-secret"
+
+wizRegion: "us-east-2"
