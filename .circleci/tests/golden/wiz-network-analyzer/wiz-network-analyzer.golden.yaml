@@ -91,6 +91,8 @@ spec:
           args:
             
             - analyze
+            - --output
+            - /tmp
             - --region
             - us-east-2
           env:

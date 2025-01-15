@@ -110,6 +110,8 @@ Use for debug purpose only.
 
 {{- define "wiz-network-analyzer.argsList" -}}
 analyze
+--output
+/tmp
 {{- if .Values.outpostId }}
 --outpost-id
 "{{ .Values.outpostId }}"
