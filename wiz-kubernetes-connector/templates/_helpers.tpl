@@ -214,7 +214,7 @@ delete-kubernetes-connector
 
 {{- define "wiz-kubernetes-connector.argsListDeleteConnector" -}}
 {{- $args := include "wiz-kubernetes-connector.generate-args-list-delete" . | splitList "\n" -}}
-{{- $output := "kuku" }}
+{{- $output := "" }}
 {{- if .Values.autoCreateConnector.istio.enabled -}}
 {{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
 {{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
@@ -224,6 +224,27 @@ delete-kubernetes-connector
 {{- end -}}
   - >
     {{- printf "%s" $output | nindent 2 }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.generate-args-rotation" -}}
+rotate
+--service-account-name
+{{ .Values.clusterReader.serviceAccount.name }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.generateArgsRotation" -}}
+{{- $args := include "wiz-kubernetes-connector.generate-args-rotation" . | splitList "\n" -}}
+{{- if .Values.autoCreateConnector.istio.enabled -}}
+{{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
+{{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
+{{- $argsWithIstio := printf "%s &&\nwiz-broker %s &&\n%s" $first (join " \n" $args) $last -}}
+  - >
+    {{- printf "%s" $argsWithIstio | nindent 2 }}
+{{- else -}}
+{{- range $arg := $args }}
+- {{ $arg }}
+{{- end }}
+{{- end -}}
 {{- end }}
 
 {{- define "wiz-broker.image" -}}
