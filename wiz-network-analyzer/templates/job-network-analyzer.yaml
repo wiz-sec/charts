@@ -1,3 +1,7 @@
+{{- if not .Values.wizRegion }}
+{{- fail "The 'wizRegion' parameter is mandatory and must be specified in values.yaml" }}
+{{- end }}
+
 apiVersion: batch/v1
 kind: Job
 metadata:

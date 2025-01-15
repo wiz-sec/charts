@@ -101,6 +101,10 @@ spec:
           args:
             
             - analyze
+            - --region
+            - us-east-2
+            - --proxy-ca-dir
+            - /usr/local/share/ca-certificates
           env:
           - name: LOG_LEVEL
             value: info

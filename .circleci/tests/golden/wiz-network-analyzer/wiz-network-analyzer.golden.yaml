@@ -91,6 +91,8 @@ spec:
           args:
             
             - analyze
+            - --region
+            - us-east-2
           env:
           - name: LOG_LEVEL
             value: info

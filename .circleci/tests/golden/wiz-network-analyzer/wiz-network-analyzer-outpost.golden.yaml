@@ -93,6 +93,8 @@ spec:
             - analyze
             - --outpost-id
             - "0b5857fb-29e1-405e-bf69-abcd1234ab64"
+            - --region
+            - us-east-2
           env:
           - name: LOG_LEVEL
             value: info

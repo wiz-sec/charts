@@ -114,6 +114,12 @@ analyze
 --outpost-id
 "{{ .Values.outpostId }}"
 {{- end }}
+--region
+{{ .Values.wizRegion }}
+{{- if and .Values.caCertificate.enabled }}
+--proxy-ca-dir
+/usr/local/share/ca-certificates
+{{- end }}
 {{- end }}
 
 {{- define "wiz-kubernetes.pre-istio-sidecar" -}}
