@@ -134,6 +134,10 @@ customVolumeMounts: [] # Additional volume mounts to add to the components Pods
 # The Outpost ID of the Wiz Outpost cluster.
 outpostId: ""
 
+# The Wiz DC AWS region used for this tenant.
+# e.g. us-east-2.
+wizRegion: ""
+
 # Global values to override chart values.
 global:
   image:
@@ -213,7 +217,3 @@ global:
     # Leave blank for transparent proxy.
     httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
     noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
-
-# The Wiz DC AWS region used for this tenant.
-# e.g. us-east-2.
-wizRegion: ""
