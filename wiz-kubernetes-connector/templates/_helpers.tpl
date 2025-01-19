@@ -209,7 +209,9 @@ delete-kubernetes-connector
 {{ .Release.Namespace | quote }}
 --input-secret-name
 {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
+{{- if .Values.autoCreateConnector.autoDeleteConnectorAlwaysSucceed }} 
 || true
+{{ end }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.argsListDeleteConnector" -}}
