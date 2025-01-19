@@ -28,6 +28,19 @@ clusterReader:
     # Annotations to add to the secret
     annotations: {}
 
+refreshToken:
+  enabled: false # Preview feature - will be changed to true in the future
+  installRbac: true
+  serviceAccount:
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    name: "wiz-token-generator"
+
+  schedule: "0 */12 * * *"  # Every 12 hours
+  timeoutSeconds: 600 # The timeout for the refresh job in seconds - setting to 10 minutes since the job sleeps for a random amount of time.
+  cleanupJobSeconds: 600 # The time in seconds after which the job should be deleted - setting to 10 minutes since the job sleeps for a random amount of time.
+
 autoCreateConnector:
   enabled: true # Whether to run a Job that connects to Wiz and creates a connector
 
@@ -52,6 +65,7 @@ autoCreateConnector:
   
   podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
   podCustomEnvironmentVariablesFile: ""
+  podAdditionalSpec: {}
   
   customVolumes: [] # Additional volumes to add to the components Pods
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
@@ -201,6 +215,7 @@ global:
   podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
   customVolumes: [] # Additional volumes to add to the components Pods
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
+  podAdditionalSpec: {}
 
   nodeSelector: {} # custom assignment to nodes
   affinity: {} # custom affinity rules for node assignment

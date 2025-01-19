@@ -49,6 +49,12 @@ spec:
         */}}
         {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.autoCreateConnector.podAdditionalSpec }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.global.podAdditionalSpec }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

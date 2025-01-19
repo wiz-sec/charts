@@ -30,6 +30,12 @@ spec:
         {{- /* `labels` includes `selectorLabels` */}}
           {{- include "wiz-broker.labels" . | nindent 8 }}
     spec:
+      {{- with .Values.global.podAdditionalSpec }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.podAdditionalSpec }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -162,6 +168,12 @@ spec:
             value: {{ printf "%s/%s" $mtlsPath $clientCertificateFileName }}
           - name: CLIENT_KEY_PATH
             value: {{ printf "%s/%s" $mtlsPath $clientPrivateKeyFileName }}
+          {{- end }}
+          {{- with .Values.global.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
