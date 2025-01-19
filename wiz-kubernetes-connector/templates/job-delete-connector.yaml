@@ -22,7 +22,7 @@ spec:
   selector:
     matchLabels:
       {{- include "wiz-kubernetes-connector.selectorLabels" . | nindent 6 }}
-  backoffLimit: 1
+  backoffLimit: {{ .Values.autoCreateConnector.autoDeleteConnectorBackoffLimit }}
   template:
     metadata:
       {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}

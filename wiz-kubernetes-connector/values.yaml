@@ -32,6 +32,8 @@ autoCreateConnector:
   enabled: true # Whether to run a Job that connects to Wiz and creates a connector
 
   autoDeleteConnectorEnabled: true # Whether to run a Job that connects to Wiz and deletes the connector on `helm uninstall`
+  autoDeleteConnectorBackoffLimit: 2 # The number of retries before considering the Job failed. `autoDeleteConnectorAlwaysSucceed` must be set to false for changes to take effect
+  autoDeleteConnectorAlwaysSucceed: true # Whether to consider the Job successful even if the connector deletion fails. If the cluster cannot reach the Wiz backend when connector deletion occurs manual connector removal in Wiz may be required.
 
   connectorName: "" # Recommended for self-managed clusters to easily identify the connector 
   clusterFlavor: "" # Possible values: EKS, AKS, GKE, OKE, OpenShift, ACK, Kubernetes (defaults to Kubernetes)
