@@ -4,7 +4,7 @@ description: Wiz Broker for tunneling http traffic to Wiz backend
 
 type: application
 
-version: 2.2.6-preview.1
+version: 2.2.6-preview.2
 appVersion: "2.6"
 
 dependencies:
