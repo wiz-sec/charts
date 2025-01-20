@@ -32,6 +32,9 @@ parameters:
   wiz-network-analyzer:
     default: false
     type: boolean
+  wiz-common:
+    default: false
+    type: boolean
 
 executors:
   ops:
@@ -91,6 +94,7 @@ jobs:
             - << pipeline.parameters.wiz-outpost-configuration >>
             - << pipeline.parameters.wiz-outpost-lite >>
             - << pipeline.parameters.wiz-network-analyzer >>
+            - << pipeline.parameters.wiz-common >>
           steps:
             - checkout:
                 path: ~/project
@@ -107,6 +111,11 @@ jobs:
                     IdentityFile ~/.ssh/id_rsa_4688b6e7049ef2cfcf4f0309e5581bf2
                     IdentitiesOnly yes' > ~/.ssh/config
                   git clone -b master git@gitops:wiz-sec/charts.git
+      - when:
+          condition: << pipeline.parameters.wiz-common >>
+          steps:
+            - upload_new_chart:
+                package: wiz-common
       - when:
           condition: << pipeline.parameters.flux2 >>
           steps:

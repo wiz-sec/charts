@@ -81,6 +81,7 @@ workflows:
             ^wiz-kubernetes-connector/.* wiz-kubernetes-connector true
             ^wiz-kubernetes-integration/.* wiz-kubernetes-integration true
             ^wiz-network-analyzer/.* wiz-network-analyzer true
+            ^wiz-common/.* wiz-common true
           base-revision: << pipeline.git.branch >>
           filters:
             branches:
