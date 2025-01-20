@@ -25,6 +25,8 @@ serviceAccount:
   name: ""
 
 podCustomEnvironmentVariablesFile: ""
+podCustomEnvironmentVariables: []
+podAdditionalSpec: {}
 skipTlsVerify: false # true indicates that the proxy's certificate should not be verified. DO NOT USE IN PRODUCTION!
 
 caCertificate:
@@ -125,6 +127,8 @@ global:
   podAnnotations: {}
   customVolumes: []
   customVolumeMounts: []
+  podAdditionalSpec: {}
+  podCustomEnvironmentVariables: []
 
   # Wiz Helm Charts process the security contexts
   # in the following order:

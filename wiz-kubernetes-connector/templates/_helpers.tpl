@@ -148,8 +148,15 @@ create-kubernetes-connector
 {{ include "wiz-kubernetes-connector.apiServerEndpoint" . | trim | quote }}
 --secrets-namespace
 {{ .Release.Namespace | quote }}
+{{- if .Values.refreshToken.enabled }}
+--service-account-namespace
+{{ .Release.Namespace | quote }}
+--service-account-name
+{{ .Values.clusterReader.serviceAccount.name | quote }}
+{{- else }}
 --service-account-token-secret-name
 {{ include "wiz-kubernetes-connector.clusterReaderToken" . | quote }}
+{{- end }}
 --output-secret-name
 {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
 --is-on-prem={{ include "wiz-kubernetes-connector.brokerEnabled" . | trim}}
@@ -226,6 +233,41 @@ delete-kubernetes-connector
     {{- printf "%s" $output | nindent 2 }}
 {{- end }}
 
+{{- define "wiz-kubernetes-connector.generate-args-list-refresh" -}}
+refresh-token
+--input-secrets-namespace
+{{ .Release.Namespace | quote }}
+--input-secret-name
+{{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
+--service-account-namespace
+{{ .Release.Namespace | quote }}
+--service-account-name
+{{ .Values.clusterReader.serviceAccount.name | quote }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.argsListRefreshConnector" -}}
+{{- $args := include "wiz-kubernetes-connector.generate-args-list-refresh" . | splitList "\n" -}}
+{{- if .Values.autoCreateConnector.istio.enabled -}}
+{{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
+{{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
+{{- $argsWithIstio := printf "%s &&\nwiz-broker %s &&\n%s" $first (join " \n" $args) $last -}}
+  - >
+    {{- printf "%s" $argsWithIstio | nindent 2 }}
+{{- else -}}
+{{- range $arg := $args }}
+- {{ $arg }}
+{{- end }}
+{{- end -}}
+{{- end }}
+
 {{- define "wiz-broker.image" -}}
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
+{{- end -}}
+
+{{- define "kubeVersion" -}}
+{{- if and .Values.mockCapabilities .Values.mockCapabilities.kubeVersion .Values.mockCapabilities.kubeVersion.version -}}
+{{ .Values.mockCapabilities.kubeVersion.version }}
+{{- else -}}
+{{ .Capabilities.KubeVersion.Version }}
+{{- end -}}
 {{- end -}}
