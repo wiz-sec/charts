@@ -271,3 +271,4 @@ refresh-token
 {{ .Capabilities.KubeVersion.Version }}
 {{- end -}}
 {{- end -}}
+

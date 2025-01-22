@@ -12,10 +12,27 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-kubernetes-connector.labels" . | nindent 4 }}
+  {{- if .Values.refreshToken.cronJobAnnotations}}
+  annotations:
+    {{- with (.Values.refreshToken.cronJobAnnotations) }}
+      {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
 spec:
   schedule: "{{ .Values.refreshToken.schedule }}"
   concurrencyPolicy: Forbid  # Ensures only one job instance runs at a time
   jobTemplate:
+    metadata:
+      name: {{ include "wiz-kubernetes-connector.name" . }}-refresh-token-job
+      namespace: {{ .Release.Namespace | quote }}
+      labels:
+        {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
+      {{- if .Values.refreshToken.jobAnnotations}}
+      annotations:
+        {{- with (.Values.refreshToken.jobAnnotations) }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
     spec:
       activeDeadlineSeconds: {{ .Values.refreshToken.timeoutSeconds }}
       ttlSecondsAfterFinished: {{ .Values.refreshToken.cleanupJobSeconds }}
@@ -25,7 +42,13 @@ spec:
             rollme.proxyHash: {{ include "wiz-kubernetes-connector.proxyHash" . }}
             rollme.brokerHash: {{ include "wiz-kubernetes-connector.brokerHash" . }}
             rollme.wizApiTokenHash: {{ include "wiz-kubernetes-connector.wizApiTokenHash" . }}
-            {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
+            {{- with .Values.global.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.refreshToken.podAnnotations }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
           labels:
@@ -134,8 +157,13 @@ spec:
           affinity:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with (coalesce .Values.global.tolerations .Values.tolerations) }}
+          {{- if (or .Values.global.tolerations .Values.tolerations) }}
           tolerations:
-            {{- toYaml . | nindent 12 }}
+            {{- with .Values.global.tolerations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.tolerations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
     {{- end }}

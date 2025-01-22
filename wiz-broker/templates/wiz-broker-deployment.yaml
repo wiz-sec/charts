@@ -26,6 +26,9 @@ spec:
         {{- with .Values.global.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         {{- /* `labels` includes `selectorLabels` */}}
           {{- include "wiz-broker.labels" . | nindent 8 }}
@@ -75,6 +78,9 @@ spec:
         {{- with .Values.global.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- with .Values.customVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -100,6 +106,9 @@ spec:
             readOnly: true
           {{- end }}
           {{- with .Values.global.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
           args: [
@@ -185,8 +194,13 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (coalesce .Values.global.tolerations .Values.tolerations) }}
+      {{- if (or .Values.global.tolerations .Values.tolerations) }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+        {{- with .Values.global.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
 {{- end }}
