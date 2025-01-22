@@ -26,9 +26,12 @@ serviceAccount:
 
 podCustomEnvironmentVariablesFile: ""
 podCustomEnvironmentVariables: []
+customVolumes: []
+customVolumeMounts: []
 podAdditionalSpec: {}
-tolerations: [ ]
+tolerations: []
 skipTlsVerify: false # true indicates that the proxy's certificate should not be verified. DO NOT USE IN PRODUCTION!
+podAnnotations: {}
 
 caCertificate:
   enabled: false

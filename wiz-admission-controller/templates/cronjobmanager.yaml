@@ -18,12 +18,18 @@ spec:
           annotations:
             rollme.proxyHash: {{ include "wiz-admission-controller.proxyHash" . }}
             rollme.wizApiTokenHash: {{ include "wiz-admission-controller.wizApiTokenHash" . }}
-            {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
+            {{- with .Values.global.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.podAnnotations }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
           labels:
             {{- include "wiz-admission-controller-manager.labels" . | nindent 12 }}
-            {{- with (coalesce .Values.global.podLabels .Values.podLabels) }}
+            {{- with .Values.global.podLabels  }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.podLabels  }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
         spec:
@@ -92,8 +98,13 @@ spec:
           affinity:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with (coalesce .Values.global.tolerations .Values.tolerations) }}
+          {{- if (or .Values.global.tolerations .Values.tolerations)}}
           tolerations:
-            {{- toYaml . | nindent 12 }}
+            {{- with .Values.global.tolerations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.tolerations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
 {{- end }}
