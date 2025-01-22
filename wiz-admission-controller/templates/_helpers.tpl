@@ -408,6 +408,15 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- end }}
 - name: WIZ_CHART_VERSION
   value: "{{ .Chart.Version}}"
+{{- if (or .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage) }}
+- name: WIZ_IMAGE_INTEGRITY_CUSTOM_ERROR_MESSAGE
+  value:  "{{ coalesce .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage }}"
+{{- end -}}
+{{- if (or .Values.opaWebhook.customErrorMessage .Values.customErrorMessage) }}
+- name: WIZ_MISCONFIGURATION_CUSTOM_ERROR_MESSAGE
+  value:  "{{ coalesce .Values.opaWebhook.customErrorMessage .Values.customErrorMessage }}"
+{{- end -}}
+
 {{- end -}}
 
 {{- define "wiz-admission-controller.image" -}}
