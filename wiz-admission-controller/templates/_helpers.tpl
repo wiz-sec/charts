@@ -408,6 +408,33 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- end }}
 - name: WIZ_CHART_VERSION
   value: "{{ .Chart.Version}}"
+{{- if (or .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage) }}
+- name: WIZ_IMAGE_INTEGRITY_CUSTOM_ERROR_MESSAGE
+  value:  "{{ coalesce .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage }}"
+{{- end -}}
+{{- if (or .Values.opaWebhook.customErrorMessage .Values.customErrorMessage) }}
+- name: WIZ_MISCONFIGURATION_CUSTOM_ERROR_MESSAGE
+  value:  "{{ coalesce .Values.opaWebhook.customErrorMessage .Values.customErrorMessage }}"
+{{- end -}}
+{{- if  .Values.opaWebhook.enabled }}
+- name: WIZ_MISCONFIGURATION_WEBHOOK_CONFIG
+  value: |
+  {{ .Values.opaWebhook | toJson | nindent 4 }}
+{{- end -}}
+{{- if .Values.imageIntegrityWebhook.enabled }}
+- name: WIZ_IMAGE_INTEGRITY_WEBHOOK_CONFIG
+  value: |
+  {{ .Values.imageIntegrityWebhook | toJson | nindent 4 }}
+{{- end -}}
+{{- if .Values.kubernetesAuditLogsWebhook.enabled }}
+- name: WIZ_KUBERNETES_AUDIT_LOG_WEBHOOK_CONFIG
+  value: |
+  {{ .Values.kubernetesAuditLogsWebhook | toJson | nindent 4 }}
+{{- end -}}
+{{- if coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName }}
+- name: WIZ_CLUSTER_NAME
+  value: {{ coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName | quote }}
+{{- end }}
 {{- end -}}
 
 {{- define "wiz-admission-controller.image" -}}

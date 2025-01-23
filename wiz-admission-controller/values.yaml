@@ -5,6 +5,7 @@
 nameOverride: "" # Override the release’s name.
 fullnameOverride: "" # Override the release’s full name.
 commonLabels: {} # Labels applied on all the resources (not used for selection)
+clusterDisplayName: "" # Optional. Overrides the Wiz deployment name. If left empty, the cluster external ID will be used to derive the cluster name.
 
 # Wiz Service Account used to authenticate to Wiz.
 wizApiToken:
@@ -107,6 +108,8 @@ webhook:
     name: "" # Name of the Certificate secret.
     annotations: {} # Annotations of the Certificate secret.
 
+customErrorMessage: "" # Custom error message to prepend to the returned error message when the admission check fails (If opaWebhook.customErrorMessage or imageIntegrityWebhook.customErrorMessage is set, it will take precedence).
+
 opaWebhook:
   enabled: true
   # Override to run admission controller on specific resources.
@@ -159,6 +162,8 @@ opaWebhook:
   secret: # Deprecated, use `webhook.secret` instead
     annotations: {}
 
+  customErrorMessage: "" # Custom error message to prepend to the returned error message when the OPA admission check fails.
+
 imageIntegrityWebhook:
   enabled: false
   policies: [] # List of policies to enforce on the image integrity webhook. If not set, by default AC will get policies from Wiz based on projects.
@@ -197,6 +202,7 @@ imageIntegrityWebhook:
   cacheImageVerifyTTL: 5m # The TTL of the cache for the image verification. The cache is used to avoid verifying the same image multiple times.
 
   patchImageDigestAnnotation: true # If true, annotate the pod with mapping between tag->digest.
+  customErrorMessage: "" # Custom error message to prepend to the returned error message when the image integrity check fails.
 
 # This webhooks sends the audit logs to Wiz, and should never block any requests.
 kubernetesAuditLogsWebhook:
@@ -525,6 +531,7 @@ global:
   subscriptionExternalId: ""
   clusterTags: {}
   subscriptionTags: {}
+  clusterDisplayName: "" # Optional. Overrides the Wiz deployment name. If left empty, the cluster external ID will be used to derive the cluster name.
 
   # Set this to true if you are using Istio in sidecar mode.
   # When Istio uses sidecars, there are 2 issues when deploying cronJob:
