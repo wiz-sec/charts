@@ -179,7 +179,10 @@ metadata:
     # Using helm hook to create certs only for chart install
     "helm.sh/hook": "pre-install, pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
-    {{- with (coalesce .Values.webhook.secret.annotations .Values.opaWebhook.secret.annotations) }}
+    {{- with .Values.webhook.secret.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.opaWebhook.secret.annotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
 data:

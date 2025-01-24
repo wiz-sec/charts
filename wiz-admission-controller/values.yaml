@@ -5,6 +5,7 @@
 nameOverride: "" # Override the release’s name.
 fullnameOverride: "" # Override the release’s full name.
 commonLabels: {} # Labels applied on all the resources (not used for selection)
+clusterDisplayName: "" # Optional. Overrides the Wiz deployment name. If left empty, the cluster external ID will be used to derive the cluster name.
 
 # Wiz Service Account used to authenticate to Wiz.
 wizApiToken:
@@ -530,6 +531,7 @@ global:
   subscriptionExternalId: ""
   clusterTags: {}
   subscriptionTags: {}
+  clusterDisplayName: "" # Optional. Overrides the Wiz deployment name. If left empty, the cluster external ID will be used to derive the cluster name.
 
   # Set this to true if you are using Istio in sidecar mode.
   # When Istio uses sidecars, there are 2 issues when deploying cronJob:
