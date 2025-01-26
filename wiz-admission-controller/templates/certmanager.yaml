@@ -24,10 +24,15 @@ spec:
   duration: "87600h0m0s" # AC doesn't currently detect changes to the certificate and must be restarted after renewal
   renewBefore: "360h0m0s"
   secretName: {{ include "wiz-admission-controller.secretServerCert" . | quote }}
+    {{- if (or .Values.webhook.secret.annotations .Values.opaWebhook.secret.annotations) }}
   secretTemplate:
-    {{- with (coalesce .Values.webhook.secret.annotations .Values.opaWebhook.secret.annotations) }}
     annotations:
-      {{- toYaml . | nindent 6 }}
+        {{- with .Values.webhook.secret.annotations }}
+        {{- toYaml . | nindent 6 }}
+        {{- end }}
+        {{- with .Values.opaWebhook.secret.annotations }}
+        {{- toYaml . | nindent 6 }}
+        {{- end }}
     {{- end }}
   issuerRef:
     name: "selfsigned-issuer"
