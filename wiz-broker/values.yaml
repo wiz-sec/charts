@@ -32,6 +32,8 @@ podAdditionalSpec: {}
 tolerations: []
 skipTlsVerify: false # true indicates that the proxy's certificate should not be verified. DO NOT USE IN PRODUCTION!
 podAnnotations: {}
+nodeSelector: { } # custom assignment to nodes
+affinity: { }
 
 caCertificate:
   enabled: false
@@ -129,6 +131,8 @@ global:
   commonLabels: {} # Labels applied on all the resources (not used for selection)
 
   podAnnotations: {}
+  nodeSelector: { } # custom assignment to nodes
+  affinity: { }
   customVolumes: []
   customVolumeMounts: []
   podAdditionalSpec: {}
