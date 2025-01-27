@@ -17,7 +17,9 @@ metadata:
     {{- end }} 
 
 spec:
+  {{ if .Values.autoCreateConnector.useJobTTL }}
   ttlSecondsAfterFinished: 60
+  {{ end }}
   manualSelector: true
   selector:
     matchLabels:
