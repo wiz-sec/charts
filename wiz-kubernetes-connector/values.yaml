@@ -78,6 +78,12 @@ autoCreateConnector:
   roleAnnotations: {}
   roleBindingAnnotations: {}
 
+  # Toggle the TTL (Time to Live) mechanism for automatic cleanup of finished Jobs.
+  # Set to `true` to enable Kubernetes to automatically delete Jobs after they complete or fail, based on the `ttlSecondsAfterFinished` field.
+  # Set to `false` if using Argo CD to manage Job lifecycle with deletion hooks, as TTL-based cleanup can cause Application to appear OutOfSync.
+  # See: https://argo-cd.readthedocs.io/en/stable/user-guide/resource_hooks/#sync-status-with-jobsworkflows-with-time-to-live-ttl
+  useJobTTL: true
+
   # Set this to true if you are using Istio in sidecar mode.
   # When Istio uses sidecars, there are 2 issues when deploying Wiz:
   # 1) The creation and deletion Jobs never complete (due to istio-proxy sidecar)
