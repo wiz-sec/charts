@@ -54,7 +54,21 @@ global:
   customVolumeMounts: [] # Additional volume mounts to add to the components Pods
 
   nodeSelector: {} # custom assignment to nodes
-  affinity: {} # custom affinity rules for node assignment
+  affinity:
+    # run on linux arm64 or amd64 nodes
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/os
+            operator: In
+            values:
+            - linux
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+            - arm64
+            - amd64
   tolerations: [] # custom tolerations
   clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
   subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
