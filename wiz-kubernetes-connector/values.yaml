@@ -29,7 +29,7 @@ clusterReader:
     annotations: {}
 
 refreshToken:
-  enabled: false # Preview feature - will be changed to true in the future
+  enabled: false # Private preview feature - If you set this to true, and you are not part of the private preview, the installation will fail.
   installRbac: true
   serviceAccount:
     # Annotations to add to the service account
@@ -37,9 +37,9 @@ refreshToken:
     # The name of the service account to use.
     name: "wiz-token-generator"
 
-  schedule: "0 */12 * * *"  # Every 12 hours
-  timeoutSeconds: 600 # The timeout for the refresh job in seconds - setting to 10 minutes since the job sleeps for a random amount of time.
-  cleanupJobSeconds: 600 # The time in seconds after which the job should be deleted - setting to 10 minutes since the job sleeps for a random amount of time.
+  schedule: "0 */6 * * *"  # Every 6 hours
+  timeoutSeconds: 1200 # The timeout for the refresh job in seconds - setting to 20 minutes since the job sleeps for a random amount of time.
+  cleanupJobSeconds: 1200 # The time in seconds after which the job should be deleted - setting to 20 minutes since the job sleeps for a random amount of time.
   cronJobAnnotations: {}
   jobAnnotations: {}
   podAnnotations: {}
