@@ -20,13 +20,6 @@ Deployment name.
 {{- end }}
 
 {{/*
-Service account name.
-*/}}
-{{- define "wiz-broker.serviceAccountName" -}}
-{{ coalesce (.Values.serviceAccount.name) (printf "%s-wiz-broker-sa" .Release.Name) }}
-{{- end }}
-
-{{/*
 Common labels
 */}}
 {{- define "wiz-broker.labels" -}}

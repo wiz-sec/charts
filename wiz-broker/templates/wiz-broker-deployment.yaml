@@ -43,7 +43,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      automountServiceAccountToken: false
       securityContext:
         {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
         {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 8 }}
