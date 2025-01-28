@@ -345,6 +345,7 @@ kubernetesApiServer:
 serviceAccount:
   # If `create` is set to `false`` an existing service account will be used
   create: true
+  createRbac: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -480,6 +481,7 @@ wizManager:
   serviceAccount:
     # If `create` is set to `false`` an existing service account will be used
     create: true
+    createRbac: true
     # Annotations to add to the service account
     annotations: {}
     # The name of the service account to use.
