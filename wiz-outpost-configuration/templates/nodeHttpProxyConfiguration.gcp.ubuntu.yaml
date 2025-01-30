@@ -1,0 +1,111 @@
+{{- if and .Values.httpProxyConfiguration.enabled (eq .Values.httpProxyConfiguration.nodeConfigurationType "gcp-ubuntu") }}
+{{- $noProxyList := join "," .Values.httpProxyConfiguration.noProxy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.httpProxyConfiguration.name }}-entrypoint
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
+data:
+  entrypoint.sh: |
+    #!/usr/bin/env bash
+
+    set -euo pipefail -x
+
+    ROOT_MOUNT_DIR="${ROOT_MOUNT_DIR:-/root}"
+    if chroot "${ROOT_MOUNT_DIR}" test -f /var/run/http-proxy-configured; then
+      echo "Proxy already configured, skipping"
+      exit 0
+    fi
+    chroot "${ROOT_MOUNT_DIR}" tee<<EOF /var/run/http-proxy-configured
+    v1.0 $(date)
+    EOF
+
+    # Create the containerd and sandbox-image systemd directory
+    chroot "${ROOT_MOUNT_DIR}" mkdir -p /lib/systemd/system/containerd.service.d
+
+    # Set the proxy for future processes, and use as an include file
+    chroot "${ROOT_MOUNT_DIR}" tee -a <<EOF /etc/environment
+    {{- with .Values.httpProxyConfiguration.httpProxy }}
+    http_proxy={{ . | quote }}
+    HTTP_PROXY={{ . | quote }}
+    {{- end }}
+    {{- with .Values.httpProxyConfiguration.httpsProxy }}
+    https_proxy={{ . | quote }}
+    HTTPS_PROXY={{ . | quote }}
+    {{- end }}
+    {{- if .Values.httpProxyConfiguration.noProxy }}
+    no_proxy={{ $noProxyList | quote }}
+    NO_PROXY={{ $noProxyList | quote }}
+    {{- end }}
+    EOF
+
+    # Configure Containerd with the proxy
+    chroot "${ROOT_MOUNT_DIR}" tee <<EOF /lib/systemd/system/containerd.service.d/http-proxy.conf >/dev/null
+    [Service]    
+    EnvironmentFile=/etc/environment
+    EOF
+
+    {{- with .Values.httpProxyConfiguration.caCertificate }}
+    chroot "${ROOT_MOUNT_DIR}" mkdir -p /usr/local/share/ca-certificates/extra
+    chroot "${ROOT_MOUNT_DIR}" tee <<EOF /usr/local/share/ca-certificates/extra/root.cert.crt
+    {{ . }}
+    EOF
+    chroot "${ROOT_MOUNT_DIR}" update-ca-certificates
+    {{- end }}
+
+    # Log the proxy settings to confirm
+    chroot "${ROOT_MOUNT_DIR}" tee <<EOF /var/log/startup-script.log
+    Proxy settings applied
+    EOF
+
+    # Restart containerd to apply the new proxy settings
+    chroot "${ROOT_MOUNT_DIR}" systemctl daemon-reload
+    chroot "${ROOT_MOUNT_DIR}" systemctl restart containerd
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-initializer
+  labels:
+    app: default-init
+spec:
+  selector:
+    matchLabels:
+      app: default-init
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: node-initializer
+        app: default-init
+    spec:
+      hostPID: true
+      volumes:
+        - name: root-mount
+          hostPath:
+            path: /
+        - name: entrypoint
+          configMap:
+            name: entrypoint
+            defaultMode: 0744
+      containers:
+        - image: "marketplace.gcr.io/google/ubuntu2204"
+          name: node-initializer
+          command: ["/scripts/entrypoint.sh"]
+          env:
+            - name: ROOT_MOUNT_DIR
+              value: /root
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: root-mount
+              mountPath: /root
+            - name: entrypoint
+              mountPath: /scripts
+{{- end }}
