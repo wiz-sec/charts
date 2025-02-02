@@ -108,4 +108,5 @@ spec:
               mountPath: /root
             - name: entrypoint
               mountPath: /scripts
+
 {{- end }}
