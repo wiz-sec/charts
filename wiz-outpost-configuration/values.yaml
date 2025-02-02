@@ -5,7 +5,7 @@
 httpProxyConfiguration:
   enabled: false
   name: wiz-http-proxy-configuration
-  nodeConfigurationType: none # supported values: none, gcp-ubuntu
+  # nodeConfigurationType: none # supported values: none, gcp-ubuntu
   # httpProxy: replaceme
   # httpsProxy: replaceme
   # noProxy:
