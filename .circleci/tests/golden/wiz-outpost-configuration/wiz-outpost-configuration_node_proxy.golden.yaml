@@ -38,7 +38,7 @@ data:
   no-proxy-address-cs: "bG9jYWxob3N0LC5jbHVzdGVyLmxvY2Fs"
   noProxyAddress: "bG9jYWxob3N0LC5jbHVzdGVyLmxvY2Fs"
   noProxyAddressSpaceSepareted: "bG9jYWxob3N0IC5jbHVzdGVyLmxvY2Fs"
-  caCertificate: "LS0tIEJFR0lOIENFUlRJRklDQVRFIC0tLSBjZXJ0Lm1lIC0tLSBFTkQgQ0VSVElGSUNBVEUgLS0t"
+  caCertificate: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUdjakNDQkZxZ0F3SUJBZ0lRRHh4cE1PMzlnWjd1NCtOTmlGMGUvekFOQmdrcWhraUc5dzBCQVFzRkFEQ0IKSTVzQ0QyRGZid1BKWFF5c2N0TTVTZjZyK3JTYjlRPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
 ---
 # Source: wiz-outpost-configuration/templates/nodeHttpProxyConfiguration.gcp.ubuntu.yaml
 apiVersion: v1
@@ -89,7 +89,10 @@ data:
     EOF
     chroot "${ROOT_MOUNT_DIR}" mkdir -p /usr/local/share/ca-certificates/extra
     chroot "${ROOT_MOUNT_DIR}" tee <<EOF /usr/local/share/ca-certificates/extra/root.cert.crt
-    --- BEGIN CERTIFICATE --- cert.me --- END CERTIFICATE ---
+    -----BEGIN CERTIFICATE-----
+    MIIGcjCCBFqgAwIBAgIQDxxpMO39gZ7u4+NNiF0e/zANBgkqhkiG9w0BAQsFADCB
+    I5sCD2DfbwPJXQysctM5Sf6r+rSb9Q==
+    -----END CERTIFICATE-----
     EOF
     chroot "${ROOT_MOUNT_DIR}" update-ca-certificates
 

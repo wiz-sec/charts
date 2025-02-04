@@ -3,7 +3,10 @@ agent:
   clientSecret: client-secret
   enabled: true
 httpProxyConfiguration:
-  caCertificate: --- BEGIN CERTIFICATE --- cert.me --- END CERTIFICATE ---
+  caCertificate: |
+    --- BEGIN CERTIFICATE ---
+    cert.me
+    --- END CERTIFICATE ---
   enabled: true
   name: wiz-http-proxy-configuration
   nodeConfigurationType: gcp-ubuntu
