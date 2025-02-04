@@ -91,9 +91,9 @@ spec:
             path: /
         - name: entrypoint
           configMap:
-            name: entrypoint
+            name: {{ .Values.httpProxyConfiguration.name }}-entrypoint
             defaultMode: 0744
-      containers:
+      initContainers:
         - image: "marketplace.gcr.io/google/ubuntu2204"
           name: node-initializer
           command: ["/scripts/entrypoint.sh"]
@@ -107,5 +107,8 @@ spec:
               mountPath: /root
             - name: entrypoint
               mountPath: /scripts
+      containers:
+        - image: "gcr.io/google-containers/pause:2.0"
+          name: pause
 
 {{- end }}
