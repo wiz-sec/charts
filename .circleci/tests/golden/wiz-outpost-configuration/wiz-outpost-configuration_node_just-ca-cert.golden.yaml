@@ -30,7 +30,7 @@ metadata:
     meta.helm.sh/release-name: "release-test"
     meta.helm.sh/release-namespace: "release-helm-namespace"
 data:
-  caCertificate: "LS0tIEJFR0lOIENFUlRJRklDQVRFIC0tLSBjZXJ0Lm1lIC0tLSBFTkQgQ0VSVElGSUNBVEUgLS0t"
+  caCertificate: "LS0tIEJFR0lOIENFUlRJRklDQVRFIC0tLQpjZXJ0Lm1lCi0tLSBFTkQgQ0VSVElGSUNBVEUgLS0tCg=="
 ---
 # Source: wiz-outpost-configuration/templates/nodeHttpProxyConfiguration.gcp.ubuntu.yaml
 apiVersion: v1
@@ -75,7 +75,9 @@ data:
     EOF
     chroot "${ROOT_MOUNT_DIR}" mkdir -p /usr/local/share/ca-certificates/extra
     chroot "${ROOT_MOUNT_DIR}" tee <<EOF /usr/local/share/ca-certificates/extra/root.cert.crt
-    --- BEGIN CERTIFICATE --- cert.me --- END CERTIFICATE ---
+    --- BEGIN CERTIFICATE ---
+    cert.me
+    --- END CERTIFICATE ---
     EOF
     chroot "${ROOT_MOUNT_DIR}" update-ca-certificates
 

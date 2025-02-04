@@ -52,8 +52,7 @@ data:
     {{- with .Values.httpProxyConfiguration.caCertificate }}
     chroot "${ROOT_MOUNT_DIR}" mkdir -p /usr/local/share/ca-certificates/extra
     chroot "${ROOT_MOUNT_DIR}" tee <<EOF /usr/local/share/ca-certificates/extra/root.cert.crt
-    {{ . }}
-    EOF
+{{ . | indent 4 }}EOF
     chroot "${ROOT_MOUNT_DIR}" update-ca-certificates
     {{- end }}
 

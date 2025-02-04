@@ -3,12 +3,17 @@ agent:
   clientSecret: client-secret
   enabled: true
 httpProxyConfiguration:
-  caCertificate: --- BEGIN CERTIFICATE --- cert.me --- END CERTIFICATE ---
+  caCertificate: |
+    -----BEGIN CERTIFICATE-----
+    MIIGcjCCBFqgAwIBAgIQDxxpMO39gZ7u4+NNiF0e/zANBgkqhkiG9w0BAQsFADCB
+    I5sCD2DfbwPJXQysctM5Sf6r+rSb9Q==
+    -----END CERTIFICATE-----
+  enabled: true
   httpProxy: http://httpproxy.com
   httpsProxy: http://httpsproxy.com
+  name: wiz-http-proxy-configuration
   noProxy:
     - localhost
     - .cluster.local
-  enabled: true
-  name: wiz-http-proxy-configuration
   nodeConfigurationType: gcp-ubuntu
+podAnnotations: null
