@@ -87,10 +87,8 @@ spec:
           - name: OUTPOST_LITE_RUNNER_METRICS_PORT
             value: "{{ .Values.service.metricsPort }}"
           {{- end }}
-          {{- if .Values.autoUpdate }}
           - name: OUTPOST_LITE_RUNNER_AUTO_UPDATE
-            value: "1"
-          {{- end }}
+            value: {{ ternary "1" "0" .Values.autoUpdate | quote }}
           {{- if .Values.concurrency }}
           - name: OUTPOST_LITE_RUNNER_CONCURRENCY
             value: "{{ .Values.concurrency }}"
