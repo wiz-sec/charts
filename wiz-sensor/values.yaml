@@ -83,13 +83,26 @@ livenessProbe:
   enabled: false
   config:
     # delay before liveness probe starts
-    initialDelaySeconds: 15
+    initialDelaySeconds: 60
     # period between liveness probe checks
-    periodSeconds: 30
+    periodSeconds: 60
     # timeout for liveness probe
-    timeoutSeconds: 10
+    timeoutSeconds: 30
     # number of failures before sensor pod is considered unhealthy
-    failureThreshold: 3
+    failureThreshold: 5
+
+# startup probe for the sensor container
+startupProbe:
+  enabled: true
+  config:
+    # delay before startup probe starts
+    initialDelaySeconds: 15
+    # period between startup probe checks
+    periodSeconds: 60
+    # timeout for startup probe
+    timeoutSeconds: 30
+    # number of failures before sensor pod is considered unhealthy
+    failureThreshold: 5
 
 # readiness probe for the sensor container
 readinessProbe:
@@ -98,11 +111,11 @@ readinessProbe:
     # delay before readiness probe starts
     initialDelaySeconds: 15
     # period between readiness probe checks
-    periodSeconds: 30
+    periodSeconds: 60
     # timeout for readiness probe
-    timeoutSeconds: 10
+    timeoutSeconds: 30
     # number of failures before sensor pod is considered not ready
-    failureThreshold: 3
+    failureThreshold: 5
 
 # the API key identifying this installation (for comm with Wiz portal)
 wizApiToken:
@@ -289,6 +302,10 @@ daemonset:
   # If a non-standard path is used please specify it here. Usually not required.
   criSocketPath: ""
 
+   # (optional) Disable EMS requirement for TLS servers. Setting this to true makes the TLS client not comply with FIPS.
+  # This is required for some proxies that use old versions of OpenSSL that do not support EMS.
+  # Example error message: peer is incompatible: ExtendedMasterSecretExtensionRequired"
+  disableStrictEMS: false
 
 # Don't touch the following section, it is used by the wiz-kubernetes-integration chart
 global:
