@@ -54,6 +54,7 @@ spec:
         {{- end }}
       {{- end }}
       labels:
+        wiz.io/component: "create-kubernetes-connector"
         {{/*
         `labels` includes `selectorLabels`
         */}}
