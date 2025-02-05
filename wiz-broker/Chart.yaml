@@ -3,7 +3,9 @@ name: "wiz-broker"
 description: Wiz Broker for tunneling http traffic to Wiz backend
 
 type: application
+
 version: 2.2.6-preview.9
+appVersion: "2.6"
 
 dependencies:
   - name: wiz-common
