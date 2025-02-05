@@ -4,11 +4,11 @@ description: Wiz Broker for tunneling http traffic to Wiz backend
 
 type: application
 
-version: 2.2.6-preview.8
+version: 2.2.6-preview.9
 appVersion: "2.6"
 
 dependencies:
   - name: wiz-common
-    version: "0.1.0"
+    version: "0.1.1"
     repository: https://wiz-sec.github.io/charts
     #    repository: "file://../wiz-common" # Use this line to test the chart locally

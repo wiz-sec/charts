@@ -139,8 +139,7 @@ spec:
                     key: noProxyAddress
                     optional: false
               {{- end }}
-              resources:
-                {{- toYaml .Values.resources | nindent 16 }}
+              {{- include "wiz-common.renderResources" (list .Values.resources (index .Values.global "wiz-kubernetes-connector" "resources")) | nindent 14 -}}
               {{- if or .Values.autoCreateConnector.customVolumeMounts .Values.global.customVolumeMounts }}
               volumeMounts:
               {{- with .Values.autoCreateConnector.customVolumeMounts }}

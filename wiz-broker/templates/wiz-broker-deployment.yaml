@@ -185,8 +185,7 @@ spec:
           {{- with .Values.podCustomEnvironmentVariables }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+          {{- include "wiz-common.renderResources" (list .Values.resources (index .Values.global "wiz-kubernetes-connector" "resources")) | nindent 10 -}}
       {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
