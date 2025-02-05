@@ -30,6 +30,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
+        wiz.io/component: "broker"
         {{- /* `labels` includes `selectorLabels` */}}
           {{- include "wiz-broker.labels" . | nindent 8 }}
     spec:

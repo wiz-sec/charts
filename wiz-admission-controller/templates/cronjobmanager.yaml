@@ -25,6 +25,7 @@ spec:
               {{- toYaml . | nindent 12 }}
             {{- end }}
           labels:
+            wiz.io/component: "admission-controller-manager"
             {{- include "wiz-admission-controller-manager.labels" . | nindent 12 }}
             {{- with .Values.global.podLabels  }}
               {{- toYaml . | nindent 12 }}
