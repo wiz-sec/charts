@@ -27,6 +27,7 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
+        wiz.io/component: "admission-controller-enforcer"
         {{/*
         `labels` includes `selectorLabels`
         */}}

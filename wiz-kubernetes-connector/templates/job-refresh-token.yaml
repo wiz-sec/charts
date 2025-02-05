@@ -52,6 +52,7 @@ spec:
               {{- toYaml . | nindent 12 }}
             {{- end }}
           labels:
+            wiz.io/component: "refresh-kubernetes-connector-token"
             {{- include "wiz-kubernetes-connector.labels" . | nindent 12 }}
         spec:
           {{- with .Values.autoCreateConnector.podAdditionalSpec }}
@@ -138,8 +139,7 @@ spec:
                     key: noProxyAddress
                     optional: false
               {{- end }}
-              resources:
-                {{- toYaml .Values.resources | nindent 16 }}
+              {{- include "wiz-common.renderResources" (list .Values.resources (index .Values.global "wiz-kubernetes-connector" "resources")) | nindent 14 -}}
               {{- if or .Values.autoCreateConnector.customVolumeMounts .Values.global.customVolumeMounts }}
               volumeMounts:
               {{- with .Values.autoCreateConnector.customVolumeMounts }}
