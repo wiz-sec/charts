@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/instance: release-test
     app.kubernetes.io/version: "0.0.1"
     app.kubernetes.io/managed-by: Helm
+
 stringData:
   clientId: "client-id"
   clientSecret: "client-secret"
