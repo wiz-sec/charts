@@ -21,6 +21,8 @@ agent:
   clientId: ""
   clientSecret: ""
   privateKey: ""
+  # Annotations to add to the agent secret
+  annotations: {}
 
 agentCredsSecretName: wiz-outpost-agent-creds
 

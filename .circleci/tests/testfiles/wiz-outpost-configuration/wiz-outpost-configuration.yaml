@@ -2,6 +2,9 @@ agent:
   clientId: client-id
   clientSecret: client-secret
   enabled: true
+  annotations:
+    key1: value1
+    key2: value2
 httpProxyConfiguration:
   enabled: false
   name: wiz-http-proxy-configuration
