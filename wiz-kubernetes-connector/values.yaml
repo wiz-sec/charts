@@ -37,7 +37,6 @@ refreshToken:
     # The name of the service account to use.
     name: "wiz-token-generator"
 
-  schedule: "0 */6 * * *"  # Every 6 hours
   timeoutSeconds: 1200 # The timeout for the refresh job in seconds - setting to 20 minutes since the job sleeps for a random amount of time.
   cleanupJobSeconds: 1200 # The time in seconds after which the job should be deleted - setting to 20 minutes since the job sleeps for a random amount of time.
   cronJobAnnotations: {}

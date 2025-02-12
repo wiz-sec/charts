@@ -19,7 +19,7 @@ metadata:
       {{- end }}
     {{- end }}
 spec:
-  schedule: "{{ .Values.refreshToken.schedule }}"
+  schedule: "{{ coalesce .Values.refreshToken.schedule "0 */6 * * *" }}"
   concurrencyPolicy: Forbid  # Ensures only one job instance runs at a time
   jobTemplate:
     metadata:
