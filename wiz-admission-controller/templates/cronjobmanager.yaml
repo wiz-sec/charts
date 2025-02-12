@@ -73,6 +73,14 @@ spec:
               - "--release-namespace={{ .Release.Namespace }}"
               env:
               {{- include "spec.common.envVars" . | trim | nindent 14 }}
+              {{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
+              - name: WIZ_ENFORCER_DEPLOYMENT_NAME
+                value: {{ include "wiz-admission-controller-enforcer.name" . }}
+              {{- end -}}
+              {{- if .Values.kubernetesAuditLogsWebhook.enabled }}
+              - name: WIZ_KUBERNETES_AUDIT_LOG_COLLECTOR_DEPLOYMENT_NAME
+                value: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
+              {{- end }}
               resources:
               {{- include "wiz-admission-controller.resources" . | trim | nindent 16 }}
               {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts }}
