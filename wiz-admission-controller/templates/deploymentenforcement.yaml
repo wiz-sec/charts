@@ -137,6 +137,7 @@ spec:
           resources:
             {{- include "wiz-admission-controller.resources" . | trim | nindent 12 }}
           volumeMounts:
+          {{- include "spec.common.volumeMounts" . | trim | nindent 10 }}
           - mountPath: /var/cache
             name: cache
           - mountPath: /var/server-certs
@@ -149,6 +150,7 @@ spec:
             {{- toYaml . | nindent 10 }}
           {{- end }}
       volumes:
+      {{- include "spec.common.volumes" . | trim | nindent 8 }}
         - name: cache
           emptyDir: {}
         - name: server-certs

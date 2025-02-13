@@ -333,43 +333,51 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
 {{- end -}}
 
-{{- define "spec.common.envVars" -}}
+
+{{- define  "volumes.apiClientName" -}}
+api-client
+{{- end -}}
+
+{{- define  "volumes.proxy" -}}
+proxy
+{{- end -}}
+
+{{- define "spec.common.volumeMounts" -}}
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: WIZ_CLIENT_ID
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-      key: clientId
-      optional: false
-- name: WIZ_CLIENT_TOKEN
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-      key: clientToken
-      optional: false
+- name: {{ include "volumes.apiClientName" . }}
+  mountPath: /var/{{ include "volumes.apiClientName" . }}
+  readOnly: true
+{{- end -}}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+- name: {{ include "volumes.proxy" . }}
+  mountPath: /var/{{ include "volumes.proxy" . }}
+  readOnly: true
+{{- end -}}
+{{- end -}}
+
+{{- define "spec.common.volumes" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+- name: {{ include "volumes.apiClientName" . | trim }}
+  secret:
+    secretName: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
+{{- end }}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+- name: {{ include "volumes.proxy" . | trim }}
+  secret:
+    secretName: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
+{{- end -}}
+{{- end -}}
+
+
+{{- define "spec.common.envVars" -}}
+- name: CLI_FILES_AS_ARGS
+  value: "/var/{{ include "volumes.apiClientName" . }}/clientToken,/var/{{ include "volumes.apiClientName" . }}/clientId"
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+- name: CLI_FILES_AS_ENV_VARS
+  value: "/var/{{ include "volumes.proxy" . }}/http_proxy,/var/{{ include "volumes.proxy" . }}/https_proxy,/var/{{ include "volumes.proxy" . }}/no_proxy"
 {{- end }}
 - name: WIZ_ENV
   value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
-{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: HTTP_PROXY
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-      key: httpProxy
-      optional: false
-- name: HTTPS_PROXY
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-      key: httpsProxy
-      optional: false
-- name: NO_PROXY
-  valueFrom:
-    secretKeyRef:
-      name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-      key: noProxyAddress
-      optional: false
-{{- end }}
 {{- if .Values.logLevel }}
 - name: LOG_LEVEL
   value: {{ .Values.logLevel }}
