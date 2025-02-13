@@ -52,6 +52,7 @@ spec:
         {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
         {{- end }}
       volumes:
+        {{- include "spec.common.volumes" . | trim | nindent 8 }}
         - name: connector-data
           secret:
             secretName: {{ include "wiz-broker.connectorSecretName" . | trim }}
@@ -93,6 +94,7 @@ spec:
           image: {{ include "wiz-broker.image" . }}
           imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
           volumeMounts:
+          {{- include "spec.common.volumeMounts" . | trim | nindent 10 }}
           - name: connector-data
             mountPath: {{ $mountPath }}
             readOnly: true
@@ -122,17 +124,11 @@ spec:
           {{- end }}
           - name: WIZ_ENV
             value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
-          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-          - name: WIZ_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
-                key: clientId
-          - name: WIZ_CLIENT_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
-                key: clientToken
+          - name: CLI_FILES_AS_ARGS
+            value: "/var/{{ include "volumes.apiClientName" . }}/clientToken,/var/{{ include "volumes.apiClientName" . }}/clientId"
+          {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+          - name: CLI_FILES_AS_ENV_VARS
+            value: "/var/{{ include "volumes.proxy" . }}/http_proxy,/var/{{ include "volumes.proxy" . }}/https_proxy,/var/{{ include "volumes.proxy" . }}/no_proxy"
           {{- end }}
           {{- if .Values.managed.enabled }}
           - name: WIZ_MANAGED
@@ -149,25 +145,6 @@ spec:
             value: {{ .Values.podCustomEnvironmentVariablesFile }}
           - name: USE_CLI_ENV_FILE
             value: "true"
-          {{- end }}
-          {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-          - name: HTTP_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.proxySecretName" . | trim }}
-                key: httpsProxy # The frp project supports only HTTP_PROXY, it uses it for both http and https.  Our broker always uses https, so we're using the httpsProxy value here (See: https://github.com/fatedier/frp/#connecting-to-frps-via-http-proxy)
-          - name: HTTPS_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.proxySecretName" . | trim }}
-                key: httpsProxy
-                optional: false
-          - name: NO_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.proxySecretName" . | trim }}
-                key: noProxyAddress
-                optional: false
           {{- end }}
           {{- if .Values.skipTlsVerify }}
           - name: DISABLE_TLS_VALIDATION

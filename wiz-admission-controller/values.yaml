@@ -23,7 +23,8 @@ wizApiToken:
     # The name of the Wiz Service Account Secret.
     name: ""
 
-  # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  # Not suggested: avoid storing sensitive data in environment variables.
+  # Read API token from an environment file, which is specified in podCustomEnvironmentVariablesFile
   usePodCustomEnvironmentVariablesFile: false
 
 # Redirect HTTP and/or HTTPS traffic through a proxy.

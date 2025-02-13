@@ -272,3 +272,63 @@ refresh-token
 {{- end -}}
 {{- end -}}
 
+{{- define  "volumes.apiClientName" -}}
+api-client
+{{- end -}}
+
+{{- define  "volumes.proxy" -}}
+proxy
+{{- end -}}
+
+{{- define "spec.common.volumeMounts" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+- name: {{ include "volumes.apiClientName" . }}
+  mountPath: /var/{{ include "volumes.apiClientName" . }}
+  readOnly: true
+{{- end -}}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+- name: {{ include "volumes.proxy" . }}
+  mountPath: /var/{{ include "volumes.proxy" . }}
+  readOnly: true
+{{- end -}}
+{{- end -}}
+
+{{- define "spec.common.volumes" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+- name: {{ include "volumes.apiClientName" . | trim }}
+  secret:
+    secretName: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+{{- end }}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+- name: {{ include "volumes.proxy" . | trim }}
+  secret:
+    secretName: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
+{{- end -}}
+{{- end -}}
+
+{{- define "spec.common.envVars" -}}
+- name: CLI_FILES_AS_ARGS
+  value: "/var/{{ include "volumes.apiClientName" . }}/clientToken,/var/{{ include "volumes.apiClientName" . }}/clientId"
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+- name: CLI_FILES_AS_ENV_VARS
+  value: "/var/{{ include "volumes.proxy" . }}/http_proxy,/var/{{ include "volumes.proxy" . }}/https_proxy,/var/{{ include "volumes.proxy" . }}/no_proxy"
+{{- end }}
+{{- if .Values.global.logLevel }}
+- name: LOG_LEVEL
+  value: {{ .Values.global.logLevel }}
+{{- end }}
+{{- with .Values.global.podCustomEnvironmentVariables }}
+{{ toYaml . }}
+{{- end }}
+{{- with .Values.autoCreateConnector.podCustomEnvironmentVariables }}
+{{ toYaml . }}
+{{- end }}
+{{- if .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+- name: CLI_ENV_FILE
+  value: {{ .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+- name: USE_CLI_ENV_FILE
+  value: "true"
+{{- end }}
+- name: WIZ_ENV
+  value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+{{- end }}
