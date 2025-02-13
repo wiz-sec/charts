@@ -78,9 +78,9 @@ spec:
         {{- else }}
         {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
         {{- end }}
-      {{- if or .Values.autoCreateConnector.customVolumes  .Values.global.customVolumes}}
       volumes:
       {{- include "spec.common.volumes" . | trim | nindent 6 }}
+      {{- if or .Values.autoCreateConnector.customVolumes  .Values.global.customVolumes}}
       {{ with .Values.global.customVolumes }}
         {{- toYaml . | nindent 6 }}
       {{- end }}
