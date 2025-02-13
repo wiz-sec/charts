@@ -107,3 +107,45 @@ Secrets names
 {{- define "wiz-broker.image" -}}
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
 {{- end -}}
+
+{{- define  "wiz-common.volumes.apiClientName" -}}
+api-client
+{{- end -}}
+
+{{- define  "wiz-common.volumes.proxy" -}}
+proxy
+{{- end -}}
+
+{{- define  "volumes.apiClientName" -}}
+api-client
+{{- end -}}
+
+{{- define  "volumes.proxy" -}}
+proxy
+{{- end -}}
+
+{{- define "spec.common.volumeMounts" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+- name: {{ include "volumes.apiClientName" . }}
+  mountPath: /var/{{ include "volumes.apiClientName" . }}
+  readOnly: true
+{{- end -}}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+- name: {{ include "volumes.proxy" . }}
+  mountPath: /var/{{ include "volumes.proxy" . }}
+  readOnly: true
+{{- end -}}
+{{- end -}}
+
+{{- define "spec.common.volumes" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+- name: {{ include "volumes.apiClientName" . | trim }}
+  secret:
+    secretName: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
+{{- end }}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+- name: {{ include "volumes.proxy" . | trim }}
+  secret:
+    secretName: {{ include "wiz-broker.proxySecretName" . | trim }}
+{{- end -}}
+{{- end -}}

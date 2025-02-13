@@ -83,8 +83,9 @@ spec:
               {{- end }}
               resources:
               {{- include "wiz-admission-controller.resources" . | trim | nindent 16 }}
-              {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts }}
               volumeMounts:
+              {{- include "spec.common.volumeMounts" . | trim | nindent 14 }}
+              {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts }}
               {{- with .Values.customVolumeMounts }}
                 {{- toYaml . | nindent 14 }}
               {{- end }}
@@ -93,6 +94,7 @@ spec:
               {{- end }}
               {{- end }}
           volumes:
+            {{- include "spec.common.volumes" . | trim | nindent 12 }}
             {{- with .Values.customVolumes }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
