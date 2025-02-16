@@ -13493,7 +13493,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: wiziopublic.azurecr.io/wiz-helm-controller:v1.1.0
+        image: wiziopublic.azurecr.io/wiz-helm-controller:v1.1.0-2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -13574,7 +13574,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: wiziopublic.azurecr.io/wiz-kustomize-controller:v1.4.0
+        image: wiziopublic.azurecr.io/wiz-kustomize-controller:v1.4.0-1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -13661,7 +13661,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: wiziopublic.azurecr.io/wiz-source-controller:v1.4.1
+        image: wiziopublic.azurecr.io/wiz-source-controller:v1.4.1-1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
