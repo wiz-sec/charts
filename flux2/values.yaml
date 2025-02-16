@@ -22,7 +22,7 @@ multitenancy:
 clusterDomain: cluster.local
 
 cli:
-  image: wiziopublic.azurecr.io/wiz-flux-cli
+  image: public-registry.wiz.io/wiz-flux-cli
   tag: v2.2.3
   nodeSelector: {}
   affinity: {}
@@ -35,8 +35,8 @@ cli:
 
 helmController:
   create: true
-  image: wiziopublic.azurecr.io/wiz-helm-controller
-  tag: v1.1.0
+  image: public-registry.wiz.io/wiz-helm-controller
+  tag: v1.1.0-2
   resources:
     limits: {}
     # cpu: 1000m
@@ -83,7 +83,7 @@ helmController:
 
 imageAutomationController:
   create: false # WIZ
-  image: wiziopublic.azurecr.io/wiz-image-automation-controller
+  image: public-registry.wiz.io/wiz-image-automation-controller
   tag: v0.37.1
   resources:
     limits: {}
@@ -111,7 +111,7 @@ imageAutomationController:
 
 imageReflectionController:
   create: false # WIZ
-  image: wiziopublic.azurecr.io/wiz-image-reflector-controller
+  image: public-registry.wiz.io/wiz-image-reflector-controller
   tag: v0.31.2
   resources:
     limits: {}
@@ -139,8 +139,8 @@ imageReflectionController:
 
 kustomizeController:
   create: true
-  image: wiziopublic.azurecr.io/wiz-kustomize-controller
-  tag: v1.4.0
+  image: public-registry.wiz.io/wiz-kustomize-controller
+  tag: v1.4.0-1
   resources:
     limits: {}
     # cpu: 1000m
@@ -187,7 +187,7 @@ kustomizeController:
 
 notificationController:
   create: false # WIZ
-  image: wiziopublic.azurecr.io/wiz-notification-controller
+  image: public-registry.wiz.io/wiz-notification-controller
   tag: v1.2.4
   resources:
     limits: {}
@@ -239,8 +239,8 @@ notificationController:
 
 sourceController:
   create: true
-  image: wiziopublic.azurecr.io/wiz-source-controller
-  tag: v1.4.1
+  image: public-registry.wiz.io/wiz-source-controller
+  tag: v1.4.1-1
   resources:
     limits: {}
     # cpu: 1000m
