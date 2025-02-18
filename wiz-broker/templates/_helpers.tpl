@@ -108,43 +108,35 @@ Secrets names
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
-{{- define  "wiz-common.volumes.apiClientName" -}}
+{{- define  "wiz-broker.volumes.apiClientName" -}}
 api-client
 {{- end -}}
 
-{{- define  "wiz-common.volumes.proxy" -}}
+{{- define  "wiz-broker.volumes.proxyName" -}}
 proxy
 {{- end -}}
 
-{{- define  "volumes.apiClientName" -}}
-api-client
-{{- end -}}
-
-{{- define  "volumes.proxy" -}}
-proxy
-{{- end -}}
-
-{{- define "spec.common.volumeMounts" -}}
+{{- define "wiz-broker.spec.common.volumeMounts" -}}
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "volumes.apiClientName" . }}
-  mountPath: /var/{{ include "volumes.apiClientName" . }}
+- name: {{ include "wiz-broker.volumes.apiClientName" . }}
+  mountPath: /var/{{ include "wiz-broker.volumes.apiClientName" . }}
   readOnly: true
 {{- end -}}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "volumes.proxy" . }}
-  mountPath: /var/{{ include "volumes.proxy" . }}
+- name: {{ include "wiz-broker.volumes.proxyName" . }}
+  mountPath: /var/{{ include "wiz-broker.volumes.proxyName" . }}
   readOnly: true
 {{- end -}}
 {{- end -}}
 
-{{- define "spec.common.volumes" -}}
+{{- define "wiz-broker.spec.common.volumes" -}}
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "volumes.apiClientName" . | trim }}
+- name: {{ include "wiz-broker.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
 {{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "volumes.proxy" . | trim }}
+- name: {{ include "wiz-broker.volumes.proxyName" . | trim }}
   secret:
     secretName: {{ include "wiz-broker.proxySecretName" . | trim }}
 {{- end -}}

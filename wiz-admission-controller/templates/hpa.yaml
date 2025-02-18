@@ -2,10 +2,10 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "wiz-hpa-enforcer.name" . }}
+  name: {{ include "wiz-admission-controller.wiz-hpa-enforcer.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "wiz-hpa-enforcer.labels" . | nindent 4 }}
+    {{- include "wiz-admission-controller.wiz-admission-controller.wiz-hpa-enforcer.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -32,10 +32,10 @@ spec:
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "wiz-hpa-audit-logs.name" . }}
+  name: {{ include "wiz-admission-controller.wiz-hpa-audit-logs.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "wiz-hpa-audit-logs.labels" . | nindent 4 }}
+    {{- include "wiz-admission-controller.wiz-hpa-audit-logs.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

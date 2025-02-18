@@ -79,7 +79,7 @@ spec:
         {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
         {{- end }}
       volumes:
-      {{- include "spec.common.volumes" . | trim | nindent 6 }}
+      {{- include "wiz-kubernetes-connector.spec.common.volumes" . | trim | nindent 6 }}
       {{- if or .Values.autoCreateConnector.customVolumes  .Values.global.customVolumes}}
       {{ with .Values.global.customVolumes }}
         {{- toYaml . | nindent 6 }}
@@ -102,10 +102,10 @@ spec:
             {{- include "wiz-kubernetes-connector.entrypoint" . | nindent 12 }}
           args: {{- include "wiz-kubernetes-connector.generateArgsCreate" . | nindent 12 }}
           env:
-          {{- include "spec.common.envVars" . | trim | nindent 10 }}
+          {{- include "wiz-kubernetes-connector.spec.common.envVars" . | trim | nindent 10 }}
           {{- include "wiz-common.renderResources" (list .Values.resources (index .Values.global "wiz-kubernetes-connector" "resources")) | nindent 10 }}
           volumeMounts:
-          {{- include "spec.common.volumeMounts" . | trim | nindent 10 }}
+          {{- include "wiz-kubernetes-connector.spec.common.volumeMounts" . | trim | nindent 10 }}
           {{- if or .Values.autoCreateConnector.customVolumeMounts .Values.global.customVolumeMounts }}
           {{- with .Values.autoCreateConnector.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}

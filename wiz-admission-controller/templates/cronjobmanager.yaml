@@ -66,13 +66,13 @@ spec:
               command:
               - "/usr/bin/wiz-admission-controller"
               - "manager"
-              {{- include "spec.common.commandArgs" . | trim | nindent 14 }}
-              {{- include "autoUpdate.deployments.arg" . | trim | nindent 14 }}
+              {{- include "wiz-admission-controller.spec.common.commandArgs" . | trim | nindent 14 }}
+              {{- include "wiz-admission-controller.wiz-admission-controller.autoUpdate.deployments.arg" . | trim | nindent 14 }}
               # Auto update flags
               - "--auto-update-enabled={{ .Values.wizManager.autoRolloutRestart.enabled }}"
               - "--release-namespace={{ .Release.Namespace }}"
               env:
-              {{- include "spec.common.envVars" . | trim | nindent 14 }}
+              {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 14 }}
               {{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
               - name: WIZ_ENFORCER_DEPLOYMENT_NAME
                 value: {{ include "wiz-admission-controller-enforcer.name" . }}
@@ -84,7 +84,7 @@ spec:
               resources:
               {{- include "wiz-admission-controller.resources" . | trim | nindent 16 }}
               volumeMounts:
-              {{- include "spec.common.volumeMounts" . | trim | nindent 14 }}
+              {{- include "wiz-admission-controller.spec.common.volumeMounts" . | trim | nindent 14 }}
               {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts }}
               {{- with .Values.customVolumeMounts }}
                 {{- toYaml . | nindent 14 }}
@@ -94,7 +94,7 @@ spec:
               {{- end }}
               {{- end }}
           volumes:
-            {{- include "spec.common.volumes" . | trim | nindent 12 }}
+            {{- include "wiz-admission-controller.spec.common.volumes" . | trim | nindent 12 }}
             {{- with .Values.customVolumes }}
               {{- toYaml . | nindent 12 }}
             {{- end }}

@@ -90,7 +90,7 @@ spec:
 
           command:
           - "/usr/bin/wiz-admission-controller"
-          {{- include "spec.common.commandArgs" . | trim | nindent 10 }}
+          {{- include "wiz-admission-controller.spec.common.commandArgs" . | trim | nindent 10 }}
           {{- include "spec.admissionControllerRunner.commandArgs" . | trim | nindent 10 }}
           # Webhook flags
           {{- with (coalesce .Values.opaWebhook.errorEnforcementMethod .Values.webhook.errorEnforcementMethod) }} # check opaWebhook for backward compatibility
@@ -116,7 +116,7 @@ spec:
           # Disable K8S audit logs webhook
           - "--kubernetes-audit-logs-enabled=false"
           env:
-          {{- include "spec.common.envVars" . | trim | nindent 10 }}
+          {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
           - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
             value: {{ .Values.imageIntegrityWebhook.patchImageDigestAnnotation | quote }}
            # For running pod with read only file system we write all the cache files to /var/cache volume mount, used by image integrity hook
@@ -137,7 +137,7 @@ spec:
           resources:
             {{- include "wiz-admission-controller.resources" . | trim | nindent 12 }}
           volumeMounts:
-          {{- include "spec.common.volumeMounts" . | trim | nindent 10 }}
+          {{- include "wiz-admission-controller.spec.common.volumeMounts" . | trim | nindent 10 }}
           - mountPath: /var/cache
             name: cache
           - mountPath: /var/server-certs
@@ -150,7 +150,7 @@ spec:
             {{- toYaml . | nindent 10 }}
           {{- end }}
       volumes:
-      {{- include "spec.common.volumes" . | trim | nindent 8 }}
+      {{- include "wiz-admission-controller.spec.common.volumes" . | trim | nindent 8 }}
         - name: cache
           emptyDir: {}
         - name: server-certs
