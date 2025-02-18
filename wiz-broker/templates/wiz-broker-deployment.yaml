@@ -52,7 +52,7 @@ spec:
         {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
         {{- end }}
       volumes:
-        {{- include "spec.common.volumes" . | trim | nindent 8 }}
+        {{- include "wiz-broker.spec.common.volumes" . | trim | nindent 8 }}
         - name: connector-data
           secret:
             secretName: {{ include "wiz-broker.connectorSecretName" . | trim }}
@@ -94,7 +94,7 @@ spec:
           image: {{ include "wiz-broker.image" . }}
           imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
           volumeMounts:
-          {{- include "spec.common.volumeMounts" . | trim | nindent 10 }}
+          {{- include "wiz-broker.spec.common.volumeMounts" . | trim | nindent 10 }}
           - name: connector-data
             mountPath: {{ $mountPath }}
             readOnly: true
@@ -125,10 +125,10 @@ spec:
           - name: WIZ_ENV
             value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
           - name: CLI_FILES_AS_ARGS
-            value: "/var/{{ include "volumes.apiClientName" . }}/clientToken,/var/{{ include "volumes.apiClientName" . }}/clientId"
+            value: "/var/{{ include "wiz-broker.volumes.apiClientName" . }}/clientToken,/var/{{ include "wiz-broker.volumes.apiClientName" . }}/clientId"
           {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
           - name: CLI_FILES_AS_ENV_VARS
-            value: "/var/{{ include "volumes.proxy" . }}/http_proxy,/var/{{ include "volumes.proxy" . }}/https_proxy,/var/{{ include "volumes.proxy" . }}/no_proxy"
+            value: "/var/{{ include "wiz-broker.volumes.proxyName" . }}/http_proxy,/var/{{ include "wiz-broker.volumes.proxyName" . }}/https_proxy,/var/{{ include "wiz-broker.volumes.proxyName" . }}/no_proxy"
           {{- end }}
           {{- if .Values.managed.enabled }}
           - name: WIZ_MANAGED

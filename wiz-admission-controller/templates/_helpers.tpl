@@ -50,13 +50,13 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
-{{- define "wiz-hpa-enforcer.name" -}}
+{{- define "wiz-admission-controller.wiz-hpa-enforcer.name" -}}
 {{- $suffix := "-hpa" -}}
 {{- $maxLength := int (sub 63 (len $suffix)) -}}
 {{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
 {{- end }}
 
-{{- define "wiz-hpa-audit-logs.name" -}}
+{{- define "wiz-admission-controller.wiz-hpa-audit-logs.name" -}}
 {{- $suffix := "-hpa" -}}
 {{- $maxLength := int (sub 63 (len $suffix)) -}}
 {{- printf "%s%s" (include "wiz-kubernetes-audit-log-collector.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
@@ -139,14 +139,14 @@ app.kubernetes.io/name: {{ include "wiz-admission-controller-manager.name" . }}
 Wiz Horizontal Pod Autoscaler labels
 */}}
 
-{{- define "wiz-hpa-enforcer.labels" -}}
+{{- define "wiz-admission-controller.wiz-admission-controller.wiz-hpa-enforcer.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
-app.kubernetes.io/name: {{ include "wiz-hpa-enforcer.name" . }}
+app.kubernetes.io/name: {{ include "wiz-admission-controller.wiz-hpa-enforcer.name" . }}
 {{- end }}
 
-{{- define "wiz-hpa-audit-logs.labels" -}}
+{{- define "wiz-admission-controller.wiz-hpa-audit-logs.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
-app.kubernetes.io/name: {{ include "wiz-hpa-audit-logs.name" . }}
+app.kubernetes.io/name: {{ include "wiz-admission-controller.wiz-hpa-audit-logs.name" . }}
 {{- end }}
 
 
@@ -213,13 +213,6 @@ Create the name of the service account to use
 {{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}
 
-{{- define "helpers.calculateHash" -}}
-{{- $list := . -}}
-{{- $hash := printf "%s" $list | sha256sum -}}
-{{- $hash := $hash | trimSuffix "\n" -}}
-{{- $hash -}}
-{{- end -}}
-
 {{- define "wiz-admission-controller.proxyHash" -}}
 {{ include "helpers.calculateHash" (list .Values.global.httpProxyConfiguration.httpProxy .Values.global.httpProxyConfiguration.httpsProxy .Values.global.httpProxyConfiguration.noProxyAddress .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
 {{- end }}
@@ -234,14 +227,6 @@ Create the name of the service account to use
 {{- else -}}
 {{- .Values.webhook.injectCaFrom -}}
 {{- end -}}
-{{- end -}}
-
-{{/*
-This function dump the value of a variable and fail the template execution.
-Use for debug purpose only.
-*/}}
-{{- define "helpers.var_dump" -}}
-{{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
 {{- end -}}
 
 {{- define "wiz-admission-controller.resources" -}}
@@ -281,7 +266,7 @@ scaleDown:
 {{- end -}}
 {{- end -}}
 
-{{- define "autoUpdate.deployments" -}}
+{{- define "wiz-admission-controller.autoUpdate.deployments" -}}
 {{- $list := list -}}
 {{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
 {{- $list = append $list (include "wiz-admission-controller-enforcer.name" . ) -}}
@@ -295,15 +280,15 @@ scaleDown:
 {{/*
 Clean the list of deployments for the auto-update flag, removing quotes and brackets
 */}}
-{{- define "autoUpdate.deployments.arg" -}}
-{{- $deployments := include "autoUpdate.deployments" .  -}}
+{{- define "wiz-admission-controller.wiz-admission-controller.autoUpdate.deployments.arg" -}}
+{{- $deployments := include "wiz-admission-controller.autoUpdate.deployments" .  -}}
 {{- $deployments = replace "[" "" $deployments -}}
 {{- $deployments = replace "]" "" $deployments -}}
 {{- $deployments = replace "\"" "" $deployments -}}
 - "--update-deployments={{ $deployments }}"
 {{- end -}}
 
-{{- define "spec.common.commandArgs" -}}
+{{- define "wiz-admission-controller.spec.common.commandArgs" -}}
 # Cluster identification flags
 {{- with (coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }}
 - --cluster-external-id
@@ -334,47 +319,47 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- end -}}
 
 
-{{- define  "volumes.apiClientName" -}}
+{{- define  "wiz-admission-controller.volumes.apiClientName" -}}
 api-client
 {{- end -}}
 
-{{- define  "volumes.proxy" -}}
+{{- define  "wiz-admission-controller.volumes.proxyName" -}}
 proxy
 {{- end -}}
 
-{{- define "spec.common.volumeMounts" -}}
+{{- define "wiz-admission-controller.spec.common.volumeMounts" -}}
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "volumes.apiClientName" . }}
-  mountPath: /var/{{ include "volumes.apiClientName" . }}
+- name: {{ include "wiz-admission-controller.volumes.apiClientName" . }}
+  mountPath: /var/{{ include "wiz-admission-controller.volumes.apiClientName" . }}
   readOnly: true
 {{- end -}}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "volumes.proxy" . }}
-  mountPath: /var/{{ include "volumes.proxy" . }}
+- name: {{ include "wiz-admission-controller.volumes.proxyName" . }}
+  mountPath: /var/{{ include "wiz-admission-controller.volumes.proxyName" . }}
   readOnly: true
 {{- end -}}
 {{- end -}}
 
-{{- define "spec.common.volumes" -}}
+{{- define "wiz-admission-controller.spec.common.volumes" -}}
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "volumes.apiClientName" . | trim }}
+- name: {{ include "wiz-admission-controller.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
 {{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "volumes.proxy" . | trim }}
+- name: {{ include "wiz-admission-controller.volumes.proxyName" . | trim }}
   secret:
     secretName: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
 {{- end -}}
 {{- end -}}
 
 
-{{- define "spec.common.envVars" -}}
+{{- define "wiz-admission-controller.spec.common.envVars" -}}
 - name: CLI_FILES_AS_ARGS
-  value: "/var/{{ include "volumes.apiClientName" . }}/clientToken,/var/{{ include "volumes.apiClientName" . }}/clientId"
+  value: "/var/{{ include "wiz-admission-controller.volumes.apiClientName" . }}/clientToken,/var/{{ include "wiz-admission-controller.volumes.apiClientName" . }}/clientId"
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
 - name: CLI_FILES_AS_ENV_VARS
-  value: "/var/{{ include "volumes.proxy" . }}/http_proxy,/var/{{ include "volumes.proxy" . }}/https_proxy,/var/{{ include "volumes.proxy" . }}/no_proxy"
+  value: "/var/{{ include "wiz-admission-controller.volumes.proxyName" . }}/http_proxy,/var/{{ include "wiz-admission-controller.volumes.proxyName" . }}/https_proxy,/var/{{ include "wiz-admission-controller.volumes.proxyName" . }}/no_proxy"
 {{- end }}
 - name: WIZ_ENV
   value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}

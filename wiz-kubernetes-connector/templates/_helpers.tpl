@@ -106,21 +106,6 @@ Input parameters
   {{- end -}}
 {{- end }}
 
-{{/*
-This function dump the value of a variable and fail the template execution.
-Use for debug purpose only.
-*/}}
-{{- define "helpers.var_dump" -}}
-{{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
-{{- end -}}
-
-{{- define "helpers.calculateHash" -}}
-{{- $list := . -}}
-{{- $hash := printf "%s" $list | sha256sum -}}
-{{- $hash := $hash | trimSuffix "\n" -}}
-{{- $hash -}}
-{{- end -}}
-
 {{- define "wiz-kubernetes-connector.wizApiTokenHash" -}}
 {{ include "helpers.calculateHash" (list .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
 {{- end }}
@@ -272,46 +257,46 @@ refresh-token
 {{- end -}}
 {{- end -}}
 
-{{- define  "volumes.apiClientName" -}}
+{{- define  "wiz-kubernetes-connector.volumes.apiClientName" -}}
 api-client
 {{- end -}}
 
-{{- define  "volumes.proxy" -}}
+{{- define  "wiz-kubernetes-connector.volumes.proxyName" -}}
 proxy
 {{- end -}}
 
-{{- define "spec.common.volumeMounts" -}}
+{{- define "wiz-kubernetes-connector.spec.common.volumeMounts" -}}
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "volumes.apiClientName" . }}
-  mountPath: /var/{{ include "volumes.apiClientName" . }}
+- name: {{ include "wiz-kubernetes-connector.volumes.apiClientName" . }}
+  mountPath: /var/{{ include "wiz-kubernetes-connector.volumes.apiClientName" . }}
   readOnly: true
 {{- end -}}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "volumes.proxy" . }}
-  mountPath: /var/{{ include "volumes.proxy" . }}
+- name: {{ include "wiz-kubernetes-connector.volumes.proxyName" . }}
+  mountPath: /var/{{ include "wiz-kubernetes-connector.volumes.proxyName" . }}
   readOnly: true
 {{- end -}}
 {{- end -}}
 
-{{- define "spec.common.volumes" -}}
+{{- define "wiz-kubernetes-connector.spec.common.volumes" -}}
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "volumes.apiClientName" . | trim }}
+- name: {{ include "wiz-kubernetes-connector.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
 {{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "volumes.proxy" . | trim }}
+- name: {{ include "wiz-kubernetes-connector.volumes.proxyName" . | trim }}
   secret:
     secretName: {{ include "wiz-kubernetes-connector.proxySecretName" . | trim }}
 {{- end -}}
 {{- end -}}
 
-{{- define "spec.common.envVars" -}}
+{{- define "wiz-kubernetes-connector.spec.common.envVars" -}}
 - name: CLI_FILES_AS_ARGS
-  value: "/var/{{ include "volumes.apiClientName" . }}/clientToken,/var/{{ include "volumes.apiClientName" . }}/clientId"
+  value: "/var/{{ include "wiz-kubernetes-connector.volumes.apiClientName" . }}/clientToken,/var/{{ include "wiz-kubernetes-connector.volumes.apiClientName" . }}/clientId"
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
 - name: CLI_FILES_AS_ENV_VARS
-  value: "/var/{{ include "volumes.proxy" . }}/http_proxy,/var/{{ include "volumes.proxy" . }}/https_proxy,/var/{{ include "volumes.proxy" . }}/no_proxy"
+  value: "/var/{{ include "wiz-kubernetes-connector.volumes.proxyName" . }}/http_proxy,/var/{{ include "wiz-kubernetes-connector.volumes.proxyName" . }}/https_proxy,/var/{{ include "wiz-kubernetes-connector.volumes.proxyName" . }}/no_proxy"
 {{- end }}
 {{- if .Values.global.logLevel }}
 - name: LOG_LEVEL
