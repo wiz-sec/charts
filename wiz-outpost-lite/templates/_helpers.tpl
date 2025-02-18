@@ -66,8 +66,16 @@ wiz.io/runner: {{ .runner | quote }}
 {{- $runner = $runner | kebabcase }}
 {{- $runnerID := get $values "runnerID" | default $runner }}
 
-{{/* e.g. outpost-lite-runner-container-registry */}}
-{{- $imageName := dig "image" "name" (printf "outpost-lite-runner-%s" $runner) $values }}
+{{
+/* e.g. remediation-aws-rds-003 -> outpost-lite-runner-remediation
+container-registry -> outpost-lite-runner-container-registry
+*/}}
+{{- $imageName := "" }}
+{{- if hasPrefix "remediation" $runner }}
+  {{- $imageName = "outpost-lite-runner-remediation" }}
+{{- else }}
+  {{- $imageName = dig "image" "name" (printf "outpost-lite-runner-%s" $runner) $values }}
+{{- end }}
 
 {{- $values = deepCopy $values }}
 {{- $values = merge $values (dict "image" (dict "name" $imageName)) }}
