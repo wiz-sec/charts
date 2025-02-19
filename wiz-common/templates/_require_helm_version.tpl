@@ -7,7 +7,7 @@
 {{- end -}}
 
 {{- define "wiz-common.requireHelm36" -}}
-{{- if not (semverCompare ">=3.6.0" (include "helmVersion" .)) -}}
-{{- fail (printf "This chart requires Helm client version 3.6.0 or higher. Found %s" (include "helmVersion" .) ) -}}
+{{- if not (semverCompare ">=3.10.0" (include "helmVersion" .)) -}}
+{{- fail (printf "This chart requires Helm client version 3.10.0 or higher. Found %s" (include "helmVersion" .) ) -}}
 {{- end -}}
 {{- end -}}
