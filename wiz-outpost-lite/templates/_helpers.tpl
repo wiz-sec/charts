@@ -66,8 +66,7 @@ wiz.io/runner: {{ .runner | quote }}
 {{- $runner = $runner | kebabcase }}
 {{- $runnerID := get $values "runnerID" | default $runner }}
 
-{{
-/* e.g. remediation-aws-rds-003 -> outpost-lite-runner-remediation
+{{/* e.g. remediation-aws-rds-003 -> outpost-lite-runner-remediation
 container-registry -> outpost-lite-runner-container-registry
 */}}
 {{- $imageName := "" }}
