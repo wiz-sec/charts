@@ -70,8 +70,15 @@ privileged: false
 # for a production deployment.
 debug: false
 
-# force old-style annotation for AppArmor profile (compatibility with some gitops tools)
+# Force old-style annotation for AppArmor profile (compatibility with some gitops tools)
 oldAppArmorAnnotation: false
+
+# The Sensor will sometimes cause its container to restart in order to check if a new docker image
+# version is available. Such a restart puts some increased load on the API-server and the node.
+# If the cluster is managed by a GitOps product (e.g. ArgoCD, Flux CD, etc.) then a version sync
+# can force an update at a selected time. In such cases it is recommended to disable the version
+# check by enabling this option.
+disableImageVersionCheck: false
 
 clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
 subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)

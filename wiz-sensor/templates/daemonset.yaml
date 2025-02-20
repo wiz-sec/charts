@@ -301,6 +301,10 @@ spec:
         - name: OPENSHIFT
           value: "true"
         {{- end}}
+        {{- if .Values.disableImageVersionCheck }}
+        - name: DISABLE_IMAGE_VERSION_CHECK
+          value: "true"
+        {{- end }}
         {{- with .Values.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
