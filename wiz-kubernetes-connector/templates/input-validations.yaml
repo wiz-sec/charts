@@ -1,4 +1,4 @@
-{{ include "wiz-common.requireHelm36" . }}
+{{ include "wiz-common.requireHelm310" . }}
 
 
 {{- $targetIp := (index .Values "wiz-broker" "targetIp") -}}
