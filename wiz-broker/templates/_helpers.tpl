@@ -108,18 +108,22 @@ Secrets names
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
-{{- define  "wiz-broker.volumes.apiClientName" -}}
-api-client
-{{- end -}}
-
 {{- define  "wiz-broker.volumes.proxyName" -}}
 proxy
 {{- end -}}
 
+{{- define "wiz-broker.isWizApiTokenSecretEnabled" -}}
+  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
+    true
+  {{- else }}
+    false
+  {{- end }}
+{{- end }}
+
 {{- define "wiz-broker.spec.common.volumeMounts" -}}
-{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "wiz-broker.volumes.apiClientName" . }}
-  mountPath: /var/{{ include "wiz-broker.volumes.apiClientName" . }}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+- name: {{ include "wiz-common.volumes.apiClientName" . }}
+  mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
   readOnly: true
 {{- end -}}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
@@ -130,8 +134,8 @@ proxy
 {{- end -}}
 
 {{- define "wiz-broker.spec.common.volumes" -}}
-{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "wiz-broker.volumes.apiClientName" . | trim }}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+- name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
 {{- end }}

@@ -318,19 +318,22 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
 {{- end -}}
 
-
-{{- define  "wiz-admission-controller.volumes.apiClientName" -}}
-api-client
-{{- end -}}
-
 {{- define  "wiz-admission-controller.volumes.proxyName" -}}
 proxy
 {{- end -}}
 
+{{- define "wiz-admission-controller.isWizApiTokenSecretEnabled" -}}
+  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
+    true
+  {{- else }}
+    false
+  {{- end }}
+{{- end }}
+
 {{- define "wiz-admission-controller.spec.common.volumeMounts" -}}
-{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "wiz-admission-controller.volumes.apiClientName" . }}
-  mountPath: /var/{{ include "wiz-admission-controller.volumes.apiClientName" . }}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+- name: {{ include "wiz-common.volumes.apiClientName" . }}
+  mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
   readOnly: true
 {{- end -}}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
@@ -341,8 +344,8 @@ proxy
 {{- end -}}
 
 {{- define "wiz-admission-controller.spec.common.volumes" -}}
-{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "wiz-admission-controller.volumes.apiClientName" . | trim }}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+- name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
 {{- end }}
@@ -355,8 +358,16 @@ proxy
 
 
 {{- define "wiz-admission-controller.spec.common.envVars" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
 - name: CLI_FILES_AS_ARGS
-  value: "/var/{{ include "wiz-admission-controller.volumes.apiClientName" . }}/clientToken,/var/{{ include "wiz-admission-controller.volumes.apiClientName" . }}/clientId"
+{{- $wizApiTokensPath := "" -}}
+{{- if .Values.wizApiToken.wizApiTokensVolumeMount }}
+  {{- $wizApiTokensPath = .Values.wizApiToken.wizApiTokensVolumeMount -}}
+{{- else }}
+  {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
+{{- end }}
+  value: "{{ $wizApiTokensPath }}/clientToken,{{ $wizApiTokensPath }}/clientId"
+{{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
 - name: CLI_FILES_AS_ENV_VARS
   value: "/var/{{ include "wiz-admission-controller.volumes.proxyName" . }}/http_proxy,/var/{{ include "wiz-admission-controller.volumes.proxyName" . }}/https_proxy,/var/{{ include "wiz-admission-controller.volumes.proxyName" . }}/no_proxy"

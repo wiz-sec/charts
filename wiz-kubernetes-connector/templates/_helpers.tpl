@@ -257,18 +257,24 @@ refresh-token
 {{- end -}}
 {{- end -}}
 
-{{- define  "wiz-kubernetes-connector.volumes.apiClientName" -}}
-api-client
-{{- end -}}
-
 {{- define  "wiz-kubernetes-connector.volumes.proxyName" -}}
 proxy
 {{- end -}}
 
+{{- define "wiz-kubernetes-connector.isWizApiTokenSecretEnabled" -}}
+  {{- if and (.Values.wizApiToken.secret.create)
+            (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true")
+            (.Values.autoCreateConnector.enabled) }}
+    true
+  {{- else }}
+    false
+  {{- end }}
+{{- end }}
+
 {{- define "wiz-kubernetes-connector.spec.common.volumeMounts" -}}
-{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "wiz-kubernetes-connector.volumes.apiClientName" . }}
-  mountPath: /var/{{ include "wiz-kubernetes-connector.volumes.apiClientName" . }}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+- name: {{ include "wiz-common.volumes.apiClientName" . }}
+  mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
   readOnly: true
 {{- end -}}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
@@ -279,8 +285,8 @@ proxy
 {{- end -}}
 
 {{- define "wiz-kubernetes-connector.spec.common.volumes" -}}
-{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-- name: {{ include "wiz-kubernetes-connector.volumes.apiClientName" . | trim }}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+- name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
 {{- end }}
@@ -292,8 +298,16 @@ proxy
 {{- end -}}
 
 {{- define "wiz-kubernetes-connector.spec.common.envVars" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
 - name: CLI_FILES_AS_ARGS
-  value: "/var/{{ include "wiz-kubernetes-connector.volumes.apiClientName" . }}/clientToken,/var/{{ include "wiz-kubernetes-connector.volumes.apiClientName" . }}/clientId"
+{{- $wizApiTokensPath := "" -}}
+{{- if .Values.wizApiToken.wizApiTokensVolumeMount }}
+  {{- $wizApiTokensPath = .Values.wizApiToken.wizApiTokensVolumeMount -}}
+{{- else }}
+  {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
+{{- end }}
+  value: "{{ $wizApiTokensPath }}/clientToken,{{ $wizApiTokensPath }}/clientId"
+{{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
 - name: CLI_FILES_AS_ENV_VARS
   value: "/var/{{ include "wiz-kubernetes-connector.volumes.proxyName" . }}/http_proxy,/var/{{ include "wiz-kubernetes-connector.volumes.proxyName" . }}/https_proxy,/var/{{ include "wiz-kubernetes-connector.volumes.proxyName" . }}/no_proxy"
