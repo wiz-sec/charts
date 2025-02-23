@@ -65,7 +65,10 @@ spec:
         {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
         {{- end }}
       volumes:
-      {{- include "wiz-kubernetes-connector.spec.common.volumes" . | trim | nindent 6 }}
+      {{- $volumes := include "wiz-kubernetes-connector.spec.common.volumes" . | trim }}
+      {{- if $volumes -}}
+      {{ $volumes | nindent 6 }}
+      {{- end -}}
       {{- if or .Values.autoCreateConnector.customVolumes  .Values.global.customVolumes}}
       {{ with .Values.global.customVolumes }}
         {{- toYaml . | nindent 6 }}

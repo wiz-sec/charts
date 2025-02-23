@@ -124,8 +124,16 @@ spec:
           {{- end }}
           - name: WIZ_ENV
             value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: CLI_FILES_AS_ARGS
-            value: "/var/{{ include "wiz-broker.volumes.apiClientName" . }}/clientToken,/var/{{ include "wiz-broker.volumes.apiClientName" . }}/clientId"
+          {{- $wizApiTokensPath := "" -}}
+          {{- if .Values.wizApiToken.wizApiTokensVolumeMount }}
+          {{- $wizApiTokensPath = .Values.wizApiToken.wizApiTokensVolumeMount -}}
+          {{- else }}
+          {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
+          {{- end }}
+            value: "{{ $wizApiTokensPath }}/clientToken,{{ $wizApiTokensPath }}/clientId"
+          {{- end }}
           {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
           - name: CLI_FILES_AS_ENV_VARS
             value: "/var/{{ include "wiz-broker.volumes.proxyName" . }}/http_proxy,/var/{{ include "wiz-broker.volumes.proxyName" . }}/https_proxy,/var/{{ include "wiz-broker.volumes.proxyName" . }}/no_proxy"
