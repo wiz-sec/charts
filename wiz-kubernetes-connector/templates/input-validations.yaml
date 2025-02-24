@@ -9,6 +9,7 @@
   {{- fail (printf "Error: 'targetIp' must not start with 'http://' or 'https://', got '%s'." $targetIp) }}
 {{- end }}
 
-{{- if (and $targetIp $apiServerEndpoint (not (contains $targetIp $apiServerEndpoint))) }}
+{{- $wizBrokerEnabled := (index .Values "wiz-broker" "enabled") -}}
+{{- if (and  $wizBrokerEnabled $targetIp $apiServerEndpoint (not (contains $targetIp $apiServerEndpoint))) }}
 {{- fail (printf "targetIp (%s) must be a substring of apiServerEndpoint (%s)" $targetIp $apiServerEndpoint) }}
 {{- end }}
