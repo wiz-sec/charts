@@ -73,6 +73,8 @@ spec:
               - "--release-namespace={{ .Release.Namespace }}"
               env:
               {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 14 }}
+              - name: WIZ_DELETE_UNSEEN_ENABLED
+                value: "true"
               {{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
               - name: WIZ_ENFORCER_DEPLOYMENT_NAME
                 value: {{ include "wiz-admission-controller-enforcer.name" . }}
