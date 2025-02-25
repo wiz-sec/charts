@@ -8,3 +8,5 @@
 /wiz-kubernetes-connector/ @wiz-sec/wiz-devops @wiz-sec/Wiz-Charts-Approvers circleci@wiz.io
 /.github/ @wiz-sec/wiz-devops
 /.circleci/ @wiz-sec/wiz-devops
+/.circleci/tests/ @wiz-sec/Wiz-Charts-Approvers
+/wiz-outpost-lite/**/* @yarinm
