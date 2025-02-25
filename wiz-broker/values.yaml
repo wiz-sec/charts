@@ -25,6 +25,7 @@ serviceAccount:
   name: ""
 
 podCustomEnvironmentVariablesFile: ""
+
 podCustomEnvironmentVariables: []
 customVolumes: []
 customVolumeMounts: []
@@ -91,7 +92,26 @@ wizApiToken:
     name: ""
 
   # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  # The file must contain the following lines:
+  # WIZ_CLIENT_ID=<wiz service account id>
+  # WIZ_CLIENT_TOKEN=<siz service account token>
   usePodCustomEnvironmentVariablesFile: false
+
+  # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
+  # token (client id and client token) via mounts, e.g. when using the Vault operator to inject secrets to Pods.
+  # In this case you are responsible for creating the mounts.
+  # You must also set `.Values.customVolumes` and `.Values.customVolumeMounts`.
+  # The mounts must have at least these 2 files:
+  # clientId - with this content: <wiz service account id>
+  # clientToken - with this content: <wiz service account token>
+  #
+  # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+  #      and this is how the mount looks like on the file system:
+  #      /var/api-client/clientId
+  #      /var/api-client/clientToken
+  #
+  # Implies `secret.enabled: false`.
+  wizApiTokensVolumeMount: ""
 
 httpProxyConfiguration:
   enabled: false

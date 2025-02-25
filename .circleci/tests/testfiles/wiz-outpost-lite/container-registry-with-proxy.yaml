@@ -1,0 +1,22 @@
+agent:
+  secretName: outpost-lite-agent-creds
+  clientId: "client-1"
+  clientSecret: "secret-2"
+  outpostId: "my-outpost-id"
+
+runners:
+  container-registry:
+    enabled: true
+
+
+httpProxyConfiguration:
+  enabled: true
+  httpProxy: my-http-proxy
+  httpsProxy: my-https-proxy
+  noProxy:
+    - no-proxy-1
+    - no-proxy-2
+  caCertificate: |
+    --- BEGIN CERTIFICATE ---
+    The cert
+    --- END CERTIFICATE ---

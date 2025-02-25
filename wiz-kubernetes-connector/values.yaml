@@ -66,7 +66,9 @@ autoCreateConnector:
     name: "wiz-auto-modify-connector"
   
   podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+
   podCustomEnvironmentVariablesFile: ""
+
   podAnnotations: {} # Annotations to add to the components Pods.
   podAdditionalSpec: {}
   
@@ -115,9 +117,28 @@ wizApiToken:
     # The name of the secret to use.
     # If not set, a name is generated using the fullname template
     name: ""
-  
+
   # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  # The file must contain the following lines:
+  # WIZ_CLIENT_ID=<wiz service account id>
+  # WIZ_CLIENT_TOKEN=<siz service account token>
   usePodCustomEnvironmentVariablesFile: false
+
+  # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
+  # token (client id and client token) via mounts, e.g. when using the Vault operator to inject secrets to Pods.
+  # In this case you are responsible for creating the mounts.
+  # You must also set `.Values.customVolumes` and `.Values.customVolumeMounts`.
+  # The mounts must have at least these 2 files:
+  # clientId - with this content: <wiz service account id>
+  # clientToken - with this content: <wiz service account token>
+  #
+  # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+  #      and this is how the mount looks like on the file system:
+  #      /var/api-client/clientId
+  #      /var/api-client/clientToken
+  #
+  # Implies `secret.enabled: false`.
+  wizApiTokensVolumeMount: ""
 
 wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = false
   # Specifies whether a proxy secret should be created
@@ -149,7 +170,14 @@ wiz-broker:
     # The name of the service account to use.
     name: "wiz-broker"
 
+  # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  # The file must contain the following lines:
+  # WIZ_CLIENT_ID=<wiz service account id>
+  # WIZ_CLIENT_TOKEN=<siz service account token>
+  usePodCustomEnvironmentVariablesFile: false
+
   podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+
   podCustomEnvironmentVariablesFile: ""
 
   customVolumes: [] # Additional volumes to add to the components Pods
@@ -168,6 +196,22 @@ wiz-broker:
 
   wizConnector:
     createSecret: false # Secret created by wiz-kubernetes-connector.
+
+  # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
+  # token (client id and client token) via mounts, e.g. when using the Vault operator to inject secrets to Pods.
+  # In this case you are responsible for creating the mounts.
+  # You must also set `.Values.customVolumes` and `.Values.customVolumeMounts`.
+  # The mounts must have at least these 2 files:
+  # clientId - with this content: <wiz service account id>
+  # clientToken - with this content: <wiz service account token>
+  #
+  # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+  #      and this is how the mount looks like on the file system:
+  #      /var/api-client/clientId
+  #      /var/api-client/clientToken
+  #
+  # Implies `secret.enabled: false`.
+  wizApiTokensVolumeMount: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

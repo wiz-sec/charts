@@ -5,9 +5,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "wiz-outpost-lite.fullname" . }}
-  {{- if hasPrefix "remediation-" .runner }}
-  namespace: wiz-remediation
-  {{- end }}
   labels:
     {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
 spec:
@@ -28,12 +25,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-      {{- if hasPrefix "remediation-" .runner }}
+      {{- if .Values.serviceAccount.create }}
       serviceAccountName: sa-{{ .runner }}
       {{- end }}
       restartPolicy: Always
@@ -152,14 +144,10 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
             capabilities:
-              drop:
-              - ALL
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            allowPrivilegeEscalation: false
-            privileged: false
-            readOnlyRootFilesystem: true
+              add:
+              - SYS_ADMIN
+            seLinuxOptions:
+              type: spc_t
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir
@@ -177,9 +165,7 @@ spec:
       {{- end }}
       volumes:
         - name: working-dir
-          emptyDir:
-            medium: Memory
-            sizeLimit: "100Mi"
+          emptyDir: {}
         - name: ca-certificate
           secret:
             defaultMode: 420

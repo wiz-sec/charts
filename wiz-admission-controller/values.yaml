@@ -25,7 +25,27 @@ wizApiToken:
 
   # Not suggested: avoid storing sensitive data in environment variables.
   # Read API token from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  # The file must contain the following lines:
+  # WIZ_CLIENT_ID=<wiz service account id>
+  # WIZ_CLIENT_TOKEN=<siz service account token>
+  # Implies `secret.enabled: false`.
   usePodCustomEnvironmentVariablesFile: false
+
+  # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
+  # token (client id and client token) via mounts, e.g. when using the Vault operator to inject secrets to Pods.
+  # In this case you are responsible for creating the mounts.
+  # You must also set `.Values.customVolumes` and `.Values.customVolumeMounts`.
+  # The mounts must have at least these 2 files:
+  # clientId - with this content: <wiz service account id>
+  # clientToken - with this content: <wiz service account token>
+  #
+  # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+  #      and this is how the mount looks like on the file system:
+  #      /var/api-client/clientId
+  #      /var/api-client/clientToken
+  #
+  # Implies `secret.enabled: false`.
+  wizApiTokensVolumeMount: ""
 
 # Redirect HTTP and/or HTTPS traffic through a proxy.
 httpProxyConfiguration:
@@ -359,6 +379,7 @@ podLabels: {} # Labels to add to the components Pods.
 podSecurityContext: {}
 
 podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+
 podCustomEnvironmentVariablesFile: ""
 
 # Set the log level. Can be one of "debug", "info", "warn", or "error".
