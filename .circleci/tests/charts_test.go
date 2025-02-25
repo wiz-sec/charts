@@ -23,9 +23,6 @@ func (s *helmRepoSuite) TestCharts() {
 
 		for _, valueFileEnt := range valueFiles {
 			valueFileName := valueFileEnt.Name()
-			if valueFileName != "remediation.yaml" {
-				continue
-			}
 			s.Run(path.Join(chartName, valueFileName), func() {
 				if chartName == "wiz-kubernetes-integration" {
 					//

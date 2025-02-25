@@ -31,7 +31,7 @@ stringData:
 apiVersion: v1
 kind: Service
 metadata:
-  name: release-test-wiz-outpost-lite-remediation
+  name: release-test-wiz-outpost-lite-remediation-aws-rds-003
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-outpost-lite
@@ -55,7 +55,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: release-test-wiz-outpost-lite-remediation
+  name: release-test-wiz-outpost-lite-remediation-aws-rds-003
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-outpost-lite
@@ -73,7 +73,7 @@ spec:
   template:
     metadata:
       annotations:
-        container.apparmor.security.beta.kubernetes.io/wiz-outpost-lite-remediation: unconfined
+        container.apparmor.security.beta.kubernetes.io/wiz-outpost-lite-remediation-aws-rds-003: unconfined
       labels:
         app.kubernetes.io/name: wiz-outpost-lite
         app.kubernetes.io/instance: release-test
@@ -104,7 +104,7 @@ spec:
           - name: WIZ_OUTPOST_ID
             value: "my-outpost-id"
           - name: WIZ_OUTPOST_RUNNER_ID
-            value: "container-registry"
+            value: "remediation-aws-rds-003"
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:

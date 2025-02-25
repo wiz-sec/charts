@@ -1,4 +1,17 @@
 ---
+# Source: wiz-outpost-lite/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-remediation-aws-rds-003
+  labels:
+    helm.sh/chart: wiz-outpost-lite-0.1.20250204
+    app.kubernetes.io/name: wiz-outpost-lite
+    app.kubernetes.io/instance: release-test
+    wiz.io/runner: "remediation-aws-rds-003"
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+---
 # Source: wiz-outpost-lite/templates/credentials.secret.yaml
 apiVersion: v1
 kind: Secret
