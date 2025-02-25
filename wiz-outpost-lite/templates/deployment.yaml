@@ -25,10 +25,8 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- with (fromYaml (include "wiz-outpost-lite.getSecurityContext" .)).pod }}
       securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- include "wiz-outpost-lite.podSecurityContext" . | nindent 8 }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: sa-{{ .runner }}
       {{- end }}
@@ -146,10 +144,8 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with (fromYaml (include "wiz-outpost-lite.getSecurityContext" .)).container }}
           securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- include "wiz-outpost-lite.containerSecurityContext" . | nindent 12 }}
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir

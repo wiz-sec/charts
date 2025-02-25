@@ -74,52 +74,34 @@ terminationGracePeriodSeconds: 30
 serviceAccount:
     create: false
 
-securityContextProfiles:
-  secure:  # Applied automatically to remediation-* runners
-    pod:
-      runAsNonRoot: true
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-    container:
-      capabilities:
-        drop:
-        - ALL
-      runAsNonRoot: true
-      runAsUser: 1000
-      runAsGroup: 1000
-      allowPrivilegeEscalation: false
-      privileged: false
-      readOnlyRootFilesystem: true
-      seLinuxOptions:
-        type: container_t
-  standard:  # Applied automatically to non-remediation runners
-    container:
-      capabilities:
-        add:
-        - SYS_ADMIN
-      seLinuxOptions:
-        type: spc_t
+securePodSecurityContext:       # Automatically assigned to remediation runners
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
 
+secureContainerSecurityContext: # Automatically assigned to remediation runners
+  capabilities:
+    drop:
+    - ALL
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: true
+  seLinuxOptions:
+    type: container_t
+
+standardPodSecurityContext: {}
+standardContainerSecurityContext:
+  capabilities:
+    add:
+    - SYS_ADMIN
+  seLinuxOptions:
+    type: spc_t
 
 runners:
-  # Example of a remediation runner with custom security settings
-  # remediation-aws-123:
-  #   enabled: false
-  #   securityContext:  # Override specific settings
-  #     container:
-  #       capabilities:
-  #         add: ["SYS_ADMIN"]
-  #       seLinuxOptions:
-  #         type: spc_t
-
-  # # Example of a standard runner (uses standard security profile by default)
-  # container-registry:
-  #   enabled: false
-  #   securityContext:  # Optional overrides
-  #     container:
-  #       readOnlyRootFilesystem: true  # Add additional security
-
   container-registry:
     enabled: false
   vcs-scheduled:

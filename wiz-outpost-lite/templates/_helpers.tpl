@@ -58,6 +58,18 @@ wiz.io/runner: {{ .runner | quote }}
 {{- end }}
 {{- end }}
 
+{{/*
+Determine if a runner is a remediation runner
+Returns "true" or "false" as a string
+*/}}
+{{- define "wiz-outpost-lite.isRemediation" -}}
+{{- if hasPrefix "remediation" . -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end }}
+
 {{- define "wiz-outpost-lite.runners" -}}
 {{- $runnerValues := dict }}
 {{- range $runner, $values := $.Values.runners }}
@@ -66,13 +78,11 @@ wiz.io/runner: {{ .runner | quote }}
 {{- $runner = $runner | kebabcase }}
 {{- $runnerID := get $values "runnerID" | default $runner }}
 
-{{- $isRemediation := hasPrefix "remediation" $runner }}
-
 {{/* e.g. remediation-aws-rds-003 -> outpost-lite-runner-remediation
 container-registry -> outpost-lite-runner-container-registry
 */}}
 {{- $imageName := "" }}
-{{- if $isRemediation }}
+{{- if eq (include "wiz-outpost-lite.isRemediation" $runner) "true" }}
   {{- $imageName = "outpost-lite-runner-remediation" }}
 {{- else }}
   {{- $imageName = dig "image" "name" (printf "outpost-lite-runner-%s" $runner) $values }}
@@ -90,22 +100,27 @@ container-registry -> outpost-lite-runner-container-registry
 {{- end }} {{/* define */}}
 
 {{/*
-Get security context for a runner
+Get pod security context based on runner type
 */}}
-{{- define "wiz-outpost-lite.getSecurityContext" -}}
-{{- $runner := .runner }}
-{{- $values := .Values }}
-{{- $baseProfile := "standard" }}
-{{- if hasPrefix "remediation" $runner }}
-  {{- $baseProfile = "secure" }}
-{{- end }}
-{{- $baseSecurityContext := get $values.securityContextProfiles $baseProfile }}
-{{- $runnerSecurityContext := get $values "securityContext" }}
-{{- if $runnerSecurityContext }}
-  {{- $mergedPod := merge $runnerSecurityContext.pod $baseSecurityContext.pod }}
-  {{- $mergedContainer := merge $runnerSecurityContext.container $baseSecurityContext.container }}
-  {{- dict "pod" $mergedPod "container" $mergedContainer | toYaml }}
+{{- define "wiz-outpost-lite.podSecurityContext" -}}
+{{- if hasKey .Values "podSecurityContext" }}
+{{- toYaml .Values.podSecurityContext }}
+{{- else if eq (include "wiz-outpost-lite.isRemediation" .runner) "true" }}
+{{- toYaml .Values.securePodSecurityContext }}
 {{- else }}
-  {{- $baseSecurityContext | toYaml }}
+{{- toYaml .Values.standardPodSecurityContext }}
+{{- end }}
+{{- end }}
+
+{{/*
+Get container security context based on runner type
+*/}}
+{{- define "wiz-outpost-lite.containerSecurityContext" -}}
+{{- if hasKey .Values "containerSecurityContext" }}
+{{- toYaml .Values.containerSecurityContext }}
+{{- else if eq (include "wiz-outpost-lite.isRemediation" .runner) "true" }}
+{{- toYaml .Values.secureContainerSecurityContext }}
+{{- else }}
+{{- toYaml .Values.standardContainerSecurityContext }}
 {{- end }}
 {{- end }}
