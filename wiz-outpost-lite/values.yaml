@@ -74,6 +74,33 @@ terminationGracePeriodSeconds: 30
 serviceAccount:
     create: false
 
+securePodSecurityContext:       # Automatically assigned to remediation runners
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+secureContainerSecurityContext: # Automatically assigned to remediation runners
+  capabilities:
+    drop:
+    - ALL
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  allowPrivilegeEscalation: false
+  privileged: false
+  readOnlyRootFilesystem: true
+  seLinuxOptions:
+    type: container_t
+
+standardPodSecurityContext: {}
+standardContainerSecurityContext:
+  capabilities:
+    add:
+    - SYS_ADMIN
+  seLinuxOptions:
+    type: spc_t
+
 runners:
   container-registry:
     enabled: false
@@ -87,3 +114,4 @@ runners:
       name: outpost-lite-runner-vcs
     concurrency: 4
     terminationGracePeriodSeconds: 300 # 5 minutes
+

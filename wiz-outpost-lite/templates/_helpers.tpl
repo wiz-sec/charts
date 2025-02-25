@@ -58,6 +58,18 @@ wiz.io/runner: {{ .runner | quote }}
 {{- end }}
 {{- end }}
 
+{{/*
+Determine if a runner is a remediation runner
+Returns "true" or "false" as a string
+*/}}
+{{- define "wiz-outpost-lite.isRemediation" -}}
+{{- if hasPrefix "remediation" . -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end }}
+
 {{- define "wiz-outpost-lite.runners" -}}
 {{- $runnerValues := dict }}
 {{- range $runner, $values := $.Values.runners }}
@@ -70,7 +82,7 @@ wiz.io/runner: {{ .runner | quote }}
 container-registry -> outpost-lite-runner-container-registry
 */}}
 {{- $imageName := "" }}
-{{- if hasPrefix "remediation" $runner }}
+{{- if eq (include "wiz-outpost-lite.isRemediation" $runner) "true" }}
   {{- $imageName = "outpost-lite-runner-remediation" }}
 {{- else }}
   {{- $imageName = dig "image" "name" (printf "outpost-lite-runner-%s" $runner) $values }}
@@ -86,3 +98,29 @@ container-registry -> outpost-lite-runner-container-registry
 
 {{ $runnerValues | toJson }}
 {{- end }} {{/* define */}}
+
+{{/*
+Get pod security context based on runner type
+*/}}
+{{- define "wiz-outpost-lite.podSecurityContext" -}}
+{{- if hasKey .Values "podSecurityContext" }}
+{{- toYaml .Values.podSecurityContext }}
+{{- else if eq (include "wiz-outpost-lite.isRemediation" .runner) "true" }}
+{{- toYaml .Values.securePodSecurityContext }}
+{{- else }}
+{{- toYaml .Values.standardPodSecurityContext }}
+{{- end }}
+{{- end }}
+
+{{/*
+Get container security context based on runner type
+*/}}
+{{- define "wiz-outpost-lite.containerSecurityContext" -}}
+{{- if hasKey .Values "containerSecurityContext" }}
+{{- toYaml .Values.containerSecurityContext }}
+{{- else if eq (include "wiz-outpost-lite.isRemediation" .runner) "true" }}
+{{- toYaml .Values.secureContainerSecurityContext }}
+{{- else }}
+{{- toYaml .Values.standardContainerSecurityContext }}
+{{- end }}
+{{- end }}
