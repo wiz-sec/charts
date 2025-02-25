@@ -58,13 +58,6 @@ wiz.io/runner: {{ .runner | quote }}
 {{- end }}
 {{- end }}
 
-{{/*
-Check if runner is a remediation runner
-*/}}
-{{- define "wiz-outpost-lite.isRemediationRunner" -}}
-{{- hasPrefix "remediation-" . }}
-{{- end }}
-
 {{- define "wiz-outpost-lite.runners" -}}
 {{- $runnerValues := dict }}
 {{- range $runner, $values := $.Values.runners }}
@@ -73,11 +66,13 @@ Check if runner is a remediation runner
 {{- $runner = $runner | kebabcase }}
 {{- $runnerID := get $values "runnerID" | default $runner }}
 
+{{- $isRemediation := hasPrefix "remediation" $runner }}
+
 {{/* e.g. remediation-aws-rds-003 -> outpost-lite-runner-remediation
 container-registry -> outpost-lite-runner-container-registry
 */}}
 {{- $imageName := "" }}
-{{- if include "wiz-outpost-lite.isRemediationRunner" $runner }}
+{{- if $isRemediation }}
   {{- $imageName = "outpost-lite-runner-remediation" }}
 {{- else }}
   {{- $imageName = dig "image" "name" (printf "outpost-lite-runner-%s" $runner) $values }}
@@ -101,7 +96,7 @@ Get security context for a runner
 {{- $runner := .runner }}
 {{- $values := .Values }}
 {{- $baseProfile := "standard" }}
-{{- if include "wiz-outpost-lite.isRemediationRunner" $runner }}
+{{- if hasPrefix "remediation" $runner }}
   {{- $baseProfile = "secure" }}
 {{- end }}
 {{- $baseSecurityContext := get $values.securityContextProfiles $baseProfile }}
