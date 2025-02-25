@@ -71,6 +71,9 @@ httpProxyConfiguration:
 
 terminationGracePeriodSeconds: 30
 
+serviceAccount:
+    create: false
+
 runners:
   container-registry:
     enabled: false
