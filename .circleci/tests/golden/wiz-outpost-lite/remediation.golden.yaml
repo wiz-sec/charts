@@ -5,7 +5,7 @@ kind: ServiceAccount
 metadata:
   name: sa-remediation-aws-rds-003
   labels:
-    helm.sh/chart: wiz-outpost-lite-0.1.20250204
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-outpost-lite
     app.kubernetes.io/instance: release-test
     wiz.io/runner: "remediation-aws-rds-003"
