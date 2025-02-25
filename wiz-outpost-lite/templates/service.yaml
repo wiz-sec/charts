@@ -1,6 +1,6 @@
 {{- range $values := (include "wiz-outpost-lite.runners" . | fromJson) }}
 {{- with merge $values (omit $ "Values") }}
-{{- if and .Values.enabled .Values.service.enabled }}
+{{- if and .Values.enabled .Values.serviceAccount.create }}
 apiVersion: v1
 kind: Service
 metadata:
