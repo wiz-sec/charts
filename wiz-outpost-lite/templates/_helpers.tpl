@@ -86,3 +86,24 @@ container-registry -> outpost-lite-runner-container-registry
 
 {{ $runnerValues | toJson }}
 {{- end }} {{/* define */}}
+
+{{/*
+Get security context for a runner
+*/}}
+{{- define "wiz-outpost-lite.getSecurityContext" -}}
+{{- $runner := .runner }}
+{{- $values := .Values }}
+{{- $baseProfile := "standard" }}
+{{- if hasPrefix "remediation" $runner }}
+  {{- $baseProfile = "secure" }}
+{{- end }}
+{{- $baseSecurityContext := get $values.securityContextProfiles $baseProfile }}
+{{- $runnerSecurityContext := get $values "securityContext" }}
+{{- if $runnerSecurityContext }}
+  {{- $mergedPod := merge $runnerSecurityContext.pod $baseSecurityContext.pod }}
+  {{- $mergedContainer := merge $runnerSecurityContext.container $baseSecurityContext.container }}
+  {{- dict "pod" $mergedPod "container" $mergedContainer | toYaml }}
+{{- else }}
+  {{- $baseSecurityContext | toYaml }}
+{{- end }}
+{{- end }}
