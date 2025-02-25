@@ -74,12 +74,15 @@ terminationGracePeriodSeconds: 30
 runners:
   container-registry:
     enabled: false
+    createServiceAccount: false
   vcs-scheduled:
     enabled: false
+    createServiceAccount: false
     image:
       name: outpost-lite-runner-vcs
   vcs-event-triggered:
     enabled: false
+    createServiceAccount: false
     image:
       name: outpost-lite-runner-vcs
     concurrency: 4
