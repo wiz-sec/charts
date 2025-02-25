@@ -1,0 +1,9 @@
+agent:
+  secretName: outpost-lite-agent-creds
+  clientId: "client-1"
+  clientSecret: "secret-2"
+  outpostId: "my-outpost-id"
+
+runners:
+  container-registry:
+    enabled: true
