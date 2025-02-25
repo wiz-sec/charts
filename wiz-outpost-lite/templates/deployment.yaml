@@ -25,6 +25,11 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: sa-{{ .runner }}
       {{- end }}
@@ -144,10 +149,16 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
             capabilities:
-              add:
-              - SYS_ADMIN
+              drop:
+              - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            privileged: false
+            readOnlyRootFilesystem: true
             seLinuxOptions:
-              type: spc_t
+              type: container_t
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir
