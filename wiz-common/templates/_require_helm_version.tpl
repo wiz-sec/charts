@@ -11,6 +11,6 @@
   {{- end -}}
 
   {{- if not (semverCompare ">=3.10.0" $helmVersion) }}
-    {{- fail (printf "This chart requires Helm client version 3.10.0 or higher. Found %s" $helmVersion) }}
+    {{- printf "WARNING: This chart is intended for Helm client version 3.10.0 or higher. Found %s\n" $helmVersion | quote }}
   {{- end -}}
 {{- end -}}
