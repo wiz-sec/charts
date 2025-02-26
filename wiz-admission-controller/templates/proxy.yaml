@@ -21,9 +21,6 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 stringData:
-  http_proxy: {{ .Values.httpProxyConfiguration.httpProxy | quote }}
-  https_proxy: {{ .Values.httpProxyConfiguration.httpsProxy | quote }}
-  no_proxy: {{ .Values.httpProxyConfiguration.noProxyAddress | quote }}
   httpProxy: {{ .Values.httpProxyConfiguration.httpProxy | quote }}
   httpsProxy: {{ .Values.httpProxyConfiguration.httpsProxy | quote }}
   noProxyAddress: {{ .Values.httpProxyConfiguration.noProxyAddress | quote }}

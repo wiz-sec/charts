@@ -134,9 +134,8 @@ spec:
           {{- end }}
             value: "{{ $wizApiTokensPath }}/clientToken,{{ $wizApiTokensPath }}/clientId"
           {{- end }}
-          {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-          - name: CLI_FILES_AS_ENV_VARS
-            value: "/var/{{ include "wiz-broker.volumes.proxyName" . }}/http_proxy,/var/{{ include "wiz-broker.volumes.proxyName" . }}/https_proxy,/var/{{ include "wiz-broker.volumes.proxyName" . }}/no_proxy"
+          {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled -}}
+          {{ include "wiz-common.proxy.env" . | trim | nindent 10 }}
           {{- end }}
           {{- if .Values.managed.enabled }}
           - name: WIZ_MANAGED

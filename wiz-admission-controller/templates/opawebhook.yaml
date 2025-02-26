@@ -43,7 +43,7 @@ webhooks:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   timeoutSeconds: {{ .Values.opaWebhook.timeoutSeconds }}
-  failurePolicy: {{ .Values.opaWebhook.failurePolicy }}
+  failurePolicy: Ignore
   sideEffects: {{ .Values.opaWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.imageIntegrityWebhook.enabled -}}
@@ -82,7 +82,7 @@ webhooks:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   timeoutSeconds: {{ .Values.imageIntegrityWebhook.timeoutSeconds }}
-  failurePolicy: {{ .Values.imageIntegrityWebhook.failurePolicy }}
+  failurePolicy: Ignore
   sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
@@ -121,7 +121,7 @@ webhooks:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   timeoutSeconds: {{ .Values.kubernetesAuditLogsWebhook.timeoutSeconds }}
-  failurePolicy: {{ .Values.kubernetesAuditLogsWebhook.failurePolicy }}
+  failurePolicy: Ignore
   sideEffects: {{ .Values.kubernetesAuditLogsWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.debugWebhook.enabled -}}
@@ -160,7 +160,7 @@ webhooks:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   timeoutSeconds: {{ .Values.debugWebhook.timeoutSeconds }}
-  failurePolicy: {{ .Values.debugWebhook.failurePolicy }}
+  failurePolicy: Ignore
   sideEffects: {{ .Values.debugWebhook.sideEffects }}
 {{- end }}
 {{- $isEnforcer := (eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true") }}

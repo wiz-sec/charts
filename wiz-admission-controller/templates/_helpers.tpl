@@ -318,10 +318,6 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
 {{- end -}}
 
-{{- define  "wiz-admission-controller.volumes.proxyName" -}}
-proxy
-{{- end -}}
-
 {{- define "wiz-admission-controller.isWizApiTokenSecretEnabled" -}}
   {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
     true
@@ -337,9 +333,7 @@ proxy
   readOnly: true
 {{- end -}}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "wiz-admission-controller.volumes.proxyName" . }}
-  mountPath: /var/{{ include "wiz-admission-controller.volumes.proxyName" . }}
-  readOnly: true
+{{ include "wiz-common.proxy.volumeMount" . | trim }}
 {{- end -}}
 {{- end -}}
 
@@ -350,9 +344,7 @@ proxy
     secretName: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
 {{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "wiz-admission-controller.volumes.proxyName" . | trim }}
-  secret:
-    secretName: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
+{{ include "wiz-common.proxy.volume" (list (include "wiz-admission-controller.proxySecretName" . | trim )) | trim }}
 {{- end -}}
 {{- end -}}
 
@@ -369,8 +361,7 @@ proxy
   value: "{{ $wizApiTokensPath }}/clientToken,{{ $wizApiTokensPath }}/clientId"
 {{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: CLI_FILES_AS_ENV_VARS
-  value: "/var/{{ include "wiz-admission-controller.volumes.proxyName" . }}/http_proxy,/var/{{ include "wiz-admission-controller.volumes.proxyName" . }}/https_proxy,/var/{{ include "wiz-admission-controller.volumes.proxyName" . }}/no_proxy"
+{{ include "wiz-common.proxy.env" . | trim }}
 {{- end }}
 - name: WIZ_ENV
   value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
