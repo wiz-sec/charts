@@ -94,10 +94,6 @@ webhook:
                                   # If an admission review is parsed correctly, the decision to AUDIT/BLOCK
                                   # depends on the applied policies or the `policyEnforcementMethod`
                                   # (if it is set).
-                                  #
-                                  #
-                                  # See also `opaWebhook.failurePolicy` which determines the behavior
-                                  # on admission reviews timeout.
 
   policyEnforcementMethod: ""     # AUDIT / BLOCK / ""
                                   # Set this to override any admission policy action.
@@ -164,14 +160,6 @@ opaWebhook:
       - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
-  failurePolicy: Ignore # Determines what to do when Wiz Admission Controller fails
-                        # to process admission reviews within `opawebHook.timeoutSeconds` seconds.
-                        #
-                        # Valid values are: Ignore, Fail.
-                        #
-                        # For more information please refer to:
-                        # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
-                        #
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
   policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, by default AC will get policies from Wiz based on projects.
@@ -216,7 +204,6 @@ imageIntegrityWebhook:
       - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
-  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
   cacheImageDigestTTL: 1m # The TTL of the cache for the image digest. The cache is used to avoid querying the image registry for the same image digest multiple times.
@@ -295,7 +282,6 @@ kubernetesAuditLogsWebhook:
       - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
-  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
 
@@ -339,7 +325,6 @@ debugWebhook:
       - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
-  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
 
