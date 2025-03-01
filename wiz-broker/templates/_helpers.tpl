@@ -108,10 +108,6 @@ Secrets names
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
 {{- end -}}
 
-{{- define  "wiz-broker.volumes.proxyName" -}}
-proxy
-{{- end -}}
-
 {{- define "wiz-broker.isWizApiTokenSecretEnabled" -}}
   {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
     true
@@ -127,9 +123,7 @@ proxy
   readOnly: true
 {{- end -}}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "wiz-broker.volumes.proxyName" . }}
-  mountPath: /var/{{ include "wiz-broker.volumes.proxyName" . }}
-  readOnly: true
+{{ include "wiz-common.proxy.volumeMount" . | trim }}
 {{- end -}}
 {{- end -}}
 
@@ -140,8 +134,6 @@ proxy
     secretName: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
 {{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-- name: {{ include "wiz-broker.volumes.proxyName" . | trim }}
-  secret:
-    secretName: {{ include "wiz-broker.proxySecretName" . | trim }}
+{{ include "wiz-common.proxy.volume" (list (include "wiz-broker.proxySecretName" . | trim )) | trim }}
 {{- end -}}
 {{- end -}}
