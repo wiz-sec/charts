@@ -7,5 +7,3 @@ agent:
 runners:
   remediation-aws-rds-003:
     enabled: true
-    serviceAccount:
-      create: true

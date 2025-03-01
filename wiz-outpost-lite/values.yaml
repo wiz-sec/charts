@@ -74,44 +74,61 @@ terminationGracePeriodSeconds: 30
 serviceAccount:
     create: false
 
-securePodSecurityContext:       # Automatically assigned to remediation runners
-  runAsNonRoot: true
-  runAsUser: 1000
-  runAsGroup: 1000
-  fsGroup: 1000
-
-secureContainerSecurityContext: # Automatically assigned to remediation runners
-  capabilities:
-    drop:
-    - ALL
-  runAsNonRoot: true
-  runAsUser: 1000
-  runAsGroup: 1000
-  allowPrivilegeEscalation: false
-  privileged: false
-  readOnlyRootFilesystem: true
-  seLinuxOptions:
-    type: container_t
-
-standardPodSecurityContext: {}
-standardContainerSecurityContext:
+podSecurityContext:
+  readOnlyFileSystem: true
+containerSecurityContext:
   capabilities:
     add:
     - SYS_ADMIN
+    drop:
+    - JJJ
   seLinuxOptions:
     type: spc_t
+
+# Runner type definitions - these define defaults for each type of runner
+container-registry-runner:
+  image:
+    name: outpost-lite-runner-container-registry
+
+vcs-runner:
+  image:
+    name: outpost-lite-runner-vcs
+  podSecurityContext:
+    areadOnlyFileSystem: false
+  containerSecurityContext:
+    capabilities:
+      add:
+      - ABC
+
+remediation-runner:
+  image:
+    name: outpost-lite-runner-remediation
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  containerSecurityContext:
+    capabilities:
+      drop:
+      - ALL
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    allowPrivilegeEscalation: false
+    privileged: false
+    readOnlyRootFilesystem: true
+    seLinuxOptions:
+      type: container_t
+  serviceAccount: 
+    create: true
 
 runners:
   container-registry:
     enabled: false
   vcs-scheduled:
     enabled: false
-    image:
-      name: outpost-lite-runner-vcs
   vcs-event-triggered:
     enabled: false
-    image:
-      name: outpost-lite-runner-vcs
     concurrency: 4
     terminationGracePeriodSeconds: 300 # 5 minutes
-
