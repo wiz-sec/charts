@@ -1,0 +1,15 @@
+agent:
+  secretName: outpost-lite-agent-creds
+  clientId: "client-1"
+  clientSecret: "secret-2"
+  outpostId: "my-outpost-id"
+
+runners:
+  remediation-aws-rds-003:
+    enabled: true
+    podSecurityContext:
+      runAsNonRoot: false
+    containerSecurityContext:
+      capabilities:
+        add:
+        - SYS_ADMIN
