@@ -1,4 +1,17 @@
 ---
+# Source: wiz-outpost-lite/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-remediation-aws-rds-003
+  labels:
+    helm.sh/chart: "GOLDEN_STATIC_VALUE"
+    app.kubernetes.io/name: wiz-outpost-lite
+    app.kubernetes.io/instance: release-test
+    wiz.io/runner: "remediation-aws-rds-003"
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+---
 # Source: wiz-outpost-lite/templates/credentials.secret.yaml
 apiVersion: v1
 kind: Secret
@@ -14,42 +27,16 @@ stringData:
   clientId: "client-1"
   clientSecret: "secret-2"
 ---
-# Source: wiz-outpost-lite/templates/httpProxyConfiguration.secret.yaml
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: wiz-http-proxy-configuration
-  labels:
-    helm.sh/chart: "GOLDEN_STATIC_VALUE"
-    app.kubernetes.io/name: wiz-outpost-lite
-    app.kubernetes.io/instance: release-test
-    app.kubernetes.io/version: "0.1.0"
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    meta.helm.sh/release-name: "release-test"
-    meta.helm.sh/release-namespace: "release-helm-namespace"
-data:
-  httpProxy: "bXktaHR0cC1wcm94eQ=="
-  http-proxy: "bXktaHR0cC1wcm94eQ=="
-  httpsProxy: "bXktaHR0cHMtcHJveHk="
-  https-proxy: "bXktaHR0cHMtcHJveHk="
-  no-proxy-address: "bm8tcHJveHktMSBuby1wcm94eS0y"
-  no-proxy-address-cs: "bm8tcHJveHktMSxuby1wcm94eS0y"
-  noProxyAddress: "bm8tcHJveHktMSxuby1wcm94eS0y"
-  noProxyAddressSpaceSepareted: "bm8tcHJveHktMSBuby1wcm94eS0y"
-  caCertificate: "LS0tIEJFR0lOIENFUlRJRklDQVRFIC0tLQpUaGUgY2VydAotLS0gRU5EIENFUlRJRklDQVRFIC0tLQo="
----
 # Source: wiz-outpost-lite/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: release-test-wiz-outpost-lite-container-registry
+  name: release-test-wiz-outpost-lite-remediation-aws-rds-003
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-outpost-lite
     app.kubernetes.io/instance: release-test
-    wiz.io/runner: "container-registry"
+    wiz.io/runner: "remediation-aws-rds-003"
     app.kubernetes.io/version: "0.1.0"
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -62,18 +49,18 @@ spec:
   selector:
     app.kubernetes.io/name: wiz-outpost-lite
     app.kubernetes.io/instance: release-test
-    wiz.io/runner: "container-registry"
+    wiz.io/runner: "remediation-aws-rds-003"
 ---
 # Source: wiz-outpost-lite/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: release-test-wiz-outpost-lite-container-registry
+  name: release-test-wiz-outpost-lite-remediation-aws-rds-003
   labels:
     helm.sh/chart: "GOLDEN_STATIC_VALUE"
     app.kubernetes.io/name: wiz-outpost-lite
     app.kubernetes.io/instance: release-test
-    wiz.io/runner: "container-registry"
+    wiz.io/runner: "remediation-aws-rds-003"
     app.kubernetes.io/version: "0.1.0"
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -82,22 +69,23 @@ spec:
     matchLabels:
       app.kubernetes.io/name: wiz-outpost-lite
       app.kubernetes.io/instance: release-test
-      wiz.io/runner: "container-registry"
+      wiz.io/runner: "remediation-aws-rds-003"
   template:
     metadata:
       annotations:
-        container.apparmor.security.beta.kubernetes.io/wiz-outpost-lite-container-registry: unconfined
+        container.apparmor.security.beta.kubernetes.io/wiz-outpost-lite-remediation-aws-rds-003: unconfined
       labels:
         app.kubernetes.io/name: wiz-outpost-lite
         app.kubernetes.io/instance: release-test
-        wiz.io/runner: "container-registry"
+        wiz.io/runner: "remediation-aws-rds-003"
     spec:
       securityContext:
-        {}
+        runAsNonRoot: false
+      serviceAccountName: sa-remediation-aws-rds-003
       restartPolicy: Always
       containers:
-        - name: wiz-outpost-lite-container-registry
-          image: "wizio.azurecr.io/outpost-lite-runner-container-registry:0.1-latest"
+        - name: wiz-outpost-lite-remediation-aws-rds-003
+          image: "wizio.azurecr.io/outpost-lite-runner-remediation:0.1-latest"
           command: [ "/entrypoint"]
           imagePullPolicy: Always
           env:
@@ -118,7 +106,7 @@ spec:
           - name: WIZ_OUTPOST_ID
             value: "my-outpost-id"
           - name: WIZ_OUTPOST_RUNNER_ID
-            value: "container-registry"
+            value: "remediation-aws-rds-003"
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -186,8 +174,6 @@ spec:
             capabilities:
               add:
               - SYS_ADMIN
-            seLinuxOptions:
-              type: spc_t
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir
