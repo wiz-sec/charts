@@ -74,14 +74,11 @@ terminationGracePeriodSeconds: 30
 serviceAccount:
     create: false
 
-podSecurityContext:
-  readOnlyFileSystem: true
+podSecurityContext: {}
 containerSecurityContext:
   capabilities:
     add:
     - SYS_ADMIN
-    drop:
-    - JJJ
   seLinuxOptions:
     type: spc_t
 
@@ -93,12 +90,6 @@ container-registry-runner:
 vcs-runner:
   image:
     name: outpost-lite-runner-vcs
-  podSecurityContext:
-    areadOnlyFileSystem: false
-  containerSecurityContext:
-    capabilities:
-      add:
-      - ABC
 
 remediation-runner:
   image:

@@ -26,7 +26,22 @@ spec:
         {{- end }}
     spec:
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- /* Special handling for podSecurityContext */}}
+        {{- if hasKey $.Values.runners .runner }}
+          {{- if hasKey (get $.Values.runners .runner) "podSecurityContext" }}
+            {{- toYaml (get $.Values.runners .runner).podSecurityContext | nindent 8 }}
+          {{- else if hasKey $.Values (include "wiz-outpost-lite.runnerType" .runner) }}
+            {{- if hasKey (get $.Values (include "wiz-outpost-lite.runnerType" .runner)) "podSecurityContext" }}
+              {{- toYaml (get $.Values (include "wiz-outpost-lite.runnerType" .runner)).podSecurityContext | nindent 8 }}
+            {{- else }}
+              {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+            {{- end }}
+          {{- else }}
+            {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+          {{- end }}
+        {{- else }}
+          {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+        {{- end }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: sa-{{ .runner }}
       {{- end }}
@@ -145,7 +160,22 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
-            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+            {{- /* Special handling for containerSecurityContext */}}
+            {{- if hasKey $.Values.runners .runner }}
+              {{- if hasKey (get $.Values.runners .runner) "containerSecurityContext" }}
+                {{- toYaml (get $.Values.runners .runner).containerSecurityContext | nindent 12 }}
+              {{- else if hasKey $.Values (include "wiz-outpost-lite.runnerType" .runner) }}
+                {{- if hasKey (get $.Values (include "wiz-outpost-lite.runnerType" .runner)) "containerSecurityContext" }}
+                  {{- toYaml (get $.Values (include "wiz-outpost-lite.runnerType" .runner)).containerSecurityContext | nindent 12 }}
+                {{- else }}
+                  {{- toYaml $.Values.containerSecurityContext | nindent 12 }}
+                {{- end }}
+              {{- else }}
+                {{- toYaml $.Values.containerSecurityContext | nindent 12 }}
+              {{- end }}
+            {{- else }}
+              {{- toYaml $.Values.containerSecurityContext | nindent 12 }}
+            {{- end }}
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir
