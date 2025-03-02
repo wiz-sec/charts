@@ -146,6 +146,8 @@ spec:
             capabilities:
               add:
               - SYS_ADMIN
+              - SETFCAP
+            privileged: true  
             seLinuxOptions:
               type: spc_t
           volumeMounts:
