@@ -319,15 +319,24 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- end -}}
 
 {{- define "wiz-admission-controller.isWizApiTokenSecretEnabled" -}}
-  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
+  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
     true
   {{- else }}
     false
   {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller.isWizApiClientVolumeMountEnabled" -}}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
+
+
 {{- define "wiz-admission-controller.spec.common.volumeMounts" -}}
-{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+{{- if eq (include "wiz-admission-controller.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
 - name: {{ include "wiz-common.volumes.apiClientName" . }}
   mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
   readOnly: true
@@ -338,7 +347,7 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- end -}}
 
 {{- define "wiz-admission-controller.spec.common.volumes" -}}
-{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+{{- if eq (include "wiz-admission-controller.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
 - name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
@@ -353,8 +362,8 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
 - name: CLI_FILES_AS_ARGS
 {{- $wizApiTokensPath := "" -}}
-{{- if .Values.wizApiToken.wizApiTokensVolumeMount }}
-  {{- $wizApiTokensPath = .Values.wizApiToken.wizApiTokensVolumeMount -}}
+{{- if coalesce .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount }}
+  {{- $wizApiTokensPath = coalesce .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount -}}
 {{- else }}
   {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
 {{- end }}
