@@ -288,7 +288,7 @@ daemonset:
     # resource values for the wiz sensor, without API security enabled
     limits:
       cpu: "300m"
-      memory: "300Mi"
+      memory: "400Mi"
     requests:
       cpu: "10m"
       memory: "50Mi"
