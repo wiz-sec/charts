@@ -103,7 +103,9 @@ Secrets
 TODO: Backward compatibility - remove
 */}}
 {{- define "wiz-sensor.createSecret" -}}
-{{- if .Values.apikey -}}
+{{- if (or .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount) }}
+false
+{{- else if .Values.apikey -}}
 {{- default true .Values.apikey.create -}}
 {{- else if (hasKey .Values.wizApiToken "createSecret") -}}
 {{- .Values.wizApiToken.createSecret -}}
