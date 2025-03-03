@@ -75,21 +75,29 @@ serviceAccount:
     create: false
 
 podSecurityContext: {}
-containerSecurityContext:
-  capabilities:
-    add:
-    - SYS_ADMIN
-  seLinuxOptions:
-    type: spc_t
+containerSecurityContext: {}
+
 
 # Runner type definitions - these define defaults for each type of runner
 container-registry-runner:
   image:
     name: outpost-lite-runner-container-registry
+  containerSecurityContext:
+    capabilities:
+      add:
+      - SYS_ADMIN
+    seLinuxOptions:
+      type: spc_t
 
 vcs-runner:
   image:
     name: outpost-lite-runner-vcs
+  containerSecurityContext:
+    capabilities:
+      add:
+      - SYS_ADMIN
+    seLinuxOptions:
+      type: spc_t
 
 remediation-runner:
   image:
