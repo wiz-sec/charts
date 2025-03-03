@@ -74,60 +74,100 @@ terminationGracePeriodSeconds: 30
 serviceAccount:
     create: false
 
-podSecurityContext: {}
-containerSecurityContext: {}
+# New hierarchical structure for runner configuration
+# This structure allows for simpler merging using Helm's built-in capabilities
 
+# Global defaults that apply to all runners
+defaults:
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  # Override fields for security contexts
+  # When defined, these take complete precedence over the regular security contexts
+  # podSecurityContextOverride: {}
+  # containerSecurityContextOverride: {}
 
-# Runner type definitions - these define defaults for each type of runner
-container-registry-runner:
-  image:
-    name: outpost-lite-runner-container-registry
-  containerSecurityContext:
-    capabilities:
-      add:
-      - SYS_ADMIN
-    seLinuxOptions:
-      type: spc_t
+# Module definitions - these define defaults for each type of runner
+modules:
+  container-registry:
+    image:
+      name: outpost-lite-runner-container-registry
+    containerSecurityContext:
+      capabilities:
+        add:
+        - SYS_ADMIN
+      seLinuxOptions:
+        type: spc_t
+    # Example of override field at module level
+    # containerSecurityContextOverride:
+    #   capabilities:
+    #     add:
+    #     - SYS_ADMIN
+    #   privileged: true
 
-vcs-runner:
-  image:
-    name: outpost-lite-runner-vcs
-  containerSecurityContext:
-    capabilities:
-      add:
-      - SYS_ADMIN
-    seLinuxOptions:
-      type: spc_t
+  vcs:
+    image:
+      name: outpost-lite-runner-vcs
+    containerSecurityContext:
+      capabilities:
+        add:
+        - SYS_ADMIN
+      seLinuxOptions:
+        type: spc_t
+    # Example of override field at module level
+    # podSecurityContextOverride:
+    #   runAsNonRoot: false
 
-remediation-runner:
-  image:
-    name: outpost-lite-runner-remediation
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
-    fsGroup: 1000
-  containerSecurityContext:
-    capabilities:
-      drop:
-      - ALL
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
-    allowPrivilegeEscalation: false
-    privileged: false
-    readOnlyRootFilesystem: true
-    seLinuxOptions:
-      type: container_t
-  serviceAccount: 
-    create: true
+  remediation:
+    image:
+      name: outpost-lite-runner-remediation
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    containerSecurityContext:
+      capabilities:
+        drop:
+        - ALL
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      seLinuxOptions:
+        type: container_t
+    serviceAccount: 
+      create: true
 
+# Runner instances - specific configurations for each runner
 runners:
   container-registry:
     enabled: false
+    module: container-registry  # Reference to the module type
+    # Example of override field at runner instance level
+    # podSecurityContextOverride:
+    #   runAsNonRoot: false
+    # containerSecurityContextOverride:
+    #   privileged: true
+  
   vcs-scheduled:
     enabled: false
+    module: vcs  # Reference to the module type
+  
   vcs-event-triggered:
     enabled: false
+    module: vcs  # Reference to the module type
     concurrency: 4
     terminationGracePeriodSeconds: 300 # 5 minutes
+  
+  # Example of a remediation runner with security context overrides
+  # remediation-aws-rds-003:
+  #   enabled: true
+  #   module: remediation  # Reference to the module type
+  #   podSecurityContextOverride:
+  #     runAsNonRoot: false
+  #   containerSecurityContextOverride:
+  #     capabilities:
+  #       add:
+  #       - SYS_ADMIN

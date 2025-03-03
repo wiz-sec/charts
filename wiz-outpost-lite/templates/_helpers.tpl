@@ -6,29 +6,6 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
-{{- define "wiz-outpost-lite.fullname" -}}
-{{ $name := "" }}
-{{- if .Values.fullnameOverride }}
-{{- $name = .Values.fullnameOverride }}
-{{- else }}
-{{- $name = default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- $name = .Release.Name }}
-{{- else }}
-{{- $name = printf "%s-%s" .Release.Name $name }}
-{{- end }}
-{{- end }}
-{{- if .runner }}
-{{- $name = printf "%s-%s" $name .runner }}
-{{- end }}
-{{- $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
-{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "wiz-outpost-lite.chart" -}}
@@ -59,34 +36,114 @@ wiz.io/runner: {{ .runner | quote }}
 {{- end }}
 
 {{/*
-Determine runner type from runner name
+Get module name for a runner
 */}}
-{{- define "wiz-outpost-lite.runnerType" -}}
-{{- if hasPrefix "remediation-" . -}}
-remediation-runner
-{{- else if hasPrefix "vcs-" . -}}
-vcs-runner
-{{- else if hasPrefix "container-registry" . -}}
-container-registry-runner
-{{- else -}}
-{{- fail (printf "Unknown runner type for %s" .) -}}
+{{- define "wiz-outpost-lite.getModule" -}}
+{{- $runner := . }}
+{{- $runnerConfig := get $.Values.runners $runner | default dict }}
+{{- $module := get $runnerConfig "module" | default "" }}
+{{- if $module }}
+  {{- $module }}
+{{- else }}
+  {{/* Fallback to determine module from runner name for backward compatibility */}}
+  {{- if hasPrefix "remediation-" $runner -}}
+    remediation
+  {{- else if hasPrefix "vcs-" $runner -}}
+    vcs
+  {{- else if hasPrefix "container-registry" $runner -}}
+    container-registry
+  {{- else -}}
+    {{- fail (printf "Unknown module for %s" $runner) -}}
+  {{- end -}}
 {{- end -}}
 {{- end }}
 
 {{/*
-Merge values from different sources:
-1. Default values (from values.yaml)
-2. Runner type specific values (from container-registry-runner, vcs-runner, remediation-runner)
-3. Runner instance specific values (from runners.container-registry, runners.vcs-scheduled, etc.)
+Helper function to get the appropriate pod security context.
+If podSecurityContextOverride is defined, it takes precedence.
+*/}}
+{{- define "wiz-outpost-lite.podSecurityContext" -}}
+{{- $runner := .runner }}
+{{- $module := include "wiz-outpost-lite.getModule" $runner }}
+{{- $runnerConfig := get $.Values.runners $runner | default dict }}
+{{- $moduleConfig := get $.Values.modules $module | default dict }}
+{{- $defaultConfig := $.Values.defaults | default dict }}
+
+{{/* Check for override at runner level */}}
+{{- if hasKey $runnerConfig "podSecurityContextOverride" }}
+  {{- toYaml $runnerConfig.podSecurityContextOverride }}
+{{/* Check for override at module level */}}
+{{- else if hasKey $moduleConfig "podSecurityContextOverride" }}
+  {{- toYaml $moduleConfig.podSecurityContextOverride }}
+{{/* Check for override at default level */}}
+{{- else if hasKey $defaultConfig "podSecurityContextOverride" }}
+  {{- toYaml $defaultConfig.podSecurityContextOverride }}
+{{/* Use regular security context with precedence: runner > module > default */}}
+{{- else if hasKey $runnerConfig "podSecurityContext" }}
+  {{- toYaml $runnerConfig.podSecurityContext }}
+{{- else if hasKey $moduleConfig "podSecurityContext" }}
+  {{- toYaml $moduleConfig.podSecurityContext }}
+{{- else if hasKey $defaultConfig "podSecurityContext" }}
+  {{- toYaml $defaultConfig.podSecurityContext }}
+{{- else }}
+  {{/* Fallback to top-level podSecurityContext for backward compatibility */}}
+  {{- toYaml $.Values.podSecurityContext | default dict }}
+{{- end }}
+{{- end }}
+
+{{/*
+Helper function to get the appropriate container security context.
+If containerSecurityContextOverride is defined, it takes precedence.
+*/}}
+{{- define "wiz-outpost-lite.containerSecurityContext" -}}
+{{- $runner := .runner }}
+{{- $module := include "wiz-outpost-lite.getModule" $runner }}
+{{- $runnerConfig := get $.Values.runners $runner | default dict }}
+{{- $moduleConfig := get $.Values.modules $module | default dict }}
+{{- $defaultConfig := $.Values.defaults | default dict }}
+
+{{/* Check for override at runner level */}}
+{{- if hasKey $runnerConfig "containerSecurityContextOverride" }}
+  {{- toYaml $runnerConfig.containerSecurityContextOverride }}
+{{/* Check for override at module level */}}
+{{- else if hasKey $moduleConfig "containerSecurityContextOverride" }}
+  {{- toYaml $moduleConfig.containerSecurityContextOverride }}
+{{/* Check for override at default level */}}
+{{- else if hasKey $defaultConfig "containerSecurityContextOverride" }}
+  {{- toYaml $defaultConfig.containerSecurityContextOverride }}
+{{/* Use regular security context with precedence: runner > module > default */}}
+{{- else if hasKey $runnerConfig "containerSecurityContext" }}
+  {{- toYaml $runnerConfig.containerSecurityContext }}
+{{- else if hasKey $moduleConfig "containerSecurityContext" }}
+  {{- toYaml $moduleConfig.containerSecurityContext }}
+{{- else if hasKey $defaultConfig "containerSecurityContext" }}
+  {{- toYaml $defaultConfig.containerSecurityContext }}
+{{- else }}
+  {{/* Fallback to top-level containerSecurityContext for backward compatibility */}}
+  {{- toYaml $.Values.containerSecurityContext | default dict }}
+{{- end }}
+{{- end }}
+
+{{/*
+Merge values from different sources using the new hierarchical structure
 */}}
 {{- define "wiz-outpost-lite.mergedRunnerValues" -}}
 {{- $runner := .runner }}
-{{- $runnerType := include "wiz-outpost-lite.runnerType" $runner }}
-{{- $defaultValues := omit $.Values "runners" "container-registry-runner" "vcs-runner" "remediation-runner" }}
-{{- $runnerTypeValues := get $.Values $runnerType | default dict }}
-{{- $runnerInstanceValues := get ($.Values.runners) $runner | default dict }}
-{{/* Important: merge in the correct order to ensure runner instance values take precedence */}}
-{{- $mergedValues := merge (deepCopy $runnerInstanceValues) (deepCopy $runnerTypeValues) (deepCopy $defaultValues) }}
+{{- $module := include "wiz-outpost-lite.getModule" $runner }}
+{{- $defaultConfig := $.Values.defaults | default dict }}
+{{- $moduleConfig := get $.Values.modules $module | default dict }}
+{{- $runnerConfig := get ($.Values.runners) $runner | default dict }}
+
+{{/* Merge in the correct order to ensure proper precedence */}}
+{{- $mergedValues := dict }}
+{{- $mergedValues = merge $mergedValues (deepCopy $defaultConfig) }}
+{{- $mergedValues = merge $mergedValues (deepCopy $moduleConfig) }}
+{{- $mergedValues = merge $mergedValues (deepCopy $runnerConfig) }}
+
+{{/* Add top-level values for backward compatibility */}}
+{{- $topLevelValues := omit $.Values "runners" "modules" "defaults" }}
+{{- $mergedValues = merge $mergedValues (deepCopy $topLevelValues) }}
+
 {{- $mergedValues | toJson }}
 {{- end }}
 
@@ -97,7 +154,7 @@ Merge values from different sources:
 {{/* e.g. containerRegistry -> container-registry */}}
 {{- $runner = $runner | kebabcase }}
 {{- $runnerID := get $values "runnerID" | default $runner }}
-{{- $runnerType := include "wiz-outpost-lite.runnerType" $runner }}
+{{- $module := include "wiz-outpost-lite.getModule" $runner }}
 
 {{/* Get merged values for this runner */}}
 {{- $mergedValues := include "wiz-outpost-lite.mergedRunnerValues" (dict "runner" $runner "Values" $.Values) | fromJson }}
