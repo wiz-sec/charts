@@ -66,6 +66,8 @@ spec:
         app.kubernetes.io/instance: release-test
         wiz.io/runner: "container-registry"
     spec:
+      securityContext:
+        {}
       restartPolicy: Always
       containers:
         - name: wiz-outpost-lite-container-registry
