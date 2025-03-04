@@ -196,6 +196,21 @@ global:
     clientEndpoint: "" # Defaults to commercial.
     secret:
       name: "" # Override with parent secret name
+    # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
+    # token (client id and client token) via mounts, e.g. when using the Vault operator to inject secrets to Pods.
+    # In this case you are responsible for creating the mounts.
+    # You must also set `.Values.customVolumes` and `.Values.customVolumeMounts`.
+    # The mounts must have at least these 2 files:
+    # clientId - with this content: <wiz service account id>
+    # clientToken - with this content: <wiz service account token>
+    #
+    # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+    #      and this is how the mount looks like on the file system:
+    #      /var/api-client/clientId
+    #      /var/api-client/clientToken
+    #
+    # Implies `secret.enabled: false`.
+    wizApiTokensVolumeMount: ""
 
   httpProxyConfiguration:
     enabled: false # Should the components use a proxy.

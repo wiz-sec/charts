@@ -259,7 +259,7 @@ refresh-token
 
 {{- define "wiz-kubernetes-connector.isWizApiTokenSecretEnabled" -}}
   {{- if and (.Values.wizApiToken.secret.create)
-            (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true")
+            (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true")
             (.Values.autoCreateConnector.enabled) }}
     true
   {{- else }}
@@ -267,8 +267,16 @@ refresh-token
   {{- end }}
 {{- end }}
 
+{{- define "wiz-kubernetes-connector.isWizApiClientVolumeMountEnabled" -}}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
+
 {{- define "wiz-kubernetes-connector.spec.common.volumeMounts" -}}
-{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+{{- if eq (include "wiz-kubernetes-connector.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
 - name: {{ include "wiz-common.volumes.apiClientName" . }}
   mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
   readOnly: true
@@ -279,7 +287,7 @@ refresh-token
 {{- end -}}
 
 {{- define "wiz-kubernetes-connector.spec.common.volumes" -}}
-{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+{{- if eq (include "wiz-kubernetes-connector.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
 - name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
@@ -293,8 +301,8 @@ refresh-token
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
 - name: CLI_FILES_AS_ARGS
 {{- $wizApiTokensPath := "" -}}
-{{- if .Values.wizApiToken.wizApiTokensVolumeMount }}
-  {{- $wizApiTokensPath = .Values.wizApiToken.wizApiTokensVolumeMount -}}
+{{- if coalesce .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount }}
+  {{- $wizApiTokensPath = coalesce .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount -}}
 {{- else }}
   {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
 {{- end }}

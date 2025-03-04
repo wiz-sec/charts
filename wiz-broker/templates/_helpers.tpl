@@ -109,15 +109,24 @@ Secrets names
 {{- end -}}
 
 {{- define "wiz-broker.isWizApiTokenSecretEnabled" -}}
-  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
+  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
     true
   {{- else }}
     false
   {{- end }}
 {{- end }}
 
+{{- define "wiz-broker.isWizApiClientVolumeMountEnabled" -}}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
+
+
 {{- define "wiz-broker.spec.common.volumeMounts" -}}
-{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+{{- if eq (include "wiz-broker.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
 - name: {{ include "wiz-common.volumes.apiClientName" . }}
   mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
   readOnly: true
@@ -128,7 +137,7 @@ Secrets names
 {{- end -}}
 
 {{- define "wiz-broker.spec.common.volumes" -}}
-{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+{{- if eq (include "wiz-broker.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
 - name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-broker.apiTokenSecretName" . | trim }}

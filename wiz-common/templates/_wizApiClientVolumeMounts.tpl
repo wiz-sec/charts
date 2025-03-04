@@ -5,7 +5,8 @@ api-client
 {{- define "wiz-common.isWizApiClientVolumeMountEnabled" -}}
   {{- $usePodCustomEnvironmentVariablesFile := index . 0 -}}
   {{- $wizApiTokensVolumeMount := index . 1 -}}
-  {{- if or $usePodCustomEnvironmentVariablesFile $wizApiTokensVolumeMount }}
+  {{- $globalWizApiTokensVolumeMount := index . 2 -}}
+  {{- if or $usePodCustomEnvironmentVariablesFile (coalesce $wizApiTokensVolumeMount $globalWizApiTokensVolumeMount "") }}
     false
   {{- else }}
     true
