@@ -71,12 +71,16 @@ httpProxyConfiguration:
 
 terminationGracePeriodSeconds: 30
 
+# Use when installing on OpenShift clusters to create a SecurityContextConstraint for our service-account
+openshift: false
+
+# Use when installing on OpenShift clusters to create a Service Account for the SecurityContextConstraint
 serviceAccount:
     create: false
 
 runners:
   container-registry:
-    enabled: false
+    enabled: true
   vcs-scheduled:
     enabled: false
     image:
