@@ -80,7 +80,7 @@ serviceAccount:
 
 runners:
   container-registry:
-    enabled: true
+    enabled: false
   vcs-scheduled:
     enabled: false
     image:
