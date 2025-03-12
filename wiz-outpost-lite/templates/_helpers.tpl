@@ -58,6 +58,38 @@ wiz.io/runner: {{ .runner | quote }}
 {{- end }}
 {{- end }}
 
+{{/*
+Determine runner type from runner name
+*/}}
+{{- define "wiz-outpost-lite.runnerType" -}}
+{{- if hasPrefix "remediation-" . -}}
+remediation-runner
+{{- else if hasPrefix "vcs-" . -}}
+vcs-runner
+{{- else if hasPrefix "container-registry" . -}}
+container-registry-runner
+{{- else -}}
+{{- fail (printf "Unknown runner type for %s" .) -}}
+{{- end -}}
+{{- end }}
+
+{{/*
+Merge values from different sources:
+1. Default values (from values.yaml)
+2. Runner type specific values (from container-registry-runner, vcs-runner, remediation-runner)
+3. Runner instance specific values (from runners.container-registry, runners.vcs-scheduled, etc.)
+*/}}
+{{- define "wiz-outpost-lite.mergedRunnerValues" -}}
+{{- $runner := .runner }}
+{{- $runnerType := include "wiz-outpost-lite.runnerType" $runner }}
+{{- $defaultValues := omit $.Values "runners" "container-registry-runner" "vcs-runner" "remediation-runner" }}
+{{- $runnerTypeValues := get $.Values $runnerType | default dict }}
+{{- $runnerInstanceValues := get ($.Values.runners) $runner | default dict }}
+{{/* Important: merge in the correct order to ensure runner instance values take precedence */}}
+{{- $mergedValues := merge (deepCopy $runnerInstanceValues) (deepCopy $runnerTypeValues) (deepCopy $defaultValues) }}
+{{- $mergedValues | toJson }}
+{{- end }}
+
 {{- define "wiz-outpost-lite.runners" -}}
 {{- $runnerValues := dict }}
 {{- range $runner, $values := $.Values.runners }}
@@ -65,22 +97,13 @@ wiz.io/runner: {{ .runner | quote }}
 {{/* e.g. containerRegistry -> container-registry */}}
 {{- $runner = $runner | kebabcase }}
 {{- $runnerID := get $values "runnerID" | default $runner }}
+{{- $runnerType := include "wiz-outpost-lite.runnerType" $runner }}
 
-{{/* e.g. remediation-aws-rds-003 -> outpost-lite-runner-remediation
-container-registry -> outpost-lite-runner-container-registry
-*/}}
-{{- $imageName := "" }}
-{{- if hasPrefix "remediation" $runner }}
-  {{- $imageName = "outpost-lite-runner-remediation" }}
-{{- else }}
-  {{- $imageName = dig "image" "name" (printf "outpost-lite-runner-%s" $runner) $values }}
-{{- end }}
-
-{{- $values = deepCopy $values }}
-{{- $values = merge $values (dict "image" (dict "name" $imageName)) }}
+{{/* Get merged values for this runner */}}
+{{- $mergedValues := include "wiz-outpost-lite.mergedRunnerValues" (dict "runner" $runner "Values" $.Values) | fromJson }}
 
 {{/* Unify with global .Values to be used inside a "with" statement */}}
-{{- $values = dict "runner" $runner "runnerID" $runnerID "Values" (merge $values (omit $.Values "runners")) -}}
+{{- $values = dict "runner" $runner "runnerID" $runnerID "Values" $mergedValues -}}
 {{- $runnerValues = set $runnerValues $runner $values }}
 {{- end }} {{/* range */}}
 

@@ -90,6 +90,8 @@ spec:
         app.kubernetes.io/instance: release-test
         wiz.io/runner: "vcs-event-triggered"
     spec:
+      securityContext:
+        {}
       restartPolicy: Always
       containers:
         - name: wiz-outpost-lite-vcs-event-triggered
@@ -233,6 +235,8 @@ spec:
         app.kubernetes.io/instance: release-test
         wiz.io/runner: "vcs-scheduled"
     spec:
+      securityContext:
+        {}
       restartPolicy: Always
       containers:
         - name: wiz-outpost-lite-vcs-scheduled
