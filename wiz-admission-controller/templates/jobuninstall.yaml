@@ -1,0 +1,123 @@
+{{ if .Values.wizUninstallJob.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "wiz-admission-controller-uninstall.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    wiz.io/component: "admission-controller-uninstall"
+    {{- include "wiz-admission-controller-uninstall.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    rollme.proxyHash: {{ include "wiz-admission-controller.proxyHash" . }}
+    rollme.wizApiTokenHash: {{ include "wiz-admission-controller.wizApiTokenHash" . }}
+    {{- with (.Values.wizUninstallJob.jobAnnotations) }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  {{- if .Values.wizUninstallJob.useJobTTL }}
+  ttlSecondsAfterFinished: 60
+  {{- end }}
+  manualSelector: true
+  selector:
+    matchLabels:
+      {{- include "wiz-admission-controller-uninstall.selectorLabels" . | nindent 6 }}
+  activeDeadlineSeconds: {{ .Values.wizUninstallJob.timeoutSeconds }}
+  backoffLimit: 1
+  template:
+    metadata:
+      {{- if (or .Values.global.podAnnotations .Values.podAnnotations .Values.wizUninstallJob.podAnnotations)}}
+      annotations:
+        {{- with .Values.global.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.wizUninstallJob.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      labels:
+        wiz.io/component: "admission-controller-uninstall"
+      {{- include "wiz-admission-controller-uninstall.labels" . | nindent 8 }}
+      {{- with .Values.global.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.wizUninstallJob.podAdditionalSpec }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: "Never"
+      securityContext:
+        {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
+          {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 8 }}
+        {{- else }}
+          {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- end }}
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      {{- end }}
+      volumes:
+        {{- include "wiz-admission-controller.spec.common.volumes" . | trim | nindent 8 }}
+        {{- with .Values.customVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.global.customVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-uninstall
+          securityContext:
+             {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+             {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 14 }}
+             {{- else }}
+             {{- toYaml .Values.securityContext | nindent 14 }}
+             {{- end }}
+          image: {{ include "wiz-admission-controller.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/usr/bin/wiz-admission-controller"
+            - "uninstall"
+          {{- include "wiz-admission-controller.spec.common.commandArgs" . | trim | nindent 10 }}
+          env:
+          {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          resources:
+            {{- include "wiz-admission-controller.resources" . | trim | nindent 12 }}
+          volumeMounts:
+            {{- include "wiz-admission-controller.spec.common.volumeMounts" . | trim | nindent 14 }}
+            {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts }}
+            {{- with .Values.customVolumeMounts }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with .Values.global.customVolumeMounts }}
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- end }}
+      {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (coalesce .Values.global.affinity .Values.affinity) }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if (or .Values.global.tolerations .Values.tolerations) }}
+      tolerations:
+        {{- with .Values.global.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+{{- end }}
+
