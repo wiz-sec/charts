@@ -50,6 +50,16 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller-uninstall.name" -}}
+{{- if .Values.wizUninstallJob.nameOverride }}
+{{- .Values.wizUninstallJob.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $suffix := "-uninstall" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+{{- end }}
+
 {{- define "wiz-admission-controller.wiz-hpa-enforcer.name" -}}
 {{- $suffix := "-hpa" -}}
 {{- $maxLength := int (sub 63 (len $suffix)) -}}
@@ -120,6 +130,14 @@ Wiz manager selector labels
 app.kubernetes.io/name: {{ include "wiz-admission-controller-manager.name" . }}
 {{- end }}
 
+{{/*
+Wiz uninstall selector labels
+*/}}
+{{- define "wiz-admission-controller-uninstall.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-admission-controller-uninstall.name" . }}
+{{- end }}
+
+
 {{- define "wiz-admission-controller-enforcement.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-admission-controller-enforcement.selectorLabels" . }}
@@ -133,6 +151,11 @@ app.kubernetes.io/name: {{ include "wiz-admission-controller-manager.name" . }}
 {{- define "wiz-admission-controller-manager.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-admission-controller-manager.selectorLabels" . }}
+{{- end }}
+
+{{- define "wiz-admission-controller-uninstall.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-admission-controller-uninstall.selectorLabels" . }}
 {{- end }}
 
 {{/*
@@ -419,21 +442,6 @@ false
 {{- if (or .Values.opaWebhook.customErrorMessage .Values.customErrorMessage) }}
 - name: WIZ_MISCONFIGURATION_CUSTOM_ERROR_MESSAGE
   value:  "{{ coalesce .Values.opaWebhook.customErrorMessage .Values.customErrorMessage }}"
-{{- end -}}
-{{- if  .Values.opaWebhook.enabled }}
-- name: WIZ_MISCONFIGURATION_WEBHOOK_CONFIG
-  value: |
-  {{ .Values.opaWebhook | toJson | nindent 4 }}
-{{- end -}}
-{{- if .Values.imageIntegrityWebhook.enabled }}
-- name: WIZ_IMAGE_INTEGRITY_WEBHOOK_CONFIG
-  value: |
-  {{ .Values.imageIntegrityWebhook | toJson | nindent 4 }}
-{{- end -}}
-{{- if .Values.kubernetesAuditLogsWebhook.enabled }}
-- name: WIZ_KUBERNETES_AUDIT_LOG_WEBHOOK_CONFIG
-  value: |
-  {{ .Values.kubernetesAuditLogsWebhook | toJson | nindent 4 }}
 {{- end -}}
 {{- if coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName }}
 - name: WIZ_CLUSTER_NAME

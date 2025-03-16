@@ -117,6 +117,16 @@ spec:
           - "--kubernetes-audit-logs-enabled=false"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          {{- if  .Values.opaWebhook.enabled }}
+          - name: WIZ_MISCONFIGURATION_WEBHOOK_CONFIG
+            value: |
+          {{- .Values.opaWebhook | toJson | nindent 14 }}
+          {{- end -}}
+          {{- if .Values.imageIntegrityWebhook.enabled }}
+          - name: WIZ_IMAGE_INTEGRITY_WEBHOOK_CONFIG
+            value: |
+          {{- .Values.imageIntegrityWebhook | toJson | nindent 14 }}
+          {{- end }}
           - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
             value: {{ .Values.imageIntegrityWebhook.patchImageDigestAnnotation | quote }}
            # For running pod with read only file system we write all the cache files to /var/cache volume mount, used by image integrity hook
