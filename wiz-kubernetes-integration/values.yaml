@@ -45,18 +45,22 @@ global:
 
     # Should a Secret be created by the chart or not.
     # Set this to false if you wish to create the Secret yourself or using another tool.
-    # The Secret should contain httpProxy, httpsProxy, noProxyAddress and caCertificate.
+    # The Secret should contain httpProxy, httpsProxy, noProxyAddress, caCertificate and clientCertificate.
     create: true
     secretName: "wiz-proxy" # The name of the proxy Secret.
     annotations: {} # Annotations to be set on the secret
-    
+
     httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
     httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
     noProxyAddress: # Comma or space-separated list of machine or domain names. Note: This does not affect the Sensor.
-    
+
     # Proxy CA certificate in PEM format. This is required for TLS intercept proxies
     # This value is currently only used by the wiz sensor.
     caCertificate: ""
+
+    # (optional) Proxy client certificate in PEM format. This is required for client certificate authentication.
+    # The file should contain a certificate and a private key in PEM format.
+    clientCertificate: ""
 
   image:
     registry: "" # Registry to get the container images from.
