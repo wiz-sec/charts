@@ -1798,20 +1798,6 @@ entries:
     - https://wiz-sec.github.io/charts/wiz-admission-controller-3.10.0-preview.1.tgz
     version: 3.10.0-preview.1
   - apiVersion: v2
-    appVersion: "2.9"
-    created: "2025-03-17T15:30:32.53888996Z"
-    dependencies:
-    - name: wiz-common
-      repository: https://wiz-sec.github.io/charts
-      version: 0.1.7
-    description: Wiz admission controller
-    digest: 67f94083afb3bda028fd973818ce75fda731c38bbb71563697937d4901985de6
-    name: wiz-admission-controller
-    type: application
-    urls:
-    - https://wiz-sec.github.io/charts/wiz-admission-controller-3.10.0-preview.tgz
-    version: 3.10.0-preview
-  - apiVersion: v2
     appVersion: "2.8"
     created: "2025-03-17T15:30:32.693254529Z"
     dependencies:
