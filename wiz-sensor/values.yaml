@@ -40,6 +40,9 @@ openshift: false
 # see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits .
 # there are also other small changes
 gkeAutopilot: false
+# Newer GKE autopilot clusters support the use of an allowlist. This is required for some options in the chart
+gkeAutopilotUseAllowlist: false
+gkeAutopilotAllowlist: wiz-sensor-v1 # changing this is usually not required
 
 # use a custom SELinux type that is required by flatcar Linux nodes, but is incompatible with some
 # other node types (like AWS bottlerocket)
@@ -298,7 +301,7 @@ daemonset:
     type: RollingUpdate
 
   # Time for which kubernetes waits for the sensor pod to terminate gracefully.
-  terminationGracePeriodSeconds: 90
+  terminationGracePeriodSeconds: 25
 
   resources:
     # resource values for the wiz sensor, without API security enabled
