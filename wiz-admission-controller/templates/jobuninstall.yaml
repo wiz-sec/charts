@@ -8,7 +8,7 @@ metadata:
     wiz.io/component: "admission-controller-uninstall"
     {{- include "wiz-admission-controller-uninstall.labels" . | nindent 4 }}
   annotations:
-    "helm.sh/hook": pre-delete
+    "helm.sh/hook": post-delete
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     rollme.proxyHash: {{ include "wiz-admission-controller.proxyHash" . }}
     rollme.wizApiTokenHash: {{ include "wiz-admission-controller.wizApiTokenHash" . }}
