@@ -60,6 +60,9 @@ httpProxyConfiguration:
   httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
   noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
+  # Proxy client certificate in PEM format. This is required for client certificate authentication.
+  # The file should contain a certificate and a private key in PEM format.
+  clientCertificate: ""
 
 # When Horizontal Pod Autoscaling (`hpa.enabled`) is enabled (`true`),
 # this field is discarded and set to an empty value.
@@ -549,6 +552,9 @@ global:
     httpProxy: ""
     httpsProxy: ""
     noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
+    # Proxy client certificate in PEM format. This is required for client certificate authentication.
+    # The file should contain a certificate and a private key in PEM format.
+    clientCertificate: ""
 
   image:
     registry: "" # Registry to get the container images from.

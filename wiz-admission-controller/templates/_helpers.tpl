@@ -394,6 +394,10 @@ false
 {{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
 {{ include "wiz-common.proxy.env" . | trim }}
+{{- if or .Values.global.httpProxyConfiguration.clientCertificate .Values.httpProxyConfiguration.clientCertificate }}
+- name: WIZ_HTTP_PROXY_CLIENT_CERT_PATH
+  value: "{{ include "wiz-common.proxy.dir" . }}/clientCertificate"
+{{- end }}
 {{- end }}
 - name: WIZ_ENV
   value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
