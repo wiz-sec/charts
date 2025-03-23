@@ -61,7 +61,7 @@ spec:
                 {{- else }}
                 {{- toYaml .Values.securityContext | nindent 16 }}
                 {{- end }}
-              image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              image: {{ include "wiz-admission-controller.image" . }}
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               command:
               - "/usr/bin/wiz-admission-controller"

@@ -327,9 +327,11 @@ spec:
           mountPath: /wiz-sensor-store/
         - name: tmp-store
           mountPath: /tmp/
+        {{- if not .Values.global.wizApiToken.wizApiTokensVolumeMount }}
         - name: api-client-secret
           mountPath: /api-client/
-        {{- if not .Values.gkeAutopilot }}
+        {{- end }}
+        {{- if and (not .Values.gkeAutopilot) (not .Values.global.wizApiToken.wizApiTokensVolumeMount) }}
         - name: api-endpoint-name-secret
           mountPath: /api-endpoint-name/
         {{- end }}
@@ -499,10 +501,12 @@ spec:
         - name: host-mount
           mountPath: /host
           readOnly: true
+        {{- if not .Values.global.wizApiToken.wizApiTokensVolumeMount }}
         - name: api-client-secret
           mountPath: /api-client/
         - name: api-endpoint-name-secret
           mountPath: /api-endpoint-name/
+        {{- end }}
         - name: sensor-scanner-shared-vol
           mountPath: /wiz-sensor-share/
         - name: sensor-scanner-tmp-store
@@ -543,6 +547,7 @@ spec:
           path: {{ .Values.daemonset.sensorHostCacheFolder }}
           type: DirectoryOrCreate
       {{- end }}
+      {{- if not .Values.global.wizApiToken.wizApiTokensVolumeMount }}
       - name: api-client-secret
         secret:
           secretName: {{ include "wiz-sensor.secretName" . }}
@@ -551,7 +556,8 @@ spec:
               path: clientId
             - key: clientToken
               path: clientToken
-      {{- if not .Values.gkeAutopilot }}
+      {{- end }}
+      {{- if and (not .Values.gkeAutopilot) (not .Values.global.wizApiToken.wizApiTokensVolumeMount) }}
       - name: api-endpoint-name-secret
         secret:
           secretName: {{ include "wiz-sensor.secretName" . }}

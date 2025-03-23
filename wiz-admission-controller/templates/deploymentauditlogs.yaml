@@ -101,6 +101,9 @@ spec:
           - "--image-integrity-enabled=false"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          - name: WIZ_KUBERNETES_AUDIT_LOG_WEBHOOK_CONFIG
+            value: |
+          {{- .Values.kubernetesAuditLogsWebhook | toJson | nindent 14 }}
           ## Enable debug webhook that only logs the request
           {{- if .Values.debugWebhook.enabled }}
           - name: WIZ_DEBUG_WEBHOOK_ENABLED
