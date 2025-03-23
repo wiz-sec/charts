@@ -498,21 +498,6 @@ wizManager:
     # If empty, a name is generated using the nameOverride
     name: ""
 
-wizUninstallJob:
-  enabled: true # Should the uninstall job be deployed.
-  nameOverride: "" # Override the uninstall job name.
-  timeoutSeconds: 300 # The timeout for the uninstall job in seconds.
-  # Toggle the TTL (Time to Live) mechanism for automatic cleanup of finished Jobs.
-  # Set to `true` to enable Kubernetes to automatically delete Jobs after they complete or fail, based on the `ttlSecondsAfterFinished` field.
-  # Set to `false` if using Argo CD to manage Job lifecycle with deletion hooks, as TTL-based cleanup can cause Application to appear OutOfSync.
-  # See: https://argo-cd.readthedocs.io/en/stable/user-guide/resource_hooks/#sync-status-with-jobsworkflows-with-time-to-live-ttl
-  useJobTTL: true
-  jobAnnotations: {}
-  podAnnotations: {}
-  podAdditionalSpec: {}
-
-
-
 # Global values to override chart values.
 global:
   nameOverride: "" # Override the release’s name.
