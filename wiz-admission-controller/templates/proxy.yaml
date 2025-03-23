@@ -5,7 +5,13 @@
 {{- if .Values.httpProxyConfiguration.enabled }}
 {{- if .Values.httpProxyConfiguration.create }}
   {{- if hasPrefix "https://" .Values.httpProxyConfiguration.httpsProxy }}
-    {{- fail "Error: httpsProxy must start with 'http://', https or any other protocol is not supported." }}
+    {{- if empty .Values.httpProxyConfiguration.clientCertificate }}
+      {{- fail "Error: HTTPS proxy requires a client certificate. Please provide clientCertificate in httpProxyConfiguration." }}
+    {{- end }}
+  {{- else }}
+    {{- if not (empty .Values.httpProxyConfiguration.clientCertificate) }}
+      {{- fail "Error: Client certificate is only supported for HTTPS proxies. Please remove clientCertificate or use an HTTPS proxy." }}
+    {{- end }}
   {{- end }}
 
 apiVersion: v1
@@ -24,5 +30,6 @@ stringData:
   httpProxy: {{ .Values.httpProxyConfiguration.httpProxy | quote }}
   httpsProxy: {{ .Values.httpProxyConfiguration.httpsProxy | quote }}
   noProxyAddress: {{ .Values.httpProxyConfiguration.noProxyAddress | quote }}
+  clientCertificate: {{ .Values.httpProxyConfiguration.clientCertificate | quote }}
 {{- end }}
 {{- end }}

@@ -60,6 +60,9 @@ httpProxyConfiguration:
   httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
   noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
+  # Proxy client certificate in PEM format. This is required for client certificate authentication.
+  # The file should contain a certificate and a private key in PEM format.
+  clientCertificate: ""
 
 # When Horizontal Pod Autoscaling (`hpa.enabled`) is enabled (`true`),
 # this field is discarded and set to an empty value.
@@ -495,21 +498,6 @@ wizManager:
     # If empty, a name is generated using the nameOverride
     name: ""
 
-wizUninstallJob:
-  enabled: true # Should the uninstall job be deployed.
-  nameOverride: "" # Override the uninstall job name.
-  timeoutSeconds: 300 # The timeout for the uninstall job in seconds.
-  # Toggle the TTL (Time to Live) mechanism for automatic cleanup of finished Jobs.
-  # Set to `true` to enable Kubernetes to automatically delete Jobs after they complete or fail, based on the `ttlSecondsAfterFinished` field.
-  # Set to `false` if using Argo CD to manage Job lifecycle with deletion hooks, as TTL-based cleanup can cause Application to appear OutOfSync.
-  # See: https://argo-cd.readthedocs.io/en/stable/user-guide/resource_hooks/#sync-status-with-jobsworkflows-with-time-to-live-ttl
-  useJobTTL: true
-  jobAnnotations: {}
-  podAnnotations: {}
-  podAdditionalSpec: {}
-
-
-
 # Global values to override chart values.
 global:
   nameOverride: "" # Override the release’s name.
@@ -549,6 +537,9 @@ global:
     httpProxy: ""
     httpsProxy: ""
     noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
+    # Proxy client certificate in PEM format. This is required for client certificate authentication.
+    # The file should contain a certificate and a private key in PEM format.
+    clientCertificate: ""
 
   image:
     registry: "" # Registry to get the container images from.
