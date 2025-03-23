@@ -1,0 +1,41 @@
+{{- range $values := (include "wiz-outpost-lite.runners" . | fromJson) }}
+{{- with merge $values (omit $ "Values") }}
+{{- if and .Values.openshift (eq .runner "container-registry") -}}
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: {{ include "wiz-outpost-lite.fullname" . }}-scc
+  labels: {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
+allowHostDirVolumePlugin: true
+allowPrivilegedContainer: true
+readOnlyRootFilesystem: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+requiredDropCapabilities: null
+groups: []
+priority: 0
+allowedCapabilities:
+  - SYS_ADMIN
+fsGroup:
+  type: RunAsAny
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: RunAsAny
+supplementalGroups:
+  type: RunAsAny
+seccompProfiles:
+  - '*'
+users:
+- system:serviceaccount:{{ .Release.Namespace }}:sa-{{ .runner }}
+volumes:
+  - downwardAPI
+  - emptyDir
+  - hostPath
+  - secret
+---
+{{- end }}
+{{- end }}
+{{- end }}
