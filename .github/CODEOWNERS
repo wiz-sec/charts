@@ -10,3 +10,4 @@
 /.circleci/ @wiz-sec/wiz-devops
 /.circleci/tests/ @wiz-sec/Wiz-Charts-Approvers
 /wiz-outpost-lite/**/* @yarinm
+/wiz-sensor/**/* @ariknem

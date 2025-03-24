@@ -46,6 +46,12 @@ dsimage/tag: {{ $dsimageparts._0 }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.gkeAutopilot }}
+autopilot.gke.io/no-connect: "true"
+{{- if .Values.gkeAutopilotUseAllowlist }}
+cloud.google.com/matching-allowlist: {{ .Values.gkeAutopilotAllowlist }}
+{{- end }}
+{{- end }}
 {{- if (coalesce .Values.global.commonLabels .Values.commonLabels .Values.daemonset.commonLabels) }}
 {{- range $key, $value := (coalesce .Values.global.commonLabels .Values.commonLabels .Values.daemonset.commonLabels) }}
 {{ $key }}: {{ tpl $value $ | quote }}
@@ -103,7 +109,9 @@ Secrets
 TODO: Backward compatibility - remove
 */}}
 {{- define "wiz-sensor.createSecret" -}}
-{{- if .Values.apikey -}}
+{{- if (or .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount) }}
+false
+{{- else if .Values.apikey -}}
 {{- default true .Values.apikey.create -}}
 {{- else if (hasKey .Values.wizApiToken "createSecret") -}}
 {{- .Values.wizApiToken.createSecret -}}

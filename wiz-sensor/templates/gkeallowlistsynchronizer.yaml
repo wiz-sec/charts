@@ -1,0 +1,11 @@
+{{- if .Values.gkeAutopilotUseAllowlist }}
+apiVersion: auto.gke.io/v1
+kind: AllowlistSynchronizer
+metadata:
+  name: wiz-sensor-allowlist-synchronizer
+  annotations:
+    helm.sh/hook: "pre-install,pre-upgrade"
+spec:
+  allowlistPaths:
+  - "Wiz/wiz-sensor/v1/*"
+{{- end }}

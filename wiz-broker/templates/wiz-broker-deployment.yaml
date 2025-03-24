@@ -127,8 +127,8 @@ spec:
           {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
           - name: CLI_FILES_AS_ARGS
           {{- $wizApiTokensPath := "" -}}
-          {{- if .Values.wizApiToken.wizApiTokensVolumeMount }}
-          {{- $wizApiTokensPath = .Values.wizApiToken.wizApiTokensVolumeMount -}}
+          {{- if coalesce .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount }}
+          {{- $wizApiTokensPath = coalesce .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount -}}
           {{- else }}
           {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
           {{- end }}

@@ -50,6 +50,16 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller-uninstall.name" -}}
+{{- if .Values.wizUninstallJob.nameOverride }}
+{{- .Values.wizUninstallJob.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $suffix := "-uninstall" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+{{- end }}
+
 {{- define "wiz-admission-controller.wiz-hpa-enforcer.name" -}}
 {{- $suffix := "-hpa" -}}
 {{- $maxLength := int (sub 63 (len $suffix)) -}}
@@ -120,6 +130,14 @@ Wiz manager selector labels
 app.kubernetes.io/name: {{ include "wiz-admission-controller-manager.name" . }}
 {{- end }}
 
+{{/*
+Wiz uninstall selector labels
+*/}}
+{{- define "wiz-admission-controller-uninstall.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-admission-controller-uninstall.name" . }}
+{{- end }}
+
+
 {{- define "wiz-admission-controller-enforcement.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-admission-controller-enforcement.selectorLabels" . }}
@@ -133,6 +151,11 @@ app.kubernetes.io/name: {{ include "wiz-admission-controller-manager.name" . }}
 {{- define "wiz-admission-controller-manager.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-admission-controller-manager.selectorLabels" . }}
+{{- end }}
+
+{{- define "wiz-admission-controller-uninstall.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-admission-controller-uninstall.selectorLabels" . }}
 {{- end }}
 
 {{/*
@@ -319,15 +342,24 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- end -}}
 
 {{- define "wiz-admission-controller.isWizApiTokenSecretEnabled" -}}
-  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
+  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
     true
   {{- else }}
     false
   {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller.isWizApiClientVolumeMountEnabled" -}}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
+
+
 {{- define "wiz-admission-controller.spec.common.volumeMounts" -}}
-{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+{{- if eq (include "wiz-admission-controller.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
 - name: {{ include "wiz-common.volumes.apiClientName" . }}
   mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
   readOnly: true
@@ -338,7 +370,7 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- end -}}
 
 {{- define "wiz-admission-controller.spec.common.volumes" -}}
-{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+{{- if eq (include "wiz-admission-controller.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
 - name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
   secret:
     secretName: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
@@ -353,8 +385,8 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
 - name: CLI_FILES_AS_ARGS
 {{- $wizApiTokensPath := "" -}}
-{{- if .Values.wizApiToken.wizApiTokensVolumeMount }}
-  {{- $wizApiTokensPath = .Values.wizApiToken.wizApiTokensVolumeMount -}}
+{{- if coalesce .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount }}
+  {{- $wizApiTokensPath = coalesce .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount -}}
 {{- else }}
   {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
 {{- end }}
@@ -362,6 +394,10 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- end }}
 {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
 {{ include "wiz-common.proxy.env" . | trim }}
+{{- if or .Values.global.httpProxyConfiguration.clientCertificate .Values.httpProxyConfiguration.clientCertificate }}
+- name: WIZ_HTTP_PROXY_CLIENT_CERT_PATH
+  value: "{{ include "wiz-common.proxy.dir" . }}/clientCertificate"
+{{- end }}
 {{- end }}
 - name: WIZ_ENV
   value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
@@ -410,21 +446,6 @@ Clean the list of deployments for the auto-update flag, removing quotes and brac
 {{- if (or .Values.opaWebhook.customErrorMessage .Values.customErrorMessage) }}
 - name: WIZ_MISCONFIGURATION_CUSTOM_ERROR_MESSAGE
   value:  "{{ coalesce .Values.opaWebhook.customErrorMessage .Values.customErrorMessage }}"
-{{- end -}}
-{{- if  .Values.opaWebhook.enabled }}
-- name: WIZ_MISCONFIGURATION_WEBHOOK_CONFIG
-  value: |
-  {{ .Values.opaWebhook | toJson | nindent 4 }}
-{{- end -}}
-{{- if .Values.imageIntegrityWebhook.enabled }}
-- name: WIZ_IMAGE_INTEGRITY_WEBHOOK_CONFIG
-  value: |
-  {{ .Values.imageIntegrityWebhook | toJson | nindent 4 }}
-{{- end -}}
-{{- if .Values.kubernetesAuditLogsWebhook.enabled }}
-- name: WIZ_KUBERNETES_AUDIT_LOG_WEBHOOK_CONFIG
-  value: |
-  {{ .Values.kubernetesAuditLogsWebhook | toJson | nindent 4 }}
 {{- end -}}
 {{- if coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName }}
 - name: WIZ_CLUSTER_NAME

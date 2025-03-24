@@ -25,10 +25,16 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      securityContext:
-        {{- include "wiz-outpost-lite.podSecurityContext" . | nindent 8 }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: sa-{{ .runner }}
+      {{- end }}
+      {{- if or (hasKey .Values "podSecurityContext") (hasKey .Values "podSecurityContextOverride") }}
+      securityContext:
+        {{- if hasKey .Values "podSecurityContextOverride"}}
+        {{- toYaml .Values.podSecurityContextOverride | nindent 8 }}
+        {{- else }}
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- end }}
       {{- end }}
       restartPolicy: Always
       {{- if .Values.affinity }}
@@ -144,8 +150,14 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if or (hasKey .Values "containerSecurityContext") (hasKey .Values "containerSecurityContextOverride") }}
           securityContext:
-            {{- include "wiz-outpost-lite.containerSecurityContext" . | nindent 12 }}
+            {{- if hasKey .Values "containerSecurityContextOverride"}}
+            {{- toYaml .Values.containerSecurityContextOverride | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+            {{- end }}
+          {{- end}}
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir

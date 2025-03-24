@@ -13,6 +13,7 @@ rules:
     resources: [
       "namespaces", "nodes", "daemonsets", "replicasets", "deployments",
       "jobs", "cronjobs", "statefulsets", "replicationcontrollers", "serviceaccounts",
+      "nodes/proxy"
     ]
     verbs: ["get", "list", "watch"]
 {{- end -}}
