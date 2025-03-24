@@ -2,4 +2,4 @@ apiVersion: v2
 name: wiz-common
 description: Common library chart for shared templates
 type: library
-version: 0.1.8
+version: 0.1.9
