@@ -72,7 +72,41 @@ httpProxyConfiguration:
 terminationGracePeriodSeconds: 30
 
 serviceAccount:
-    create: false
+  create: false
+
+modules:
+  vcs:
+    containerSecurityContext:
+      capabilities:
+        add:
+        - SYS_ADMIN
+      seLinuxOptions:
+        type: spc_t
+  container-registry:
+    containerSecurityContext:
+      capabilities:
+        add:
+        - SYS_ADMIN
+      seLinuxOptions:
+        type: spc_t
+  remediation:
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    containerSecurityContext:
+      capabilities:
+        drop:
+        - ALL
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      seLinuxOptions:
+        type: container_t
 
 runners:
   container-registry:

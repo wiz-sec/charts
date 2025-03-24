@@ -66,11 +66,23 @@ wiz.io/runner: {{ .runner | quote }}
 {{- $runner = $runner | kebabcase }}
 {{- $runnerID := get $values "runnerID" | default $runner }}
 
+{{/* Get module type based on runner name - using a variable since we can't define a template inside another template */}}
+{{- $moduleType := "" }}
+{{- if hasPrefix "remediation-" $runner -}}
+  {{- $moduleType = "remediation" }}
+{{- else if eq $runner "container-registry" -}}
+  {{- $moduleType = "container-registry" }}
+{{- else if hasPrefix "vcs-" $runner -}}
+  {{- $moduleType = "vcs" }}
+{{- else -}}
+  {{- fail (printf "Invalid runner name: %s. Runner name must start with 'remediation-', 'vcs-', or be 'container-registry'" $runner) -}}
+{{- end }}
+
 {{/* e.g. remediation-aws-rds-003 -> outpost-lite-runner-remediation
 container-registry -> outpost-lite-runner-container-registry
 */}}
 {{- $imageName := "" }}
-{{- if hasPrefix "remediation" $runner }}
+{{- if eq $moduleType "remediation" }}
   {{- $imageName = "outpost-lite-runner-remediation" }}
 {{- else }}
   {{- $imageName = dig "image" "name" (printf "outpost-lite-runner-%s" $runner) $values }}
@@ -78,6 +90,9 @@ container-registry -> outpost-lite-runner-container-registry
 
 {{- $values = deepCopy $values }}
 {{- $values = merge $values (dict "image" (dict "name" $imageName)) }}
+
+{{/* Unify with module specific values */}}
+{{- $values = merge $values (index $.Values.modules $moduleType) }}
 
 {{/* Unify with global .Values to be used inside a "with" statement */}}
 {{- $values = dict "runner" $runner "runnerID" $runnerID "Values" (merge $values (omit $.Values "runners")) -}}
