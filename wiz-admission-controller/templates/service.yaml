@@ -36,3 +36,6 @@ spec:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-kubernetes-audit-log-collector.selectorLabels" . | nindent 4 }}
 {{- end }}
+
+
+
