@@ -114,10 +114,14 @@ modules:
 
 runners:
   container-registry:
-    enabled: false  
+    enabled: false
   vcs-scheduled:
     enabled: false
+    image:
+      name: outpost-lite-runner-vcs
   vcs-event-triggered:
     enabled: false
+    image:
+      name: outpost-lite-runner-vcs
     concurrency: 4
     terminationGracePeriodSeconds: 300 # 5 minutes

@@ -93,7 +93,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: wiz-outpost-lite-vcs-event-triggered
-          image: "wizio.azurecr.io/outpost-lite-runner-vcs-event-triggered:0.1-latest"
+          image: "wizio.azurecr.io/outpost-lite-runner-vcs:0.1-latest"
           command: [ "/entrypoint"]
           imagePullPolicy: Always
           env:
@@ -236,7 +236,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: wiz-outpost-lite-vcs-scheduled
-          image: "wizio.azurecr.io/outpost-lite-runner-vcs-scheduled:0.1-latest"
+          image: "wizio.azurecr.io/outpost-lite-runner-vcs:0.1-latest"
           command: [ "/entrypoint"]
           imagePullPolicy: Always
           env:

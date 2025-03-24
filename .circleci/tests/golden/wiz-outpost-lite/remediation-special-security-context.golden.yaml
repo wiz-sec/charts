@@ -1,17 +1,4 @@
 ---
-# Source: wiz-outpost-lite/templates/serviceaccount.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: sa-remediation-aws-rds-003
-  labels:
-    helm.sh/chart: "GOLDEN_STATIC_VALUE"
-    app.kubernetes.io/name: wiz-outpost-lite
-    app.kubernetes.io/instance: release-test
-    wiz.io/runner: "remediation-aws-rds-003"
-    app.kubernetes.io/version: "0.1.0"
-    app.kubernetes.io/managed-by: Helm
----
 # Source: wiz-outpost-lite/templates/credentials.secret.yaml
 apiVersion: v1
 kind: Secret
@@ -79,9 +66,6 @@ spec:
         app.kubernetes.io/instance: release-test
         wiz.io/runner: "remediation-aws-rds-003"
     spec:
-      serviceAccountName: sa-remediation-aws-rds-003
-      securityContext:
-        runAsNonRoot: false
       restartPolicy: Always
       containers:
         - name: wiz-outpost-lite-remediation-aws-rds-003
@@ -174,6 +158,8 @@ spec:
             capabilities:
               add:
               - SYS_ADMIN
+            seLinuxOptions:
+              type: spc_t
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir

@@ -4,14 +4,12 @@ agent:
   clientSecret: "secret-2"
   outpostId: "my-outpost-id"
 
-# Using the new hierarchical structure
 runners:
   remediation-aws-rds-003:
     enabled: true
-    module: remediation  # Reference to the module type
-    # Using the override fields
-    podSecurityContextOverride:
+    podSecurityContext:
       runAsNonRoot: false
+    # Using the override fields
     containerSecurityContextOverride:
       capabilities:
         add:
