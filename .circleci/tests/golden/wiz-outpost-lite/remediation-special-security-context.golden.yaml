@@ -79,9 +79,9 @@ spec:
         app.kubernetes.io/instance: release-test
         wiz.io/runner: "remediation-aws-rds-003"
     spec:
+      serviceAccountName: sa-remediation-aws-rds-003
       securityContext:
         runAsNonRoot: false
-      serviceAccountName: sa-remediation-aws-rds-003
       restartPolicy: Always
       containers:
         - name: wiz-outpost-lite-remediation-aws-rds-003

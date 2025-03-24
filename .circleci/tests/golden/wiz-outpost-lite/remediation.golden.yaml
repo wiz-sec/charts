@@ -79,12 +79,12 @@ spec:
         app.kubernetes.io/instance: release-test
         wiz.io/runner: "remediation-aws-rds-003"
     spec:
+      serviceAccountName: sa-remediation-aws-rds-003
       securityContext:
         fsGroup: 1000
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
-      serviceAccountName: sa-remediation-aws-rds-003
       restartPolicy: Always
       containers:
         - name: wiz-outpost-lite-remediation-aws-rds-003
