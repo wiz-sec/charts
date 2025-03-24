@@ -71,15 +71,23 @@ httpProxyConfiguration:
 
 terminationGracePeriodSeconds: 30
 
-# Use when installing on OpenShift clusters to create a SecurityContextConstraint for our service-account
+# Set to true on specific runner when installing on OpenShift clusters to create a SecurityContextConstraint for our service-account
 openshift: false
 
-# Use when installing on OpenShift clusters to create a Service Account for the SecurityContextConstraint
+openshiftOverrides:
+  serviceAccount:
+    create: true
+  containerSecurityContext:
+    privileged: true
+
 serviceAccount:
   create: false
 
 modules:
   vcs:
+    enabled: false
+    image:
+      name: outpost-lite-runner-vcs
     containerSecurityContext:
       capabilities:
         add:
@@ -87,6 +95,7 @@ modules:
       seLinuxOptions:
         type: spc_t
   container-registry:
+    enabled: false
     containerSecurityContext:
       capabilities:
         add:
@@ -94,6 +103,7 @@ modules:
       seLinuxOptions:
         type: spc_t
   remediation:
+    enabled: false
     serviceAccount:
       create: true
     podSecurityContext:
@@ -115,15 +125,6 @@ modules:
         type: container_t
 
 runners:
-  container-registry:
-    enabled: false
-  vcs-scheduled:
-    enabled: false
-    image:
-      name: outpost-lite-runner-vcs
   vcs-event-triggered:
-    enabled: false
-    image:
-      name: outpost-lite-runner-vcs
     concurrency: 4
     terminationGracePeriodSeconds: 300 # 5 minutes

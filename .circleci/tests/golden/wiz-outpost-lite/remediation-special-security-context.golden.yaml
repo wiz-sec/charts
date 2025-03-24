@@ -81,6 +81,11 @@ spec:
         wiz.io/runner: "remediation-aws-rds-003"
     spec:
       serviceAccountName: sa-remediation-aws-rds-003
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: false
+        runAsUser: 1000
       restartPolicy: Always
       containers:
         - name: wiz-outpost-lite-remediation-aws-rds-003
@@ -170,11 +175,17 @@ spec:
             requests:
               memory: 1024M
           securityContext:
+            allowPrivilegeEscalation: false
             capabilities:
-              add:
-              - SYS_ADMIN
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
             seLinuxOptions:
-              type: spc_t
+              type: container_t
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir

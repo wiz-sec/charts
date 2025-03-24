@@ -89,13 +89,22 @@ container-registry -> outpost-lite-runner-container-registry
 {{- end }}
 
 {{- $values = deepCopy $values }}
-{{- $values = merge $values (dict "image" (dict "name" $imageName)) }}
 
 {{/* Unify with module specific values */}}
-{{- $values = merge $values (index $.Values.modules $moduleType) }}
+{{- $values = mergeOverwrite (deepCopy (get $.Values.modules $moduleType)) $values }}
+{{- $values = merge $values (dict "image" (dict "name" $imageName)) }}
 
-{{/* Unify with global .Values to be used inside a "with" statement */}}
-{{- $values = dict "runner" $runner "runnerID" $runnerID "Values" (merge $values (omit $.Values "runners")) -}}
+{{/* Unify with global values */}}
+{{- $values = mergeOverwrite (deepCopy (omit $.Values "runners")) $values }}
+
+{{/* Overwrite openshift values if runner set openshift to true */}}
+{{- if and $values.openshift }}
+{{- $values = merge $values $.Values.openshiftOverrides }}
+{{- end }}
+
+{{/* Generate final values be used inside a "with" statement */}}
+{{- $values = dict "runner" $runner "runnerID" $runnerID "Values" $values -}}
+
 {{- $runnerValues = set $runnerValues $runner $values }}
 {{- end }} {{/* range */}}
 
