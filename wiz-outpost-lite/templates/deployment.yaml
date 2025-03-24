@@ -28,14 +28,6 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: sa-{{ .runner }}
       {{- end }}
-      {{- if or (hasKey .Values "podSecurityContext") (hasKey .Values "podSecurityContextOverride") }}
-      securityContext:
-        {{- if hasKey .Values "podSecurityContextOverride"}}
-        {{- toYaml .Values.podSecurityContextOverride | nindent 8 }}
-        {{- else }}
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-        {{- end }}
-      {{- end }}
       restartPolicy: Always
       {{- if .Values.affinity }}
       affinity:
@@ -150,14 +142,15 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or (hasKey .Values "containerSecurityContext") (hasKey .Values "containerSecurityContextOverride") }}
           securityContext:
-            {{- if hasKey .Values "containerSecurityContextOverride"}}
-            {{- toYaml .Values.containerSecurityContextOverride | nindent 12 }}
-            {{- else }}
-            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+            {{- if .Values.openshift }}
+            privileged: true
             {{- end }}
-          {{- end}}
+            capabilities:
+              add:
+              - SYS_ADMIN
+            seLinuxOptions:
+              type: spc_t
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir
