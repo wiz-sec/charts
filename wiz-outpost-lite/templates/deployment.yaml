@@ -152,8 +152,8 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- if or (hasKey .Values "containerSecurityContext") (hasKey .Values "containerSecurityContext") }}
           securityContext:
-            {{- if hasKey .Values "containerSecurityContext"}}
-            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+            {{- if hasKey .Values "containerSecurityContextOverride"}}
+            {{- toYaml .Values.containerSecurityContextOverride | nindent 12 }}
             {{- else }}
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
             {{- end }}
