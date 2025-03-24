@@ -94,6 +94,8 @@ modules:
       seLinuxOptions:
         type: spc_t
   remediation:
+    serviceAccount:
+      create: true
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 1000
