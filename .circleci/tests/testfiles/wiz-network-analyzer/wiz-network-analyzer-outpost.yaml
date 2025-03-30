@@ -1,7 +1,0 @@
-outpostId: 0b5857fb-29e1-405e-bf69-abcd1234ab64
-
-wizApiToken:
-  clientId: "client-id"
-  clientToken: "client-secret"
-
-wizRegion: "us-east-2"
