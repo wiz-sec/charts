@@ -74,7 +74,6 @@ spec:
   template:
     metadata:
       annotations:
-        container.apparmor.security.beta.kubernetes.io/wiz-outpost-lite-remediation-aws-rds-003: unconfined
       labels:
         app.kubernetes.io/name: wiz-outpost-lite
         app.kubernetes.io/instance: release-test

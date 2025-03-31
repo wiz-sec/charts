@@ -33,6 +33,9 @@ fullnameOverride: ""
 
 podAnnotations: {}
 
+podAnnotationsApparmor:
+  enabled: false
+
 resources:
   limits:
     memory: 4396M
@@ -83,11 +86,16 @@ openshiftOverrides:
 serviceAccount:
   create: false
 
+podSecurityContext: {}
+containerSecurityContext: {}
+
 modules:
   vcs:
     enabled: false
     image:
       name: outpost-lite-runner-vcs
+    podAnnotationsApparmor:
+      enabled: true
     containerSecurityContext:
       capabilities:
         add:
@@ -96,6 +104,8 @@ modules:
         type: spc_t
   container-registry:
     enabled: false
+    podAnnotationsApparmor:
+      enabled: true
     containerSecurityContext:
       capabilities:
         add:
@@ -104,6 +114,8 @@ modules:
         type: spc_t
   remediation:
     enabled: false
+    podAnnotationsApparmor:
+      enabled: false
     serviceAccount:
       create: true
     podSecurityContext:

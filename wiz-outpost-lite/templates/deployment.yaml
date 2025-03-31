@@ -15,10 +15,12 @@ spec:
   template:
     metadata:
       annotations:
-      {{- with .Values.podAnnotations }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
+        {{- if .Values.podAnnotationsApparmor.enabled }}
         container.apparmor.security.beta.kubernetes.io/{{ printf "%s-%s" .Chart.Name .runner }}: unconfined
+        {{- end }}
       labels:
         {{- include "wiz-outpost-lite.selectorLabels" . | nindent 8 }}
         {{- with .Values.labels }}
@@ -28,13 +30,9 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: sa-{{ .runner }}
       {{- end }}
-      {{- if or (hasKey .Values "podSecurityContext") (hasKey .Values "podSecurityContextOverride") }}
+      {{- with .Values.podSecurityContext }}
       securityContext:
-        {{- if hasKey .Values "podSecurityContextOverride"}}
-        {{- toYaml .Values.podSecurityContextOverride | nindent 8 }}
-        {{- else }}
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always
       {{- if .Values.affinity }}
@@ -150,13 +148,9 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- if or (hasKey .Values "containerSecurityContext") (hasKey .Values "containerSecurityContext") }}
+          {{- with .Values.containerSecurityContext }}
           securityContext:
-            {{- if hasKey .Values "containerSecurityContextOverride"}}
-            {{- toYaml .Values.containerSecurityContextOverride | nindent 12 }}
-            {{- else }}
-            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-            {{- end }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
             - mountPath: /var/wiz

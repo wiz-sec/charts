@@ -102,6 +102,14 @@ container-registry -> outpost-lite-runner-container-registry
 {{- $values = merge $values $.Values.openshiftOverrides }}
 {{- end }}
 
+{{- if hasKey $values "containerSecurityContextOverride"}}
+{{- $values = set $values "containerSecurityContext" $values.containerSecurityContextOverride }}
+{{- end }}
+
+{{- if hasKey $values "podSecurityContextOverride"}}
+{{- $values = set $values "podSecurityContext" $values.podSecurityContextOverride }}
+{{- end }}
+
 {{/* Generate final values be used inside a "with" statement */}}
 {{- $values = dict "runner" $runner "runnerID" $runnerID "Values" $values -}}
 
