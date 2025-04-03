@@ -104,9 +104,9 @@ container-registry -> outpost-lite-runner-container-registry
 
 {{/* Add apparmor pod annotation if given */}}
 {{- if ne $values.podAnnotationsApparmor "" }}
-{{- $key := printf "container.apparmor.security.beta.kubernetes.io/%s-%s" $.Chart.Name $runner }}
-{{- $appArmor := dict $key $values.podAnnotationsApparmor }}
-{{- $values = merge $values (dict "podAnnotations" $appArmor) }}
+{{- $appArmorKey := printf "container.apparmor.security.beta.kubernetes.io/%s-%s" $.Chart.Name $runner }}
+{{- $appArmorDict := dict $appArmorKey $values.podAnnotationsApparmor }}
+{{- $values = merge $values (dict "podAnnotations" $appArmorDict) }}
 {{- end }}
 
 {{- if hasKey $values "containerSecurityContextOverride"}}
