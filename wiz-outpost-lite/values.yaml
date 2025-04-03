@@ -33,7 +33,7 @@ fullnameOverride: ""
 
 podAnnotations: {}
 
-podAnnotationsApparmor: ""
+apparmorProfile: ""
 
 resources:
   limits:
@@ -93,7 +93,7 @@ modules:
     enabled: false
     image:
       name: outpost-lite-runner-vcs
-    podAnnotationsApparmor: unconfined
+    apparmorProfile: unconfined
     containerSecurityContext:
       capabilities:
         add:
@@ -102,7 +102,7 @@ modules:
         type: spc_t
   container-registry:
     enabled: false
-    podAnnotationsApparmor: unconfined
+    apparmorProfile: unconfined
     containerSecurityContext:
       capabilities:
         add:
