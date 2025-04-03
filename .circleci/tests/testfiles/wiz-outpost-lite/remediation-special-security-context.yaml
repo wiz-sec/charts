@@ -7,3 +7,10 @@ agent:
 runners:
   remediation-aws-rds-003:
     enabled: true
+    podSecurityContext:
+      runAsNonRoot: false
+    # Using the override fields
+    containerSecurityContextOverride:
+      capabilities:
+        add:
+        - SYS_ADMIN

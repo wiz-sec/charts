@@ -5,5 +5,9 @@ agent:
   outpostId: "my-outpost-id"
 
 runners:
-  remediation-aws-rds-003:
+  vcs-scheduled:
     enabled: true
+    openshift: true
+  vcs-event-triggered:
+    enabled: true
+    openshift: true
