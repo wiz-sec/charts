@@ -295,6 +295,8 @@ daemonset:
   #- key: node.ocs.openshift.io/storage
   #  value: "true"
   #  effect: NoSchedule
+  #- key: CriticalAddonsOnly
+  #  operator: Exists
 
   # Default strategy to update the daemonset
   updateStrategy:
