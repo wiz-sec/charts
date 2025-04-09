@@ -168,7 +168,7 @@ spec:
       {{- end }}
       volumes:
         - name: working-dir
-          emptyDir: {}
+          emptyDir: {{ toYaml .Values.emptyDir | nindent 10 }}
         - name: ca-certificate
           secret:
             defaultMode: 420

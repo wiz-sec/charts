@@ -71,6 +71,9 @@ httpProxyConfiguration:
 
 terminationGracePeriodSeconds: 30
 
+# Configuration for the emptyDir volume for using persistant volume
+emptyDir: {}
+
 # Use when installing on OpenShift clusters to create a SecurityContextConstraint for our service-account
 openshift: false
 
