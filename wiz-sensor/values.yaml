@@ -83,6 +83,9 @@ oldAppArmorAnnotation: false
 # check by enabling this option.
 disableImageVersionCheck: false
 
+# add appropriate fsGroup/supplementalGroups to the pod's securityContext
+useFsGroup: false
+
 clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
 subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
 clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
@@ -295,6 +298,8 @@ daemonset:
   #- key: node.ocs.openshift.io/storage
   #  value: "true"
   #  effect: NoSchedule
+  #- key: CriticalAddonsOnly # allow running on EKS auto-mode system nodes
+  #  operator: Exists
 
   # Default strategy to update the daemonset
   updateStrategy:
