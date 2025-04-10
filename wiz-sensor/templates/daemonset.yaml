@@ -37,6 +37,11 @@ spec:
         {{- end }}
 
     spec:
+      {{- if .Values.setFsGroup }}
+      securityContext:
+        fsGroup: {{- if .Values.privileged }} 0 {{- else }} 2202 {{- end }}
+      {{- end }}
+
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "wiz-sensor.serviceAccountName" . }}
       {{- end }}
@@ -376,6 +381,31 @@ spec:
         {{- with .Values.image.diskScanArgs }}
         args:
           {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        {{- if and (not .Values.gkeAutopilot) .Values.livenessProbe.enabled }}
+        livenessProbe:
+          exec:
+            command:
+            - "/bin/onprem-agent"
+            - "version"
+{{ toYaml .Values.livenessProbe.config | indent 10 }}
+        {{- end }}
+        {{- if and (not .Values.gkeAutopilot) .Values.startupProbe.enabled }}
+        startupProbe:
+          exec:
+            command:
+            - "/bin/onprem-agent"
+            - "version"
+{{ toYaml .Values.startupProbe.config | indent 10 }}
+        {{- end }}
+        {{- if and (not .Values.gkeAutopilot) .Values.readinessProbe.enabled }}
+        readinessProbe:
+          exec:
+            command:
+            - "/bin/onprem-agent"
+            - "version"
+{{ toYaml .Values.readinessProbe.config | indent 10 }}
         {{- end }}
 
         securityContext:
