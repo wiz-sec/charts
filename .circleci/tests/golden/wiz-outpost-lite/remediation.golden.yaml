@@ -73,7 +73,6 @@ spec:
       wiz.io/runner: "remediation-aws-rds-003"
   template:
     metadata:
-      annotations:
       labels:
         app.kubernetes.io/name: wiz-outpost-lite
         app.kubernetes.io/instance: release-test
