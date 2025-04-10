@@ -33,6 +33,8 @@ fullnameOverride: ""
 
 podAnnotations: {}
 
+apparmorProfile: ""
+
 resources:
   limits:
     memory: 4396M
@@ -71,23 +73,65 @@ httpProxyConfiguration:
 
 terminationGracePeriodSeconds: 30
 
-# Use when installing on OpenShift clusters to create a SecurityContextConstraint for our service-account
+# Set to true on specific runner when installing on OpenShift clusters to create a SecurityContextConstraint for our service-account
 openshift: false
 
-# Use when installing on OpenShift clusters to create a Service Account for the SecurityContextConstraint
-serviceAccount:
-    create: false
+openshiftOverrides:
+  serviceAccount:
+    create: true
+  containerSecurityContext:
+    privileged: true
 
-runners:
+serviceAccount:
+  create: false
+
+podSecurityContext: {}
+containerSecurityContext: {}
+
+modules:
+  vcs:
+    enabled: false
+    image:
+      name: outpost-lite-runner-vcs
+    apparmorProfile: unconfined
+    containerSecurityContext:
+      capabilities:
+        add:
+        - SYS_ADMIN
+      seLinuxOptions:
+        type: spc_t
   container-registry:
     enabled: false
-  vcs-scheduled:
+    apparmorProfile: unconfined
+    containerSecurityContext:
+      capabilities:
+        add:
+        - SYS_ADMIN
+      seLinuxOptions:
+        type: spc_t
+  remediation:
     enabled: false
-    image:
-      name: outpost-lite-runner-vcs
+    serviceAccount:
+      create: true
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    containerSecurityContext:
+      capabilities:
+        drop:
+        - ALL
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      seLinuxOptions:
+        type: container_t
+
+runners:
   vcs-event-triggered:
-    enabled: false
-    image:
-      name: outpost-lite-runner-vcs
     concurrency: 4
     terminationGracePeriodSeconds: 300 # 5 minutes

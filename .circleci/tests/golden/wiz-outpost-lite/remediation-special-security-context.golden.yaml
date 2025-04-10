@@ -82,7 +82,7 @@ spec:
       securityContext:
         fsGroup: 1000
         runAsGroup: 1000
-        runAsNonRoot: true
+        runAsNonRoot: false
         runAsUser: 1000
       restartPolicy: Always
       containers:
@@ -173,17 +173,9 @@ spec:
             requests:
               memory: 1024M
           securityContext:
-            allowPrivilegeEscalation: false
             capabilities:
-              drop:
-              - ALL
-            privileged: false
-            readOnlyRootFilesystem: true
-            runAsGroup: 1000
-            runAsNonRoot: true
-            runAsUser: 1000
-            seLinuxOptions:
-              type: container_t
+              add:
+              - SYS_ADMIN
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir

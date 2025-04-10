@@ -14,11 +14,15 @@ spec:
       {{- include "wiz-outpost-lite.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- if or .Values.podAnnotations .Values.apparmorProfile }}
       annotations:
-      {{- with .Values.podAnnotations }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.apparmorProfile }}
+        container.apparmor.security.beta.kubernetes.io/{{ printf "%s-%s" .Chart.Name .runner }}: {{ .Values.apparmorProfile }}
+        {{- end }}
       {{- end }}
-        container.apparmor.security.beta.kubernetes.io/{{ printf "%s-%s" .Chart.Name .runner }}: unconfined
       labels:
         {{- include "wiz-outpost-lite.selectorLabels" . | nindent 8 }}
         {{- with .Values.labels }}
@@ -27,6 +31,10 @@ spec:
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: sa-{{ .runner }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always
       {{- if .Values.affinity }}
@@ -142,15 +150,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.containerSecurityContext }}
           securityContext:
-            {{- if .Values.openshift }}
-            privileged: true
-            {{- end }}
-            capabilities:
-              add:
-              - SYS_ADMIN
-            seLinuxOptions:
-              type: spc_t
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir
