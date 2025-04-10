@@ -14,12 +14,12 @@ spec:
       {{- include "wiz-outpost-lite.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- if or (not (empty .Values.podAnnotations)) (ne .Values.apparmorProfile "") }}
+      {{- if or .Values.podAnnotations .Values.apparmorProfile }}
       annotations:
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- if ne .Values.apparmorProfile "" }}
+        {{- if .Values.apparmorProfile }}
         container.apparmor.security.beta.kubernetes.io/{{ printf "%s-%s" .Chart.Name .runner }}: {{ .Values.apparmorProfile }}
         {{- end }}
       {{- end }}
