@@ -18,8 +18,8 @@ spec:
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- with .Values.podAnnotationsApparmor }}
-        {{- toYaml . | nindent 8 }}
+        {{- if ne .Values.apparmorProfile "" }}
+        container.apparmor.security.beta.kubernetes.io/{{ printf "%s-%s" .Chart.Name .runner }}: {{ .Values.apparmorProfile }}
         {{- end }}
       labels:
         {{- include "wiz-outpost-lite.selectorLabels" . | nindent 8 }}
