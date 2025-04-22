@@ -10,7 +10,11 @@
     {{- end -}}
   {{- end -}}
 
-  {{- if not (semverCompare ">=3.10.0" $helmVersion) }}
+  {{/* Parse the version string and reconstruct a clean version with just major.minor.patch */}}
+  {{- $parsedVersion := semver $helmVersion }}
+  {{- $cleanVersion := printf "%d.%d.%d" $parsedVersion.Major $parsedVersion.Minor $parsedVersion.Patch }}
+
+  {{- if not (semverCompare ">=3.10.0" $cleanVersion) }}
     {{- printf "WARNING: This chart is intended for Helm client version 3.10.0 or higher. Found %s\n" $helmVersion | quote }}
   {{- end -}}
 {{- end -}}
