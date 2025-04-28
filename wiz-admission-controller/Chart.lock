@@ -1,0 +1,6 @@
+dependencies:
+- name: wiz-common
+  repository: https://wiz-sec.github.io/charts
+  version: 0.1.8
+digest: sha256:6cd916776a6d6746f7ba920c966bbb3abb8895ede3f091b15b67cf7779ebe499
+generated: "2025-04-20T13:36:25.522743+03:00"
