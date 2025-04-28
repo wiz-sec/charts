@@ -103,4 +103,4 @@ internetAccessCertificates:
 extraEnv: {}
 
 httpProxyConfiguration:
-  name: wiz-http-proxy-configuration
+  name:    wiz-http-proxy-configuration
