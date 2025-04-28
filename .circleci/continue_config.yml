@@ -173,8 +173,6 @@ workflows:
     jobs:
       - package_and_index_charts:
           name: Package and index charts
-          requires:
-            - "Validate chart"
           filters:
             branches:
               only:
