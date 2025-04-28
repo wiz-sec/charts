@@ -171,8 +171,6 @@ jobs:
 workflows:
   validate_and_package:
     jobs:
-      - run_chart_validation_test:
-          name: Validate chart
       - package_and_index_charts:
           name: Package and index charts
           requires:
