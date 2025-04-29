@@ -75,6 +75,8 @@ debug: false
 
 # Force old-style annotation for AppArmor profile (compatibility with some gitops tools)
 oldAppArmorAnnotation: false
+# Force the use of an appArmorProfile element in the securityContext, and remove the old-style annotation, even for old Kubernetes versions
+newAppArmorAnnotation: false
 
 # The Sensor will sometimes cause its container to restart in order to check if a new docker image
 # version is available. Such a restart puts some increased load on the API-server and the node.
@@ -90,6 +92,10 @@ clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
 subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
 clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
 subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
+
+# A fixed version of the definitions to use. Won't upgrade even when a new version is available.
+# Format: major.minor.patch
+fixedDefsVersion: ""
 
 # enable liveness probe for the sensor container
 livenessProbe:
@@ -234,6 +240,9 @@ image:
   repository: sensor
   args: {}
   tag: "v1"
+  # The sha256 of the image to use. Should not be used normally. Exists for compatibility with GKE Autopilot
+  # with private registries. This overrides the tag variable when set.
+  sha256: ""
   pullPolicy: Always
   # the default is "wizio.azurecr.io/wiz-app/wiz-workload-scanner:v1"
   diskScanRepository: wiz-app/wiz-workload-scanner

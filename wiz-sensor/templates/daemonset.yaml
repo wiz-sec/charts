@@ -25,7 +25,7 @@ spec:
         prometheus.io/port: "{{ .Values.metricsPort }}"
       {{- end }}
 
-      {{- if or (semverCompare "<1.31" $kubeVersion) (.Values.oldAppArmorAnnotation) }}
+      {{- if and (not .Values.newAppArmorAnnotation) (or (semverCompare "<1.31" $kubeVersion) (.Values.oldAppArmorAnnotation)) }}
         container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
         {{- if .Values.diskScan.enabled }}
         container.apparmor.security.beta.kubernetes.io/wiz-disk-scanner: unconfined
@@ -78,7 +78,11 @@ spec:
       containers:
       - name: wiz-sensor
         {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
+          {{- if .Values.image.sha256 }}
+        image: {{ printf "%s/%s@sha256:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.sha256 }}
+          {{- else }}
         image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.tag }}
+          {{- end }}
         {{- else }}
         image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
         {{- end }}
@@ -156,7 +160,7 @@ spec:
         {{- end }}
           readOnlyRootFilesystem: true
 
-          {{- if and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation) }}
+          {{- if or (.Values.newAppArmorAnnotation) (and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation)) }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
@@ -316,6 +320,10 @@ spec:
         {{- with .Values.global.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- if .Values.fixedDefsVersion }}
+        - name: FIXED_DEFS_VERSION
+          value: {{ .Values.fixedDefsVersion }}
+        {{- end }}
 
         volumeMounts:
         {{- with .Values.customVolumeMounts }}
@@ -428,7 +436,7 @@ spec:
           runAsGroup: 2202
         {{- end }}
           readOnlyRootFilesystem: true
-          {{- if and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation) }}
+          {{- if or (.Values.newAppArmorAnnotation) (and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation)) }}
           appArmorProfile:
             type: Unconfined
           {{- end }}
