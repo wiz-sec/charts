@@ -149,10 +149,36 @@ log levels
 {{- end }}
 {{- end }}
 
+{{/*
+Registry Helpers
+*/}}
+{{- define "wiz-sensor.knownRegistries" -}}
+{{- list "wizio.azurecr.io" "wiziosensor.azurecr.io" "registry.wiz.io" | toJson -}}
+{{- end -}}
+
+{{/*
+Rule Validation
+*/}}
 {{- define "validate.values" -}}
 {{- if .Values.exposeMetrics }}
 {{- if .Values.hostNetwork }}
 {{- fail "Cannot set hostNetwork to true when exposeMetrics is set to true" }}
 {{- end }}
 {{- end }}
+
+{{- if .Values.fixedDefsVersion }}
+{{- if not (regexMatch "^[0-9]+\\.[0-9]+\\.[0-9]+$" .Values.fixedDefsVersion) }}
+{{- fail "fixedDefsVersion must be in major.minor.patch format (e.g. 1.2.3)" }}
+{{- end }}
+{{- end }}
+
+
+{{- if .Values.gkeAutopilotUseAllowlist }}
+{{- if empty .Values.image.sha256 }}
+{{- if not (has .Values.image.registry (include "wiz-sensor.knownRegistries" . | fromJsonArray)) }}
+{{- fail "If using gkeAutopilotUseAllowlist and a private repo, make sure to set the image.sha256 value to a specific version" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
 {{- end }}

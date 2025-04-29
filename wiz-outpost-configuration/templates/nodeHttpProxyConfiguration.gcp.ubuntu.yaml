@@ -72,6 +72,7 @@ metadata:
   name: node-initializer
   labels:
     app: default-init
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -81,8 +82,13 @@ spec:
   template:
     metadata:
       labels:
+        {{- include "wiz-outpost-configuration.labels" . | nindent 8 }}
         name: node-initializer
         app: default-init
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       hostPID: true
       volumes:

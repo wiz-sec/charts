@@ -1,0 +1,163 @@
+
+{{- if .Values.networkAnalyzer.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  {{- if .Values.networkAnalyzer.rollingUpdate }}
+  name: "{{ .Values.networkAnalyzer.name }}-{{ now | unixEpoch }}"
+  {{else}}
+  name: "{{ .Values.networkAnalyzer.name }}"
+  {{- end }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+  annotations:
+    "meta.helm.sh/release-name": "{{ .Release.Name }}"
+    "meta.helm.sh/release-namespace": "{{ .Release.Namespace }}"
+    "helm.sh/hook": "pre-install,pre-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  ttlSecondsAfterFinished: 0
+  manualSelector: true
+  selector:
+    matchLabels:
+      {{- include "wiz-outpost-configuration.selectorLabels" . | nindent 6 }}
+  backoffLimit: 1
+  template:
+    metadata:
+      {{- with (coalesce .Values.podAnnotations) }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "wiz-outpost-configuration.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "wiz-outpost-configuration.serviceAccountName" . | trim }}
+      restartPolicy: "Never"
+      securityContext:
+        fsGroup: 1000
+        supplementalGroups:
+          - 1000
+      containers:
+        - name: wiz-network-analyzer
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            privileged: false
+            allowPrivilegeEscalation: false
+          image: "{{ .Values.networkAnalyzer.image.repository }}/{{ .Values.networkAnalyzer.image.namePrefix}}:{{ .Values.networkAnalyzer.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.networkAnalyzer.image.pullPolicy }}
+          command:
+            - "wiz-network-analyzer"
+          args:
+            - analyze
+            - --output
+            - /tmp
+            {{- with .Values.networkAnalyzer.outpostId }}
+            - --outpost-id
+            - {{ . | quote }}
+            {{- end }}
+            - --region
+            - {{ .Values.networkAnalyzer.wizRegion }}
+            {{- with .Values.networkAnalyzer.forceHttp1 }}
+            - --http1
+            {{- end }}
+          env:
+          - name: LOG_LEVEL
+            value: "info"
+          {{- with .Values.networkAnalyzer.env }}
+          - name: ENV
+            value: {{ . | quote }}
+          {{- end}}
+          {{- with .Values.networkAnalyzer.outpostId }}
+          - name: WIZ_OUTPOST_ID
+            value: {{ . | quote }}
+          {{- end }}
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agentCredsSecretName }}
+                key: clientId
+          - name: WIZ_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agentCredsSecretName }}
+                key: clientSecret
+          - name: WIZ_DATA_CENTER
+            value: {{ .Values.networkAnalyzer.dataCenter | quote }}
+          - name: http_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: HTTP_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: https_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: HTTPS_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: no_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: NO_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: SSL_CERT_DIR
+            value: "/usr/local/share/ca-certificates/:/certificates/"
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-dir
+          {{- if not .Values.networkAnalyzer.outpostId }}
+          - name: secrets
+            mountPath: /mnt/secrets/
+            readOnly: true
+          {{- end }}
+          resources:
+            {{- toYaml .Values.networkAnalyzer.resources | nindent 12 }}
+      volumes:
+      - name: tmp-dir
+        emptyDir: { }
+      - name: ca-certificate
+        secret:
+          defaultMode: 420
+          secretName: {{ .Values.httpProxyConfiguration.name | quote }}
+          items:
+            - key: caCertificate
+              path: root.crt
+          optional: true
+      {{- if not .Values.networkAnalyzer.outpostId }}
+      - name: secrets
+        projected:
+          sources:
+            - secret:
+                name: {{ .Values.agentCredsSecretName }}
+                items:
+                  - key: privateKey
+                    path: WIZ_PRIVATE_KEY
+      {{- end}}
+{{- end}}

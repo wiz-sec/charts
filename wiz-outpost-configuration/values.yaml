@@ -48,3 +48,23 @@ serviceAccount:
   # The name of the service account to use.
   # If empty, a name is generated using the fullname template
   name: ""
+
+networkAnalyzer:
+  enabled: false
+  name: wiz-network-analyzer
+  outpostId: ""
+  wizRegion: ""
+  env: ""
+  dataCenter: ""
+  forceHttp1: false
+  image:
+    registry: public-registry.wiz.io/wiz-app
+    repository: wiz-network-analyzer
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "0.1.3"
+
+  podAnnotations: {}
+  imagePullSecrets: []
+  resources: {}
+  rollingUpdate: true
