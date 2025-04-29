@@ -15,6 +15,10 @@ httpProxyConfiguration:
   #   --- BEGIN CERTIFICATE ---
   #   replaceme
   #   --- END CERTIFICATE ---
+  # clientCertificate: |
+  #   --- BEGIN CERTIFICATE ---
+  #   replaceme
+  #   --- END CERTIFICATE ---
 
 agent:
   enabled: false
