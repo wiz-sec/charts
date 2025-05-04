@@ -289,7 +289,6 @@ scaleDown:
 {{- end -}}
 {{- end -}}
 
-
 {{- define "wiz-admission-controller.autoUpdate.deployments" -}}
 {{- $list := list -}}
 {{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
