@@ -149,21 +149,6 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-kubernetes-integration
-      - when:
-          condition:
-            and:
-              - not << pipeline.parameters.wiz-kubernetes-integration >> # Skipping auto update wiz-kubernetes-integration chart if user update it manually
-              - or:
-                - << pipeline.parameters.wiz-admission-controller >>
-                - << pipeline.parameters.wiz-sensor >>
-                - << pipeline.parameters.wiz-kubernetes-connector >>
-          steps:
-            - run:
-                name: Trigger update for wiz kubernetes integration chart
-                command: |
-                  pushd ~/project/charts/wiz-kubernetes-integration
-                  bash  ~/project/charts/.circleci/update_chart_version.sh
-                  popd
       - run:
           name: Run always
           command: echo "Done!" # Hack for empty runs
