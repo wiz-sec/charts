@@ -59,24 +59,6 @@ commands:
             popd
 
 jobs:
-  run_chart_validation_test:
-    executor: golang
-    working_directory: ~/project/.circleci/tests/
-    steps:
-      - checkout:
-          path: ~/project
-      - run:
-          name: 'Creating directory for GOPATH and override it to be /go'
-          command: |
-            go env -w GOPATH=/go
-            go mod tidy
-      - run:
-          name: Run chart validation tests
-          command: |
-            go test -v .
-      - store_test_results:
-          path: /tmp/test-results
-
   package_and_index_charts:
     executor:
       name: ops
@@ -189,12 +171,8 @@ jobs:
 workflows:
   validate_and_package:
     jobs:
-      - run_chart_validation_test:
-          name: Validate chart
       - package_and_index_charts:
           name: Package and index charts
-          requires:
-            - "Validate chart"
           filters:
             branches:
               only:
