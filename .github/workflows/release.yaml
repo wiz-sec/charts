@@ -1,0 +1,102 @@
+name: tag version of resources for v3 pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  discover-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      any_changed: ${{ steps.set-matrix.outputs.any_changed }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # https://github.com/actions/checkout/releases/tag/v4.2.2
+      with:
+        fetch-depth: 0
+
+    - name: set matrix
+      id: set-matrix
+      run: |
+        CHANGED_FILES="$(git diff --name-only HEAD^ HEAD)"
+        CHANGED_CHART_DIRS="$(echo "$CHANGED_FILES" | grep -Eo '^[^.][^/]+' | sort -u)"
+        echo "changes: ${CHANGED_CHART_DIRS}"
+        CHANGES_MATRIX=()
+        for change in $CHANGED_CHART_DIRS; do
+          slug="$(echo "$change" | sed -r 's/[^a-zA-Z0-9_]+/-/g' | sed -r s/^-+\|-+$//g | tr '[:upper:]' '[:lower:]')"
+          CHANGES_MATRIX+=("$(
+            jq -ncM '$ARGS.named' \
+            --arg chart "$change"
+          )")
+        done
+        echo "CHANGES_MATRIX: ${CHANGES_MATRIX[*]}"
+        matrix_length="${#CHANGES_MATRIX[@]}"
+        if [[ "$matrix_length" -gt 0 ]]; then
+          echo "any_changed=true" | tee -a "$GITHUB_OUTPUT"
+        else
+          echo "any_changed=false" | tee -a "$GITHUB_OUTPUT"
+        fi
+        # https://stackoverflow.com/questions/26808855/how-to-format-a-bash-array-as-a-json-array
+        MATRIX="$(printf '%s\n' "${CHANGES_MATRIX[@]}" | sort -u | jq -sc . )"
+        echo "matrix=${MATRIX}" | tee -a "$GITHUB_OUTPUT"
+
+  tag-components-version:
+    name: tag components version
+    needs: discover-tags
+    strategy:
+      matrix:
+        include: ${{ fromJSON(needs.discover-tags.outputs.matrix) }}
+    concurrency:
+      group: tag-${{ matrix.chart }}
+    runs-on: ubuntu-latest
+    if: ${{ needs.discover-tags.outputs.any_changed == 'true' }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # https://github.com/actions/checkout/releases/tag/v4.2.2
+        with:
+          fetch-depth: 0
+      - name: get chart slug
+        id: get-chart-slug
+        run: |
+          slug="$(echo "${{ matrix.chart }}" | sed -r 's/[^a-zA-Z0-9_]+/-/g' | sed -r s/^-+\|-+$//g | tr '[:upper:]' '[:lower:]')"
+          echo "chart_slug=${slug}" >> "$GITHUB_OUTPUT"
+
+      - name: Bump version
+        # TODO: this is in order to enable branch-builds..
+        if: ${{ github.ref == 'refs/heads/master' || github.ref == 'master' || github.ref == 'refs/heads/main' || github.ref == 'main' }}
+        id: github-tag-action
+        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b # https://github.com/mathieudutour/github-tag-action/releases/tag/v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: master,main
+          tag_prefix: ${{ format('{0}-', steps.get-chart-slug.outputs.chart_slug) }}
+          dry_run: true
+          fetch_all_tags: true
+
+
+      - name: Set version
+        id: artifact_version
+        env:
+          VERSION: ${{ steps.github-tag-action.outputs.new_version }}
+          REF: ${{ github.ref }}
+          PREFIX: ${{ matrix.prefix }}
+        run: |
+          if [[ -z "$VERSION" ]]; then
+            date_string="$(date --utc +'%Y%m%d%H%M%S')"
+            ref_slug="$(echo "$GITHUB_REF_NAME" | sed -r 's/[^a-zA-Z0-9]+/-/g' | sed -r s/^-+\|-+$//g | tr '[:upper:]' '[:lower:]')"
+            VERSION="${PREFIX}-0.0.1-${ref_slug}.${GITHUB_SHA:0:7}+${date_string}"
+          fi
+          echo "github.ref: ${REF}"
+          echo "Artifact Version: ${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+      - name: tag version
+        if: ${{ github.ref == 'refs/heads/master' || github.ref == 'master' || github.ref == 'refs/heads/main' || github.ref == 'main'}}
+        run: |
+          echo "github.ref: ${GITHUB_REF}"
+          echo "Artifact Version: ${VERSION}"
+          git tag "${VERSION}"
