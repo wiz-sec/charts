@@ -14,15 +14,17 @@ metadata:
   annotations:
     "meta.helm.sh/release-name": "{{ .Release.Name }}"
     "meta.helm.sh/release-namespace": "{{ .Release.Namespace }}"
-    "helm.sh/hook": "pre-install,pre-upgrade"
-    "helm.sh/hook-delete-policy": "before-hook-creation"
+    {{- if .Values.networkAnalyzer.failDeploymentOnFailure }}
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    {{- end }}
 spec:
-  ttlSecondsAfterFinished: 0
+  backoffLimit: 0  # Fail fast if the job fails
+  ttlSecondsAfterFinished: 3600
   manualSelector: true
   selector:
     matchLabels:
       {{- include "wiz-outpost-configuration.selectorLabels" . | nindent 6 }}
-  backoffLimit: 1
   template:
     metadata:
       {{- with (coalesce .Values.podAnnotations) }}
@@ -51,7 +53,7 @@ spec:
             runAsGroup: 1000
             privileged: false
             allowPrivilegeEscalation: false
-          image: "{{ .Values.networkAnalyzer.image.repository }}/{{ .Values.networkAnalyzer.image.namePrefix}}:{{ .Values.networkAnalyzer.image.tag | default .Chart.AppVersion }}"
+          image: {{ include "wiz-network-analyzer.image" . }}
           imagePullPolicy: {{ .Values.networkAnalyzer.image.pullPolicy }}
           command:
             - "wiz-network-analyzer"
