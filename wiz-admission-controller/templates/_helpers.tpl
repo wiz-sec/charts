@@ -442,10 +442,18 @@ false
 {{- if (or .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage) }}
 - name: WIZ_IMAGE_INTEGRITY_CUSTOM_ERROR_MESSAGE
   value:  "{{ coalesce .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage }}"
+{{- if (or .Values.imageIntegrityWebhook.customErrorMessageMode .Values.customErrorMessageMode) }}
+- name: WIZ_IMAGE_INTEGRITY_CUSTOM_ERROR_MESSAGE_MODE
+  value:  "{{ coalesce .Values.imageIntegrityWebhook.customErrorMessageMode .Values.customErrorMessageMode }}"
+{{- end -}}
 {{- end -}}
 {{- if (or .Values.opaWebhook.customErrorMessage .Values.customErrorMessage) }}
 - name: WIZ_MISCONFIGURATION_CUSTOM_ERROR_MESSAGE
   value:  "{{ coalesce .Values.opaWebhook.customErrorMessage .Values.customErrorMessage }}"
+{{- if (or .Values.opaWebhook.customErrorMessageMode .Values.customErrorMessageMode) }}
+- name: WIZ_MISCONFIGURATION_CUSTOM_ERROR_MESSAGE_MODE
+  value:  "{{ coalesce .Values.opaWebhook.customErrorMessageMode .Values.customErrorMessageMode }}"
+{{- end -}}
 {{- end -}}
 {{- if coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName }}
 - name: WIZ_CLUSTER_NAME
