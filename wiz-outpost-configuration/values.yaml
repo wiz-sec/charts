@@ -12,13 +12,13 @@ httpProxyConfiguration:
   #   - replaceme
   #   - replaceme2
   # caCertificate: |
-  #   --- BEGIN CERTIFICATE ---
-  #   replaceme
-  #   --- END CERTIFICATE ---
+  #   ----- BEGIN CERTIFICATE -----
+  #   replace me
+  #   ----- END CERTIFICATE -----
   # clientCertificate: |
-  #   --- BEGIN CERTIFICATE ---
-  #   replaceme
-  #   --- END CERTIFICATE ---
+  #   ----- BEGIN CERTIFICATE -----
+  #   replace me
+  #   ----- END CERTIFICATE -----
 
 agent:
   enabled: false
