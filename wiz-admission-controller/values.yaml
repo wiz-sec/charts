@@ -128,7 +128,11 @@ webhook:
     name: "" # Name of the Certificate secret.
     annotations: {} # Annotations of the Certificate secret.
 
-customErrorMessage: "" # Custom error message to prepend to the returned error message when the admission check fails (If opaWebhook.customErrorMessage or imageIntegrityWebhook.customErrorMessage is set, it will take precedence).
+customErrorMessage: ""            # Specifies a custom error message for admission review failures.
+                                  # This message will be overridden if a webhook-specific customErrorMessage is set.
+customErrorMessageMode: "prepend" # Defines how 'customErrorMessage' is applied:
+                                  # "prepend": Adds the custom message before the default error message.
+                                  # "override": Replaces the default error message entirely with the custom message.
 
 opaWebhook:
   enabled: true
@@ -174,7 +178,12 @@ opaWebhook:
   secret: # Deprecated, use `webhook.secret` instead
     annotations: {}
 
-  customErrorMessage: "" # Custom error message to prepend to the returned error message when the OPA admission check fails.
+  customErrorMessage: ""      # Specifies a custom error message for OPA admission check failures.
+                              # If set, this overrides the top-level 'customErrorMessage'.
+  customErrorMessageMode: ""  # Defines how 'opaWebhook.customErrorMessage' is applied:
+                              # "prepend": Adds the custom message before the default OPA error message.
+                              # "override": Replaces the default OPA error message entirely with the custom message.
+                              # If empty, the top-level 'customErrorMessageMode' will be used.
 
 imageIntegrityWebhook:
   enabled: false
@@ -213,7 +222,13 @@ imageIntegrityWebhook:
   cacheImageVerifyTTL: 5m # The TTL of the cache for the image verification. The cache is used to avoid verifying the same image multiple times.
 
   patchImageDigestAnnotation: true # If true, annotate the pod with mapping between tag->digest.
-  customErrorMessage: "" # Custom error message to prepend to the returned error message when the image integrity check fails.
+
+  customErrorMessage: ""      # Specifies a custom error message for image integrity check failures.
+                              # If set, this overrides the top-level 'customErrorMessage'.
+  customErrorMessageMode: ""  # Defines how 'imageIntegrityWebhook.customErrorMessage' is applied:
+                              # "prepend": Adds the custom message before the default image integrity error message.
+                              # "override": Replaces the default image integrity error message entirely with the custom message.
+                              # If empty, the top-level 'customErrorMessageMode' will be used.
 
 # This webhooks sends the audit logs to Wiz, and should never block any requests.
 kubernetesAuditLogsWebhook:
