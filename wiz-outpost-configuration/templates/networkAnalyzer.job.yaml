@@ -20,7 +20,7 @@ metadata:
     {{- end }}
 spec:
   backoffLimit: 0  # Fail fast if the job fails
-  ttlSecondsAfterFinished: 3600
+  ttlSecondsAfterFinished: 30
   manualSelector: true
   selector:
     matchLabels:
