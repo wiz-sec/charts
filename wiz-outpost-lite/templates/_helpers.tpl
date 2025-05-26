@@ -68,14 +68,14 @@ wiz.io/runner: {{ .runner | quote }}
 
 {{/* Get module type based on runner name - using a variable since we can't define a template inside another template */}}
 {{- $moduleType := "" }}
-{{- if hasPrefix "remediation-" $runner -}}
+{{- if hasPrefix "rem-" $runner -}}
   {{- $moduleType = "remediation" }}
 {{- else if eq $runner "container-registry" -}}
   {{- $moduleType = "container-registry" }}
 {{- else if hasPrefix "vcs-" $runner -}}
   {{- $moduleType = "vcs" }}
 {{- else -}}
-  {{- fail (printf "Invalid runner name: %s. Runner name must start with 'remediation-', 'vcs-', or be 'container-registry'" $runner) -}}
+  {{- fail (printf "Invalid runner name: %s. Runner name must start with 'rem-', 'vcs-', or be 'container-registry'" $runner) -}}
 {{- end }}
 
 {{/* e.g. remediation-aws-rds-003 -> outpost-lite-runner-remediation
