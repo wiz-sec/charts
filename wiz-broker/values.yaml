@@ -128,6 +128,11 @@ httpProxyConfiguration:
   httpsProxy: "" # http(s)://user:password@your-proxy:port (user, password and port are optional)
   noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
 
+  # (optional) Proxy client certificate in PEM format. This is required for client certificate authentication.
+  # The file should contain a certificate and a private key in PEM format.
+  clientCertificate: ""
+
+
 # Specifies whether the broker is managed by Wiz or not.
 # Do not edit manually.
 managed:
