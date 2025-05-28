@@ -57,11 +57,11 @@ oss:
   bucketName:
 
 image:
-  repository: public-registry.wiz.io
+  repository: wiziopublic.azurecr.io
   namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "f50b5d3cc33ed261561fa3241899788e195ff0ba-multiarch"
+  tag: "ec953f5a66aab4c8e195dfda12bdbaf26a24224a-multiarch"
 
 imagePullSecrets: []
 nameOverride: ""

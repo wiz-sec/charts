@@ -11,9 +11,8 @@ spec:
       {{- include "git-proxy.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      annotations:
-        wiz.io/service-version: {{ .Values.image.tag | quote }}
       {{- with .Values.podAnnotations }}
+      annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
