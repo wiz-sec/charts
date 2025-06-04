@@ -176,7 +176,7 @@ spec:
             {{- if .Values.flatcarLinuxNodes }}
             type: "unconfined_t"
             {{- else }}
-            type: "spc_t"
+            type: {{ .Values.seLinuxType }}
             {{- end }}
 
         env:
@@ -430,6 +430,7 @@ spec:
             - FOWNER # Access filesystem with overlayFS.
             - CHOWN # Access filesystem with overlayFS.
             - SETPCAP # Drop capabilities when not needed.
+            - SYS_PTRACE # Fine-tune OOM behavior
           privileged: false
           runAsNonRoot: true
           runAsUser: 2202
@@ -450,8 +451,10 @@ spec:
             level: "s0"
             {{- if .Values.flatcarLinuxNodes }}
             type: "unconfined_t"
+            {{- else if .Values.diskScan.bottlerocketMode }}
+            type: "super_t"
             {{- else }}
-            type: "spc_t"
+            type: {{ .Values.seLinuxType }}
             {{- end }}
 
         env:
