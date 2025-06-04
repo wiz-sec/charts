@@ -23,6 +23,9 @@ diskScan:
   config: {}
   # Overriding default name for runtime config name. Default "{.Release.Name}-disk-scan-config"
   configName: ""
+  # Use a custom SELinux type that is required by AWS bottlerocket nodes, but is incompatible with some
+  # other node types
+  bottlerocketMode: false
 
 # Sensor-based API security solution
 apiSecurity:
@@ -42,11 +45,15 @@ openshift: false
 gkeAutopilot: false
 # Newer GKE autopilot clusters support the use of an allowlist. This is required for some options in the chart
 gkeAutopilotUseAllowlist: false
-gkeAutopilotAllowlist: wiz-sensor-v1 # changing this is usually not required
+gkeAutopilotAllowlist: wiz-sensor-v2
 
 # use a custom SELinux type that is required by flatcar Linux nodes, but is incompatible with some
 # other node types (like AWS bottlerocket)
 flatcarLinuxNodes: false
+
+# specify a custom SELinux type under the container's "seLinuxOptions" security context. note that
+# in case "flatcarLinuxNodes" is set, this won't be used.
+seLinuxType: "spc_t"
 
 # Set the cluster name in the Wiz portal. Will override the native cloud name. (optional)
 sensorClusterName: ""
@@ -85,8 +92,8 @@ newAppArmorAnnotation: false
 # check by enabling this option.
 disableImageVersionCheck: false
 
-# add appropriate fsGroup/supplementalGroups to the pod's securityContext
-useFsGroup: false
+# add appropriate fsGroup to the pod's securityContext
+setFsGroup: false
 
 clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
 subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
@@ -108,7 +115,7 @@ livenessProbe:
     # timeout for liveness probe
     timeoutSeconds: 30
     # number of failures before sensor pod is considered unhealthy
-    failureThreshold: 5
+    failureThreshold: 10
 
 # startup probe for the sensor container
 startupProbe:
@@ -121,7 +128,7 @@ startupProbe:
     # timeout for startup probe
     timeoutSeconds: 30
     # number of failures before sensor pod is considered unhealthy
-    failureThreshold: 5
+    failureThreshold: 10
 
 # readiness probe for the sensor container
 readinessProbe:
@@ -134,7 +141,7 @@ readinessProbe:
     # timeout for readiness probe
     timeoutSeconds: 30
     # number of failures before sensor pod is considered not ready
-    failureThreshold: 5
+    failureThreshold: 10
 
 # the API key identifying this installation (for comm with Wiz portal)
 wizApiToken:
