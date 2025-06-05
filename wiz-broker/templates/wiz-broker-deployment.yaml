@@ -3,6 +3,8 @@
 {{ $connectorDataFileName := "data" }}
 {{ $connectorDataFilePath := printf "%s/%s" $mountPath "data" }}
 {{ $mtlsPath := "/etc/mtls" }}
+{{ $caCertificateMountPath := "/usr/local/share/ca-certificates" }}
+{{ $customCertificateFileName := "ca-certificates.crt" }}
 {{ $clientCertificateFileName := "client.cert" }}
 {{ $clientPrivateKeyFileName := "client.key" }}
 apiVersion: apps/v1
@@ -65,7 +67,7 @@ spec:
             secretName: {{ include "wiz-broker.caCertificateSecretName" . | trim }}
             items:
               - key: caCertificate
-                path: target.crt
+                path: {{ $customCertificateFileName }}
         {{- end }}
         {{- if .Values.mtls.enabled }}
         - name: mtls
@@ -100,7 +102,7 @@ spec:
             readOnly: true
           {{- if .Values.caCertificate.enabled }}
           - name: ca-certificate
-            mountPath: /usr/local/share/ca-certificates
+            mountPath: {{ $caCertificateMountPath }}
             readOnly: true
           {{- end }}
           {{- if .Values.mtls.enabled }}
@@ -156,6 +158,10 @@ spec:
           {{- if .Values.skipTlsVerify }}
           - name: DISABLE_TLS_VALIDATION
             value: "true"
+          {{- end }}
+          {{- if .Values.caCertificate.enabled }}
+          - name: CA_CERT_PATH
+            value: {{ printf "%s/%s" $caCertificateMountPath $customCertificateFileName }}
           {{- end }}
           {{- if .Values.mtls.enabled }}
           - name: CLIENT_CERT_PATH

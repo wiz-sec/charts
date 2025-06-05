@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 3.3.14
+version: 3.3.15
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -27,7 +27,7 @@ dependencies:
   - name: wiz-broker
     repository: https://wiz-sec.github.io/charts
 #    repository: "file://../wiz-broker" # Use this line to test the chart locally
-    version: "2.3.11"
+    version: "2.3.12"
     condition: wiz-broker.enabled
   - name: wiz-common
     version: "0.1.9"
