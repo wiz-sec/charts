@@ -135,3 +135,8 @@ runners:
   vcs-event-triggered:
     concurrency: 4
     terminationGracePeriodSeconds: 300 # 5 minutes
+
+encryption:
+  create: false
+  secretName: "" # defaults to wiz-encryption-key-<outpostID>
+  privateKey: ""

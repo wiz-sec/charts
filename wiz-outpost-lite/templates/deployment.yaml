@@ -157,6 +157,11 @@ spec:
           volumeMounts:
             - mountPath: /var/wiz
               name: working-dir
+            {{- if or .Values.encryption.privateKey .Values.encryption.secretName }}
+            - mountPath: /mnt/secrets/
+              name: encryption-key
+              readOnly: true
+            {{- end }}
             - mountPath: /usr/local/share/ca-certificates/
               name: ca-certificate
               readOnly: true
@@ -172,6 +177,14 @@ spec:
       volumes:
         - name: working-dir
           emptyDir: {}
+        {{- if or .Values.encryption.privateKey .Values.encryption.secretName }}
+        - name: encryption-key
+          secret:
+            secretName: {{ include "wiz-outpost-lite.encryptionSecretName" . }}
+            items:
+              - key: encryptionKey.pem
+                path: encryptionKey.pem
+        {{- end }}
         - name: ca-certificate
           secret:
             defaultMode: 420

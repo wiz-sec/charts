@@ -47,6 +47,11 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+
+{{- define "wiz-outpost-lite.encryptionSecretName" -}}
+{{- coalesce .Values.encryption.secretName (printf "wiz-encryption-key-%s" .Values.agent.outpostId ) }}
+{{- end }}
+
 {{/*
 Selector labels
 */}}
