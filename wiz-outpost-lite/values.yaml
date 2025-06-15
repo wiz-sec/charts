@@ -140,3 +140,5 @@ encryption:
   create: false
   secretName: "" # defaults to wiz-encryption-key-<outpostID>
   privateKey: ""
+
+secrets: [] # List of secrets to be used by the runner pod

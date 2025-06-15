@@ -165,6 +165,11 @@ spec:
             - mountPath: /usr/local/share/ca-certificates/
               name: ca-certificate
               readOnly: true
+            {{- range $secretName := .Values.secrets }}
+            - mountPath: /mnt/secrets/{{ $secretName }}
+              name: {{ $secretName }}
+              readOnly: true
+            {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -193,6 +198,12 @@ spec:
               - key: caCertificate
                 path: root.crt
             optional: true
+        {{- range $secret := .Values.secrets }}
+        - name: {{ $secret }}
+          secret:
+           secretName: {{ $secret }}
+        {{- end }}
+
 ---
 {{- end }}
 {{- end }}
