@@ -109,6 +109,27 @@ modules:
         - SYS_ADMIN
       seLinuxOptions:
         type: spc_t
+  datascan:
+    enabled: false
+    serviceAccount:
+      create: true
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    containerSecurityContext:
+      capabilities:
+        drop:
+          - ALL
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      seLinuxOptions:
+        type: container_t
   remediation:
     enabled: false
     serviceAccount:
@@ -140,3 +161,5 @@ encryption:
   create: false
   secretName: "" # defaults to wiz-encryption-key-<outpostID>
   privateKey: ""
+
+secrets: [] # List of secrets to be used by the runner pod
