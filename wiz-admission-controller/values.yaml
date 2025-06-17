@@ -302,6 +302,126 @@ kubernetesAuditLogsWebhook:
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
+sensorInject:
+  # This is a PREVIEW FEATURE - Do not enable without Wiz guidance.
+  enabled: false
+
+  nameOverride: "" # Override the sensor deployment name.
+  replicaCount: 2
+
+  namespaceSelector: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+    matchExpressions:
+      - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
+        operator: NotIn
+        values:
+          - kube-system
+          - kube-node-lease
+          - wiz
+
+  timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
+
+  image: "wizio.azurecr.io/sensor-serverless:v1"
+  excludedContainers: [ ]
+  stdoutLogLevel: ""
+
+  # API key secret configuration for sensor authentication
+  # This provides flexibility for customers to either:
+  # 1. Create API key secrets manually in all namespaces (apiKeySecret.create: false)
+  # 2. Let the chart create secrets automatically (apiKeySecret.create: true)
+  apiKeySecret:
+    name: "" # The name of the API key secret in case it was already created in all namespaces.
+
+    # Should API key secrets be created by the chart or not.
+    # Set this to false if you wish to create the secrets yourself in all required namespaces.
+    # When set to true, the chart will create generic secrets in the specified namespaces.
+    #
+    # Example manual creation:
+    # kubectl create secret generic wiz-sensor-apikey \
+    #   --from-literal=clientId=<value> \
+    #   --from-literal=clientToken=<value> \
+    #   --namespace=<target-namespace>
+    create: true
+
+    # Controls how API key secrets are created when create: true
+    # - false (default): Use explicit clientId and clientToken values below
+    # - true: Read the secret specified by 'name' from the release namespace and replicate its data to target namespaces
+    #
+    # When replicateFromReleaseNamespace: true:
+    # 1. The secret specified by 'name' must exist in the release namespace (.Release.Namespace)
+    # 2. The chart will read the clientId and clientToken from that secret
+    # 3. The chart will create new secrets with the same data in all target namespaces
+    # 4. The clientId and clientToken fields below are ignored
+    replicateFromReleaseNamespace: true
+
+    # Wiz API credentials (required when create: true and replicateFromReleaseNamespace: false)
+    clientId: ""
+    clientToken: ""
+
+    # Namespaces where the API key secret should be created.
+    # Options:
+    # - List of specific namespace names: ["default", "production", "staging"]
+    # - All namespaces: ["*"] (creates secrets in all existing namespaces, excluding system namespaces)
+    #
+    # Note: When using ["*"], secrets are created only in namespaces that exist at install/upgrade time.
+    # For new namespaces created after installation, you'll need to create the secret manually or upgrade the chart.
+    namespaces: ["*"]
+    excludeNamespaces: [] # List of namespaces to exclude from the namespaces list. Only relevant when namespaces: ["*"]
+
+    # Annotations to add to the API key secrets
+    annotations: {}
+
+  # Registry secret configuration for sensor image pull
+  # This provides flexibility for customers to either:
+  # 1. Create registry secrets manually in all namespaces (registrySecret.create: false)
+  # 2. Let the chart create secrets automatically (registrySecret.create: true)
+  registrySecret:
+    name: sensor-image-pull
+
+    # Should registry secrets be created by the chart or not.
+    # Set this to false if you wish to create the secrets yourself in all required namespaces.
+    # When set to true, the chart will create docker-registry secrets in the specified namespaces.
+    #
+    # Example manual creation:
+    # kubectl create secret docker-registry sensor-image-pull \
+    #   --docker-server=wizio.azurecr.io \
+    #   --docker-username=<username> \
+    #   --docker-password=<password> \
+    #   --namespace=<target-namespace>
+    create: true
+
+    # Controls how registry secrets are created when create: true
+    # - false (default): Use explicit dockerServer, dockerUsername, and dockerPassword values below
+    # - true: Read the secret specified by 'name' from the release namespace and replicate its data to target namespaces
+    #
+    # When replicateFromReleaseNamespace: true:
+    # 1. The secret specified by 'name' must exist in the release namespace (.Release.Namespace)
+    # 2. The chart will read the .dockerconfigjson from that secret
+    # 3. The chart will create new secrets with the same data in all target namespaces
+    # 4. The dockerServer, dockerUsername, and dockerPassword fields below are ignored
+    replicateFromReleaseNamespace: true
+
+    # Docker registry server URL (required when create: true and replicateFromReleaseNamespace: false)
+    # Example: "wizio.azurecr.io"
+    dockerServer: "wizio.azurecr.io"
+
+    # Docker registry username (required when create: true and replicateFromReleaseNamespace: false)
+    dockerUsername: ""
+
+    # Docker registry password (required when create: true and replicateFromReleaseNamespace: false)
+    dockerPassword: ""
+
+    # Namespaces where the registry secret should be created.
+    # Options:
+    # - List of specific namespace names: ["default", "production", "staging"]
+    # - All namespaces: ["*"] (creates secrets in all existing namespaces, excluding system namespaces)
+    #
+    # Note: When using ["*"], secrets are created only in namespaces that exist at install/upgrade time.
+    # For new namespaces created after installation, you'll need to create the secret manually or upgrade the chart.
+    namespaces: ["*"]
+    excludeNamespaces: [] # List of namespaces to exclude from the namespaces list. Only relevant when namespaces: ["*"]
+
+    # Annotations to add to the registry secrets
+    annotations: {}
 
 # Debug webhook only logs the request
 debugWebhook:

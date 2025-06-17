@@ -1,0 +1,149 @@
+{{ if .Values.sensorInject.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiz-sensor-inject.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-sensor-webhook.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.hpa.enabled }}
+  replicas: {{ .Values.sensorInject.replicaCount | default 2 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
+      {{- include "wiz-sensor-webhook.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        rollme.proxyHash: {{ include "wiz-admission-controller.proxyHash" . }}
+        rollme.wizApiTokenHash: {{ include "wiz-admission-controller.wizApiTokenHash" . }}
+        rollme.webhookCert: {{ include (print $.Template.BasePath "/opawebhook.yaml") . | sha256sum }}
+        {{- with .Values.global.podAnnotations  }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.podAnnotations  }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        wiz.io/component: "wiz-sensor-webhook"
+        {{/*
+        `labels` includes `selectorLabels`
+        */}}
+        {{- include "wiz-sensor-webhook.labels" . | nindent 8 }}
+        {{- with .Values.global.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{- end }}
+      {{- with (coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets) }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "wiz-admission-controller.serviceAccountName" . }}
+      securityContext:
+        {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
+        {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 8 }}
+        {{- else }}
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- end }}
+      {{- if .Values.hostNetwork }}
+      hostNetwork: true
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.global.podTerminationGracePeriodSeconds }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+            {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- end }}
+          image: {{ include "wiz-admission-controller.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.healthPort }}
+              scheme: HTTPS
+            {{- toYaml .Values.probes.readinessProbe | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: {{ .Values.healthPort }}
+              scheme: HTTPS
+            {{- toYaml .Values.probes.livenessProbe | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.healthPort }}
+              scheme: HTTPS
+            {{- toYaml .Values.probes.startupProbe | nindent 12 }}
+          command:
+          - "/usr/bin/wiz-admission-controller"
+          {{- include "wiz-admission-controller.spec.common.commandArgs" . | trim | nindent 10 }}
+          {{- include "spec.admissionControllerRunner.commandArgs" . | trim | nindent 10 }}
+          # Sensor webhook flags
+          - "--sensor-enabled=true"
+          {{- include "wiz-admission-controller.sensorCliParams" . | trim | nindent 10 }}
+          # Disable other webhooks
+          - "--misconfiguration-enabled=false"
+          - "--image-integrity-enabled=false"
+          - "--kubernetes-audit-logs-enabled=false"
+          env:
+          {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          {{- if .Values.debugWebhook.enabled }}
+          - name: WIZ_DEBUG_WEBHOOK_ENABLED
+            value: "true"
+          {{- end }}
+          resources:
+            {{- include "wiz-admission-controller.resources" . | trim | nindent 12 }}
+          volumeMounts:
+          {{- include "wiz-admission-controller.spec.common.volumeMounts" . | trim | nindent 10 }}
+          - mountPath: /var/server-certs
+            name: server-certs
+            readOnly: true
+          {{- with .Values.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.global.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+      volumes:
+      {{- include "wiz-admission-controller.spec.common.volumes" . | trim | nindent 8 }}
+        - name: server-certs
+          secret:
+            defaultMode: 444
+            secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+        {{- with .Values.customVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.global.customVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (coalesce .Values.global.affinity .Values.affinity) }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if (or .Values.global.tolerations .Values.tolerations)}}
+      tolerations:
+        {{- with .Values.global.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+{{- end }}

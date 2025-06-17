@@ -2,7 +2,15 @@
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
-{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace ) ( printf "%s.%s" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) ( printf "%s.%s.svc" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) -}}
+{{- $altNames := list
+  ( printf "%s.%s" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace )
+  ( printf "%s.%s.svc" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace )
+  ( printf "%s.%s" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace )
+  ( printf "%s.%s.svc" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) -}}
+{{- if .Values.sensorInject.enabled }}
+{{- $altNames = append $altNames ( printf "%s.%s" (include "wiz-sensor-inject.name" .) .Release.Namespace ) }}
+{{- $altNames = append $altNames ( printf "%s.%s.svc" (include "wiz-sensor-inject.name" .) .Release.Namespace ) }}
+{{- end }}
 {{- $ca := genCA "wiz-admission-controller-ca" 3650 -}}
 {{- $cert := genSignedCert ( include "wiz-admission-controller.fullname" . ) nil $altNames 3650 $ca -}}
 {{- $tlsCrt = $cert.Cert | b64enc -}}
@@ -163,9 +171,54 @@ webhooks:
   failurePolicy: Ignore
   sideEffects: {{ .Values.debugWebhook.sideEffects }}
 {{- end }}
+{{ if .Values.sensorInject.enabled -}}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name:  {{ include "wiz-sensor-inject.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "post-install, post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- if $useCertManagerCerts }}
+    "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
+  {{- end }}
+webhooks:
+- name: sensor.wiz.io
+  admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    service:
+      namespace: {{ .Release.Namespace }}
+      name: {{ include "wiz-sensor-inject.name" . }}
+      path: /sensor
+      port: {{ .Values.service.port }}
+{{- if not $useCertManagerCerts }}
+    caBundle: {{ $tlsCrt }}
+{{- end }}
+  rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
+    - operations:
+        - CREATE
+      apiGroups:
+        - "*"
+      apiVersions:
+        - "*"
+      resources:
+        - "pods"
+  {{- with .Values.sensorInject.namespaceSelector }}
+  namespaceSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  timeoutSeconds: {{ .Values.sensorInject.timeoutSeconds }}
+  failurePolicy: Ignore
+  sideEffects: None
+{{- end }}
 {{- $isEnforcer := (eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true") }}
 {{- $isAuditLog := .Values.kubernetesAuditLogsWebhook.enabled }}
-{{- if and (or $isEnforcer $isAuditLog) (not $useCertManagerCerts) }}
+{{- $isSensor := .Values.sensorInject.enabled }}
+{{- if and (or $isEnforcer $isAuditLog $isSensor) (not $useCertManagerCerts) }}
 ---
 apiVersion: v1
 kind: Secret
