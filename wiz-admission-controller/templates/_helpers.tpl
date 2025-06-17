@@ -40,6 +40,16 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-sensor-inject.name" -}}
+{{- if .Values.sensorInject.nameOverride }}
+{{- .Values.sensorInject.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $suffix := "-sensor-inject" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+{{- end }}
+
 {{- define "wiz-admission-controller-manager.name" -}}
 {{- if .Values.wizManager.nameOverride }}
 {{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
@@ -124,6 +134,13 @@ app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }
 {{- end }}
 
 {{/*
+Wiz sensor webhook server selector labels
+*/}}
+{{- define "wiz-sensor-webhook.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-sensor-inject.name" . }}
+{{- end }}
+
+{{/*
 Wiz manager selector labels
 */}}
 {{- define "wiz-admission-controller-manager.selectorLabels" -}}
@@ -146,6 +163,11 @@ app.kubernetes.io/name: {{ include "wiz-admission-controller-uninstall.name" . }
 {{- define "wiz-kubernetes-audit-log-collector.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-kubernetes-audit-log-collector.selectorLabels" . }}
+{{- end }}
+
+{{- define "wiz-sensor-webhook.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-sensor-webhook.selectorLabels" . }}
 {{- end }}
 
 {{- define "wiz-admission-controller-manager.labels" -}}
@@ -211,6 +233,31 @@ Create the name of the service account to use
 {{- if .Values.imageIntegrityWebhook.policies }}
 {{- range .Values.imageIntegrityWebhook.policies }}
 - "--image-integrity-policy={{ . }}"
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-admission-controller.sensorApiKeySecretName" -}}
+  {{- $secretName := coalesce .Values.sensorInject.apiKeySecret.name .Values.global.wizApiToken.secret.name .Values.wizApiToken.secret.name -}}
+  {{- if not (empty $secretName) -}}
+    {{- $secretName -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.sensorCliParams" -}}
+{{- if .Values.sensorInject.enabled }}
+- "--sensor-api-key-secret-name={{ required "one of sensorInject.apiKeySecret.name or wizApiToken.secret.name or global.wizApiToken.secret.name is required when sensorInject.enabled is true" ( include "wiz-admission-controller.sensorApiKeySecretName" .) }}"
+- "--sensor-registry-secret-name={{ required "sensorInject.registrySecret.name is required when sensorInject.enabled is true" .Values.sensorInject.registrySecret.name }}"
+{{- if .Values.sensorInject.image }}
+- "--sensor-image={{ .Values.sensorInject.image }}"
+{{- end }}
+{{- if .Values.sensorInject.excludedContainers }}
+{{- range .Values.sensorInject.excludedContainers }}
+- "--sensor-excluded-containers={{ . }}"
+{{- end }}
+{{- end }}
+{{- if .Values.sensorInject.stdoutLogLevel }}
+- "--sensor-stdout-log-level={{ .Values.sensorInject.stdoutLogLevel }}"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -296,6 +343,9 @@ scaleDown:
 {{- end -}}
 {{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
 {{- $list = append $list (include "wiz-kubernetes-audit-log-collector.name" . ) -}}
+{{- end -}}
+{{- if .Values.sensorInject.enabled -}}
+{{- $list = append $list (include "wiz-sensor-inject.name" . ) -}}
 {{- end -}}
 {{- $list | toJson -}}
 {{- end -}}

@@ -36,3 +36,22 @@ spec:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-kubernetes-audit-log-collector.selectorLabels" . | nindent 4 }}
 {{- end }}
+{{ if .Values.sensorInject.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "wiz-sensor-inject.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-sensor-webhook.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
+    {{- include "wiz-sensor-webhook.selectorLabels" . | nindent 4 }}
+{{- end }}
