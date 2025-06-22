@@ -90,13 +90,20 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+App version for the admission controller
+*/}}
+{{- define "wiz-admission-controller.appVersion" -}}
+{{- coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
+{{- end }}
+
+{{/*
 Common labels
 */}}
 {{- define "wiz-admission-controller.labels" -}}
 helm.sh/chart: {{ include "wiz-admission-controller.chart" . }}
 {{ include "wiz-admission-controller.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ include "wiz-admission-controller.appVersion" . | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.commonLabels }}
@@ -512,5 +519,5 @@ false
 {{- end -}}
 
 {{- define "wiz-admission-controller.image" -}}
-{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ include "wiz-admission-controller.appVersion" . }}
 {{- end -}}
