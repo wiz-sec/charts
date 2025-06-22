@@ -114,7 +114,7 @@ spec:
             - name: entrypoint
               mountPath: /scripts
       containers:
-        - image: "gcr.io/google-containers/pause:2.0"
+        - image: "gcr.io/google-containers/pause:3.2"
           name: pause
 
 {{- end }}
