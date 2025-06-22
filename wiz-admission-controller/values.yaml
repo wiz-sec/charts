@@ -694,6 +694,7 @@ global:
   image:
     registry: "" # Registry to get the container images from.
     pullPolicy: "" # Container image pull policy. One of Always, Never, IfNotPresent.
+    tag: ""
   imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
   podAnnotations: {} # Annotations to add to the components Pods.
