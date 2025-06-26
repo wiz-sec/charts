@@ -3,6 +3,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
 spec:
   minAvailable: {{ .Values.kubernetesAuditLogsWebhook.podDisruptionBudget.minAvailable }}
   maxUnavailable: {{ .Values.kubernetesAuditLogsWebhook.podDisruptionBudget.maxUnavailable }}
