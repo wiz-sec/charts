@@ -59,8 +59,7 @@ spec:
             - "wiz-network-analyzer"
           args:
             - analyze
-            - --output
-            - /tmp
+            - --print-report-to-log
             {{- with .Values.networkAnalyzer.outpostId }}
             - --outpost-id
             - {{ . | quote }}
@@ -132,18 +131,17 @@ spec:
           - name: SSL_CERT_DIR
             value: "/usr/local/share/ca-certificates/:/certificates/"
           volumeMounts:
-          - mountPath: /tmp
-            name: tmp-dir
           {{- if not .Values.networkAnalyzer.outpostId }}
           - name: secrets
             mountPath: /mnt/secrets/
             readOnly: true
           {{- end }}
+          - mountPath: /usr/local/share/ca-certificates/
+            name: ca-certificate
+            readOnly: true
           resources:
             {{- toYaml .Values.networkAnalyzer.resources | nindent 12 }}
       volumes:
-      - name: tmp-dir
-        emptyDir: { }
       - name: ca-certificate
         secret:
           defaultMode: 420
