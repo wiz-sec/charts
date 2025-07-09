@@ -1,5 +1,25 @@
 
 {{- if .Values.networkAnalyzer.enabled }}
+{{- if or .Values.networkAnalyzer.publicRegistryEndpoints .Values.networkAnalyzer.privateRegistryEndpoints }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.networkAnalyzer.name }}-registry-endpoints
+  labels:
+      {{- include "wiz-outpost-configuration.labels" . | nindent 8 }}
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
+data:
+  {{- with .Values.networkAnalyzer.publicRegistryEndpoints }}
+  public-registry-endpoints.txt: {{ join "\n" . | quote }}
+  {{- end }}
+  {{- with .Values.networkAnalyzer.privateRegistryEndpoints }}
+  private-registry-endpoints.txt: {{ join "\n" . | quote }}
+  {{- end }}
+
+---
+{{- end}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -69,6 +89,8 @@ spec:
             {{- with .Values.networkAnalyzer.forceHttp1 }}
             - --http1
             {{- end }}
+            - --wait
+            - "1h"
           env:
           - name: LOG_LEVEL
             value: "info"
@@ -139,6 +161,9 @@ spec:
           - mountPath: /usr/local/share/ca-certificates/
             name: ca-certificate
             readOnly: true
+          - mountPath: /registry-endpoints
+            name: registry-endpoints
+            readOnly: true
           resources:
             {{- toYaml .Values.networkAnalyzer.resources | nindent 12 }}
       volumes:
@@ -160,4 +185,9 @@ spec:
                   - key: privateKey
                     path: WIZ_PRIVATE_KEY
       {{- end}}
+      - name: registry-endpoints
+        configMap:
+          name: {{ .Values.networkAnalyzer.name }}-registry-endpoints
+          optional: true
+          defaultMode: 0744
 {{- end}}
