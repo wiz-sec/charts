@@ -31,6 +31,10 @@ diskScan:
 apiSecurity:
   enabled: false
 
+# Sensor-based forensics (in private preview)
+forensics:
+  enabled: false
+
 # Expose some metrics to be consumed by Prometheus and other Metrics servers.
 # The default port can be changed in case of conflicts
 exposeMetrics: false
@@ -45,7 +49,8 @@ openshift: false
 gkeAutopilot: false
 # Newer GKE autopilot clusters support the use of an allowlist. This is required for some options in the chart
 gkeAutopilotUseAllowlist: false
-gkeAutopilotAllowlist: wiz-sensor-v2
+gkeAutopilotAllowlist: wiz-sensor-v4
+gkeAutopilotUseAllowlistSynchronizer: true
 
 # use a custom SELinux type that is required by flatcar Linux nodes, but is incompatible with some
 # other node types (like AWS bottlerocket)
@@ -103,6 +108,11 @@ subscriptionTags: {} # Optional. List of key: value tags to be added to Subscrip
 # A fixed version of the definitions to use. Won't upgrade even when a new version is available.
 # Format: major.minor.patch
 fixedDefsVersion: ""
+
+# The sensor will attempt to communicate with local kubelet instead of api-server for pod information.
+# Note that if kubelet communication fails we will still query api-server for pod information.
+# Non-pod information, like controllers and namespaces are always queried directly from api-server.
+allowKubeletCommunication: false
 
 # enable liveness probe for the sensor container
 livenessProbe:
@@ -246,7 +256,7 @@ image:
   registry: wizio.azurecr.io
   repository: sensor
   args: {}
-  tag: "v1"
+  tag: "v1" # if not set, the chart's appVersion will be used
   # The sha256 of the image to use. Should not be used normally. Exists for compatibility with GKE Autopilot
   # with private registries. This overrides the tag variable when set.
   sha256: ""
@@ -254,7 +264,7 @@ image:
   # the default is "wizio.azurecr.io/wiz-app/wiz-workload-scanner:v1"
   diskScanRepository: wiz-app/wiz-workload-scanner
   diskScanArgs: {}
-  diskScanTag: "v1"
+  diskScanTag: "v1" # if not set, the chart's diskScanAppVersion will be used
   diskScanPullPolicy: Always
 
 daemonset:

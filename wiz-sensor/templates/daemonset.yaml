@@ -81,10 +81,10 @@ spec:
           {{- if .Values.image.sha256 }}
         image: {{ printf "%s/%s@sha256:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.sha256 }}
           {{- else }}
-        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.tag }}
+        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository (include "wiz-sensor.imageTag" .) }}
           {{- end }}
         {{- else }}
-        image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
+        image: {{ printf "%s:%s" .Values.image.repository (include "wiz-sensor.imageTag" .) }}
         {{- end }}
         imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
         {{- with .Values.image.args }}
@@ -306,6 +306,10 @@ spec:
         - name: ENABLE_API_SECURITY
           value: "true"
         {{- end}}
+        {{- if .Values.forensics.enabled }}
+        - name: ENABLE_FORENSICS
+          value: "true"
+        {{- end}}
         {{- if .Values.openshift }}
         - name: OPENSHIFT
           value: "true"
@@ -323,6 +327,12 @@ spec:
         {{- if .Values.fixedDefsVersion }}
         - name: FIXED_DEFS_VERSION
           value: {{ .Values.fixedDefsVersion }}
+        {{- end }}
+        {{- if not .Values.gkeAutopilot }}
+        - name: HELM_CHART_VERSION
+          value: {{ .Chart.Version }}
+        - name: ALLOW_KUBELET_COMMUNICATION
+          value: {{ .Values.allowKubeletCommunication | quote }}
         {{- end }}
 
         volumeMounts:
@@ -381,9 +391,9 @@ spec:
       {{- if .Values.diskScan.enabled }}
       - name: wiz-disk-scanner
         {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
-        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository .Values.image.diskScanTag }}
+        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository (include "wiz-sensor.diskScanTag" .) }}
         {{- else }}
-        image: {{ printf "%s:%s" .Values.image.diskScanRepository .Values.image.diskScanTag }}
+        image: {{ printf "%s:%s" .Values.image.diskScanRepository (include "wiz-sensor.diskScanTag" .) }}
         {{- end }}
         imagePullPolicy: {{ .Values.image.diskScanPullPolicy }}
         {{- with .Values.image.diskScanArgs }}
