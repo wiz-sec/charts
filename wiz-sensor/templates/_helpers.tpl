@@ -33,11 +33,25 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+Sensor image tag
+*/}}
+{{- define "wiz-sensor.imageTag" -}}
+{{- coalesce .Values.image.tag .Chart.AppVersion }}
+{{- end }}
+
+{{/*
+Disk scanner image tag
+*/}}
+{{- define "wiz-sensor.diskScanTag" -}}
+{{- coalesce .Values.image.diskScanTag .Chart.Annotations.diskScanAppVersion }}
+{{- end }}
+
+{{/*
 Common labels
 */}}
 {{- define "wiz-sensor.labels" -}}
-{{- $imageparts:= split "@" .Values.image.tag }}
-{{- $dsimageparts:= split "@" .Values.image.diskScanTag }}
+{{- $imageparts:= split "@" (include "wiz-sensor.imageTag" .) }}
+{{- $dsimageparts:= split "@" (include "wiz-sensor.diskScanTag" .) }}
 helm.sh/chart: {{ include "wiz-sensor.chart" . }}
 image/tag: {{ $imageparts._0 }}
 dsimage/tag: {{ $dsimageparts._0 }}
