@@ -69,3 +69,5 @@ networkAnalyzer:
   imagePullSecrets: []
   resources: {}
   rollingUpdate: true
+  publicRegistryEndpoints: []
+  privateRegistryEndpoints: []
