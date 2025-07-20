@@ -2,8 +2,8 @@ apiVersion: v2
 name: "wiz-broker"
 description: Wiz Broker for tunneling http traffic to Wiz backend
 type: application
-version: 2.3.12
-appVersion: "2.7"
+version: 2.4.0
+appVersion: "2.8"
 dependencies:
   - name: wiz-common
     version: "0.1.9"
