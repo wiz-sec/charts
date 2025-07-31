@@ -333,6 +333,8 @@ spec:
           value: {{ .Chart.Version }}
         - name: ALLOW_KUBELET_COMMUNICATION
           value: {{ .Values.allowKubeletCommunication | quote }}
+        - name: FORCE_KUBELET_COMMUNICATION
+          value: {{ .Values.forceKubeletCommunication | quote }}
         {{- end }}
 
         volumeMounts:

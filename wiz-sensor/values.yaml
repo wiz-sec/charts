@@ -110,9 +110,11 @@ subscriptionTags: {} # Optional. List of key: value tags to be added to Subscrip
 fixedDefsVersion: ""
 
 # The sensor will attempt to communicate with local kubelet instead of api-server for pod information.
-# Note that if kubelet communication fails we will still query api-server for pod information.
+# If kubelet communication fails, the sensor will fallback to querying the api-server for pod information.
 # Non-pod information, like controllers and namespaces are always queried directly from api-server.
+# Set "forceKubeletCommunication" to true to force the sensor to use kubelet communication and not fallback to api-server.
 allowKubeletCommunication: false
+forceKubeletCommunication: false
 
 # enable liveness probe for the sensor container
 livenessProbe:

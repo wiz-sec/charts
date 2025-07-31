@@ -43,7 +43,7 @@ Sensor image tag
 Disk scanner image tag
 */}}
 {{- define "wiz-sensor.diskScanTag" -}}
-{{- coalesce .Values.image.diskScanTag .Chart.Annotations.diskScanAppVersion }}
+{{ .Values.image.diskScanTag | default (printf "v%s" .Chart.Annotations.diskScanAppVersion) }}
 {{- end }}
 
 {{/*
