@@ -271,7 +271,6 @@ kubernetesAuditLogsWebhook:
         - "statefulsets"
         - "daemonsets"
         - "replicationcontrollers"
-        - "subjectaccessreviews"
         - "selfsubjectrulesreviews"
         - "selfsubjectreviews"
         - "pods/exec"
@@ -426,6 +425,9 @@ sensorInject:
 # Debug webhook only logs the request
 debugWebhook:
   enabled: false
+
+  nameOverride: "" # Override the debug webhook deployment name.
+  replicaCount: 2
   # Override to run admission controller on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
     - operations:

@@ -50,6 +50,16 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-debug-webhook.name" -}}
+{{- if .Values.debugWebhook.nameOverride }}
+{{- .Values.debugWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $suffix := "-debug" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+{{- end }}
+
 {{- define "wiz-admission-controller-manager.name" -}}
 {{- if .Values.wizManager.nameOverride }}
 {{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
@@ -80,6 +90,12 @@ If release name contains chart name it will be used as a full name.
 {{- $suffix := "-hpa" -}}
 {{- $maxLength := int (sub 63 (len $suffix)) -}}
 {{- printf "%s%s" (include "wiz-kubernetes-audit-log-collector.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+
+{{- define "wiz-admission-controller.wiz-hpa-debug.name" -}}
+{{- $suffix := "-hpa" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-debug-webhook.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
 {{- end }}
 
 {{/*
@@ -148,6 +164,13 @@ app.kubernetes.io/name: {{ include "wiz-sensor-inject.name" . }}
 {{- end }}
 
 {{/*
+Wiz debug webhook server selector labels
+*/}}
+{{- define "wiz-debug-webhook.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-debug-webhook.name" . }}
+{{- end }}
+
+{{/*
 Wiz manager selector labels
 */}}
 {{- define "wiz-admission-controller-manager.selectorLabels" -}}
@@ -177,6 +200,11 @@ app.kubernetes.io/name: {{ include "wiz-admission-controller-uninstall.name" . }
 {{ include "wiz-sensor-webhook.selectorLabels" . }}
 {{- end }}
 
+{{- define "wiz-debug-webhook.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-debug-webhook.selectorLabels" . }}
+{{- end }}
+
 {{- define "wiz-admission-controller-manager.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-admission-controller-manager.selectorLabels" . }}
@@ -199,6 +227,11 @@ app.kubernetes.io/name: {{ include "wiz-admission-controller.wiz-hpa-enforcer.na
 {{- define "wiz-admission-controller.wiz-hpa-audit-logs.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 app.kubernetes.io/name: {{ include "wiz-admission-controller.wiz-hpa-audit-logs.name" . }}
+{{- end }}
+
+{{- define "wiz-admission-controller.wiz-hpa-debug.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+app.kubernetes.io/name: {{ include "wiz-admission-controller.wiz-hpa-debug.name" . }}
 {{- end }}
 
 
@@ -321,7 +354,7 @@ requests:
 {{- end -}}
 
 {{- define "wiz-admission-controller.isEnforcerEnabled" -}}
-  {{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled }}
+  {{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled }}
     true
   {{- else }}
     false
@@ -353,6 +386,9 @@ scaleDown:
 {{- end -}}
 {{- if .Values.sensorInject.enabled -}}
 {{- $list = append $list (include "wiz-sensor-inject.name" . ) -}}
+{{- end -}}
+{{- if .Values.debugWebhook.enabled -}}
+{{- $list = append $list (include "wiz-debug-webhook.name" . ) -}}
 {{- end -}}
 {{- $list | toJson -}}
 {{- end -}}

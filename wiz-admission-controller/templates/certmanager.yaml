@@ -21,10 +21,14 @@ spec:
   - {{ printf "%s.%s.svc" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace | quote }}
   - {{ printf "%s.%s" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace }}
   - {{ printf "%s.%s.svc" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace }}
-  {{ if .Values.sensorInject.enabled }}
+  {{- if .Values.sensorInject.enabled }}
   - {{ printf "%s.%s" (include "wiz-sensor-inject.name" .) .Release.Namespace }}
   - {{ printf "%s.%s.svc" (include "wiz-sensor-inject.name" .) .Release.Namespace }}
-  {{ end }}
+  {{- end }}
+  {{- if .Values.debugWebhook.enabled }}
+  - {{ printf "%s.%s" (include "wiz-debug-webhook.name" .) .Release.Namespace }}
+  - {{ printf "%s.%s.svc" (include "wiz-debug-webhook.name" .) .Release.Namespace }}
+  {{- end }}
   duration: "87600h0m0s" # AC doesn't currently detect changes to the certificate and must be restarted after renewal
   renewBefore: "360h0m0s"
   secretName: {{ include "wiz-admission-controller.secretServerCert" . | quote }}

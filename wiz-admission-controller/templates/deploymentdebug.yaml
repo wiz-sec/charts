@@ -1,19 +1,19 @@
-{{ if .Values.sensorInject.enabled -}}
+{{ if .Values.debugWebhook.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiz-sensor-inject.name" . }}
+  name: {{ include "wiz-debug-webhook.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    {{- include "wiz-sensor-webhook.labels" . | nindent 4 }}
+    {{- include "wiz-debug-webhook.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.hpa.enabled }}
-  replicas: {{ .Values.sensorInject.replicaCount | default 2 }}
+  replicas: {{ .Values.debugWebhook.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
-      {{- include "wiz-sensor-webhook.selectorLabels" . | nindent 6 }}
+      {{- include "wiz-debug-webhook.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -27,11 +27,11 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        wiz.io/component: "wiz-sensor-webhook"
+        wiz.io/component: "debug-webhook"
         {{/*
         `labels` includes `selectorLabels`
         */}}
-        {{- include "wiz-sensor-webhook.labels" . | nindent 8 }}
+        {{- include "wiz-debug-webhook.labels" . | nindent 8 }}
         {{- with .Values.global.podLabels }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -68,7 +68,7 @@ spec:
           image: {{ include "wiz-admission-controller.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.targetPort }}
+          - containerPort: {{ .Values.service.targetPort }}
           readinessProbe:
             httpGet:
               path: /ready
@@ -91,22 +91,20 @@ spec:
           - "/usr/bin/wiz-admission-controller"
           {{- include "wiz-admission-controller.spec.common.commandArgs" . | trim | nindent 10 }}
           {{- include "spec.admissionControllerRunner.commandArgs" . | trim | nindent 10 }}
-          # Sensor webhook flags
-          - "--sensor-enabled=true"
-          {{- include "wiz-admission-controller.sensorCliParams" . | trim | nindent 10 }}
+          # Debug webhook flags
+          - "--debug-webhook-enabled=true"
           # Disable other webhooks
           - "--misconfiguration-enabled=false"
           - "--image-integrity-enabled=false"
           - "--kubernetes-audit-logs-enabled=false"
+          - "--sensor-enabled=false"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
-          # Skip heartbeat for sensor webhook
+          # Skip heartbeat for debug webhook
           - name: WIZ_SKIP_HEARTBEAT
             value: "true"
-          {{- if .Values.debugWebhook.enabled }}
           - name: WIZ_DEBUG_WEBHOOK_ENABLED
             value: "true"
-          {{- end }}
           resources:
             {{- include "wiz-admission-controller.resources" . | trim | nindent 12 }}
           volumeMounts:

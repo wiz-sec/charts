@@ -55,3 +55,22 @@ spec:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-sensor-webhook.selectorLabels" . | nindent 4 }}
 {{- end }}
+{{ if .Values.debugWebhook.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "wiz-debug-webhook.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-debug-webhook.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+  selector:
+    {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
+    {{- include "wiz-debug-webhook.selectorLabels" . | nindent 4 }}
+{{- end }}
