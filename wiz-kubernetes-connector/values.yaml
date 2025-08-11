@@ -196,6 +196,8 @@ wiz-broker:
 
   wizConnector:
     createSecret: false # Secret created by wiz-kubernetes-connector.
+  
+  priorityClassName: ""
 
   # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
   # token (client id and client token) via mounts, e.g. when using the Vault operator to inject secrets to Pods.
