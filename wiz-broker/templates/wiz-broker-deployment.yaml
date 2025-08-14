@@ -144,6 +144,8 @@ spec:
             value: "true"
           - name: WIZ_OUTPOST_ID
             value: {{ .Values.managed.outpostId | quote }}
+          - name: WIZ_ON_CALL_CLUSTER_ID
+            value: {{ .Values.managed.oncallClusterID | quote }}
           {{- end }}
           - name: TARGET_IP
             value: {{ .Values.targetIp }}
@@ -175,6 +177,18 @@ spec:
           {{- with .Values.podCustomEnvironmentVariables }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
+          - name: K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
           {{- include "wiz-common.renderResources" (list .Values.resources (index .Values.global "wiz-kubernetes-connector" "resources")) | nindent 10 -}}
       {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
       nodeSelector:

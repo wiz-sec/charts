@@ -139,6 +139,7 @@ managed:
   enabled: false
   # Relevant only for wiz-managed brokers
   outpostId: ""
+  oncallClusterID: ""
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
