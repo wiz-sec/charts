@@ -552,8 +552,44 @@ false
 - name: WIZ_CLUSTER_NAME
   value: {{ coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName | quote }}
 {{- end }}
+{{- if .Values.prometheus.enabled }}
+# Prometheus metrics configuration
+- name: WIZ_METRICS_ENABLED
+  value: {{ .Values.prometheus.enabled | quote }}
+- name: WIZ_METRICS_PORT
+  value: {{ .Values.prometheus.metricsPort | quote }}
+- name: WIZ_DISABLE_TLS_METRICS
+  value: {{ .Values.prometheus.diableTLS | quote }}
+{{- end }}
 {{- end -}}
 
 {{- define "wiz-admission-controller.image" -}}
 {{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ include "wiz-admission-controller.appVersion" . }}
+{{- end -}}
+
+{{/*
+Common service ports configuration
+*/}}
+{{- define "wiz-admission-controller.service.ports" -}}
+- port: {{ .Values.service.port }}
+  targetPort: {{ .Values.service.targetPort }}
+  protocol: TCP
+  name: webhook
+{{- if .Values.prometheus.enabled }}
+- port: {{ .Values.prometheus.metricsPort }}
+  targetPort: metrics
+  protocol: TCP
+  name: metrics
+{{- end }}
+{{- end -}}
+
+{{/*
+Common container ports configuration
+*/}}
+{{- define "wiz-admission-controller.container.ports" -}}
+- containerPort: {{ .Values.service.targetPort }}
+{{- if .Values.prometheus.enabled }}
+- name: metrics
+  containerPort: {{ .Values.prometheus.metricsPort }}
+{{- end }}
 {{- end -}}

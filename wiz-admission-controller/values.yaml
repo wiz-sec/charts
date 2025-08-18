@@ -747,3 +747,27 @@ global:
   #
   # lowPrivilegePodSecurityPolicy: {}
   # lowPrivilegeSecurityPolicy: {}
+
+# Prometheus allows to scrape targets in two different ways:
+# 1. Annotations-based Service Discovery
+#    Where Prometheus discovers endpoints via Services enumeration via the Kubernetes API Server.
+#    To enable it with Wiz, you may need to also add the following annotations, e.g.
+#    podAnnotations:
+#      prometheus.io/scrape: "true"
+#      prometheus.io/port: "9090"
+#      prometheus.io/path: "/metrics"
+#
+# 2. ServiceMonitor-based Service Discovery
+#    Applicable if you are using the Prometheus Operator and the ServiceMonitor custom resource (CR).
+#    To enable it with Wiz, use the following selectors:
+#      selector:
+#        matchLabels:
+#          app.kubernetes.io/instance: <Helm release name> # e.g. wiz-kubernetes-integration
+#      namespaceSelector:
+#        matchNames:
+#          - wiz
+#
+prometheus:
+  enabled: false  # Enable the /metrics endpoint.
+  metricsPort: 9090
+  diableTLS: true # When TLS enabled uses the same TLS certificates that are used for all other webhooks.

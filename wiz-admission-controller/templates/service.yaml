@@ -10,9 +10,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
+    {{- include "wiz-admission-controller.service.ports" . | nindent 4 }}
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-admission-controller-enforcement.selectorLabels" . | nindent 4 }}
@@ -29,9 +27,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
+    {{- include "wiz-admission-controller.service.ports" . | nindent 4 }}
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-kubernetes-audit-log-collector.selectorLabels" . | nindent 4 }}
@@ -48,9 +44,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
+    {{- include "wiz-admission-controller.service.ports" . | nindent 4 }}
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-sensor-webhook.selectorLabels" . | nindent 4 }}
@@ -67,9 +61,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
+    {{- include "wiz-admission-controller.service.ports" . | nindent 4 }}
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-debug-webhook.selectorLabels" . | nindent 4 }}

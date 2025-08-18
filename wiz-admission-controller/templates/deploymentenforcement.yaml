@@ -68,7 +68,7 @@ spec:
           image: {{ include "wiz-admission-controller.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: {{ .Values.service.targetPort }}
+          {{- include "wiz-admission-controller.container.ports" . | nindent 10 }}
           readinessProbe:
             httpGet:
               path: /ready
