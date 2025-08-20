@@ -352,8 +352,8 @@ daemonset:
 
     # resource values for the Sensor based workload scanner
     diskScanLimits:
-      cpu: "100m"
-      memory: "700Mi"
+      cpu: "200m"
+      memory: "500Mi"
     diskScanRequests:
       cpu: "10m"
       memory: "100Mi"
