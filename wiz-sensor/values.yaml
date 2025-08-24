@@ -357,6 +357,7 @@ daemonset:
     diskScanRequests:
       cpu: "10m"
       memory: "100Mi"
+    diskScanScratchSpace: "5Gi"
 
   # If a non-standard path is used please specify it here. Usually not required.
   criSocketPath: ""

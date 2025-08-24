@@ -653,5 +653,5 @@ spec:
           medium: "Memory"
       - name: sensor-scanner-tmp-store
         emptyDir:
-          sizeLimit: "5Gi"
+          sizeLimit: {{ .Values.daemonset.resources.diskScanScratchSpace }}
       {{- end }}
