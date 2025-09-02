@@ -23,7 +23,9 @@ Deployment name.
 Service account name.
 */}}
 {{- define "wiz-broker.serviceAccountName" -}}
-{{ coalesce (.Values.serviceAccount.name) (printf "%s-wiz-broker-sa" .Release.Name) }}
+{{- if or .Values.serviceAccount.create (.Values.serviceAccount.name | trim) (and .Values.global.useHATunnel .Values.autoRolloutUpdate) -}}
+{{ coalesce (.Values.serviceAccount.name | trim) (printf "%s-wiz-broker-sa" .Release.Name | trim) }}
+{{- end -}}
 {{- end }}
 
 {{/*

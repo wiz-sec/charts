@@ -87,7 +87,8 @@ spec:
             {{- end }}
           image: {{ include "wiz-broker.image" . }}
           imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
-          command: ["/bin/sh", "-c"]
+          command:
+            {{- include "wiz-kubernetes-connector.entrypoint" . | nindent 12 }}
           args: {{- include "wiz-kubernetes-connector.argsListDeleteConnector" . | nindent 12 }}
           env:
           {{- include "wiz-kubernetes-connector.spec.common.envVars" . | trim | nindent 10 }}

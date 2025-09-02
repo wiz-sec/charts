@@ -99,7 +99,6 @@ autoCreateConnector:
   # https://istio.io/latest/blog/2023/native-sidecars/
   istio:
     enabled: false
-    sleepBeforeJobSecs: 15
     proxySidecarPort: 15000
 
 wizApiToken:
@@ -169,6 +168,9 @@ wiz-broker:
     annotations: {}
     # The name of the service account to use.
     name: "wiz-broker"
+
+  # enable the restart rollout rbac policy
+  autoRolloutUpdate: true
 
   # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
   # The file must contain the following lines:
@@ -332,6 +334,24 @@ global:
     enabled: false # Should the components use a proxy.
     create: false # Secret created by wiz-kubernetes-connector.
     secretName: "" # The name of the proxy Secret.
+
+  # Set this to true if you are using Istio in sidecar mode.
+  # When Istio uses sidecars, there are 2 issues when deploying Wiz:
+  # 1) The creation and deletion Jobs never complete (due to istio-proxy sidecar)
+  # 2) There is a race condition and possible network connectivity failures
+  #    when contacting the Wiz backend.
+  #
+  # When either of this happens, either the installation, upgrade or uninstallation
+  # of the charts fail.
+  # Setting this to true ensures that the istio-proxy gets a graceful shutdown
+  # and mitigates the networking race condition by sleeping before the Job starts.
+  # Learn more:
+  # https://istio.io/latest/blog/2023/native-sidecars/
+  istio:
+    enabled: false
+    proxySidecarPort: 0
+
+  useHATunnel: false
 
   wiz-kubernetes-connector:
     resources: {}

@@ -119,12 +119,7 @@ Input parameters
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.entrypoint" -}}
-{{- if .Values.autoCreateConnector.istio.enabled -}}
-- "sh"
-- "-c"
-{{- else -}}
 - "wiz-broker"
-{{- end -}}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.argsListCreateConnector" -}}
@@ -172,27 +167,11 @@ create-kubernetes-connector
 --wait={{ and (include "wiz-kubernetes-connector.brokerEnabled" . | trim) .Values.autoCreateConnector.waitUntilInitialized }}
 {{- end }}
 
-{{- define "wiz-kubernetes.pre-istio-sidecar" -}}
-{{- printf "sleep %d" (int (.Values.autoCreateConnector.istio.sleepBeforeJobSecs | default 15)) -}}
-{{- end -}}
-
-{{- define "wiz-kubernetes.post-istio-sidecar" -}}
-{{- printf "curl --max-time 2 -s -f -XPOST http://127.0.0.1:%d/quitquitquit" (int (.Values.autoCreateConnector.istio.proxySidecarPort | default 15000)) -}}
-{{- end -}}
-
 {{- define "wiz-kubernetes-connector.generateArgsCreate" -}}
 {{- $args := include "wiz-kubernetes-connector.argsListCreateConnector" . | splitList "\n" -}}
-{{- if .Values.autoCreateConnector.istio.enabled -}}
-{{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
-{{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
-{{- $argsWithIstio := printf "%s &&\nwiz-broker %s &&\n%s" $first (join " \n" $args) $last -}}
-  - >
-    {{- printf "%s" $argsWithIstio | nindent 2 }}
-{{- else -}}
 {{- range $arg := $args }}
 - {{ $arg }}
 {{- end }}
-{{- end -}}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.generate-args-list-delete" -}}
@@ -201,21 +180,13 @@ delete-kubernetes-connector
 {{ .Release.Namespace | quote }}
 --input-secret-name
 {{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
-|| true
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.argsListDeleteConnector" -}}
 {{- $args := include "wiz-kubernetes-connector.generate-args-list-delete" . | splitList "\n" -}}
-{{- $output := "kuku" }}
-{{- if .Values.autoCreateConnector.istio.enabled -}}
-{{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
-{{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
-{{- $output = printf "%s &&\nwiz-broker %s &&\n%s" $first (join " \n" $args) $last -}}
-{{- else -}}
-{{- $output = printf "wiz-broker %s" (join " \n" $args) -}}
-{{- end -}}
-  - >
-    {{- printf "%s" $output | nindent 2 }}
+{{- range $arg := $args }}
+- {{ $arg }}
+{{- end }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.generate-args-list-refresh" -}}
@@ -232,17 +203,9 @@ refresh-token
 
 {{- define "wiz-kubernetes-connector.argsListRefreshConnector" -}}
 {{- $args := include "wiz-kubernetes-connector.generate-args-list-refresh" . | splitList "\n" -}}
-{{- if .Values.autoCreateConnector.istio.enabled -}}
-{{- $first := include "wiz-kubernetes.pre-istio-sidecar" . -}}
-{{- $last := include "wiz-kubernetes.post-istio-sidecar" . -}}
-{{- $argsWithIstio := printf "%s &&\nwiz-broker %s &&\n%s" $first (join " \n" $args) $last -}}
-  - >
-    {{- printf "%s" $argsWithIstio | nindent 2 }}
-{{- else -}}
 {{- range $arg := $args }}
 - {{ $arg }}
 {{- end }}
-{{- end -}}
 {{- end }}
 
 {{- define "wiz-broker.image" -}}
@@ -329,4 +292,16 @@ false
 {{- end }}
 - name: WIZ_ENV
   value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+{{- if (or .Values.global.istio.enabled .Values.autoCreateConnector.istio.enabled) }}
+- name: WIZ_ISTIO_PROXY_ENABLED
+  value: "true"
+- name: WIZ_ISTIO_PROXY_PORT
+  value: {{ coalesce .Values.global.istio.proxySidecarPort .Values.autoCreateConnector.istio.proxySidecarPort | quote }}
+{{- end }}
+{{- if .Values.global.useHATunnel }}
+- name: WIZ_USE_HATUNNEL
+  value: "1"
+- name: WIZ_BROKER_HEARTBEAT_DISABLE_CLUSTER_ID
+  value: "1"
+{{- end }}
 {{- end }}

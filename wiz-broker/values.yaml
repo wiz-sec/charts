@@ -24,6 +24,13 @@ serviceAccount:
   # The name of the service account to use.
   name: ""
 
+# enable the restart rollout rbac policy
+autoRolloutUpdate: true
+
+healthPort: 30000
+
+connectorType: ""
+
 podCustomEnvironmentVariablesFile: ""
 
 podCustomEnvironmentVariables: []
@@ -153,6 +160,21 @@ resources: {}
   #   cpu: 100m
 #   memory: 128Mi
 
+# Set this to true if you are using Istio in sidecar mode.
+# When Istio uses sidecars, there are 2 issues when deploying Wiz:
+# 1) The creation and deletion Jobs never complete (due to istio-proxy sidecar)
+# 2) There is a race condition and possible network connectivity failures
+#    when contacting the Wiz backend.
+#
+# When either of this happens, either the installation, upgrade or uninstallation
+# of the charts fail.
+# Setting this to true ensures that the istio-proxy gets a graceful shutdown
+# and mitigates the networking race condition by sleeping before the Job starts.
+# Learn more:
+# https://istio.io/latest/blog/2023/native-sidecars/
+istio:
+  enabled: false
+  proxySidecarPort: 15000
 
 global:
   # Set the log level. Can be one of "debug", "info", "warn", or "error".
@@ -222,6 +244,24 @@ global:
     enabled: false # Should the components use a proxy.
     create: false # Secret created by wiz-broker.
     secretName: "" # The name of the proxy Secret.
+
+  # Set this to true if you are using Istio in sidecar mode.
+  # When Istio uses sidecars, there are 2 issues when deploying Wiz:
+  # 1) The creation and deletion Jobs never complete (due to istio-proxy sidecar)
+  # 2) There is a race condition and possible network connectivity failures
+  #    when contacting the Wiz backend.
+  #
+  # When either of this happens, either the installation, upgrade or uninstallation
+  # of the charts fail.
+  # Setting this to true ensures that the istio-proxy gets a graceful shutdown
+  # and mitigates the networking race condition by sleeping before the Job starts.
+  # Learn more:
+  # https://istio.io/latest/blog/2023/native-sidecars/
+  istio:
+    enabled: false
+    proxySidecarPort: 0
+
+  useHATunnel: false
 
   wiz-kubernetes-connector:
     resources: {}

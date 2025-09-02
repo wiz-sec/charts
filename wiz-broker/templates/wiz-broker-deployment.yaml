@@ -46,7 +46,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ include "wiz-broker.serviceAccountName" . }}
       securityContext:
         {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
         {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 8 }}
@@ -189,6 +189,49 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: K8S_DEPLOYMENT_NAME
+            value: {{ include "wiz-broker.deploymentName" . }}
+          {{- if or .Values.global.istio.enabled .Values.istio.enabled }}
+          - name: WIZ_ISTIO_PROXY_ENABLED
+            value: "true"
+          - name: WIZ_ISTIO_PROXY_PORT
+            value: {{ coalesce .Values.global.istio.proxySidecarPort .Values.istio.proxySidecarPort | quote }}
+          {{- end }}
+          - name: WIZ_CHART_VERSION
+            value: "{{ .Chart.Version }}"
+          {{- if .Values.global.useHATunnel }}
+          - name: WIZ_USE_HATUNNEL
+            value: "1"
+          - name: WIZ_BROKER_HEARTBEAT_DISABLE_CLUSTER_ID
+            value: "1"
+          - name: WIZ_AUTO_ROLLOUT_ROLE
+            value: {{ ternary "true" "false" .Values.autoRolloutUpdate | quote }}
+          - name: WIZ_HEALTH_PORT
+            value: {{ .Values.healthPort | quote }}
+          {{- if .Values.connectorType }}
+          - name: CONNECTOR_TYPE
+            value: {{ .Values.connectorType | quote }}
+          {{- end }}
+          {{- if gt (int .Values.healthPort) 0 }}
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+            httpGet:
+              port: {{ .Values.healthPort }}
+              path: /ready
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 90 # 15 minutes
+            httpGet:
+              port: {{ .Values.healthPort }}
+              path: /live
+          ports:
+            - containerPort: {{ .Values.healthPort }}
+              name: health
+          {{- end }}
+          {{- end }}
           {{- include "wiz-common.renderResources" (list .Values.resources (index .Values.global "wiz-kubernetes-connector" "resources")) | nindent 10 -}}
       {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
       nodeSelector:
