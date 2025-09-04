@@ -116,9 +116,9 @@ spec:
           {{- with .Values.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
-          args: [
-            {{ $connectorDataFilePath }}
-          ]
+          args:
+            - --connector-data-file-path
+            - {{ $connectorDataFilePath | quote }}
           env:
           {{- if .Values.global.logLevel }}
           - name: LOG_LEVEL

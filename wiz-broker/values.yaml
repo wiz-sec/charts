@@ -218,7 +218,17 @@ global:
 
   podSecurityContext:
     runAsNonRoot: true
-    runAsUser: 1000
+    runAsUser: 10000
+
+  securityContext:
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    runAsGroup: 10000
+    runAsUser: 10000
+    capabilities:
+      drop:
+        - ALL
 
   wizApiToken:
     clientEndpoint: "" # Defaults to commercial.
