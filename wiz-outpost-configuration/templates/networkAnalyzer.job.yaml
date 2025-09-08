@@ -80,12 +80,12 @@ spec:
           args:
             - analyze
             - --print-report-to-log
-            {{- with .Values.networkAnalyzer.outpostId }}
+            {{- with .Values.outpostId }}
             - --outpost-id
             - {{ . | quote }}
             {{- end }}
             - --region
-            - {{ .Values.networkAnalyzer.wizRegion }}
+            - {{ .Values.wizRegion }}
             {{- with .Values.networkAnalyzer.forceHttp1 }}
             - --http1
             {{- end }}
@@ -94,11 +94,11 @@ spec:
           env:
           - name: LOG_LEVEL
             value: "info"
-          {{- with .Values.networkAnalyzer.env }}
+          {{- with .Values.env }}
           - name: ENV
             value: {{ . | quote }}
           {{- end}}
-          {{- with .Values.networkAnalyzer.outpostId }}
+          {{- with .Values.outpostId }}
           - name: WIZ_OUTPOST_ID
             value: {{ . | quote }}
           {{- end }}
@@ -153,7 +153,7 @@ spec:
           - name: SSL_CERT_DIR
             value: "/usr/local/share/ca-certificates/:/certificates/"
           volumeMounts:
-          {{- if not .Values.networkAnalyzer.outpostId }}
+          {{- if not .Values.outpostId }}
           - name: secrets
             mountPath: /mnt/secrets/
             readOnly: true
@@ -175,7 +175,7 @@ spec:
             - key: caCertificate
               path: root.crt
           optional: true
-      {{- if not .Values.networkAnalyzer.outpostId }}
+      {{- if not .Values.outpostId }}
       - name: secrets
         projected:
           sources:

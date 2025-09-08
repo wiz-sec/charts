@@ -2,6 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Shared values used by multiple components
+outpostId: ""
+clusterRegion: ""
+clusterName: ""
+env: ""
+
 httpProxyConfiguration:
   enabled: false
   name: wiz-http-proxy-configuration
@@ -52,9 +58,7 @@ serviceAccount:
 networkAnalyzer:
   enabled: false
   name: wiz-network-analyzer
-  outpostId: ""
   wizRegion: ""
-  env: ""
   dataCenter: ""
   forceHttp1: false
   image:
@@ -71,3 +75,21 @@ networkAnalyzer:
   rollingUpdate: true
   publicRegistryEndpoints: []
   privateRegistryEndpoints: []
+
+outpostController:
+  enabled: false
+  image:
+    repository: public-registry.wiz.io
+    name: wiz-outpost-controller
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  resources: {}
+
+podAnnotations: {}
+imagePullSecrets: []
+podSecurityContext: {}
+securityContext: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

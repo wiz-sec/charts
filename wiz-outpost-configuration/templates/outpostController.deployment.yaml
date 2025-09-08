@@ -1,0 +1,108 @@
+{{- if .Values.outpostController.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiz-outpost-configuration.fullname" . }}-outpost-controller
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: outpost-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "wiz-outpost-configuration.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: outpost-controller
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "wiz-outpost-configuration.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: outpost-controller
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "wiz-outpost-configuration.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: outpost-controller
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.outpostController.image.repository }}/{{ .Values.outpostController.image.name }}:{{ .Values.outpostController.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.outpostController.image.pullPolicy }}
+        command:
+          - /app/wiz-outpost-controller
+        args:
+          - --outpostID={{ .Values.outpostId }}
+          - --region={{ .Values.clusterRegion }}
+          - --clusterName={{ .Values.clusterName }}
+        env:
+        - name: WIZ_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.agentCredsSecretName }}
+              key: clientId
+        - name: WIZ_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.agentCredsSecretName }}
+              key: clientSecret
+        {{- if .Values.httpProxyConfiguration.enabled }}
+        - name: HTTP_PROXY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.httpProxyConfiguration.name }}
+              key: httpProxy
+              optional: true
+        - name: HTTPS_PROXY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.httpProxyConfiguration.name }}
+              key: httpsProxy
+              optional: true
+        - name: NO_PROXY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.httpProxyConfiguration.name }}
+              key: noProxy
+              optional: true
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: metrics
+          containerPort: 8081
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http 
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.outpostController.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
