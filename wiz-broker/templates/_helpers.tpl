@@ -107,7 +107,7 @@ Secrets names
 {{- end }}
 
 {{- define "wiz-broker.image" -}}
-{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
+{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}{{ coalesce .Values.global.image.tagSuffix .Values.image.tagSuffix }}
 {{- end -}}
 
 {{- define "wiz-broker.isWizApiTokenSecretEnabled" -}}

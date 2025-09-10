@@ -209,7 +209,7 @@ refresh-token
 {{- end }}
 
 {{- define "wiz-broker.image" -}}
-{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
+{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}{{ coalesce .Values.global.image.tagSuffix .Values.image.tagSuffix }}
 {{- end -}}
 
 {{- define "kubeVersion" -}}
@@ -292,6 +292,10 @@ false
 {{- end }}
 - name: WIZ_ENV
   value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+{{- if .Values.global.awsPrivateLink.enabled }}
+- name: USE_WIZ_PRIVATE_LINK_ENDPOINTS
+  value: "true"
+{{- end }}
 {{- if (or .Values.global.istio.enabled .Values.autoCreateConnector.istio.enabled) }}
 - name: WIZ_ISTIO_PROXY_ENABLED
   value: "true"

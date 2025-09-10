@@ -732,6 +732,9 @@ global:
     enabled: false
     proxySidecarPort: 15000
 
+  awsPrivateLink:
+    enabled: false
+
   # Wiz Helm Charts process the security contexts
   # in the following order:
   # 1. Pod security context

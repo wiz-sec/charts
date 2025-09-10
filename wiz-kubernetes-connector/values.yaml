@@ -11,6 +11,7 @@ image:
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+  tagSuffix: ""
 
 clusterReader:
   installRbac: true
@@ -260,6 +261,7 @@ global:
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
+    tagSuffix: ""
   imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
   nameOverride: "" # Override the release’s name.
@@ -357,6 +359,9 @@ global:
     proxySidecarPort: 0
 
   useHATunnel: false
+
+  awsPrivateLink:
+    enabled: false
 
   wiz-kubernetes-connector:
     resources: {}

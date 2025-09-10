@@ -494,6 +494,10 @@ false
 {{- end }}
 - name: WIZ_ENV
   value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+{{- if .Values.global.awsPrivateLink.enabled }}
+- name: USE_WIZ_PRIVATE_LINK_ENDPOINTS
+  value: "true"
+{{- end }}
 {{- if .Values.logLevel }}
 - name: LOG_LEVEL
   value: {{ .Values.logLevel }}
