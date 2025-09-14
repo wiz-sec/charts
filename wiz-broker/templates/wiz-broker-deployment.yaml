@@ -203,9 +203,9 @@ spec:
           {{- end }}
           - name: WIZ_CHART_VERSION
             value: "{{ .Chart.Version }}"
-          {{- if .Values.global.useHATunnel }}
           - name: WIZ_USE_HATUNNEL
-            value: "1"
+            value: {{ ternary "1" "0" .Values.global.useHATunnel | quote }}
+          {{- if .Values.global.useHATunnel }}
           - name: WIZ_BROKER_HEARTBEAT_DISABLE_CLUSTER_ID
             value: "1"
           - name: WIZ_AUTO_ROLLOUT_ROLE
@@ -215,6 +215,10 @@ spec:
           {{- if .Values.connectorType }}
           - name: CONNECTOR_TYPE
             value: {{ .Values.connectorType | quote }}
+          {{- end }}
+          {{- if.Values.allowedEndpoints }}
+          - name: WIZ_ALLOWED_ENDPOINTS
+            value: {{ join "," .Values.allowedEndpoints | quote }}
           {{- end }}
           {{- if gt (int .Values.healthPort) 0 }}
           readinessProbe:

@@ -32,6 +32,9 @@ healthPort: 30000
 
 connectorType: ""
 
+# list of allowed endpoints to access by the broker
+allowedEndpoints: []
+
 podCustomEnvironmentVariablesFile: ""
 
 podCustomEnvironmentVariables: []
@@ -273,7 +276,7 @@ global:
     enabled: false
     proxySidecarPort: 0
 
-  useHATunnel: false
+  useHATunnel: true
 
   awsPrivateLink:
     enabled: false

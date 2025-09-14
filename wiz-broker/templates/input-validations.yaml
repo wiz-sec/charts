@@ -1,1 +1,10 @@
 {{ include "wiz-common.requireHelm310" . }}
+
+{{- range $index, $endpoint := .Values.allowedEndpoints }}
+  {{- if contains "://" $endpoint }}
+    {{- fail (printf "Error: 'allowedEndpoints' entry must be in host:port format and not in URL format, got '%s'." $endpoint) }}
+  {{- end }}
+  {{- if not (contains ":" $endpoint) }}
+    {{- fail (printf "Error: 'allowedEndpoints' entry must be in host:port format, got '%s'." $endpoint) }}
+  {{- end }}
+{{- end }}

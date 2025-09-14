@@ -302,9 +302,9 @@ false
 - name: WIZ_ISTIO_PROXY_PORT
   value: {{ coalesce .Values.global.istio.proxySidecarPort .Values.autoCreateConnector.istio.proxySidecarPort | quote }}
 {{- end }}
-{{- if .Values.global.useHATunnel }}
 - name: WIZ_USE_HATUNNEL
-  value: "1"
+  value: {{ ternary "1" "0" .Values.global.useHATunnel | quote }}
+{{- if .Values.global.useHATunnel }}
 - name: WIZ_BROKER_HEARTBEAT_DISABLE_CLUSTER_ID
   value: "1"
 {{- end }}

@@ -358,7 +358,7 @@ global:
     enabled: false
     proxySidecarPort: 0
 
-  useHATunnel: false
+  useHATunnel: true
 
   awsPrivateLink:
     enabled: false
