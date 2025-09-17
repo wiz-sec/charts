@@ -60,6 +60,7 @@ networkAnalyzer:
   name: wiz-network-analyzer
   wizRegion: ""
   dataCenter: ""
+  logsIngestionEndpoint: ""
   forceHttp1: false
   image:
     registry: public-registry.wiz.io/wiz-app

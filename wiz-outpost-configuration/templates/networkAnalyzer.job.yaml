@@ -85,7 +85,7 @@ spec:
             - {{ . | quote }}
             {{- end }}
             - --region
-            - {{ .Values.wizRegion }}
+            - {{ .Values.networkAnalyzer.wizRegion }}
             {{- with .Values.networkAnalyzer.forceHttp1 }}
             - --http1
             {{- end }}
@@ -114,6 +114,10 @@ spec:
                 key: clientSecret
           - name: WIZ_DATA_CENTER
             value: {{ .Values.networkAnalyzer.dataCenter | quote }}
+          {{- with .Values.networkAnalyzer.logsIngestionEndpoint }}
+          - name: WIZ_LOGS_INGESTION_ENDPOINT
+            value: {{ . | quote }}
+          {{- end }}
           - name: http_proxy
             valueFrom:
               secretKeyRef:
