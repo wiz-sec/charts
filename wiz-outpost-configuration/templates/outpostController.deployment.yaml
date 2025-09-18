@@ -26,7 +26,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "wiz-outpost-configuration.serviceAccountName" . }}
+      serviceAccountName: {{ .Values.outpostController.serviceAccountName }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -35,13 +35,13 @@ spec:
           {{- toYaml .Values.securityContext | nindent 12 }}
         image: "{{ .Values.outpostController.image.repository }}/{{ .Values.outpostController.image.name }}:{{ .Values.outpostController.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.outpostController.image.pullPolicy }}
-        command:
-          - /app/wiz-outpost-controller
         args:
           - --outpostID={{ .Values.outpostId }}
           - --region={{ .Values.clusterRegion }}
           - --clusterName={{ .Values.clusterName }}
         env:
+        - name: WIZ_ENV
+          value: {{ .Values.env | quote }}
         - name: WIZ_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -79,18 +79,6 @@ spec:
         - name: metrics
           containerPort: 8081
           protocol: TCP
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: http
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /readyz
-            port: http 
-          initialDelaySeconds: 5
-          periodSeconds: 5
         resources:
           {{- toYaml .Values.outpostController.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

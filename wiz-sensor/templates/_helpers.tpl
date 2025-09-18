@@ -47,6 +47,13 @@ Disk scanner image tag
 {{- end }}
 
 {{/*
+Windows sensor image tag
+*/}}
+{{- define "wiz-sensor.windowsTag" -}}
+{{ .Values.image.windowsTag | default (printf "v%s" .Chart.Annotations.windowsAppVersion) }}
+{{- end }}
+
+{{/*
 Common labels
 */}}
 {{- define "wiz-sensor.labels" -}}
@@ -167,7 +174,7 @@ log levels
 Registry Helpers
 */}}
 {{- define "wiz-sensor.knownRegistries" -}}
-{{- list "wizio.azurecr.io" "wiziosensor.azurecr.io" "registry.wiz.io" | toJson -}}
+{{- list "wizio.azurecr.io" "wiziosensor.azurecr.io" "registry.wiz.io" "wizfedramp.azurecr.us" | toJson -}}
 {{- end -}}
 
 {{/*
@@ -187,7 +194,7 @@ Rule Validation
 {{- end }}
 
 
-{{- if .Values.gkeAutopilotUseAllowlist }}
+{{- if and .Values.gkeAutopilot .Values.gkeAutopilotUseAllowlist }}
 {{- if empty .Values.image.sha256 }}
 {{- if not (has .Values.image.registry (include "wiz-sensor.knownRegistries" . | fromJsonArray)) }}
 {{- fail "If using gkeAutopilotUseAllowlist and a private repo, make sure to set the image.sha256 value to a specific version" }}

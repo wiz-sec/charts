@@ -31,10 +31,6 @@ diskScan:
 apiSecurity:
   enabled: false
 
-# Sensor-based forensics (in private preview)
-forensics:
-  enabled: false
-
 # Expose some metrics to be consumed by Prometheus and other Metrics servers.
 # The default port can be changed in case of conflicts
 exposeMetrics: false
@@ -47,9 +43,10 @@ openshift: false
 # see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits .
 # there are also other small changes
 gkeAutopilot: false
-# Newer GKE autopilot clusters support the use of an allowlist. This is required for some options in the chart
-gkeAutopilotUseAllowlist: false
-gkeAutopilotAllowlist: wiz-sensor-v4
+# Newer GKE autopilot clusters support the use of an allowlist. This is required for some options in the chart.
+# Set to false for clusters before 1.32.2 that don't support the allowlist.
+gkeAutopilotUseAllowlist: true
+gkeAutopilotAllowlist: wiz-sensor-v7
 gkeAutopilotUseAllowlistSynchronizer: true
 
 # use a custom SELinux type that is required by flatcar Linux nodes, but is incompatible with some
@@ -69,6 +66,9 @@ customVolumeMounts: []
 
 # set to true to disallow runtime response from the sensor for this deployment
 disallowRuntimeResponse: false
+
+# set to true to disallow forensics collection from the sensor for this deployment
+disallowForensicsCollection: false
 
 # set to true to run the sensor in the host network namespace
 hostNetwork: false
@@ -251,6 +251,12 @@ serviceAccount:
   # Needed to fetch kubernetes metadata from the api-server
   rbac: true
 
+  # Give sensor "get" permissions for all resources
+  # The permissions are needed to extract information on
+  # the high level controller of pods for CRDs that are not
+  # covered by the default list.
+  rbacGetAll: false
+
 image:
   # set registry to an empty string if the image is local. The final image pulled is
   # "registry/repository:tag" and here this is "wizio.azurecr.io/sensor:v1".
@@ -268,6 +274,11 @@ image:
   diskScanArgs: {}
   diskScanTag: "v1" # if not set, the chart's diskScanAppVersion will be used
   diskScanPullPolicy: Always
+
+  # Windows image configuration
+  windowsRepository: sensor-windows
+  windowsTag: "v1"
+  windowsPullPolicy: Always
 
 daemonset:
   # cache folder on the node
@@ -359,6 +370,14 @@ daemonset:
       memory: "100Mi"
     diskScanScratchSpace: "5Gi"
 
+    # resource values for the Windows sensor
+    windowsLimits:
+      cpu: "500m"
+      memory: "550Mi"
+    windowsRequests:
+      cpu: "100m"
+      memory: "150Mi"
+
   # If a non-standard path is used please specify it here. Usually not required.
   criSocketPath: ""
 
@@ -366,6 +385,13 @@ daemonset:
   # This is required for some proxies that use old versions of OpenSSL that do not support EMS.
   # Example error message: peer is incompatible: ExtendedMasterSecretExtensionRequired"
   disableStrictEMS: false
+
+# Windows sensor configuration
+windows:
+  # Set to true to deploy the Windows sensor DaemonSet additionally to the Linux one
+  enabled: false
+  # Determine where the sensor will store its files
+  sensorInstallDir: 'C:\ProgramData\Wiz\Sensor'
 
 # Don't touch the following section, it is used by the wiz-kubernetes-integration chart
 global:
