@@ -36,7 +36,7 @@ cli:
 helmController:
   create: true
   image: public-registry.wiz.io/wiz-helm-controller
-  tag: v1.1.0-2
+  tag: v1.3.0-1
   resources:
     limits: {}
     # cpu: 1000m
@@ -140,7 +140,7 @@ imageReflectionController:
 kustomizeController:
   create: true
   image: public-registry.wiz.io/wiz-kustomize-controller
-  tag: v1.4.0-1
+  tag: v1.6.1-1
   resources:
     limits: {}
     # cpu: 1000m
@@ -240,7 +240,7 @@ notificationController:
 sourceController:
   create: true
   image: public-registry.wiz.io/wiz-source-controller
-  tag: v1.4.1-1
+  tag: v1.6.1-1
   resources:
     limits: {}
     # cpu: 1000m
