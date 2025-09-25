@@ -30,7 +30,7 @@ clusterReader:
     annotations: {}
 
 refreshToken:
-  enabled: false # Private preview feature - If you set this to true, and you are not part of the private preview, the installation will fail.
+  enabled: false
   installRbac: true
   serviceAccount:
     # Annotations to add to the service account
