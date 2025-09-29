@@ -128,6 +128,14 @@ webhook:
     name: "" # Name of the Certificate secret.
     annotations: {} # Annotations of the Certificate secret.
 
+  # Should the chart create the mutating and validating webhooks resources as Helm hooks or regular resources.
+  # The original behavior was to create them as helm-hooks to ensure they are created last, after the deployment is ready.
+  # However, this is not necessary since helm installation order is deterministic and the webhooks are created after the deployment.
+  # Also, the webhooks are configured with `failurePolicy: Ignore` so there is no need to wait for the deployment to be ready.
+  # We are currently keeping the default behavior to `true` for backwards compatibility, but this might change in future chart versions.
+  useHelmHooks: true
+
+
 customErrorMessage: ""            # Specifies a custom error message for admission review failures.
                                   # This message will be overridden if a webhook-specific customErrorMessage is set.
 customErrorMessageMode: "prepend" # Defines how 'customErrorMessage' is applied:

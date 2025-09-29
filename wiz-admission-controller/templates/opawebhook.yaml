@@ -29,8 +29,10 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
+  {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- end }}
   {{- if $useCertManagerCerts }}
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
@@ -68,8 +70,10 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
+  {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- end }}
   {{- if $useCertManagerCerts }}
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
@@ -107,8 +111,10 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
+  {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- end }}
   {{- if $useCertManagerCerts }}
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
@@ -146,8 +152,10 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
+  {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- end }}
   {{- if $useCertManagerCerts }}
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
@@ -185,8 +193,10 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
+  {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- end }}
   {{- if $useCertManagerCerts }}
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
@@ -234,9 +244,11 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
+    {{- if .Values.webhook.useHelmHooks }}
     # Using helm hook to create certs only for chart install
     "helm.sh/hook": "pre-install, pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
+    {{- end }}
     {{- with .Values.webhook.secret.annotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
