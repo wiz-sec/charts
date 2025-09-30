@@ -56,6 +56,10 @@ webhooks:
   namespaceSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.opaWebhook.objectSelector }}
+  objectSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   timeoutSeconds: {{ .Values.opaWebhook.timeoutSeconds }}
   failurePolicy: Ignore
   sideEffects: {{ .Values.opaWebhook.sideEffects }}
