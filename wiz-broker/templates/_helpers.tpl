@@ -16,7 +16,7 @@ Create chart name and version as used by the chart label.
 Deployment name.
 */}}
 {{- define "wiz-broker.deploymentName" -}}
-{{ default (printf "%s-agent" .Release.Name) .Values.nameOverride | trunc 63 | trimSuffix "-"}}
+{{ default (printf "%s-agent" .Release.Name) .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
