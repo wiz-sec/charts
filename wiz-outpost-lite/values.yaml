@@ -132,6 +132,8 @@ modules:
         type: container_t
   remediation:
     enabled: false
+    image:
+      tag: 0.2-latest
     serviceAccount:
       create: true
     podSecurityContext:
