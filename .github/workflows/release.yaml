@@ -1,22 +1,18 @@
 name: tag version of resources for v3 pipeline
 
-
 on:
   push:
     branches:
       - master
-
 
 permissions:
   contents: write
   id-token: write
   packages: write
 
-
 defaults:
   run:
     shell: bash
-
 
 jobs:
   list-changed-charts:
@@ -33,7 +29,6 @@ jobs:
       - name: get changed charts
         id: changed-charts
         run: .github/workflows/scripts/get_changed_charts.sh
-
 
   push-chart-to-ghcr:
     needs: list-changed-charts
@@ -63,6 +58,31 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: helm dependency update
+        id: helm-dependency-update
+        run: |
+          cd ${{ matrix.chart }}
+          ATTEMPTS=20
+          SLEEP_INTERVAL=30
+          for i in $(seq 1 $ATTEMPTS); do
+              set +e
+              # Try updating package dependencies
+              output=$(helm dependency update . 2>&1)
+              exit_code=$?
+              set -e
+
+              if grep -q "can't get a valid version" <<< "$output"; then
+                  echo "Attempt $i/$ATTEMPTS: Dependency not available yet. Retrying in $SLEEP_INTERVAL seconds..."
+                  sleep $SLEEP_INTERVAL
+              elif [ $exit_code -eq 0 ]; then
+                  echo "Dependency update succeeded."
+                  break
+              else
+                  echo "Error: $output"
+                  exit 1
+              fi
+          done
 
       - name: helm package
         id: helm-package
