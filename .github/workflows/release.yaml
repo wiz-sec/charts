@@ -59,24 +59,36 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: helm dependency update
+        id: helm-dependency-update
+        run: |
+          cd ${{ matrix.chart }}
+          ATTEMPTS=20
+          SLEEP_INTERVAL=30
+          for i in $(seq 1 $ATTEMPTS); do
+              set +e
+              # Try updating package dependencies
+              output=$(helm dependency update . 2>&1)
+              exit_code=$?
+              set -e
+
+              if grep -q "can't get a valid version" <<< "$output"; then
+                  echo "Attempt $i/$ATTEMPTS: Dependency not available yet. Retrying in $SLEEP_INTERVAL seconds..."
+                  sleep $SLEEP_INTERVAL
+              elif [ $exit_code -eq 0 ]; then
+                  echo "Dependency update succeeded."
+                  break
+              else
+                  echo "Error: $output"
+                  exit 1
+              fi
+          done
+
       - name: helm package
         id: helm-package
         run: |
           cd ${{ matrix.chart }}
-          RETRIES=20
-          SLEEP_SECONDS=30
-          RETRY_COUNT=0
-          while (( RETRY_COUNT < RETRIES )); do
-            if helm package . --version ${{ matrix.version }}; then
-              echo "helm package succeeded"
-              exit 0
-            fi
-            ((RETRY_COUNT++))
-            echo "helm package failed, retrying in $SLEEP_SECONDS seconds... (attempt $RETRY_COUNT of $RETRIES)"
-            sleep $SLEEP_SECONDS
-          done
-          echo "helm package failed after $RETRIES attempts"
-          exit 1
+          helm package . --version ${{ matrix.version }}
 
       - name: helm push
         id: helm-push
