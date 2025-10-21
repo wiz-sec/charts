@@ -1,22 +1,18 @@
 name: tag version of resources for v3 pipeline
 
-
 on:
   push:
     branches:
       - master
-
 
 permissions:
   contents: write
   id-token: write
   packages: write
 
-
 defaults:
   run:
     shell: bash
-
 
 jobs:
   list-changed-charts:
@@ -33,7 +29,6 @@ jobs:
       - name: get changed charts
         id: changed-charts
         run: .github/workflows/scripts/get_changed_charts.sh
-
 
   push-chart-to-ghcr:
     needs: list-changed-charts
@@ -68,7 +63,20 @@ jobs:
         id: helm-package
         run: |
           cd ${{ matrix.chart }}
-          helm package . --version ${{ matrix.version }}
+          RETRIES=20
+          SLEEP_SECONDS=30
+          RETRY_COUNT=0
+          while (( RETRY_COUNT < RETRIES )); do
+            if helm package . --version ${{ matrix.version }}; then
+              echo "helm package succeeded"
+              exit 0
+            fi
+            ((RETRY_COUNT++))
+            echo "helm package failed, retrying in $SLEEP_SECONDS seconds... (attempt $RETRY_COUNT of $RETRIES)"
+            sleep $SLEEP_SECONDS
+          done
+          echo "helm package failed after $RETRIES attempts"
+          exit 1
 
       - name: helm push
         id: helm-push
