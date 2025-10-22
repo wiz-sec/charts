@@ -117,6 +117,9 @@ spec:
           - "--kubernetes-audit-logs-enabled=false"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          {{- if .Values.crdCache.enabled }}
+          {{- include "wiz-admission-controller.crdCacheEnvVars" (include "wiz-admission-controller.runnerType.enforcer" .) | nindent 10 }}
+          {{- end }}
           {{- if  .Values.opaWebhook.enabled }}
           - name: WIZ_MISCONFIGURATION_WEBHOOK_CONFIG
             value: |

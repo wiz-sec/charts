@@ -528,6 +528,12 @@ false
       fieldPath: metadata.namespace
 - name: WIZ_TERMINATION_GRACE_PERIOD
   value: "{{ .Values.global.podTerminationGracePeriodSeconds }}s"
+{{- if .Values.crdCache.enabled }}
+- name: WIZ_CRD_CACHE_ENABLED
+  value: "true"
+- name: WIZ_CRD_CACHE_MAX_AGE
+  value: "{{ .Values.crdCache.maxAge }}"
+{{- end }}
 {{- if .Values.global.istio.enabled }}
 - name: WIZ_ISTIO_PROXY_ENABLED
   value: "true"
@@ -596,4 +602,75 @@ Common container ports configuration
 - name: metrics
   containerPort: {{ .Values.prometheus.metricsPort }}
 {{- end }}
+{{- end -}}
+
+{{/*
+Runner type constants
+*/}}
+{{- define "wiz-admission-controller.runnerType.enforcer" -}}
+enforcer
+{{- end -}}
+
+{{- define "wiz-admission-controller.runnerType.kdr" -}}
+kdr
+{{- end -}}
+
+{{- define "wiz-admission-controller.runnerType.sensor" -}}
+sensor
+{{- end -}}
+
+{{/*
+Get list of all enabled runner types
+Returns: list of runner types that are enabled
+*/}}
+{{- define "wiz-admission-controller.enabledRunnerTypes" -}}
+{{- $types := list -}}
+{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled -}}
+{{- $types = append $types (include "wiz-admission-controller.runnerType.enforcer" .) -}}
+{{- end -}}
+{{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
+{{- $types = append $types (include "wiz-admission-controller.runnerType.kdr" .) -}}
+{{- end -}}
+{{- if .Values.sensorInject.enabled -}}
+{{- $types = append $types (include "wiz-admission-controller.runnerType.sensor" .) -}}
+{{- end -}}
+{{- $types | toJson -}}
+{{- end -}}
+
+{{/*
+Get the cache secret name for a specific runner type
+*/}}
+{{- define "wiz-admission-controller.cacheSecretName" -}}
+{{- $runnerType := . -}}
+{{- printf "wiz-ac-cache-secrets-%s" $runnerType -}}
+{{- end -}}
+
+{{/*
+Get the leader lock ID for a specific runner type
+*/}}
+{{- define "wiz-admission-controller.leaderLockId" -}}
+{{- $runnerType := . -}}
+{{- printf "wiz-admission-controller-crd-cache-%s" $runnerType -}}
+{{- end -}}
+
+{{/*
+Get the cache name prefix for a specific runner type
+*/}}
+{{- define "wiz-admission-controller.cacheNamePrefix" -}}
+{{- $runnerType := . -}}
+{{- printf "cache-%s" $runnerType -}}
+{{- end -}}
+
+{{/*
+Generate CRD cache environment variables for a specific runner type
+Usage: include "wiz-admission-controller.crdCacheEnvVars" "enforcer"
+*/}}
+{{- define "wiz-admission-controller.crdCacheEnvVars" -}}
+{{- $runnerType := . -}}
+- name: WIZ_CRD_CACHE_LEADER_LOCK_ID
+  value: {{ include "wiz-admission-controller.leaderLockId" $runnerType }}
+- name: WIZ_CRD_CACHE_SECRET_NAME
+  value: {{ include "wiz-admission-controller.cacheSecretName" $runnerType }}
+- name: WIZ_CRD_CACHE_NAME_PREFIX
+  value: {{ include "wiz-admission-controller.cacheNamePrefix" $runnerType }}
 {{- end -}}

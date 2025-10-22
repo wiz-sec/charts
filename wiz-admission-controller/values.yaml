@@ -621,6 +621,14 @@ hpa:
   #       value: 1
   #       periodSeconds: 300
 
+# CRD-based caching: When enabled, the wiz-admission-controller will use the WizAdmissionControllerCache CRD to persist
+# all cached data it needs to handle admission reviews. This means that even if the wiz-admission-controller pod looses
+# connectivity with wiz backend, it can still handle admission reviews based on the cached data.
+crdCache:
+  enabled: false # Should the CRD-based caching be enabled. When enabled, the WizAdmissionControllerCache CRD will be installed.
+  maxAge: 12h # In case of no connectivity to the backend, the admission controller will use the cache for up to this time, before starting to crash.
+  leaderLockId: "wiz-admission-controller-crd-cache"
+
 wizManager:
   enabled: true # Should the Wiz Manager be deployed.
 

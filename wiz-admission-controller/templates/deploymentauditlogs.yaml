@@ -101,6 +101,9 @@ spec:
           - "--image-integrity-enabled=false"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          {{- if .Values.crdCache.enabled }}
+          {{- include "wiz-admission-controller.crdCacheEnvVars" (include "wiz-admission-controller.runnerType.kdr" .) | nindent 10 }}
+          {{- end }}
           - name: WIZ_KUBERNETES_AUDIT_LOG_WEBHOOK_CONFIG
             value: |
           {{- .Values.kubernetesAuditLogsWebhook | toJson | nindent 14 }}

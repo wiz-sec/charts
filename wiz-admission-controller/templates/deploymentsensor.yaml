@@ -100,6 +100,9 @@ spec:
           - "--kubernetes-audit-logs-enabled=false"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          {{- if .Values.crdCache.enabled }}
+          {{- include "wiz-admission-controller.crdCacheEnvVars" (include "wiz-admission-controller.runnerType.sensor" .) | nindent 10 }}
+          {{- end }}
           # Skip heartbeat for sensor webhook
           - name: WIZ_SKIP_HEARTBEAT
             value: "true"
