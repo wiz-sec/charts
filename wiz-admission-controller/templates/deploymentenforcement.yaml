@@ -5,6 +5,7 @@ metadata:
   name: {{ include "wiz-admission-controller-enforcer.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
+    wiz.io/component: "admission-controller-enforcer"
     {{- include "wiz-admission-controller-enforcement.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.hpa.enabled }}

@@ -5,6 +5,7 @@ metadata:
   name: {{ include "wiz-sensor-inject.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
+    wiz.io/component: "wiz-sensor-webhook"
     {{- include "wiz-sensor-webhook.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.hpa.enabled }}

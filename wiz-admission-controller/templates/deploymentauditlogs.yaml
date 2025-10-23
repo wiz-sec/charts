@@ -5,6 +5,7 @@ metadata:
   name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
+    wiz.io/component: "kubernetes-audit-log-collector"
     {{- include "wiz-kubernetes-audit-log-collector.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.hpa.enabled }}
