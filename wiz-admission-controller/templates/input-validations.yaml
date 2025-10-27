@@ -1,1 +1,4 @@
 {{ include "wiz-common.requireHelm310" . }}
+{{- if .Values.crdCache.enabled }}
+{{ include "wiz-admission-controller.validateArgoCDCompatibilityMode" . }}
+{{- end }}

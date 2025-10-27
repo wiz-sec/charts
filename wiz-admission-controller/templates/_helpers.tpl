@@ -674,3 +674,13 @@ Usage: include "wiz-admission-controller.crdCacheEnvVars" "enforcer"
 - name: WIZ_CRD_CACHE_NAME_PREFIX
   value: {{ include "wiz-admission-controller.cacheNamePrefix" $runnerType }}
 {{- end -}}
+
+{{/*
+Validate argoCDCompatibilityMode value
+*/}}
+{{- define "wiz-admission-controller.validateArgoCDCompatibilityMode" -}}
+{{- $validModes := list "none" "helm-hook" -}}
+{{- if not (has .Values.crdCache.argoCDCompatibilityMode $validModes) -}}
+{{- fail (printf "Invalid value for crdCache.argoCDCompatibilityMode: '%s'. Valid values are: none, helm-hook" .Values.crdCache.argoCDCompatibilityMode) -}}
+{{- end -}}
+{{- end -}}

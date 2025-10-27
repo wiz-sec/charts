@@ -1,0 +1,143 @@
+{{- if .Values.clusterRegistrar.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.clusterRegistrar.name }}-config
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+  annotations:
+    "meta.helm.sh/release-name": "{{ .Release.Name }}"
+    "meta.helm.sh/release-namespace": "{{ .Release.Namespace }}"
+data:
+  config.json: {{ .Values.clusterRegistrar.config | toJson | quote }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Values.clusterRegistrar.name }}"
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: outpost-cluster-registrar
+  annotations:
+    "meta.helm.sh/release-name": "{{ .Release.Name }}"
+    "meta.helm.sh/release-namespace": "{{ .Release.Namespace }}"
+    {{- if .Values.clusterRegistrar.failDeploymentOnFailure }}
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    {{- end }}
+spec:
+  backoffLimit: 0  # Fail fast if the job fails
+  ttlSecondsAfterFinished: 30
+  template:
+    metadata:
+      {{- with (coalesce .Values.podAnnotations) }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "wiz-outpost-configuration.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "wiz-outpost-configuration.serviceAccountName" . | trim }}
+      restartPolicy: "Never"
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: wiz-outpost-cluster-registrar
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.clusterRegistrar.image.repository }}/{{ .Values.clusterRegistrar.image.name }}:{{ .Values.clusterRegistrar.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.clusterRegistrar.image.pullPolicy }}
+          args:
+            - --outpost-id={{ .Values.outpostId }}
+            - --region={{ .Values.clusterRegion }}
+            {{- if .Values.clusterName }}
+            - --cluster-name={{ .Values.clusterName }}
+            {{- end }}
+            - --config-file=/etc/wiz/config.json
+          env:
+          - name: LOG_LEVEL
+            value: "info"
+          {{- with .Values.env }}
+          - name: ENV
+            value: {{ . | quote }}
+          {{- end}}
+          {{- with .Values.outpostId }}
+          - name: WIZ_OUTPOST_ID
+            value: {{ . | quote }}
+          {{- end }}
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agentCredsSecretName }}
+                key: clientId
+          - name: WIZ_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agentCredsSecretName }}
+                key: clientSecret
+          - name: http_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: HTTP_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: https_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: HTTPS_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: no_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: NO_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: SSL_CERT_DIR
+            value: "/usr/local/share/ca-certificates/:/certificates/"
+          volumeMounts:
+            - mountPath: /usr/local/share/ca-certificates/
+              name: ca-certificate
+              readOnly: true
+            - mountPath: /etc/wiz
+              name: config
+              readOnly: true
+          resources:
+            {{- toYaml .Values.clusterRegistrar.resources | nindent 12 }}
+      volumes:
+        - name: ca-certificate
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.httpProxyConfiguration.name | quote }}
+            items:
+              - key: caCertificate
+                path: root.crt
+            optional: true
+        - name: config
+          configMap:
+            name: {{ .Values.clusterRegistrar.name }}-config
+{{- end}}
