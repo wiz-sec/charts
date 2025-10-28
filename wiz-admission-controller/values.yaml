@@ -627,19 +627,6 @@ hpa:
 crdCache:
   enabled: false # Should the CRD-based caching be enabled. When enabled, the WizAdmissionControllerCache CRD will be installed.
   maxAge: 12h # In case of no connectivity to the backend, the admission controller will use the cache for up to this time, before starting to crash.
-  leaderLockId: "wiz-admission-controller-crd-cache"
-
-  # ArgoCD compatibility mode for the cache secret.
-  # When crdCache is enabled, a Secret is created that the application modifies at runtime,
-  # which can cause ArgoCD to mark the application as out-of-sync.
-  #
-  # Options:
-  # - "none": Do nothing special. If using ArgoCD, see NOTES.txt for instructions on configuring
-  #           ArgoCD to ignore differences in the secret's data field.
-  # - "helm-hook": Add Helm pre-install/pre-upgrade hooks to the secret. This prevents ArgoCD
-  #                from marking it as out-of-sync, but requires manual deletion of the secret
-  #                after uninstall (see NOTES.txt for instructions).
-  argoCDCompatibilityMode: "none"
 
 wizManager:
   enabled: true # Should the Wiz Manager be deployed.
