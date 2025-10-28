@@ -44,11 +44,6 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # https://github.com/actions/checkout/releases/tag/v4.2.2
 
-      - name: update chart dependencies
-        run: |
-          cd ${{ matrix.chart }}
-          helm dependency update
-
       - name: Install cosign
         uses: sigstore/cosign-installer@3454372f43399081ed03b604cb2d021dabca52bb # https://github.com/sigstore/cosign-installer/releases/tag/v3.8.2
 
