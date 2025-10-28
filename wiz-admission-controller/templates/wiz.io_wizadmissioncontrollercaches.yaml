@@ -27,10 +27,6 @@ spec:
       jsonPath: .spec.state.version
       name: Version
       type: string
-    - description: Total number of chunks
-      jsonPath: .spec.state.totalChunks
-      name: Chunks
-      type: integer
     - jsonPath: .metadata.creationTimestamp
       name: Age
       type: date

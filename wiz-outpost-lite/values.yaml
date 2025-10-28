@@ -153,6 +153,29 @@ modules:
       readOnlyRootFilesystem: true
       seLinuxOptions:
         type: container_t
+  databricks:
+    enabled: false
+    image:
+      name: outpost-lite-runner-databricks
+    serviceAccount:
+      create: true
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    containerSecurityContext:
+      capabilities:
+        drop:
+          - ALL
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      seLinuxOptions:
+        type: container_t
 
 runners:
   vcs-event-triggered:

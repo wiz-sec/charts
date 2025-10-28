@@ -340,6 +340,17 @@ daemonset:
   #- key: CriticalAddonsOnly # allow running on EKS auto-mode system nodes
   #  operator: Exists
 
+  windowsTolerations:
+  # Common tolerations for Windows nodes
+  - effect: NoSchedule
+    key: node.kubernetes.io/os
+    operator: Equal
+    value: "windows"
+  - effect: NoSchedule
+    key: os
+    operator: Equal
+    value: "windows"
+
   # Default strategy to update the daemonset
   updateStrategy:
     type: RollingUpdate
@@ -372,7 +383,7 @@ daemonset:
 
     # resource values for the Windows sensor
     windowsLimits:
-      cpu: "500m"
+      cpu: "1"
       memory: "550Mi"
     windowsRequests:
       cpu: "100m"

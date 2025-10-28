@@ -54,30 +54,48 @@ Windows sensor image tag
 {{- end }}
 
 {{/*
-Common labels
+Common labels shared between Linux and Windows
+Includes standard Helm labels and user-defined common labels from Values
 */}}
-{{- define "wiz-sensor.labels" -}}
-{{- $imageparts:= split "@" (include "wiz-sensor.imageTag" .) }}
-{{- $dsimageparts:= split "@" (include "wiz-sensor.diskScanTag" .) }}
+{{- define "wiz-sensor.commonLabels" -}}
 helm.sh/chart: {{ include "wiz-sensor.chart" . }}
-image/tag: {{ $imageparts._0 }}
-dsimage/tag: {{ $dsimageparts._0 }}
 {{ include "wiz-sensor.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if (coalesce .Values.global.commonLabels .Values.commonLabels .Values.daemonset.commonLabels) }}
+{{- range $key, $value := (coalesce .Values.global.commonLabels .Values.commonLabels .Values.daemonset.commonLabels) }}
+{{ $key }}: {{ tpl $value $ | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Linux labels
+*/}}
+{{- define "wiz-sensor.labels" -}}
+{{ include "wiz-sensor.commonLabels" . }}
+{{- $imageparts:= split "@" (include "wiz-sensor.imageTag" .) }}
+{{- $dsimageparts:= split "@" (include "wiz-sensor.diskScanTag" .) }}
+image/tag: {{ $imageparts._0 }}
+dsimage/tag: {{ $dsimageparts._0 }}
 {{- if .Values.gkeAutopilot }}
 autopilot.gke.io/no-connect: "true"
 {{- if .Values.gkeAutopilotUseAllowlist }}
 cloud.google.com/matching-allowlist: {{ .Values.gkeAutopilotAllowlist }}
 {{- end }}
 {{- end }}
-{{- if (coalesce .Values.global.commonLabels .Values.commonLabels .Values.daemonset.commonLabels) }}
-{{- range $key, $value := (coalesce .Values.global.commonLabels .Values.commonLabels .Values.daemonset.commonLabels) }}
-{{ $key }}: {{ tpl $value $ | quote }}
 {{- end }}
-{{- end }}
+
+{{/*
+Windows labels
+*/}}
+{{- define "wiz-sensor.windowsLabels" -}}
+{{ include "wiz-sensor.commonLabels" . }}
+{{- $imageparts:= split "@" (include "wiz-sensor.windowsTag" .) }}
+os: windows
+image/tag: {{ $imageparts._0 }}
 {{- end }}
 
 {{/*

@@ -2,7 +2,7 @@ apiVersion: v2
 name: wiz-kubernetes-integration
 description: A Helm chart for Kubernetes
 type: application
-version: 0.2.128
+version: 0.2.129
 appVersion: ""
 #    Dependencies for wiz-kubernetes connector and wiz-admission-controller and wiz-sensor
 dependencies:
@@ -16,5 +16,5 @@ dependencies:
     condition: wiz-admission-controller.enabled
   - name: wiz-sensor
     repository: https://wiz-sec.github.io/charts
-    version: ">=1.0.7947"
+    version: ">=1.0.8204"
     condition: wiz-sensor.enabled

@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "wiz-sensor.fullname" . }}-windows
-  labels: {{- include "wiz-sensor.labels" . | nindent 4 }}
+  labels: {{- include "wiz-sensor.windowsLabels" . | nindent 4 }}
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
@@ -12,7 +12,7 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      labels: {{- include "wiz-sensor.labels" . | nindent 8 }}
+      labels: {{- include "wiz-sensor.windowsLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "wiz-sensor.serviceAccountName" . }}
       affinity:
@@ -34,11 +34,10 @@ spec:
                 operator: In
                 values:
                   - windows
+      {{- with .Values.daemonset.windowsTolerations }}
       tolerations:
-      - effect: NoSchedule
-        key: os
-        operator: Equal
-        value: "windows"
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         windowsOptions:
           hostProcess: true
@@ -114,6 +113,12 @@ spec:
           value: {{ include "wiz-sensor.fileLogLevel" . | quote }}
         - name: STDOUT_LOG
           value: {{ include "wiz-sensor.stdoutLogLevel" . }}
+        - name: POD_IMAGE_TAG
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['image/tag']
+        - name: POD_IMAGE_REGISTRY
+          value: {{ coalesce .Values.global.image.registry .Values.image.registry }}
         - name: POD_MEM_LIMITS
           valueFrom:
             resourceFieldRef:
