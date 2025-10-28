@@ -638,14 +638,6 @@ Returns: list of runner types that are enabled
 {{- end -}}
 
 {{/*
-Get the cache secret name for a specific runner type
-*/}}
-{{- define "wiz-admission-controller.cacheSecretName" -}}
-{{- $runnerType := . -}}
-{{- printf "wiz-ac-cache-secrets-%s" $runnerType -}}
-{{- end -}}
-
-{{/*
 Get the leader lock ID for a specific runner type
 */}}
 {{- define "wiz-admission-controller.leaderLockId" -}}
@@ -669,18 +661,6 @@ Usage: include "wiz-admission-controller.crdCacheEnvVars" "enforcer"
 {{- $runnerType := . -}}
 - name: WIZ_CRD_CACHE_LEADER_LOCK_ID
   value: {{ include "wiz-admission-controller.leaderLockId" $runnerType }}
-- name: WIZ_CRD_CACHE_SECRET_NAME
-  value: {{ include "wiz-admission-controller.cacheSecretName" $runnerType }}
 - name: WIZ_CRD_CACHE_NAME_PREFIX
   value: {{ include "wiz-admission-controller.cacheNamePrefix" $runnerType }}
-{{- end -}}
-
-{{/*
-Validate argoCDCompatibilityMode value
-*/}}
-{{- define "wiz-admission-controller.validateArgoCDCompatibilityMode" -}}
-{{- $validModes := list "none" "helm-hook" -}}
-{{- if not (has .Values.crdCache.argoCDCompatibilityMode $validModes) -}}
-{{- fail (printf "Invalid value for crdCache.argoCDCompatibilityMode: '%s'. Valid values are: none, helm-hook" .Values.crdCache.argoCDCompatibilityMode) -}}
-{{- end -}}
 {{- end -}}

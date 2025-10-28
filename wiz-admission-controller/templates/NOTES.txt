@@ -5,44 +5,8 @@ For uninstalling the wiz admission controller you need to delete helm hooks reso
 {{- if not .Values.webhook.secret.name }}
 3. Delete certificates secret - kubectl delete -n {{ .Release.Namespace }} secret  {{ include "wiz-admission-controller.secretServerCert" . | trim }}
 {{- end }}
-{{- if and .Values.crdCache.enabled (eq .Values.crdCache.argoCDCompatibilityMode "helm-hook") }}
-{{- $enabledTypes := include "wiz-admission-controller.enabledRunnerTypes" . | fromJsonArray }}
-{{- range $runnerType := $enabledTypes }}
-4. Delete cache secret for {{ $runnerType }} - kubectl delete -n {{ $.Release.Namespace }} secret {{ include "wiz-admission-controller.cacheSecretName" $runnerType }}
-{{- end }}
-{{- end }}
 {{- if eq .Values.opaWebhook.failurePolicy "Fail" }}
 
 WARNING!!!
 opaWebhook.failurePolicy is Fail, You need to delete validatingwebhookconfiguration before uninstall, if webhook exists without chart resources you can’t create resources in your cluster!
-{{- end }}
-
-{{- if .Values.crdCache.enabled }}
-{{- if eq .Values.crdCache.argoCDCompatibilityMode "none" }}
-
-NOTE: ArgoCD Compatibility
-You have enabled CRD-based caching. The cache secrets are modified at runtime by the
-admission controller, which will cause ArgoCD to mark your application as out-of-sync.
-
-If you are not using ArgoCD, you can ignore the following section.
-
-To prevent this, you have two options:
-
-Option 1: Configure ArgoCD to ignore differences in the cache secret's data field.
-Add the following to your ArgoCD Application manifest under spec.ignoreDifferences:
-
-{{- $enabledTypes := include "wiz-admission-controller.enabledRunnerTypes" . | fromJsonArray }}
-{{- range $runnerType := $enabledTypes }}
-  - group: ""
-    kind: Secret
-    name: {{ include "wiz-admission-controller.cacheSecretName" $runnerType }}
-    namespace: {{ $.Release.Namespace }}
-    jsonPointers:
-    - /data
-{{- end }}
-
-Option 2: Set crdCache.argoCDCompatibilityMode to "helm-hook" in your values.yaml.
-This will add Helm hooks to the cache secrets, preventing ArgoCD from tracking them.
-Note: You will need to manually delete the cache secrets after uninstalling the chart.
-{{- end }}
 {{- end }}
