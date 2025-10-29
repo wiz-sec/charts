@@ -51,6 +51,9 @@ webhooks:
   {{- with .Values.opaWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
+    {{- with $.Values.opaWebhook.additionalRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- with .Values.opaWebhook.namespaceSelector }}
   namespaceSelector:
@@ -92,6 +95,9 @@ webhooks:
   {{- with .Values.imageIntegrityWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
+    {{- with $.Values.imageIntegrityWebhook.additionalRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- with .Values.imageIntegrityWebhook.namespaceSelector }}
   namespaceSelector:
@@ -133,6 +139,9 @@ webhooks:
   {{- with .Values.kubernetesAuditLogsWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
+    {{- with $.Values.kubernetesAuditLogsWebhook.additionalRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- with .Values.kubernetesAuditLogsWebhook.namespaceSelector }}
   namespaceSelector:
@@ -174,6 +183,9 @@ webhooks:
   {{- with .Values.debugWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
+    {{- with $.Values.debugWebhook.additionalRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- with .Values.debugWebhook.namespaceSelector }}
   namespaceSelector:

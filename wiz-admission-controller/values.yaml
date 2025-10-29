@@ -165,6 +165,9 @@ opaWebhook:
       - "replicasets"
       - "statefulsets"
       - "daemonsets"
+  # Additional rules to be appended to the default webhook rules.
+  # This allows extending the webhook scope without modifying the default rules.
+  additionalRules: []
   namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
     matchExpressions:
     - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
@@ -214,6 +217,9 @@ imageIntegrityWebhook:
       - "replicasets"
       - "statefulsets"
       - "daemonsets"
+  # Additional rules to be appended to the default webhook rules.
+  # This allows extending the webhook scope without modifying the default rules.
+  additionalRules: []
   namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
     matchExpressions:
     - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
@@ -297,7 +303,10 @@ kubernetesAuditLogsWebhook:
         - "*"
       resources:
         - "events"
-  namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+  # Additional rules to be appended to the default webhook rules.
+  # This allows extending the webhook scope without modifying the default rules.
+  additionalRules: []
+  namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-z/extensible-admission-controllers/#matching-requests-namespaceselector
     matchExpressions:
     - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
       operator: NotIn
@@ -463,6 +472,9 @@ debugWebhook:
       - "replicasets"
       - "statefulsets"
       - "daemonsets"
+  # Additional rules to be appended to the default webhook rules.
+  # This allows extending the webhook scope without modifying the default rules.
+  additionalRules: []
   namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
     matchExpressions:
     - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
