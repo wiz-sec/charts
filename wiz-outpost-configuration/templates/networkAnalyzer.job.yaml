@@ -41,6 +41,7 @@ metadata:
 spec:
   backoffLimit: 0  # Fail fast if the job fails
   ttlSecondsAfterFinished: 30
+  activeDeadlineSeconds: 3600 # allow up to 1 hour of pending
   manualSelector: true
   selector:
     matchLabels:
