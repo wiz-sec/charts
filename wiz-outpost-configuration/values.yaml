@@ -80,8 +80,6 @@ networkAnalyzer:
 outpostController:
   enabled: false
   serviceAccountName: outpost-controller-sa
-  # Use CA hash-based tunnel ID instead of clusterName (default: false for backward compatibility)
-  useCAHashTunnelID: false
   image:
     repository: public-registry.wiz.io
     name: wiz-outpost-controller

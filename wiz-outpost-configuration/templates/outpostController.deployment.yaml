@@ -38,9 +38,6 @@ spec:
         args:
           - --outpostID={{ .Values.outpostId }}
           - --region={{ .Values.clusterRegion }}
-          {{- if not .Values.outpostController.useCAHashTunnelID }}
-          - --clusterName={{ .Values.clusterName }}
-          {{- end }}
         env:
         - name: WIZ_ENV
           value: {{ .Values.env | quote }}

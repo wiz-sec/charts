@@ -236,8 +236,6 @@ app.kubernetes.io/name: {{ include "wiz-admission-controller.wiz-hpa-debug.name"
 
 
 {{/*
-
-{{/*
 Create the name of the service account to use
 */}}
 {{- define "wiz-admission-controller.serviceAccountName" -}}
@@ -251,6 +249,10 @@ Create the name of the service account to use
 
 {{- define "wiz-admission-controller.secretApiTokenName" -}}
 {{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
+{{- end }}
+
+{{- define "wiz-admission-controller.globalLeaderLeaseName" -}}
+{{- printf "wiz-admission-controller-global-lease" }}
 {{- end }}
 
 {{- define "wiz-admission-controller.secretServerCert" -}}
@@ -571,6 +573,10 @@ false
 - name: WIZ_DISABLE_TLS_METRICS
   value: {{ .Values.prometheus.diableTLS | quote }}
 {{- end }}
+- name: WIZ_GLOBAL_LEADER_LEASE_NAME
+  value: {{ include "wiz-admission-controller.globalLeaderLeaseName" . }}
+- name: WIZ_SCRAPE_API_SERVER_METRICS_ENABLED
+  value: {{ include "wiz-admission-controller.scrapeAPIServerMetricsEnabled" . | trim | quote }}
 {{- end -}}
 
 {{- define "wiz-admission-controller.image" -}}
@@ -592,6 +598,29 @@ Common service ports configuration
   name: metrics
 {{- end }}
 {{- end -}}
+
+{{/*
+Get Kubernetes version, with support for mocking in tests
+*/}}
+{{- define "wiz-admission-controller.kubeVersion" -}}
+{{- if and .Values.mockCapabilities .Values.mockCapabilities.kubeVersion .Values.mockCapabilities.kubeVersion.version -}}
+{{ .Values.mockCapabilities.kubeVersion.version }}
+{{- else -}}
+{{ .Capabilities.KubeVersion.Version }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Determine if scraping API server metrics is enabled, considering K8s version >= 1.21 (GA API for EndpointSlices)
+*/}}
+{{- define "wiz-admission-controller.scrapeAPIServerMetricsEnabled" -}}
+{{- if and .Values.scrapeAPIServerMetricsEnabled (semverCompare ">=1.21-0" (include "wiz-admission-controller.kubeVersion" .)) -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end -}}
+
 
 {{/*
 Common container ports configuration

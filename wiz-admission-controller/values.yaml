@@ -801,3 +801,7 @@ prometheus:
   enabled: false  # Enable the /metrics endpoint.
   metricsPort: 9090
   diableTLS: true # When TLS enabled uses the same TLS certificates that are used for all other webhooks.
+
+# When enabled, wiz-admission-controller can scrape the API-server metrics for debugging reasons.
+# See https://github.com/kubernetes/apiserver/blob/master/pkg/admission/metrics/metrics.go
+scrapeAPIServerMetricsEnabled: true
