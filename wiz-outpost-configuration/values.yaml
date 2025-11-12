@@ -85,7 +85,7 @@ outpostController:
     name: wiz-outpost-controller
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+    tag: 69a592c668c4deafa0c72d9ee06da433f121af66-multiarch
   resources: {}
 
 clusterRegistrar:
@@ -96,7 +96,7 @@ clusterRegistrar:
     name: wiz-outpost-cluster-registrar
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: latest
+    tag: 6557979ab6da3c381f1e7b4c8ed3660b59fc8d6b-multiarch
 
   # Single configuration object that gets passed as JSON
   config:
@@ -104,51 +104,51 @@ clusterRegistrar:
 
     # AWS-specific configuration
     awsConfig:
-      kubernetesServiceAccountName: ""
-      regionalReplicaStateBucketName: ""
-      regionalReplicaImageRepository: ""
+#      kubernetesServiceAccountName: ""
+#      regionalReplicaStateBucketName: ""
+#      regionalReplicaImageRepository: ""
 
     # Azure-specific configuration
     azureConfig:
-      subscriptionId: ""
-      resourceGroupName: ""
-      diskStorageAccountNames: []
-      appServiceStorageAccountNames: []
-      podIdentityName: ""
-      nodeResourceGroup: ""
-      kubernetesServiceAccountName: ""
-      subnetId: ""
+#      subscriptionId: ""
+#      resourceGroupName: ""
+#      diskStorageAccountNames: []
+#      appServiceStorageAccountNames: []
+#      podIdentityName: ""
+#      nodeResourceGroup: ""
+#      kubernetesServiceAccountName: ""
+#      subnetId: ""
 
     # GCP-specific configuration
     gcpConfig:
-      projectId: ""
-      clusterZone: ""
-      nodePools: []
+#      projectId: ""
+#      clusterZone: ""
+#      nodePools:
       # - nodePoolID: ""
       #   minSize: 1
       #   maxSize: 10
 
     # OCI configuration
     ociConfig:
-      clusterOCID: ""
-      nodePools: []
+#      clusterOCID: ""
+#      nodePools: []
       # - nodePoolOCID: ""
       #   minSize: 1
       #   maxSize: 10
 
     # HTTP Proxy configuration (optional)
-    httpProxyConfig:
-      httpProxy: ""
-      httpsProxy: ""
-      vpcCIDRs: []
+    #httpProxyConfig:
+    #  httpProxy: ""
+    #  httpsProxy: ""
+    #  vpcCIDRs: []
 
     # Internet access configuration (optional)
-    internetAccessConfig:
-      skipSslValidation: false
-      trustedCA: ""
+    #internetAccessConfig:
+    #  skipSslValidation: false
+    #  trustedCA: ""
 
     # Storage class parameters (optional)
-    storageClassParameters: {}
+    #storageClassParameters: {}
 
   failDeploymentOnFailure: true
   resources: {}
