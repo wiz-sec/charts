@@ -47,4 +47,7 @@ volumes:
   - emptyDir
   - hostPath
   - secret
+  - configMap
+  - persistentVolumeClaim
+  - projected
 {{- end }}
