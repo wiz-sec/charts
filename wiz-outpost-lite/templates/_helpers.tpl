@@ -83,8 +83,10 @@ wiz.io/runner: {{ .runner | quote }}
   {{- $moduleType = "vcs" }}
  {{- else if eq $runner "databricks" -}}
   {{- $moduleType = "databricks" }}
+{{- else if eq $runner "databricks-datascan" -}}
+  {{- $moduleType = "databricks-datascan" }}
 {{- else -}}
-  {{- fail (printf "Invalid runner name: %s. Runner name must start with 'rem-', 'vcs-', or be 'container-registry', 'datascan', 'databricks" $runner) -}}
+  {{- fail (printf "Invalid runner name: %s. Runner name must start with 'rem-', 'vcs-', or be 'container-registry', 'datascan', 'databricks', or 'databricks-datascan'" $runner) -}}
 {{- end }}
 
 {{/* e.g. remediation-aws-rds-003 -> outpost-lite-runner-remediation

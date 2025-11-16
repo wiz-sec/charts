@@ -5,6 +5,7 @@ apiVersion: security.openshift.io/v1
 kind: SecurityContextConstraints
 metadata:
   name: {{ include "wiz-outpost-lite.fullname" . }}-scc
+  namespace: {{ .Release.Namespace }}
   labels: {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
 allowHostDirVolumePlugin: true
 allowPrivilegedContainer: true

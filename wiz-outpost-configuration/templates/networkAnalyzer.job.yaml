@@ -31,6 +31,7 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: wiz-network-analyzer
   annotations:
     "meta.helm.sh/release-name": "{{ .Release.Name }}"
     "meta.helm.sh/release-namespace": "{{ .Release.Namespace }}"
@@ -54,6 +55,7 @@ spec:
       {{- end }}
       labels:
         {{- include "wiz-outpost-configuration.labels" . | nindent 8 }}
+        app.kubernetes.io/component: wiz-network-analyzer
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

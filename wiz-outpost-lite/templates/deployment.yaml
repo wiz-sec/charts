@@ -5,6 +5,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "wiz-outpost-lite.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
 spec:
@@ -29,7 +30,9 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.serviceAccount.create }}
+      {{- if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- else if .Values.serviceAccount.create }}
       serviceAccountName: sa-{{ .runner }}
       {{- end }}
       {{- with .Values.podSecurityContext }}
@@ -162,6 +165,11 @@ spec:
               name: encryption-key
               readOnly: true
             {{- end }}
+            {{- if .Values.serviceAccount.volume.mount }}
+            - mountPath: /mnt/secrets/service-account-token/
+              name: service-account-token
+              readOnly: true
+            {{- end }}
             - mountPath: /usr/local/share/ca-certificates/
               name: ca-certificate
               readOnly: true
@@ -202,6 +210,17 @@ spec:
         - name: {{ $secret }}
           secret:
             secretName: {{ $secret }}
+        {{- end }}
+        {{- if .Values.serviceAccount.volume.mount }}
+        - name: service-account-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  expirationSeconds: 3600
+                  {{- if .Values.serviceAccount.volume.audienceTemplate }}
+                  audience: {{ tpl .Values.serviceAccount.volume.audienceTemplate .}}
+                  {{- end }}
         {{- end }}
 ---
 {{- end }}
