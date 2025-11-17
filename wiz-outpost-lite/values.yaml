@@ -243,4 +243,3 @@ encryption:
   privateKey: ""
 
 secrets: [] # List of secrets to be used by the runner pod
-
