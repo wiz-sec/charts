@@ -1,0 +1,26 @@
+{{- if .Values.keda.prometheus.deploy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "wiz-outpost-lite.name" . }}-prometheus
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "wiz-outpost-lite.name" . }}-prometheus
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 30s
+      evaluation_interval: 30s
+
+    scrape_configs:
+      - job_name: 'vcs-scheduled'
+        static_configs:
+          - targets: ['{{ .Release.Name }}-{{ .Chart.Name }}-vcs-scheduled.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.metricsPort }}']
+            labels:
+              runner_id: 'vcs-scheduled'
+      - job_name: 'vcs-event-triggered'
+        static_configs:
+          - targets: ['{{ .Release.Name }}-{{ .Chart.Name }}-vcs-event-triggered.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.metricsPort }}']
+            labels:
+              runner_id: 'vcs-event-triggered'
+{{- end }}

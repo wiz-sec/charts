@@ -214,10 +214,28 @@ modules:
       seLinuxOptions:
         type: container_t
 
+keda:
+  enabled: false
+  pollingInterval: 60
+  cooldownPeriod: 120
+  minReplicaCount: 1
+  maxReplicaCount: 20
+  prometheus:
+    deploy: false
+    serverAddress: "" # Prometheus server address - leave empty to use deployed Prometheus or set to external Prometheus URL
+    metricName: "outpost_vcs_desired_runners" # The Prometheus metric to use for scaling
+    threshold: "1" # Target value: scale to match desired_runners metric
+    query: 'sum(outpost_vcs_desired_runners{runner_id="vcs-scheduled"})' # Sum desired runners across all vcs-scheduled pods
+
 runners:
   vcs-event-triggered:
     concurrency: 4
     terminationGracePeriodSeconds: 300 # 5 minutes
+    keda:
+      enabled: false
+  vcs-scheduled:
+    keda:
+      enabled: true
 
 encryption:
   create: false
@@ -225,3 +243,4 @@ encryption:
   privateKey: ""
 
 secrets: [] # List of secrets to be used by the runner pod
+

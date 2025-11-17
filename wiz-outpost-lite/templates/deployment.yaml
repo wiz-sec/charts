@@ -9,7 +9,9 @@ metadata:
   labels:
     {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.keda.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "wiz-outpost-lite.selectorLabels" . | nindent 6 }}
