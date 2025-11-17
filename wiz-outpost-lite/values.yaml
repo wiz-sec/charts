@@ -223,9 +223,9 @@ keda:
   prometheus:
     deploy: false
     serverAddress: "" # Prometheus server address - leave empty to use deployed Prometheus or set to external Prometheus URL
-    metricName: "outpost_vcs_desired_runners" # The Prometheus metric to use for scaling
+    metricName: "outpost_vcs_desired_runners" # The Prometheus metric to use for scaling (auto-builds query with runner_id label)
     threshold: "1" # Target value: scale to match desired_runners metric
-    query: 'sum(outpost_vcs_desired_runners{runner_id="vcs-scheduled"})' # Sum desired runners across all vcs-scheduled pods
+    query: "" # Optional: Custom PromQL query template (can use {{ .runner }} for runner name). If empty, auto-generates: sum(metricName{runner_id="<runner>"})
 
 runners:
   vcs-event-triggered:

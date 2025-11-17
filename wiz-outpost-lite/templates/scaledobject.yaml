@@ -23,9 +23,9 @@ spec:
       serverAddress: {{ printf "http://%s-prometheus.%s.svc.cluster.local:9090" (include "wiz-outpost-lite.name" .) .Release.Namespace | quote }}
       {{- end }}
       {{- if .Values.keda.prometheus.query }}
-      query: {{ .Values.keda.prometheus.query | quote }}
+      query: {{ tpl .Values.keda.prometheus.query . | quote }}
       {{- else }}
-      metricName: {{ required "keda.prometheus.metricName is required when query is not provided" .Values.keda.prometheus.metricName | quote }}
+      query: {{ printf "sum(%s{runner_id=%q})" .Values.keda.prometheus.metricName .runner | quote }}
       {{- end }}
       threshold: {{ .Values.keda.prometheus.threshold | quote }}
 ---
