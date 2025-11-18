@@ -183,36 +183,6 @@ modules:
       readOnlyRootFilesystem: true
       seLinuxOptions:
         type: container_t
-  databricks-datascan:
-    enabled: false
-    image:
-      name: outpost-lite-runner-datascan
-    serviceAccount:
-      # We don't create a new service account as we need to use the same as the Databricks runner
-      # This requires the Databricks runner to also be enabled.
-      create: false
-      # We need to use the same service account as the Databricks runner
-      name: "sa-databricks"
-      volume:
-        mount: true
-        audienceTemplate: "databricks.wiz.io/{{ $.Values.agent.outpostId }}"
-    podSecurityContext:
-      runAsNonRoot: true
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-    containerSecurityContext:
-      capabilities:
-        drop:
-          - ALL
-      runAsNonRoot: true
-      runAsUser: 1000
-      runAsGroup: 1000
-      allowPrivilegeEscalation: false
-      privileged: false
-      readOnlyRootFilesystem: true
-      seLinuxOptions:
-        type: container_t
 
 runners:
   vcs-event-triggered:

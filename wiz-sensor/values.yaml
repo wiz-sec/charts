@@ -258,9 +258,9 @@ serviceAccount:
   rbacGetAll: false
 
 image:
-  # set registry to an empty string if the image is local. The final image pulled is
-  # "registry/repository:tag" and here this is "wizio.azurecr.io/sensor:v1".
-  # For FEDRAMP use wizfedramp.azurecr.us, for a final URL of "wizfedramp.azurecr.us/sensor:v1".
+  # Set registry to an empty string if the image is local. The final image pulled is
+  # "registry/repository:tag" which defaults to "wizio.azurecr.io/sensor:v1".
+  # For FEDRAMP use registry: wizfedramp.azurecr.us, for a final URL of "wizfedramp.azurecr.us/sensor:v1".
   registry: wizio.azurecr.io
   repository: sensor
   args: {}
@@ -269,7 +269,10 @@ image:
   # with private registries. This overrides the tag variable when set.
   sha256: ""
   pullPolicy: Always
-  # the default is "wizio.azurecr.io/wiz-app/wiz-workload-scanner:v1"
+
+  # Disk Scanner image configuration
+  # The final image pulled is "registry/diskScanRepository:diskScanTag" which defaults to "wizio.azurecr.io/wiz-app/wiz-workload-scanner:v1"
+  # For FEDRAMP use diskScanRepository: wiz-app/wiz-workload-scanner-fips, for a final URL of "wizfedramp.azurecr.us/wiz-app/wiz-workload-scanner-fips:v1"
   diskScanRepository: wiz-app/wiz-workload-scanner
   diskScanArgs: {}
   diskScanTag: "v1" # if not set, the chart's diskScanAppVersion will be used
