@@ -1,0 +1,34 @@
+{{- range $values := (include "wiz-outpost-lite.runners" . | fromJson) }}
+{{- with merge $values (omit $ "Values") }}
+{{- if and .Values.enabled .Values.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "wiz-outpost-lite.fullname" . }}
+  labels:
+    {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    name: {{ include "wiz-outpost-lite.fullname" . }}
+  pollingInterval: {{ .Values.keda.pollingInterval }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount }}
+  triggers:
+  - type: prometheus
+    metadata:
+      {{- if .Values.keda.prometheus.serverAddress }}
+      serverAddress: {{ .Values.keda.prometheus.serverAddress | quote }}
+      {{- else }}
+      serverAddress: {{ printf "http://%s-prometheus.%s.svc.cluster.local:%d" (include "wiz-outpost-lite.name" .) .Release.Namespace (int .Values.keda.prometheus.port) | quote }}
+      {{- end }}
+      {{- if .Values.keda.prometheus.query }}
+      query: {{ tpl .Values.keda.prometheus.query . | quote }}
+      {{- else }}
+      query: {{ printf "sum(%s{runner_id=%q})" .Values.keda.prometheus.metricName .runner | quote }}
+      {{- end }}
+      threshold: {{ .Values.keda.prometheus.threshold | quote }}
+---
+{{- end }}
+{{- end }}
+{{- end }}

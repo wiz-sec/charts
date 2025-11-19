@@ -1,0 +1,77 @@
+{{- if .Values.keda.prometheus.deploy }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiz-outpost-lite.name" . }}-prometheus
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "wiz-outpost-lite.name" . }}-prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "wiz-outpost-lite.name" . }}-prometheus
+  template:
+    metadata:
+      labels:
+        app: {{ include "wiz-outpost-lite.name" . }}-prometheus
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: prometheus
+          image: {{ .Values.keda.prometheus.image.repository }}:{{ .Values.keda.prometheus.image.tag }}
+          imagePullPolicy: {{ .Values.keda.prometheus.image.pullPolicy }}
+          args:
+            - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--storage.tsdb.path=/prometheus'
+            - '--storage.tsdb.retention.time={{ .Values.keda.prometheus.retention }}'
+            - '--web.enable-lifecycle'
+          ports:
+            - name: http
+              containerPort: {{ .Values.keda.prometheus.port }}
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+          volumeMounts:
+            - name: prometheus-config
+              mountPath: /etc/prometheus
+            - name: prometheus-storage
+              mountPath: /prometheus
+          resources:
+            {{- toYaml .Values.keda.prometheus.resources | nindent 12 }}
+      volumes:
+        - name: prometheus-config
+          configMap:
+            name: {{ include "wiz-outpost-lite.name" . }}-prometheus
+        - name: prometheus-storage
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "wiz-outpost-lite.name" . }}-prometheus
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "wiz-outpost-lite.name" . }}-prometheus
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.keda.prometheus.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ include "wiz-outpost-lite.name" . }}-prometheus
+{{- end }}
