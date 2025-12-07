@@ -1,0 +1,3 @@
+{{ if .Values.global.affinity }}
+  {{ fail "global.affinity is no longer supported. Please use affinity on the individual charts instead." }}
+{{ end }}

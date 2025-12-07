@@ -13,14 +13,15 @@ data:
       evaluation_interval: 30s
 
     scrape_configs:
-      - job_name: 'vcs-scheduled'
+      {{- range $values := (include "wiz-outpost-lite.runners" $ | fromJson) }}
+      {{- with merge $values (omit $ "Values") }}
+      {{- if and .Values.enabled .Values.service.enabled .Values.scrapableMetrics }}
+      - job_name: '{{ .runner }}'
         static_configs:
-          - targets: ['{{ .Release.Name }}-{{ .Chart.Name }}-vcs-scheduled.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.metricsPort }}']
+          - targets: ['{{ include "wiz-outpost-lite.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.metricsPort }}']
             labels:
-              runner_id: 'vcs-scheduled'
-      - job_name: 'vcs-event-triggered'
-        static_configs:
-          - targets: ['{{ .Release.Name }}-{{ .Chart.Name }}-vcs-event-triggered.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.metricsPort }}']
-            labels:
-              runner_id: 'vcs-event-triggered'
+              runner_id: '{{ .runnerID }}'
+      {{- end }}
+      {{- end }}
+      {{- end }}
 {{- end }}

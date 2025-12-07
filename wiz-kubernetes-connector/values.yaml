@@ -232,7 +232,21 @@ nodeSelector: {}
 
 tolerations: []
 podAnnotations: {}
-affinity: {}
+affinity:
+  # run on linux arm64 or amd64 nodes
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/os
+              operator: In
+              values:
+                - linux
+            - key: kubernetes.io/arch
+              operator: In
+              values:
+                - arm64
+                - amd64
 
 # Redirect HTTP and/or HTTPS traffic through a proxy.
 httpProxyConfiguration:

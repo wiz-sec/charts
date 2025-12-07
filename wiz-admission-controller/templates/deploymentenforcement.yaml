@@ -102,13 +102,11 @@ spec:
           {{- end }}
           # OPA webhook flags
           - "--misconfiguration-enabled={{ .Values.opaWebhook.enabled }}"
-          {{-  include "wiz-admission-controller.opaCliParams.policies" . | trim | nindent 10 }}
           # Image integrity webhook flags
           {{- if .Values.imageIntegrityWebhook.enabled }}
           - "--image-integrity-enabled=true"
           - "--image-integrity-cache-digest-ttl={{ .Values.imageIntegrityWebhook.cacheImageDigestTTL }}"
           - "--image-integrity-cache-verify-ttl={{ .Values.imageIntegrityWebhook.cacheImageVerifyTTL }}"
-          {{- include "wiz-admission-controller.imageIntegrityCliParams.policies" . | trim | nindent 10 }}
           ## Image registry client flags
           - "--registry-image-pull-secret-namespace={{ .Values.imageRegistryClient.secretsNamespace }}"
           {{- include "wiz-admission-controller.imageRegistryClient.pullSecrets" . | trim | nindent 10 }}
@@ -118,6 +116,8 @@ spec:
           - "--kubernetes-audit-logs-enabled=false"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          {{- include "wiz-admission-controller.opaEnvVars.policies" . | trim | nindent 10 }}
+          {{- include "wiz-admission-controller.imageIntegrityEnvVars.policies" . | trim | nindent 10 }}
           {{- if .Values.crdCache.enabled }}
           {{- include "wiz-admission-controller.crdCacheEnvVars" (include "wiz-admission-controller.runnerType.enforcer" .) | nindent 10 }}
           {{- end }}
@@ -181,7 +181,7 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (coalesce .Values.global.affinity .Values.affinity) }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}

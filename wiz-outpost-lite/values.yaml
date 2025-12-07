@@ -94,6 +94,7 @@ containerSecurityContext: {}
 modules:
   vcs:
     enabled: false
+    scrapableMetrics: true
     image:
       name: outpost-lite-runner-vcs
     apparmorProfile: unconfined

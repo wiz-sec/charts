@@ -263,19 +263,17 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-{{- define "wiz-admission-controller.opaCliParams.policies" -}}
+{{- define "wiz-admission-controller.opaEnvVars.policies" -}}
 {{- if .Values.opaWebhook.policies }}
-{{- range .Values.opaWebhook.policies }}
-- "--policy={{ . }}"
-{{- end }}
+- name: WIZ_POLICY
+  value: {{ .Values.opaWebhook.policies | join "," | quote }}
 {{- end }}
 {{- end }}
 
-{{- define "wiz-admission-controller.imageIntegrityCliParams.policies" -}}
+{{- define "wiz-admission-controller.imageIntegrityEnvVars.policies" -}}
 {{- if .Values.imageIntegrityWebhook.policies }}
-{{- range .Values.imageIntegrityWebhook.policies }}
-- "--image-integrity-policy={{ . }}"
-{{- end }}
+- name: WIZ_IMAGE_INTEGRITY_POLICY
+  value: {{ .Values.imageIntegrityWebhook.policies | join "," | quote }}
 {{- end }}
 {{- end }}
 
