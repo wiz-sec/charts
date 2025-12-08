@@ -144,7 +144,7 @@ wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = 
   # Specifies whether a proxy secret should be created
   # If createSecret is false you need to:
   #  1. Create secret with this keys:
-  #     CONNECTOR_ID, CONNECTOR_TOKEN, TARGET_DOMAIN, TARGET_IP, TARGET_PORT
+  #     CONNECTOR_ID
   #  2. Set secretName to reference your secret
   createSecret: true
   autoCreated: true # Should be set to false if the connector was not created by the autoCreateConnector Job
@@ -154,11 +154,6 @@ wizConnector: # Relevant only for broker.enabled = true & autoCreateConnector = 
 
   # Required arguments for autoCreateConnector = false
   connectorId: ""
-  connectorToken: ""
-  targetDomain: ""
-  targetIp: ""
-  targetPort: ""
-  tunnelClientAllowedDomains: []
 
 wiz-broker:
   enabled: true
@@ -258,7 +253,8 @@ httpProxyConfiguration:
   create: true
   secretName: "" # The name of the proxy Secret.
   annotations: {} # Annotations to be set on the secret
-  
+
+  # TIP: a common mistake is to use https://<proxy-server> for httpsProxy, even though the proxy itself is http://<proxy-server>.
   httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
   noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
@@ -355,6 +351,13 @@ global:
     enabled: false # Should the components use a proxy.
     create: false # Secret created by wiz-kubernetes-connector.
     secretName: "" # The name of the proxy Secret.
+
+    httpProxy: ""
+    httpsProxy: ""
+    noProxyAddress: ""
+    # Proxy client certificate in PEM format. This is required for client certificate authentication.
+    # The file should contain a certificate and a private key in PEM format.
+    clientCertificate: ""
 
   # Set this to true if you are using Istio in sidecar mode.
   # When Istio uses sidecars, there are 2 issues when deploying Wiz:

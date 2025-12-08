@@ -100,22 +100,24 @@ spec:
           {{- with (coalesce .Values.webhook.policyEnforcementMethod .Values.opaWebhook.policyEnforcementMethod) }} # check opaWebhook for backward compatibility
           - "--policy-enforcement-method={{ . }}"
           {{- end }}
-          # OPA webhook flags
-          - "--misconfiguration-enabled={{ .Values.opaWebhook.enabled }}"
           # Image integrity webhook flags
           {{- if .Values.imageIntegrityWebhook.enabled }}
-          - "--image-integrity-enabled=true"
           - "--image-integrity-cache-digest-ttl={{ .Values.imageIntegrityWebhook.cacheImageDigestTTL }}"
           - "--image-integrity-cache-verify-ttl={{ .Values.imageIntegrityWebhook.cacheImageVerifyTTL }}"
           ## Image registry client flags
           - "--registry-image-pull-secret-namespace={{ .Values.imageRegistryClient.secretsNamespace }}"
           {{- include "wiz-admission-controller.imageRegistryClient.pullSecrets" . | trim | nindent 10 }}
           {{- include "wiz-admission-controller.imageRegistryClient.credentialHelpersSecrets" . | trim | nindent 10 }}
-          {{- end -}}
-          # Disable K8S audit logs webhook
-          - "--kubernetes-audit-logs-enabled=false"
+          {{- end }}
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          # Webhook enabled flags
+          - name: WIZ_MISCONFIGURATION_ENABLED
+            value: {{ .Values.opaWebhook.enabled | quote }}
+          - name: WIZ_IMAGE_INTEGRITY_ENABLED
+            value: {{ .Values.imageIntegrityWebhook.enabled | quote }}
+          - name: WIZ_KUBERNETES_AUDIT_LOGS_ENABLED
+            value: "false"
           {{- include "wiz-admission-controller.opaEnvVars.policies" . | trim | nindent 10 }}
           {{- include "wiz-admission-controller.imageIntegrityEnvVars.policies" . | trim | nindent 10 }}
           {{- if .Values.crdCache.enabled }}

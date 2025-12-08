@@ -65,12 +65,12 @@ Create Wiz broker properties to use
 {{- define "wiz-broker.wizConnectorSecretData" -}}
 {{- if and .Values.wizConnector.createSecret (not .Values.wizConnector.autoCreated) }}
 ConnectorId: {{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId | quote}}
-TunnelToken: {{ required "A valid .Values.wizConnector.connectorToken entry required!" .Values.wizConnector.connectorToken | quote }}
-TunnelDomain: {{ required "A valid .Values.wizConnector.targetDomain entry required!" .Values.wizConnector.targetDomain | quote }}
-TunnelServerDomain: {{ required "A valid .Values.wizConnector.tunnelServerDomain entry required!" .Values.wizConnector.tunnelServerDomain | quote }}
-TunnelServerPort: {{ int (required "A valid .Values.wizConnector.tunnelServerPort entry required!" .Values.wizConnector.tunnelServerPort) }}
-TargetIp: {{ required "A valid .Values.wizConnector.targetIp entry required!" .Values.wizConnector.targetIp | quote }}
-TargetPort: {{ int (required "A valid .Values.wizConnector.targetPort entry required!" .Values.wizConnector.targetPort) }}
+TunnelToken: {{ default "" .Values.wizConnector.connectorToken | quote }}
+TunnelDomain: {{ default "" .Values.wizConnector.targetDomain | quote }}
+TunnelServerDomain: {{ default "" .Values.wizConnector.tunnelServerDomain | quote }}
+TunnelServerPort: {{ default 443 .Values.wizConnector.tunnelServerPort }}
+TargetIp: {{ default "" .Values.wizConnector.targetIp | quote }}
+TargetPort: {{ default 443 .Values.wizConnector.targetPort }}
 {{- if .Values.wizConnector.tunnelClientAllowedDomains }}
 TunnelClientAllowedDomains: "{{ range $index, $domain := .Values.wizConnector.tunnelClientAllowedDomains }}{{ if $index }},{{ end }}{{ $domain }}{{ end }}"
 {{- end }}

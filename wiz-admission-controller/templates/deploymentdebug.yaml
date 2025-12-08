@@ -94,13 +94,16 @@ spec:
           {{- include "spec.admissionControllerRunner.commandArgs" . | trim | nindent 10 }}
           # Debug webhook flags
           - "--debug-webhook-enabled=true"
-          # Disable other webhooks
-          - "--misconfiguration-enabled=false"
-          - "--image-integrity-enabled=false"
-          - "--kubernetes-audit-logs-enabled=false"
           - "--sensor-enabled=false"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          # Webhook enabled flags
+          - name: WIZ_MISCONFIGURATION_ENABLED
+            value: "false"
+          - name: WIZ_IMAGE_INTEGRITY_ENABLED
+            value: "false"
+          - name: WIZ_KUBERNETES_AUDIT_LOGS_ENABLED
+            value: "false"
           # Skip heartbeat for debug webhook
           - name: WIZ_SKIP_HEARTBEAT
             value: "true"

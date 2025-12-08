@@ -95,13 +95,15 @@ spec:
           # Webhook flags
           - "--error-enforcement-method=AUDIT"
           - "--policy-enforcement-method=AUDIT"
-          # K8S audit logs webhook flags
-          - "--kubernetes-audit-logs-enabled=true"
-          # Disable other webhooks
-          - "--misconfiguration-enabled=false"
-          - "--image-integrity-enabled=false"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          # Webhook enabled flags
+          - name: WIZ_KUBERNETES_AUDIT_LOGS_ENABLED
+            value: "true"
+          - name: WIZ_MISCONFIGURATION_ENABLED
+            value: "false"
+          - name: WIZ_IMAGE_INTEGRITY_ENABLED
+            value: "false"
           {{- if .Values.crdCache.enabled }}
           {{- include "wiz-admission-controller.crdCacheEnvVars" (include "wiz-admission-controller.runnerType.kdr" .) | nindent 10 }}
           {{- end }}
