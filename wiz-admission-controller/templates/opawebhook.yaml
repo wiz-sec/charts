@@ -2,6 +2,14 @@
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
+{{- $existingSecret := dict -}}
+{{- if .Values.tlsCertificate.reuseExisting -}}
+{{- $existingSecret = include "wiz-admission-controller.lookupTlsSecret" . | fromJson -}}
+{{- end -}}
+{{- if and $existingSecret $existingSecret.data (index $existingSecret.data "tls.crt") -}}
+{{- $tlsCrt = index $existingSecret.data "tls.crt" -}}
+{{- $tlsKey = index $existingSecret.data "tls.key" -}}
+{{- else -}}
 {{- $altNames := list
   ( printf "%s.%s" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace )
   ( printf "%s.%s.svc" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace )
@@ -19,6 +27,7 @@
 {{- $cert := genSignedCert ( include "wiz-admission-controller.fullname" . ) nil $altNames 3650 $ca -}}
 {{- $tlsCrt = $cert.Cert | b64enc -}}
 {{- $tlsKey = $cert.Key | b64enc -}}
+{{- end -}}
 {{- end -}}
 {{ if .Values.opaWebhook.enabled -}}
 apiVersion: admissionregistration.k8s.io/v1

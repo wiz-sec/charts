@@ -566,6 +566,8 @@ networkPolicy:
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values
   create: true
+  # If true, reuse existing TLS certificate from secret on helm upgrade instead of regenerating
+  reuseExisting: true
   tlsCertificate: ""
   tlsKey: ""
 

@@ -609,6 +609,18 @@ Get Kubernetes version, with support for mocking in tests
 {{- end -}}
 
 {{/*
+Lookup existing TLS secret, with support for mocking in tests
+*/}}
+{{- define "wiz-admission-controller.lookupTlsSecret" -}}
+{{- if .Values.mockLookup -}}
+{{- .Values.mockLookup.tlsSecret | default dict | toJson -}}
+{{- else -}}
+{{- $secretName := include "wiz-admission-controller.secretServerCert" . | trim -}}
+{{- lookup "v1" "Secret" .Release.Namespace $secretName | default dict | toJson -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Determine if scraping API server metrics is enabled, considering K8s version >= 1.21 (GA API for EndpointSlices)
 */}}
 {{- define "wiz-admission-controller.scrapeAPIServerMetricsEnabled" -}}
