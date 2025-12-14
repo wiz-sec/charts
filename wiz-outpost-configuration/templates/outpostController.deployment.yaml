@@ -40,7 +40,7 @@ spec:
           - --region={{ .Values.clusterRegion }}
         env:
         - name: WIZ_ENV
-          value: {{ .Values.env | quote }}
+          value: {{ .Values.env | default "prod" | quote }}
         - name: WIZ_CLIENT_ID
           valueFrom:
             secretKeyRef:
