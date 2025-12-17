@@ -220,4 +220,18 @@ Rule Validation
 {{- end }}
 {{- end }}
 
+{{- if and .Values.gkeAutopilot .Values.diskScan.enabled }}
+{{- fail "diskScan is not supported on GKE Autopilot" }}
+{{- end }}
+
+{{- if .Values.gkeAutopilot }}
+{{- $limits := .Values.daemonset.resources.limits }}
+{{- if .Values.apiSecurity.enabled }}
+{{- $limits = .Values.daemonset.resources.apiSecurityLimits }}
+{{- end }}
+{{- if not $limits }}
+{{- fail "gkeAutopilot requires resource limits to be defined (daemonset.resources.limits or daemonset.resources.apiSecurityLimits when apiSecurity is enabled)" }}
+{{- end }}
+{{- end }}
+
 {{- end }}

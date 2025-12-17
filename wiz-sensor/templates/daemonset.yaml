@@ -375,19 +375,19 @@ spec:
         {{- end }}
 
         {{- if .Values.daemonset.resources }}
+        {{- $limits := .Values.daemonset.resources.limits }}
+        {{- if .Values.apiSecurity.enabled }}
+        {{- $limits = .Values.daemonset.resources.apiSecurityLimits }}
+        {{- end }}
         resources:
-          {{- if .Values.apiSecurity.enabled }}
-          {{- if .Values.daemonset.resources.apiSecurityLimits }}
+          {{- if $limits }}
           limits:
-{{ toYaml .Values.daemonset.resources.apiSecurityLimits | indent 12 }}
+{{ toYaml $limits | indent 12 }}
           {{- end }}
-          {{- else }}
-          {{- if .Values.daemonset.resources.limits }}
-          limits:
-{{ toYaml .Values.daemonset.resources.limits | indent 12 }}
-          {{- end }}
-          {{- end }}
-          {{- if and (not .Values.gkeAutopilot) .Values.daemonset.resources.requests }}
+          {{- if and .Values.gkeAutopilot $limits }}
+          requests:
+{{ toYaml $limits | indent 12 }}
+          {{- else if and (not .Values.gkeAutopilot) .Values.daemonset.resources.requests }}
           requests:
 {{ toYaml .Values.daemonset.resources.requests | indent 12 }}
           {{- end }}
@@ -578,7 +578,7 @@ spec:
           limits:
 {{ toYaml .Values.daemonset.resources.diskScanLimits | indent 12 }}
           {{- end }}
-          {{- if and (not .Values.gkeAutopilot) .Values.daemonset.resources.diskScanRequests }}
+          {{- if .Values.daemonset.resources.diskScanRequests }}
           requests:
 {{ toYaml .Values.daemonset.resources.diskScanRequests | indent 12 }}
           {{- end }}
