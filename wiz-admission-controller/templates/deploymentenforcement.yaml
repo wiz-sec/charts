@@ -145,6 +145,18 @@ spec:
             value: {{ .Values.imageRegistryClient.ignoreMissingSecretError | quote }}
           - name: WIZ_REGISTRY_IMAGE_PULL_SECRET_RELOAD_INTERVAL
             value: {{ .Values.imageRegistryClient.cacheImagePullSecretsInterval | quote }}
+          {{- if .Values.opaWebhook.detailedErrorMessages.enabled }}
+          - name: WIZ_MISCONFIGURATION_DETAILED_ERROR_MESSAGES_ENABLED
+            value: "true"
+          - name: WIZ_MISCONFIGURATION_DETAILED_ERROR_MESSAGES_FORMAT
+            value: {{ .Values.opaWebhook.detailedErrorMessages.format | quote }}
+          {{- end }}
+          {{- if .Values.imageIntegrityWebhook.detailedErrorMessages.enabled }}
+          - name: WIZ_IMAGE_INTEGRITY_DETAILED_ERROR_MESSAGES_ENABLED
+            value: "true"
+          - name: WIZ_IMAGE_INTEGRITY_DETAILED_ERROR_MESSAGES_FORMAT
+            value: {{ .Values.imageIntegrityWebhook.detailedErrorMessages.format | quote }}
+          {{- end }}
           ## Enable debug webhook that only logs the request
           {{- if .Values.debugWebhook.enabled }}
           - name: WIZ_DEBUG_WEBHOOK_ENABLED

@@ -196,6 +196,15 @@ opaWebhook:
                               # "override": Replaces the default OPA error message entirely with the custom message.
                               # If empty, the top-level 'customErrorMessageMode' will be used.
 
+  # Detailed error messages configuration for misconfiguration policies.
+  # When enabled, provides detailed output showing all failed policies with their
+  # enforcement type (AUDIT/BLOCK) and all failed rules by name.
+  detailedErrorMessages:
+    enabled: false  # Opt-in feature. When disabled, uses the legacy simple message format.
+    format: "table" # Output format for detailed messages. Options: "table" or "json".
+                    # "table" - Human-readable table format with colored enforcement types.
+                    # "json"  - Machine-readable JSON format for programmatic parsing.
+
 imageIntegrityWebhook:
   enabled: false
   policies: [] # List of policies to enforce on the image integrity webhook. If not set, by default AC will get policies from Wiz based on projects.
@@ -243,6 +252,15 @@ imageIntegrityWebhook:
                               # "prepend": Adds the custom message before the default image integrity error message.
                               # "override": Replaces the default image integrity error message entirely with the custom message.
                               # If empty, the top-level 'customErrorMessageMode' will be used.
+
+  # Detailed error messages configuration for image integrity policies.
+  # When enabled, provides detailed output showing all failed policies with their
+  # enforcement type (AUDIT/BLOCK) and all failed images.
+  detailedErrorMessages:
+    enabled: false  # Opt-in feature. When disabled, uses the legacy simple message format.
+    format: "table" # Output format for detailed messages. Options: "table" or "json".
+                    # "table" - Human-readable table format with colored enforcement types.
+                    # "json"  - Machine-readable JSON format for programmatic parsing.
 
 # This webhooks sends the audit logs to Wiz, and should never block any requests.
 kubernetesAuditLogsWebhook:
