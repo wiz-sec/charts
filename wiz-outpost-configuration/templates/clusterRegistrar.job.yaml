@@ -29,7 +29,6 @@ metadata:
     {{- end }}
 spec:
   backoffLimit: 0  # Fail fast if the job fails
-  ttlSecondsAfterFinished: 30
   template:
     metadata:
       {{- with (coalesce .Values.podAnnotations) }}
