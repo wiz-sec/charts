@@ -1,3 +1,5 @@
+{{- include "validate.values" . }}
+{{- $kubeVersion := printf "%s.%s" (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Major "") (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Minor "") }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -17,18 +19,37 @@ spec:
       labels: {{- include "wiz-sensor.labels" . | nindent 8 }}
 
       annotations:
+      {{- if .Values.exposeMetrics }}
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "{{ .Values.metricsPort }}"
+      {{- end }}
+
+      {{- if and (not .Values.newAppArmorAnnotation) (or (semverCompare "<1.31" $kubeVersion) (.Values.oldAppArmorAnnotation)) }}
         container.apparmor.security.beta.kubernetes.io/wiz-sensor: unconfined
+        {{- if .Values.diskScan.enabled }}
+        container.apparmor.security.beta.kubernetes.io/wiz-disk-scanner: unconfined
+        {{- end }}
+      {{- end }}
         cluster-autoscaler.kubernetes.io/enable-ds-eviction: "true"
-        {{- with (coalesce .Values.global.podAnnotations (coalesce .Values.daemonset.podAnnotations .Values.podAnnotations)) }}
+        {{- with .Values.global.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with (coalesce .Values.daemonset.podAnnotations .Values.podAnnotations) }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
 
     spec:
+      {{- if .Values.setFsGroup }}
+      securityContext:
+        fsGroup: {{- if .Values.privileged }} 0 {{- else }} 2202 {{- end }}
+      {{- end }}
+
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "wiz-sensor.serviceAccountName" . }}
       {{- end }}
 
-      {{- with (coalesce .Values.global.nodeSelector .Values.daemonset.nodeSelector) }}
+      {{- with .Values.daemonset.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -37,7 +58,7 @@ spec:
       priorityClassName: {{ .Values.daemonset.priorityClassName }}
       {{- end }}
 
-      {{- with (coalesce .Values.global.affinity .Values.daemonset.affinity) }}
+      {{- with .Values.daemonset.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -50,7 +71,7 @@ spec:
       hostPID: true
       hostIPC: true
 
-      {{- with (coalesce .Values.global.tolerations .Values.daemonset.tolerations) }}
+      {{- with .Values.daemonset.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -60,14 +81,50 @@ spec:
       containers:
       - name: wiz-sensor
         {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
-        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.tag }}
+          {{- if .Values.image.sha256 }}
+        image: {{ printf "%s/%s@sha256:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository .Values.image.sha256 }}
+          {{- else }}
+        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository (include "wiz-sensor.imageTag" .) }}
+          {{- end }}
         {{- else }}
-        image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
+        image: {{ printf "%s:%s" .Values.image.repository (include "wiz-sensor.imageTag" .) }}
         {{- end }}
         imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
         {{- with .Values.image.args }}
         args:
           {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        {{- if .Values.exposeMetrics }}
+        ports:
+        - containerPort: {{ .Values.metricsPort }}
+          name: metrics
+          protocol: TCP
+        {{- end }}
+
+        {{- if and (not .Values.gkeAutopilot) .Values.livenessProbe.enabled }}
+        livenessProbe:
+          exec:
+            command:
+            - "/usr/src/app/wiz-sensor"
+            - "version"
+{{ toYaml .Values.livenessProbe.config | indent 10 }}
+        {{- end }}
+        {{- if and (not .Values.gkeAutopilot) .Values.startupProbe.enabled }}
+        startupProbe:
+          exec:
+            command:
+            - "/usr/src/app/wiz-sensor"
+            - "version"
+{{ toYaml .Values.startupProbe.config | indent 10 }}
+        {{- end }}
+        {{- if and (not .Values.gkeAutopilot) .Values.readinessProbe.enabled }}
+        readinessProbe:
+          exec:
+            command:
+            - "/usr/src/app/wiz-sensor"
+            - "version"
+{{ toYaml .Values.readinessProbe.config | indent 10 }}
         {{- end }}
 
         securityContext:
@@ -89,7 +146,14 @@ spec:
             - IPC_LOCK # eBPF
             - FOWNER # file hashing
             - SYS_PTRACE # eBPF
+          {{- if not .Values.gkeAutopilot }}
+            - SYSLOG # kernel symbol resolve
+          {{- end }}
           {{- if not .Values.disallowRuntimeResponse }}
+            - KILL # response
+          {{- end }}
+          {{- if .Values.disallowRuntimeResponse }}
+            drop:
             - KILL # response
           {{- end }}
           privileged: false
@@ -99,7 +163,12 @@ spec:
         {{- end }}
           readOnlyRootFilesystem: true
 
-          {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion }}
+          {{- if or (.Values.newAppArmorAnnotation) (and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation)) }}
+          appArmorProfile:
+            type: Unconfined
+          {{- end }}
+
+          {{- if semverCompare ">=1.19" $kubeVersion }}
           seccompProfile:
             type: Unconfined
           {{- end }}
@@ -110,10 +179,16 @@ spec:
             {{- if .Values.flatcarLinuxNodes }}
             type: "unconfined_t"
             {{- else }}
-            type: "spc_t"
+            type: {{ .Values.seLinuxType }}
             {{- end }}
 
         env:
+        {{- if not .Values.gkeAutopilot }}
+        - name: MIN_SENSOR_COMPAT_BUILD_VER
+          value: "4142"
+        - name: HELM_CHART_COMPAT_VER
+          value: "1"
+        {{- end }}
         - name: WIZ_TMP_STORE
           value: "/wiz-sensor-store/"
         - name: WIZ_HOST_STORE
@@ -156,6 +231,16 @@ spec:
           value: {{ .Values.daemonset.httpProxyPassword }}
         - name: HTTP_PROXY_CERT
           value: {{ .Values.daemonset.httpProxyCaCert }}
+        {{- if .Values.daemonset.disableStrictEMS }}
+        - name: WIZ_DISABLE_STRICT_EMS
+          value: "true"
+        {{- end }}
+        {{- if .Values.diskScan.enabled }}
+        - name: DISK_SCANNER
+          value: "true"
+        - name: DISK_SCAN_SHARED_VOL
+          value: "/wiz-sensor-share/"
+        {{- end }}
         {{- if .Values.ciMode }}
         - name: CI_MODE
           value: "true"
@@ -167,11 +252,19 @@ spec:
           value: {{ .Values.tenantSuffix }}
         {{- end }}
         - name: SENSOR_CLUSTER_NAME
-          value: {{ .Values.sensorClusterName }}
+          value: {{ coalesce .Values.global.clusterDisplayName .Values.sensorClusterName }}
         - name: RUST_LOG
           value: {{ include "wiz-sensor.fileLogLevel" . }}
         - name: STDOUT_LOG
           value: {{ include "wiz-sensor.stdoutLogLevel" . }}
+        {{- if not .Values.gkeAutopilot }}
+        - name: POD_IMAGE_TAG
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['image/tag']
+        - name: POD_IMAGE_REGISTRY
+          value: {{ coalesce .Values.global.image.registry .Values.image.registry }}
+        {{- end }}
         - name: POD_MEM_LIMITS
           valueFrom:
             resourceFieldRef:
@@ -192,6 +285,261 @@ spec:
         - name: SENSOR_START_DELAY_RANGE
           value: {{ quote .Values.startDelayRange }}
         {{- end}}
+        {{- if coalesce .Values.global.clusterExternalId .Values.clusterExternalId }}
+        - name: CLUSTER_EXTERNAL_ID
+          value: {{ coalesce .Values.global.clusterExternalId .Values.clusterExternalId }}
+        {{- end }}
+        {{- with coalesce .Values.global.subscriptionExternalId .Values.subscriptionExternalId }}
+        - name: SUBSCRIPTION_EXTERNAL_ID
+          value: {{ . | quote }}
+        {{- end }}
+        {{- with coalesce .Values.global.subscriptionTags .Values.subscriptionTags }}
+        - name: SUBSCRIPTION_TAGS
+          value: {{ . | toJson | quote }}
+        {{- end }}
+        {{- with coalesce .Values.global.clusterTags .Values.clusterTags }}
+        - name: CLUSTER_TAGS
+          value: {{ . | toJson | quote }}
+        {{- end }}
+        {{- if .Values.exposeMetrics }}
+        - name: METRICS_PORT
+          value: "{{ .Values.metricsPort }}"
+        {{- end }}
+        {{- if .Values.apiSecurity.enabled }}
+        - name: ENABLE_API_SECURITY
+          value: "true"
+        {{- end}}
+        {{- if .Values.disallowForensicsCollection }}
+        - name: DISABLE_FORENSICS
+          value: "true"
+        {{- end}}
+        {{- if .Values.openshift }}
+        - name: OPENSHIFT
+          value: "true"
+        {{- end}}
+        {{- if .Values.disableImageVersionCheck }}
+        - name: DISABLE_IMAGE_VERSION_CHECK
+          value: "true"
+        {{- end }}
+        {{- with .Values.podCustomEnvironmentVariables }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.global.podCustomEnvironmentVariables }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.fixedDefsVersion }}
+        - name: FIXED_DEFS_VERSION
+          value: {{ .Values.fixedDefsVersion }}
+        {{- end }}
+        {{- if not .Values.gkeAutopilot }}
+        - name: HELM_CHART_VERSION
+          value: {{ .Chart.Version }}
+        - name: ALLOW_KUBELET_COMMUNICATION
+          value: {{ .Values.allowKubeletCommunication | quote }}
+        - name: FORCE_KUBELET_COMMUNICATION
+          value: {{ .Values.forceKubeletCommunication | quote }}
+        {{- end }}
+
+        volumeMounts:
+        {{- with .Values.customVolumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.global.customVolumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.daemonset.sensorHostCacheCreate }}
+        - name: sensor-host-cache
+          mountPath: /wiz-host-cache/
+        {{- end }}
+        - name: sensor-store
+          mountPath: /wiz-sensor-store/
+        - name: tmp-store
+          mountPath: /tmp/
+        {{- if not .Values.global.wizApiToken.wizApiTokensVolumeMount }}
+        - name: api-client-secret
+          mountPath: /api-client/
+        {{- end }}
+        {{- if and (not .Values.gkeAutopilot) (not .Values.global.wizApiToken.wizApiTokensVolumeMount) }}
+        - name: api-endpoint-name-secret
+          mountPath: /api-endpoint-name/
+        {{- end }}
+        {{- if .Values.diskScan.enabled }}
+        - name: sensor-scanner-shared-vol
+          mountPath: /wiz-sensor-share/
+        {{- end }}
+        {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+        - name: proxy-secret
+          mountPath: /proxy-config/
+        - name: proxy-client-cert-secret
+          mountPath: /proxy-client-config/
+        {{- end }}
+
+        {{- if .Values.daemonset.resources }}
+        {{- $limits := .Values.daemonset.resources.limits }}
+        {{- if .Values.apiSecurity.enabled }}
+        {{- $limits = .Values.daemonset.resources.apiSecurityLimits }}
+        {{- end }}
+        resources:
+          {{- if $limits }}
+          limits:
+{{ toYaml $limits | indent 12 }}
+          {{- end }}
+          {{- if and .Values.gkeAutopilot $limits }}
+          requests:
+{{ toYaml $limits | indent 12 }}
+          {{- else if and (not .Values.gkeAutopilot) .Values.daemonset.resources.requests }}
+          requests:
+{{ toYaml .Values.daemonset.resources.requests | indent 12 }}
+          {{- end }}
+        {{- end }}
+
+      {{- if .Values.diskScan.enabled }}
+      - name: wiz-disk-scanner
+        {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
+        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository (include "wiz-sensor.diskScanTag" .) }}
+        {{- else }}
+        image: {{ printf "%s:%s" .Values.image.diskScanRepository (include "wiz-sensor.diskScanTag" .) }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.image.diskScanPullPolicy }}
+        {{- with .Values.image.diskScanArgs }}
+        args:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+        {{- if and (not .Values.gkeAutopilot) .Values.livenessProbe.enabled }}
+        livenessProbe:
+          exec:
+            command:
+            - "/bin/onprem-agent"
+            - "version"
+{{ toYaml .Values.livenessProbe.config | indent 10 }}
+        {{- end }}
+        {{- if and (not .Values.gkeAutopilot) .Values.startupProbe.enabled }}
+        startupProbe:
+          exec:
+            command:
+            - "/bin/onprem-agent"
+            - "version"
+{{ toYaml .Values.startupProbe.config | indent 10 }}
+        {{- end }}
+        {{- if and (not .Values.gkeAutopilot) .Values.readinessProbe.enabled }}
+        readinessProbe:
+          exec:
+            command:
+            - "/bin/onprem-agent"
+            - "version"
+{{ toYaml .Values.readinessProbe.config | indent 10 }}
+        {{- end }}
+
+        securityContext:
+        {{- if .Values.privileged }}
+          privileged: true
+          runAsUser: 0
+          runAsGroup: 0
+        {{- else }}
+          capabilities:
+            add:
+            - SYS_ADMIN # Mount operations.
+            - DAC_OVERRIDE # Access filesystem with overlayFS.
+            - DAC_READ_SEARCH # Access filesystem with overlayFS.
+            - FOWNER # Access filesystem with overlayFS.
+            - CHOWN # Access filesystem with overlayFS.
+            - SETPCAP # Drop capabilities when not needed.
+            - SYS_PTRACE # Fine-tune OOM behavior
+          privileged: false
+          runAsNonRoot: true
+          runAsUser: 2202
+          runAsGroup: 2202
+        {{- end }}
+          readOnlyRootFilesystem: true
+          {{- if or (.Values.newAppArmorAnnotation) (and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation)) }}
+          appArmorProfile:
+            type: Unconfined
+          {{- end }}
+          {{- if semverCompare ">=1.19" $kubeVersion }}
+          seccompProfile:
+            type: Unconfined
+          {{- end }}
+          seLinuxOptions:
+            user: "system_u"
+            role: "system_r"
+            level: "s0"
+            {{- if .Values.flatcarLinuxNodes }}
+            type: "unconfined_t"
+            {{- else if .Values.diskScan.bottlerocketMode }}
+            type: "super_t"
+            {{- else }}
+            type: {{ .Values.seLinuxType }}
+            {{- end }}
+
+        env:
+        - name: WIZ_DISK_SCANNER_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['dsimage/tag']
+        - name: WIZ_DISK_SCANNER_REPOSITORY
+          value: "{{ .Values.image.diskScanRepository }}"
+        - name: WIZ_IMAGE_REGISTRY
+          value: "{{ coalesce .Values.global.image.registry .Values.image.registry }}"
+        - name: WIZ_SENSOR_CLUSTER_NAME
+          value: "{{ coalesce .Values.global.clusterDisplayName .Values.sensorClusterName }}"
+        - name: WIZ_HELM_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['helm.sh/chart']
+        - name: POD_MEM_LIMITS
+          valueFrom:
+            resourceFieldRef:
+              containerName: wiz-disk-scanner
+              resource: limits.memory
+              divisor: "1Mi"
+        - name: POD_CPU_LIMITS
+          valueFrom:
+            resourceFieldRef:
+              containerName: wiz-disk-scanner
+              resource: limits.cpu
+              divisor: "1m"
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+        - name: https_proxy # Used by Go runtime to set https proxy
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "wiz-sensor.proxySecretName" . }}
+              key: httpsProxy
+        - name: SSL_CERT_DIR # Used by Go runtime to resolve additional certificates from this directory
+          value: "/proxy-config"
+        {{- end }}
+        {{- if .Values.startDelayRange }}
+        - name: WIZ_ONPREM_ORCHESTRATOR_MAX_JITTER_DELAY
+          value: "{{ .Values.startDelayRange }}s"
+        {{- end }}
+        - name: WIZ_BACKEND_ENV
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "wiz-sensor.secretName" . }}
+              key: clientEndpoint
+              optional: true
+        - name: WIZ_ONPREM_SCANNER_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "wiz-sensor.diskScanConfigName" . }}
+              key: config
+
         {{- with .Values.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -206,39 +554,36 @@ spec:
         {{- with .Values.global.customVolumeMounts }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- if .Values.daemonset.sensorHostCacheCreate }}
-        - name: sensor-host-cache
-          mountPath: /wiz-host-cache/
-        {{- end }}
-
-        - name: sensor-store
-          mountPath: /wiz-sensor-store/
-        - name: tmp-store
-          mountPath: /tmp/
+        - name: host-mount
+          mountPath: /host
+          readOnly: true
+        {{- if not .Values.global.wizApiToken.wizApiTokensVolumeMount }}
         - name: api-client-secret
           mountPath: /api-client/
-        {{- if not .Values.gkeAutopilot }}
         - name: api-endpoint-name-secret
           mountPath: /api-endpoint-name/
         {{- end }}
+        - name: sensor-scanner-shared-vol
+          mountPath: /wiz-sensor-share/
+        - name: sensor-scanner-tmp-store
+          mountPath: /tmp/
         {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
         - name: proxy-secret
           mountPath: /proxy-config/
-        - name: proxy-client-cert-secret
-          mountPath: /proxy-client-config/
         {{- end }}
 
         {{- if .Values.daemonset.resources }}
         resources:
-          {{- if .Values.daemonset.resources.limits }}
+          {{- if .Values.daemonset.resources.diskScanLimits }}
           limits:
-{{ toYaml .Values.daemonset.resources.limits | indent 12 }}
+{{ toYaml .Values.daemonset.resources.diskScanLimits | indent 12 }}
           {{- end }}
-          {{- if and (not .Values.gkeAutopilot) .Values.daemonset.resources.requests }}
+          {{- if .Values.daemonset.resources.diskScanRequests }}
           requests:
-{{ toYaml .Values.daemonset.resources.requests | indent 12 }}
+{{ toYaml .Values.daemonset.resources.diskScanRequests | indent 12 }}
           {{- end }}
         {{- end }}
+      {{- end }}
 
       terminationGracePeriodSeconds: {{ .Values.daemonset.terminationGracePeriodSeconds }}
       {{- if .Values.imagePullSecret.required }}
@@ -258,6 +603,7 @@ spec:
           path: {{ .Values.daemonset.sensorHostCacheFolder }}
           type: DirectoryOrCreate
       {{- end }}
+      {{- if not .Values.global.wizApiToken.wizApiTokensVolumeMount }}
       - name: api-client-secret
         secret:
           secretName: {{ include "wiz-sensor.secretName" . }}
@@ -266,7 +612,8 @@ spec:
               path: clientId
             - key: clientToken
               path: clientToken
-      {{- if not .Values.gkeAutopilot }}
+      {{- end }}
+      {{- if and (not .Values.gkeAutopilot) (not .Values.global.wizApiToken.wizApiTokensVolumeMount) }}
       - name: api-endpoint-name-secret
         secret:
           secretName: {{ include "wiz-sensor.secretName" . }}
@@ -299,3 +646,15 @@ spec:
         emptyDir:
           sizeLimit: "100Mi"
           medium: "Memory"
+      {{- if .Values.diskScan.enabled }}
+      - name: host-mount
+        hostPath:
+          path: /
+      - name: sensor-scanner-shared-vol
+        emptyDir:
+          sizeLimit: "100Mi"
+          medium: "Memory"
+      - name: sensor-scanner-tmp-store
+        emptyDir:
+          sizeLimit: {{ .Values.daemonset.resources.diskScanScratchSpace }}
+      {{- end }}

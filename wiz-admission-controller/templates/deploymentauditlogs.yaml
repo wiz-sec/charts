@@ -5,9 +5,12 @@ metadata:
   name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
+    wiz.io/component: "kubernetes-audit-log-collector"
     {{- include "wiz-kubernetes-audit-log-collector.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.hpa.enabled }}
   replicas: {{ .Values.kubernetesAuditLogsWebhook.replicaCount }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
@@ -18,14 +21,24 @@ spec:
         rollme.proxyHash: {{ include "wiz-admission-controller.proxyHash" . }}
         rollme.wizApiTokenHash: {{ include "wiz-admission-controller.wizApiTokenHash" . }}
         rollme.webhookCert: {{ include (print $.Template.BasePath "/opawebhook.yaml") . | sha256sum }}
-        {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
+        {{- with .Values.global.podAnnotations  }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.podAnnotations  }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
+        wiz.io/component: "kubernetes-audit-log-collector"
         {{/*
         `labels` includes `selectorLabels`
         */}}
         {{- include "wiz-kubernetes-audit-log-collector.labels" . | nindent 8 }}
+        {{- with .Values.global.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
@@ -36,18 +49,27 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "wiz-admission-controller.serviceAccountName" . }}
       securityContext:
+        {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
+        {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 8 }}
+        {{- else }}
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- end }}
       {{- if .Values.hostNetwork }}
       hostNetwork: true
       {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.global.podTerminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
+            {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+            {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 12 }}
+            {{- else }}
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            {{- end }}
+          image: {{ include "wiz-admission-controller.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - containerPort: {{ .Values.service.targetPort }}
+          {{- include "wiz-admission-controller.container.ports" . | nindent 10 }}
           readinessProbe:
             httpGet:
               path: /ready
@@ -66,96 +88,37 @@ spec:
               port: {{ .Values.healthPort }}
               scheme: HTTPS
             {{- toYaml .Values.probes.startupProbe | nindent 12 }}
-
           command:
           - "/usr/bin/wiz-admission-controller"
-          - "--readiness-port={{ .Values.healthPort }}"
-          # Server flags
-          - "--port={{ .Values.service.targetPort }}"
-          - "--tls-private-key-file=/var/server-certs/tls.key"
-          - "--tls-cert-file=/var/server-certs/tls.crt"
+          {{- include "wiz-admission-controller.spec.common.commandArgs" . | trim | nindent 10 }}
+          {{- include "spec.admissionControllerRunner.commandArgs" . | trim | nindent 10 }}
           # Webhook flags
           - "--error-enforcement-method=AUDIT"
           - "--policy-enforcement-method=AUDIT"
-          - "--cluster-external-id={{ .Values.webhook.clusterExternalId }}"
-          # Kubernetes API server flags
-          - "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
-          # K8S audit logs webhook flags
-          - "--kubernetes-audit-logs-enabled=true"
-          # Disable other webhooks
-          - "--misconfiguration-enabled=false"
-          - "--image-integrity-enabled=false"
           env:
-          - name: WIZ_UPLOAD_BACKEND_STORAGE # TODO: remove once this is removed from the code
+          {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          # Webhook enabled flags
+          - name: WIZ_KUBERNETES_AUDIT_LOGS_ENABLED
             value: "true"
-          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-          - name: WIZ_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-                key: clientId
-                optional: false
-          - name: WIZ_CLIENT_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
-                key: clientToken
-                optional: false
+          - name: WIZ_MISCONFIGURATION_ENABLED
+            value: "false"
+          - name: WIZ_IMAGE_INTEGRITY_ENABLED
+            value: "false"
+          {{- if .Values.crdCache.enabled }}
+          {{- include "wiz-admission-controller.crdCacheEnvVars" (include "wiz-admission-controller.runnerType.kdr" .) | nindent 10 }}
           {{- end }}
-          - name: WIZ_ENV
-            value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
-          {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
-          - name: HTTP_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                key: httpProxy
-                optional: false
-          - name: HTTPS_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                key: httpsProxy
-                optional: false
-          - name: NO_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-admission-controller.proxySecretName" . | trim }}
-                key: noProxyAddress
-                optional: false
-          {{- end }}
-          {{- if .Values.logLevel }}
-          - name: LOG_LEVEL
-            value: {{ .Values.logLevel }}
-          {{- end }}
-          {{- with .Values.podCustomEnvironmentVariables }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
-          {{- with .Values.global.podCustomEnvironmentVariables }}
-            {{- toYaml . | nindent 10 }}
-          {{- end }}
-          {{- if .Values.podCustomEnvironmentVariablesFile }}
-          - name: CLI_ENV_FILE
-            value: {{ .Values.podCustomEnvironmentVariablesFile }}
-          - name: USE_CLI_ENV_FILE
-            value: "true"
-          {{- end }}
-          - name: WIZ_RUNTIME_METADATA_POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
-          - name: WIZ_RUNTIME_METADATA_NODE_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
+          - name: WIZ_KUBERNETES_AUDIT_LOG_WEBHOOK_CONFIG
+            value: |
+          {{- .Values.kubernetesAuditLogsWebhook | toJson | nindent 14 }}
           ## Enable debug webhook that only logs the request
           {{- if .Values.debugWebhook.enabled }}
           - name: WIZ_DEBUG_WEBHOOK_ENABLED
             value: "true"
           {{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- include "wiz-admission-controller.resources" . | trim | nindent 12 }}
           volumeMounts:
+          {{- include "wiz-admission-controller.spec.common.volumeMounts" . | trim | nindent 10 }}
           - mountPath: /var/server-certs
             name: server-certs
             readOnly: true
@@ -166,6 +129,7 @@ spec:
             {{- toYaml . | nindent 10 }}
           {{- end }}
       volumes:
+      {{- include "wiz-admission-controller.spec.common.volumes" . | trim | nindent 8 }}
         - name: server-certs
           secret:
             defaultMode: 444
@@ -180,12 +144,17 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (coalesce .Values.global.affinity .Values.affinity) }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with (coalesce .Values.global.tolerations .Values.tolerations) }}
+      {{- if (or .Values.global.tolerations .Values.tolerations)}}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+        {{- with .Values.global.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
 {{- end }}

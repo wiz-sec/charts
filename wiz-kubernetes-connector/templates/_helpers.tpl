@@ -48,12 +48,17 @@ Create Wiz connector properties to use
 */}}
 
 {{- define "wiz-kubernetes-connector.wizConnectorSecretData" -}}
-{{- if not .Values.autoCreateConnector.enabled }}
-CONNECTOR_ID: {{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId | quote}}
-CONNECTOR_TOKEN: {{ required "A valid .Values.wizConnector.connectorToken entry required!" .Values.wizConnector.connectorToken | quote }}
-TARGET_DOMAIN: {{ required "A valid .Values.wizConnector.targetDomain entry required!" .Values.wizConnector.targetDomain | quote }}
-TARGET_IP: {{ required "A valid .Values.wizConnector.targetIp entry required!" .Values.wizConnector.targetIp | quote }}
-TARGET_PORT: {{ required "A valid .Values.wizConnector.targetPort entry required!" .Values.wizConnector.targetPort | quote }}
+{{- if and .Values.wizConnector.createSecret (not .Values.wizConnector.autoCreated) }}
+ConnectorId: {{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId | quote}}
+TunnelToken: {{ default "" .Values.wizConnector.connectorToken | quote }}
+TunnelDomain: {{ default "" .Values.wizConnector.targetDomain | quote }}
+TunnelServerDomain: {{ default "" .Values.wizConnector.tunnelServerDomain | quote }}
+TunnelServerPort: {{ default 443 .Values.wizConnector.tunnelServerPort }}
+TargetIp: {{ default "" .Values.wizConnector.targetIp | quote }}
+TargetPort: {{ default 443 .Values.wizConnector.targetPort }}
+{{- if .Values.wizConnector.tunnelClientAllowedDomains }}
+TunnelClientAllowedDomains: "{{ range $index, $domain := .Values.wizConnector.tunnelClientAllowedDomains }}{{ if $index }},{{ end }}{{ $domain }}{{ end }}"
+{{- end }}
 {{- end }}
 {{- end }}
 
@@ -62,8 +67,7 @@ Secrets names
 */}}
 
 {{- define "wiz-kubernetes-connector.apiTokenSecretName" -}}
-{{- $nameOverride := coalesce .Values.global.wizApiToken.secret.name  .Values.wizApiToken.secret.name .Values.global.nameOverride .Values.nameOverride }}
-{{- default .Chart.Name $nameOverride | trunc 63 | trimSuffix "-" }}
+{{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxySecretName" -}}
@@ -78,11 +82,15 @@ Secrets names
 {{ printf "%s-token" .Values.clusterReader.serviceAccount.name }}
 {{- end }}
 
+{{- define "wiz-kubernetes-connector.brokerEnabled" -}}
+{{ index .Values "wiz-broker" "enabled" }}
+{{- end }}
+
 {{/*
 Input parameters
 */}}
 {{- define "wiz-kubernetes-connector.apiServerEndpoint" -}}
-  {{- if and .Values.autoCreateConnector.enabled (not .Values.broker.enabled) }}
+  {{- if and .Values.autoCreateConnector.enabled (not (include "wiz-kubernetes-connector.brokerEnabled" .)) }}
     {{- required "A valid .Values.autoCreateConnector.apiServerEndpoint entry required!" .Values.autoCreateConnector.apiServerEndpoint -}}
   {{- else -}}
     {{ if .Values.autoCreateConnector.apiServerEndpoint }}
@@ -98,29 +106,210 @@ Input parameters
   {{- end -}}
 {{- end }}
 
-{{/*
-This function dump the value of a variable and fail the template execution.
-Use for debug purpose only.
-*/}}
-{{- define "helpers.var_dump" -}}
-{{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
-{{- end -}}
-
-{{- define "helpers.calculateHash" -}}
-{{- $list := . -}}
-{{- $hash := printf "%s" $list | sha256sum -}}
-{{- $hash := $hash | trimSuffix "\n" -}}
-{{- $hash -}}
-{{- end -}}
-
 {{- define "wiz-kubernetes-connector.wizApiTokenHash" -}}
-{{ include "helpers.calculateHash" (list .Values.global.wizApiToken.clientId .Values.global.wizApiToken.clientToken .Values.global.wizApiToken.secret.name .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
+{{ include "helpers.calculateHash" (list .Values.wizApiToken.clientId .Values.wizApiToken.clientToken .Values.wizApiToken.secret.name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.proxyHash" -}}
-{{ include "helpers.calculateHash" (list .Values.global.httpProxyConfiguration.httpProxy .Values.global.httpProxyConfiguration.httpsProxy .Values.global.httpProxyConfiguration.noProxyAddress .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
+{{ include "helpers.calculateHash" (list .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-connector.brokerHash" -}}
-{{ include "helpers.calculateHash" (list .Values.broker.enabled .Values.broker.targetIp ) }}
+{{ include "helpers.calculateHash" (list "wiz-kubernetes-connector.brokerHash" (index .Values "wiz-broker" "wizConnector.targetIp")) }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.entrypoint" -}}
+- "wiz-broker"
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.argsListCreateConnector" -}}
+create-kubernetes-connector
+--api-server-endpoint
+{{ include "wiz-kubernetes-connector.apiServerEndpoint" . | trim | quote }}
+--secrets-namespace
+{{ .Release.Namespace | quote }}
+{{- if .Values.refreshToken.enabled }}
+--service-account-namespace
+{{ .Release.Namespace | quote }}
+--service-account-name
+{{ .Values.clusterReader.serviceAccount.name | quote }}
+{{- else }}
+--service-account-token-secret-name
+{{ include "wiz-kubernetes-connector.clusterReaderToken" . | quote }}
+{{- end }}
+--output-secret-name
+{{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
+--is-on-prem={{ include "wiz-kubernetes-connector.brokerEnabled" . | trim}}
+{{- with (coalesce .Values.global.clusterDisplayName .Values.autoCreateConnector.connectorName) }}
+--connector-name
+{{ . | quote }}
+{{- end }}
+{{- with .Values.autoCreateConnector.clusterFlavor }}
+--service-type
+{{ . | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.clusterExternalId .Values.autoCreateConnector.clusterExternalId) }}
+--cluster-external-id
+{{ . | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.subscriptionExternalId .Values.autoCreateConnector.subscriptionExternalId) }}
+--subscription-external-id
+{{ . | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.clusterTags .Values.autoCreateConnector.clusterTags) }}
+--cluster-tags
+{{ . | toJson | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.subscriptionTags .Values.autoCreateConnector.subscriptionTags) }}
+--subscription-tags
+{{ . | toJson | quote }}
+{{- end }}
+--wait={{ and (include "wiz-kubernetes-connector.brokerEnabled" . | trim) .Values.autoCreateConnector.waitUntilInitialized }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.generateArgsCreate" -}}
+{{- $args := include "wiz-kubernetes-connector.argsListCreateConnector" . | splitList "\n" -}}
+{{- range $arg := $args }}
+- {{ $arg }}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.generate-args-list-delete" -}}
+delete-kubernetes-connector
+--input-secrets-namespace
+{{ .Release.Namespace | quote }}
+--input-secret-name
+{{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.argsListDeleteConnector" -}}
+{{- $args := include "wiz-kubernetes-connector.generate-args-list-delete" . | splitList "\n" -}}
+{{- range $arg := $args }}
+- {{ $arg }}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.generate-args-list-refresh" -}}
+refresh-token
+--input-secrets-namespace
+{{ .Release.Namespace | quote }}
+--input-secret-name
+{{ include "wiz-kubernetes-connector.connectorSecretName" . | trim | quote }}
+--service-account-namespace
+{{ .Release.Namespace | quote }}
+--service-account-name
+{{ .Values.clusterReader.serviceAccount.name | quote }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.argsListRefreshConnector" -}}
+{{- $args := include "wiz-kubernetes-connector.generate-args-list-refresh" . | splitList "\n" -}}
+{{- range $arg := $args }}
+- {{ $arg }}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-broker.image" -}}
+{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}{{ coalesce .Values.global.image.tagSuffix .Values.image.tagSuffix }}
+{{- end -}}
+
+{{- define "kubeVersion" -}}
+{{- if and .Values.mockCapabilities .Values.mockCapabilities.kubeVersion .Values.mockCapabilities.kubeVersion.version -}}
+{{ .Values.mockCapabilities.kubeVersion.version }}
+{{- else -}}
+{{ .Capabilities.KubeVersion.Version }}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-kubernetes-connector.isWizApiTokenSecretEnabled" -}}
+  {{- if and (.Values.wizApiToken.secret.create)
+            (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true")
+            (.Values.autoCreateConnector.enabled) }}
+    true
+  {{- else }}
+    false
+  {{- end }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.isWizApiClientVolumeMountEnabled" -}}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
+
+{{- define "wiz-kubernetes-connector.spec.common.volumeMounts" -}}
+{{- if eq (include "wiz-kubernetes-connector.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
+- name: {{ include "wiz-common.volumes.apiClientName" . }}
+  mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
+  readOnly: true
+{{- end -}}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+{{ include "wiz-common.proxy.volumeMount" . | trim }}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-kubernetes-connector.spec.common.volumes" -}}
+{{- if eq (include "wiz-kubernetes-connector.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
+- name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
+  secret:
+    secretName: {{ include "wiz-kubernetes-connector.apiTokenSecretName" . | trim }}
+{{- end }}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+{{ include "wiz-common.proxy.volume" (list (include "wiz-kubernetes-connector.proxySecretName" . | trim )) | trim }}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-kubernetes-connector.spec.common.envVars" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+- name: CLI_FILES_AS_ARGS
+{{- $wizApiTokensPath := "" -}}
+{{- if coalesce .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount }}
+  {{- $wizApiTokensPath = coalesce .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount -}}
+{{- else }}
+  {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
+{{- end }}
+  value: "{{ $wizApiTokensPath }}/clientToken,{{ $wizApiTokensPath }}/clientId"
+{{- end }}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+{{ include "wiz-common.proxy.env" . | trim }}
+{{- if or .Values.global.httpProxyConfiguration.clientCertificate .Values.httpProxyConfiguration.clientCertificate }}
+- name: WIZ_HTTP_PROXY_CLIENT_CERT_PATH
+  value: "{{ include "wiz-common.proxy.dir" . }}/clientCertificate"
+{{- end }}
+{{- end }}
+{{- if .Values.global.logLevel }}
+- name: LOG_LEVEL
+  value: {{ .Values.global.logLevel }}
+{{- end }}
+{{- with .Values.global.podCustomEnvironmentVariables }}
+{{ toYaml . }}
+{{- end }}
+{{- with .Values.autoCreateConnector.podCustomEnvironmentVariables }}
+{{ toYaml . }}
+{{- end }}
+{{- if .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+- name: CLI_ENV_FILE
+  value: {{ .Values.autoCreateConnector.podCustomEnvironmentVariablesFile }}
+- name: USE_CLI_ENV_FILE
+  value: "true"
+{{- end }}
+- name: WIZ_ENV
+  value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+{{- if .Values.global.awsPrivateLink.enabled }}
+- name: USE_WIZ_PRIVATE_LINK_ENDPOINTS
+  value: "true"
+{{- end }}
+{{- if (or .Values.global.istio.enabled .Values.autoCreateConnector.istio.enabled) }}
+- name: WIZ_ISTIO_PROXY_ENABLED
+  value: "true"
+- name: WIZ_ISTIO_PROXY_PORT
+  value: {{ coalesce .Values.global.istio.proxySidecarPort .Values.autoCreateConnector.istio.proxySidecarPort | quote }}
+{{- end }}
+- name: WIZ_USE_HATUNNEL
+  value: {{ ternary "1" "0" .Values.global.useHATunnel | quote }}
+{{- if .Values.global.useHATunnel }}
+- name: WIZ_BROKER_HEARTBEAT_DISABLE_CLUSTER_ID
+  value: "1"
+{{- end }}
 {{- end }}

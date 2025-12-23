@@ -1,0 +1,230 @@
+{{- range $values := (include "wiz-outpost-lite.runners" . | fromJson) }}
+{{- with merge $values (omit $ "Values") }}
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiz-outpost-lite.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.keda.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "wiz-outpost-lite.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- if or .Values.podAnnotations .Values.apparmorProfile }}
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.apparmorProfile }}
+        container.apparmor.security.beta.kubernetes.io/{{ printf "%s-%s" .Chart.Name .runner }}: {{ .Values.apparmorProfile }}
+        {{- end }}
+      {{- end }}
+      labels:
+        {{- include "wiz-outpost-lite.selectorLabels" . | nindent 8 }}
+        {{- with .Values.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- else if .Values.serviceAccount.create }}
+      serviceAccountName: sa-{{ .runner }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      {{- if .Values.affinity }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ printf "%s-%s" .Chart.Name .runner }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}{{ .Values.image.tagSuffix }}"
+          command: [ "/entrypoint"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.extraEnvConfigMap }}
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.extraEnvConfigMap | quote }}
+          {{- end }}
+          env:
+          {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+          {{- end }}
+          {{- if .Values.agent.env }}
+          - name: ENV
+            value: {{ .Values.agent.env }}
+          {{- end}}
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: OUTPOST
+            value: "1"
+          - name: WIZ_OUTPOST_ID
+            value: {{ required "Missing required value agent.outpostId is required" .Values.agent.outpostId | quote }}
+          - name: WIZ_OUTPOST_RUNNER_ID
+            value: "{{ .runnerID }}"
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agent.secretName }}
+                key: clientId
+          - name: WIZ_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agent.secretName }}
+                key: clientSecret
+          - name: OUTPOST_LITE_RUNNER_REGION
+            value: "{{ .Values.agent.outpostRegion }}"
+          {{- if .Values.service.enabled }}
+          - name: OUTPOST_LITE_RUNNER_METRICS_PORT
+            value: "{{ .Values.service.metricsPort }}"
+          {{- end }}
+          - name: OUTPOST_LITE_RUNNER_AUTO_UPDATE
+            value: {{ ternary "1" "0" .Values.autoUpdate | quote }}
+          {{- if .Values.concurrency }}
+          - name: OUTPOST_LITE_RUNNER_CONCURRENCY
+            value: "{{ .Values.concurrency }}"
+          {{- end }}
+          - name: http_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: HTTP_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: https_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: HTTPS_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: no_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: NO_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: SSL_CERT_DIR
+            value: "/usr/local/share/ca-certificates/:/certificates/"
+          {{- if .Values.service.enabled }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.service.metricsPort }}
+              protocol: TCP
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: /var/wiz
+              name: working-dir
+            {{- if or .Values.encryption.privateKey .Values.encryption.secretName }}
+            - mountPath: /mnt/secrets/
+              name: encryption-key
+              readOnly: true
+            {{- end }}
+            {{- if .Values.serviceAccount.volume.mount }}
+            - mountPath: /mnt/secrets/service-account-token/
+              name: service-account-token
+              readOnly: true
+            {{- end }}
+            - mountPath: /usr/local/share/ca-certificates/
+              name: ca-certificate
+              readOnly: true
+            {{- range $secretName := .Values.secrets }}
+            - mountPath: /mnt/secrets/{{ $secretName }}
+              name: {{ $secretName }}
+              readOnly: true
+            {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: working-dir
+          emptyDir: {}
+        {{- if or .Values.encryption.privateKey .Values.encryption.secretName }}
+        - name: encryption-key
+          secret:
+            secretName: {{ include "wiz-outpost-lite.encryptionSecretName" . }}
+            items:
+              - key: encryptionKey.pem
+                path: encryptionKey.pem
+        {{- end }}
+        - name: ca-certificate
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.httpProxyConfiguration.name | quote }}
+            items:
+              - key: caCertificate
+                path: root.crt
+            optional: true
+        {{- range $secret := .Values.secrets }}
+        - name: {{ $secret }}
+          secret:
+            secretName: {{ $secret }}
+        {{- end }}
+        {{- if .Values.serviceAccount.volume.mount }}
+        - name: service-account-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  expirationSeconds: 3600
+                  {{- if .Values.serviceAccount.volume.audienceTemplate }}
+                  audience: {{ tpl .Values.serviceAccount.volume.audienceTemplate .}}
+                  {{- end }}
+        {{- end }}
+---
+{{- end }}
+{{- end }}
+{{- end }}

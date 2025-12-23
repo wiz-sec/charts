@@ -1,0 +1,219 @@
+# Default values for wiz-network-analyzer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: "" # Override the release’s name.
+commonLabels: {} # Labels applied on all the resources (not used for selection)
+
+image:
+  registry: wiziopublic.azurecr.io/wiz-app
+  repository: wiz-network-analyzer
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+clusterReader:
+  installRbac: true
+  serviceAccount:
+    create: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    name: "wiz-network-analyzer-cluster-reader"
+    rules:
+      - apiGroups: ["*"]
+        resources: ["*"]
+        verbs: ["get", "list", "watch"]
+
+# Set this to true if you are using Istio in sidecar mode.
+# When Istio uses sidecars, there are 2 issues when using Wiz:
+# 1) The creation and deletion Jobs never complete (due to istio-proxy sidecar)
+# 2) There is a race condition and possible network connectivity failures
+#    when contacting the Wiz backend.
+#
+# When either of this happens, either the installation, upgrade or uninstallation
+# of the charts fail.
+# Setting this to true ensures that the istio-proxy gets a graceful shutdown
+# and mitigates the networking race condition by sleeping before the Job starts.
+# Learn more:
+# https://istio.io/latest/blog/2023/native-sidecars/
+istio:
+  enabled: false
+  sleepBeforeJobSecs: 15
+  proxySidecarPort: 15000
+
+wizApiToken:
+  clientId: "" # Client ID of the Wiz Service Account.
+  clientToken: "" # Client secret of the Wiz Service Account.
+  clientEndpoint: "" # Defaults to commercial.
+
+  secret:
+    # Should a Secret be created by the chart or not.
+    # Set this to false if you wish to create the Secret yourself or using another tool.
+    # The Secret should contain clientId for the ID and clientToken for the token.
+    create: true
+    # Annotations to add to the secret
+    annotations: {}
+    # The name of the secret to use.
+    # If not set, a name is generated using the fullname template
+    name: ""
+
+  # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  usePodCustomEnvironmentVariablesFile: false
+
+resources: 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Redirect HTTPS traffic through a proxy.
+httpProxyConfiguration:
+  # Set to true to enable using a proxy.
+  enabled: false
+
+  # Should a Secret be created by the chart or not.
+  # Set this to false if you wish to create the Secret yourself or using another tool
+  # (e.g. external secrets operator).
+  # The Secret should contain httpsProxy and noProxyAddress.
+  create: true
+  secretName: "" # The name of the proxy Secret.
+  annotations: {} # Annotations to be set on the secret
+
+  # URL to use as a proxy for outbound HTTPS traffic.
+  # Leave blank for transparent proxy.
+  httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
+  noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
+
+caCertificate:
+  # Set to true to enable using a custom CA certificate.
+  # Useful only in man-in-the-middle (MitM) / TLS inspection / SSL bumping scenarios.
+  # Regular/forward/CONNECT proxies do not require this.
+  enabled: false
+
+  # Should a Secret be created by the chart or not.
+  # Set this to false if you wish to create the Secret yourself or using another tool
+  # (e.g. external secrets operator).
+  # The Secret should contain a key called `ca.crt` and the value
+  # should be a certificate in PEM format.
+  create: true
+
+  # The certificate must be in PEM format.
+  # Simply copy-n-paste the contents of the certificate file.
+  certificate: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
+
+  # The name of the CA certificate Secret.
+  # Must have a key called `ca.crt` with the certificate in PEM format.
+  secretName: ""
+
+  annotations: {} # Annotations to be set on the secret.
+
+# The address of the Kubernetes API server.
+# Override this if you are using a different endpoint for your Kubernetes API server.
+apiServerEndpoint: "https://kubernetes.default.svc.cluster.local"
+
+podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+podCustomEnvironmentVariablesFile: ""
+customVolumes: [] # Additional volumes to add to the components Pods
+customVolumeMounts: [] # Additional volume mounts to add to the components Pods
+
+# The Outpost ID of the Wiz Outpost cluster.
+outpostId: ""
+
+# The Wiz DC AWS region used for this tenant.
+# e.g. us-east-2.
+wizRegion: ""
+
+# Global values to override chart values.
+global:
+  image:
+    registry: wiziopublic.azurecr.io/wiz-app
+    repository: wiz-network-analyzer
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
+
+  nameOverride: "" # Override the release’s name.
+  commonLabels: {} # Labels applied on all the resources (not used for selection)
+
+  # Set the log level. Can be one of "debug", "info", "warn", or "error".
+  # Warning: Do not set to `debug` in production environments, or sensitive data may be written to the logs.
+  logLevel: "info"
+
+  podAnnotations: {} # Annotations to add to the components Pods.
+
+  podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+  customVolumes: [] # Additional volumes to add to the components Pods
+  customVolumeMounts: [] # Additional volume mounts to add to the components Pods
+
+  nodeSelector: {} # custom assignment to nodes
+  affinity: {} # custom affinity rules for node assignment
+  tolerations: [] # custom tolerations
+  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  subscriptionExternalId: ""
+  clusterTags: {}
+  subscriptionTags: {}
+  clusterDisplayName: ""
+
+  # Wiz Helm Charts process the security contexts
+  # in the following order:
+  # 1. Pod security context
+  #    lowPrivilegePodSecurityPolicy -> podSecurityContext
+  # 2. Containers security context
+  #    lowPrivilegeSecurityPolicy -> securityContext
+  #
+  # Populating the following overrides lowPrivilegeSecurityPolicy to your user-supplied values.yaml
+  # allows you to customize and override the defaults
+  # (useful for e.g. OpenShift installations that automatically
+  #  mutate the Pod and use the first UID and first GID from
+  #  the allowed range to run the Pod).
+  #
+  # lowPrivilegePodSecurityPolicy: {}
+  # lowPrivilegeSecurityPolicy: {}
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    allowPrivilegeEscalation: false
+
+  wizApiToken:
+    clientEndpoint: "" # Defaults to commercial.
+    secret:
+      name: "" # Override with parent secret name
+
+  # Redirect HTTPS traffic through a proxy.
+  httpProxyConfiguration:
+    # Set to true to enable using a proxy.
+    enabled: false
+
+    # Should a Secret be created by the chart or not.
+    # Set this to false if you wish to create the Secret yourself or using another tool
+    # (e.g. external secrets operator).
+    # The Secret should contain httpsProxy and noProxyAddress.
+    create: true
+    secretName: "" # The name of the proxy Secret.
+    annotations: {} # Annotations to be set on the secret
+
+    # URL to use as a proxy for outbound HTTPS traffic.
+    # Leave blank for transparent proxy.
+    httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
+    noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"

@@ -1,0 +1,160 @@
+{{- if not .Values.wizRegion }}
+{{- fail "The 'wizRegion' parameter is mandatory and must be specified in values.yaml" }}
+{{- end }}
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "wiz-network-analyzer.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-network-analyzer.labels" . | nindent 4 }}
+  annotations:
+    rollme.wizApiTokenHash: {{ include "wiz-network-analyzer.wizApiTokenHash" . }}
+    rollme.proxyHash: {{ include "wiz-network-analyzer.proxyHash" . }}
+
+spec:
+  ttlSecondsAfterFinished: 300
+  manualSelector: true
+  selector:
+    matchLabels:
+      {{- include "wiz-network-analyzer.selectorLabels" . | nindent 6 }}
+  backoffLimit: 1
+  template:
+    metadata:
+      {{- with (coalesce .Values.global.podAnnotations .Values.podAnnotations) }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "wiz-network-analyzer.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.clusterReader.serviceAccount.name }}
+      restartPolicy: "Never"
+      securityContext:
+        {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
+        {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 8 }}
+        {{- else }}
+        {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
+        {{- end }}
+      {{- if or .Values.global.customVolumes .Values.customVolumes .Values.caCertificate.enabled }}
+      volumes:
+      {{- if .Values.caCertificate.enabled }}
+      - name: additional-certs
+        secret:
+          secretName: {{ include "wiz-network-analyzer.caSecretName" . | trim }}
+          items:
+            - key: ca.crt
+              path: ca-certificates.crt
+          defaultMode: 420
+      {{- end }}
+      {{ with .Values.global.customVolumes }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{ with .Values.customVolumes }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: wiz-network-analyzer
+          securityContext:
+            {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+            {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.global.securityContext | nindent 12 }}
+            {{- end }}
+          image: {{ include "wiz-network-analyzer.image" . }}
+          imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
+          command:
+            {{- include "wiz-network-analyzer.entrypoint" . | nindent 12 }}
+          args: {{- include "wiz-network-analyzer.generateArgs" . | nindent 12 }}
+          env:
+          {{- if .Values.global.logLevel }}
+          - name: LOG_LEVEL
+            value: {{ .Values.global.logLevel }}
+          {{- end }}
+          {{- with .Values.global.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- if .Values.podCustomEnvironmentVariablesFile }}
+          - name: CLI_ENV_FILE
+            value: {{ .Values.podCustomEnvironmentVariablesFile }}
+          - name: USE_CLI_ENV_FILE
+            value: "true"
+          {{- end }}
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-network-analyzer.apiTokenSecretName" . | trim }}
+                key: clientId
+                optional: false
+          - name: WIZ_CLIENT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-network-analyzer.apiTokenSecretName" . | trim }}
+                key: clientToken
+                optional: false
+          - name: WIZ_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-network-analyzer.apiTokenSecretName" . | trim }}
+                key: clientToken
+                optional: false
+          {{- end }}
+          - name: WIZ_ENV
+            value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+          {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+          - name: HTTPS_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-network-analyzer.proxySecretName" . | trim }}
+                key: httpsProxy
+                optional: false
+          - name: NO_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "wiz-network-analyzer.proxySecretName" . | trim }}
+                key: noProxyAddress
+                optional: false
+          {{- end }}
+          {{- if .Values.caCertificate.enabled }}
+          - name: SSL_CERT_DIR
+            value: /usr/local/share/ca-certificates/:/certificates/:/etc/ssl/certs
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts .Values.caCertificate.enabled }}
+          volumeMounts:
+          {{- if .Values.caCertificate.enabled }}
+          - name: additional-certs
+            mountPath: /certificates
+          - name: additional-certs
+            mountPath: /etc/ssl/certs
+          {{- end }}
+          {{- with .Values.customVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end -}}
+          {{- with .Values.global.customVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+      {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (coalesce .Values.global.affinity .Values.affinity) }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (coalesce .Values.global.tolerations .Values.tolerations) }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

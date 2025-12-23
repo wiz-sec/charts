@@ -1,0 +1,27 @@
+{{ if .Values.kubernetesAuditLogsWebhook.podDisruptionBudget.enabled -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
+spec:
+  minAvailable: {{ .Values.kubernetesAuditLogsWebhook.podDisruptionBudget.minAvailable }}
+  maxUnavailable: {{ .Values.kubernetesAuditLogsWebhook.podDisruptionBudget.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
+      {{- include "wiz-kubernetes-audit-log-collector.selectorLabels" . | nindent 6 }}
+{{- end }}
+{{- if or .Values.podDisruptionBudget.enabled}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "wiz-admission-controller-enforcer.name" . }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}
+      {{- include "wiz-admission-controller-enforcement.selectorLabels" . | nindent 6 }}
+{{- end }}

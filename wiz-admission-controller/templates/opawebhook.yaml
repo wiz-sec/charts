@@ -2,22 +2,43 @@
 {{- $tlsCrt := .Values.tlsCertificate.tlsCertificate -}}
 {{- $tlsKey := .Values.tlsCertificate.tlsKey -}}
 {{- if .Values.tlsCertificate.create -}}
-{{- $altNames := list ( printf "%s.%s" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s.svc" (include "wiz-admission-controller.fullname" .) .Release.Namespace ) ( printf "%s.%s" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) ( printf "%s.%s.svc" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) -}}
+{{- $existingSecret := dict -}}
+{{- if .Values.tlsCertificate.reuseExisting -}}
+{{- $existingSecret = include "wiz-admission-controller.lookupTlsSecret" . | fromJson -}}
+{{- end -}}
+{{- if and $existingSecret $existingSecret.data (index $existingSecret.data "tls.crt") -}}
+{{- $tlsCrt = index $existingSecret.data "tls.crt" -}}
+{{- $tlsKey = index $existingSecret.data "tls.key" -}}
+{{- else -}}
+{{- $altNames := list
+  ( printf "%s.%s" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace )
+  ( printf "%s.%s.svc" (include "wiz-admission-controller-enforcer.name" .) .Release.Namespace )
+  ( printf "%s.%s" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace )
+  ( printf "%s.%s.svc" ( include "wiz-kubernetes-audit-log-collector.name" .) .Release.Namespace ) -}}
+{{- if .Values.sensorInject.enabled }}
+{{- $altNames = append $altNames ( printf "%s.%s" (include "wiz-sensor-inject.name" .) .Release.Namespace ) }}
+{{- $altNames = append $altNames ( printf "%s.%s.svc" (include "wiz-sensor-inject.name" .) .Release.Namespace ) }}
+{{- end }}
+{{- if .Values.debugWebhook.enabled }}
+{{- $altNames = append $altNames ( printf "%s.%s" (include "wiz-debug-webhook.name" .) .Release.Namespace ) }}
+{{- $altNames = append $altNames ( printf "%s.%s.svc" (include "wiz-debug-webhook.name" .) .Release.Namespace ) }}
+{{- end }}
 {{- $ca := genCA "wiz-admission-controller-ca" 3650 -}}
 {{- $cert := genSignedCert ( include "wiz-admission-controller.fullname" . ) nil $altNames 3650 $ca -}}
 {{- $tlsCrt = $cert.Cert | b64enc -}}
 {{- $tlsKey = $cert.Key | b64enc -}}
 {{- end -}}
+{{- end -}}
 {{ if .Values.opaWebhook.enabled -}}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "misconfigurations" }}
+  name: {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "misconfigurations" }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
-  {{- if .Values.webhook.installAsHook }}
+  {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   {{- end }}
@@ -30,7 +51,7 @@ webhooks:
   clientConfig:
     service:
       namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller.fullname" . }}
+      name: {{ include "wiz-admission-controller-enforcer.name" . }}
       path: /opa-validator
       port: {{ .Values.service.port }}
 {{- if not $useCertManagerCerts }}
@@ -39,13 +60,16 @@ webhooks:
   {{- with .Values.opaWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
+    {{- with $.Values.opaWebhook.additionalRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- with .Values.opaWebhook.namespaceSelector }}
   namespaceSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   timeoutSeconds: {{ .Values.opaWebhook.timeoutSeconds }}
-  failurePolicy: {{ .Values.opaWebhook.failurePolicy }}
+  failurePolicy: Ignore
   sideEffects: {{ .Values.opaWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.imageIntegrityWebhook.enabled -}}
@@ -58,7 +82,7 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
-  {{- if .Values.webhook.installAsHook }}
+  {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   {{- end }}
@@ -71,7 +95,7 @@ webhooks:
   clientConfig:
     service:
       namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller.fullname" . }}
+      name: {{ include "wiz-admission-controller-enforcer.name" . }}
       path: /image-integrity-validator
       port: {{ .Values.service.port }}
 {{- if not $useCertManagerCerts }}
@@ -80,13 +104,16 @@ webhooks:
   {{- with .Values.imageIntegrityWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
+    {{- with $.Values.imageIntegrityWebhook.additionalRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- with .Values.imageIntegrityWebhook.namespaceSelector }}
   namespaceSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   timeoutSeconds: {{ .Values.imageIntegrityWebhook.timeoutSeconds }}
-  failurePolicy: {{ .Values.imageIntegrityWebhook.failurePolicy }}
+  failurePolicy: Ignore
   sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
@@ -94,12 +121,12 @@ webhooks:
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "kubernetes-audit-logs" }}
+  name: {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "kubernetes-audit-logs" }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
-  {{- if .Values.webhook.installAsHook }}
+  {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   {{- end }}
@@ -121,13 +148,16 @@ webhooks:
   {{- with .Values.kubernetesAuditLogsWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
+    {{- with $.Values.kubernetesAuditLogsWebhook.additionalRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- with .Values.kubernetesAuditLogsWebhook.namespaceSelector }}
   namespaceSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   timeoutSeconds: {{ .Values.kubernetesAuditLogsWebhook.timeoutSeconds }}
-  failurePolicy: {{ .Values.kubernetesAuditLogsWebhook.failurePolicy }}
+  failurePolicy: Ignore
   sideEffects: {{ .Values.kubernetesAuditLogsWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.debugWebhook.enabled -}}
@@ -140,7 +170,7 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
-  {{- if .Values.webhook.installAsHook }}
+  {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   {{- end }}
@@ -153,7 +183,7 @@ webhooks:
   clientConfig:
     service:
       namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller.fullname" . }}
+      name: {{ include "wiz-debug-webhook.name" . }}
       path: /dumper
       port: {{ .Values.service.port }}
 {{- if not $useCertManagerCerts }}
@@ -162,16 +192,69 @@ webhooks:
   {{- with .Values.debugWebhook.rules }}
   rules:
     {{- toYaml . | nindent 4 }}
+    {{- with $.Values.debugWebhook.additionalRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
   {{- with .Values.debugWebhook.namespaceSelector }}
   namespaceSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   timeoutSeconds: {{ .Values.debugWebhook.timeoutSeconds }}
-  failurePolicy: {{ .Values.debugWebhook.failurePolicy }}
+  failurePolicy: Ignore
   sideEffects: {{ .Values.debugWebhook.sideEffects }}
 {{- end }}
-{{- if and (or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.kubernetesAuditLogsWebhook.enabled .Values.debugWebhook.enabled) (not $useCertManagerCerts) }}
+{{ if .Values.sensorInject.enabled -}}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name:  {{ include "wiz-sensor-inject.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+  annotations:
+  {{- if .Values.webhook.useHelmHooks }}
+    "helm.sh/hook": "post-install, post-upgrade"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+  {{- end }}
+  {{- if $useCertManagerCerts }}
+    "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
+  {{- end }}
+webhooks:
+- name: sensor.wiz.io
+  admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    service:
+      namespace: {{ .Release.Namespace }}
+      name: {{ include "wiz-sensor-inject.name" . }}
+      path: /sensor
+      port: {{ .Values.service.port }}
+{{- if not $useCertManagerCerts }}
+    caBundle: {{ $tlsCrt }}
+{{- end }}
+  rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
+    - operations:
+        - CREATE
+      apiGroups:
+        - "*"
+      apiVersions:
+        - "*"
+      resources:
+        - "pods"
+  {{- with .Values.sensorInject.namespaceSelector }}
+  namespaceSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  timeoutSeconds: {{ .Values.sensorInject.timeoutSeconds }}
+  failurePolicy: Ignore
+  sideEffects: None
+{{- end }}
+{{- $isEnforcer := (eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true") }}
+{{- $isAuditLog := .Values.kubernetesAuditLogsWebhook.enabled }}
+{{- $isSensor := .Values.sensorInject.enabled }}
+{{- $isDebug := .Values.debugWebhook.enabled }}
+{{- if and (or $isEnforcer $isAuditLog $isSensor $isDebug) (not $useCertManagerCerts) }}
 ---
 apiVersion: v1
 kind: Secret
@@ -182,12 +265,15 @@ metadata:
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
-    {{- if .Values.webhook.installAsHook }}
+    {{- if .Values.webhook.useHelmHooks }}
     # Using helm hook to create certs only for chart install
     "helm.sh/hook": "pre-install, pre-upgrade"
     "helm.sh/hook-delete-policy": "before-hook-creation"
     {{- end }}
-    {{- with (coalesce .Values.webhook.secret.annotations .Values.opaWebhook.secret.annotations) }}
+    {{- with .Values.webhook.secret.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.opaWebhook.secret.annotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
 data:

@@ -21,6 +21,8 @@ blob:
   #    environment:
   #    useInstanceMetadata:
   #    useFederatedToken:
+  azureCredsSecretName: azure-creds
+  useAzureCredsSecret: false
   resourceGroupName:
   storageAccountName:
   containerName: gitops-state
@@ -29,10 +31,10 @@ blob:
 
 wiz:
   secretName: wiz-outpost-agent-creds
-  clientId: ""
-  clientSecret: ""
   env: ""
   outpostId: ""
+  serviceType: ""
+  dataCenter: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -55,11 +57,11 @@ oss:
   bucketName:
 
 image:
-  repository: wiziopublic.azurecr.io
+  repository: public-registry.wiz.io
   namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "e50ba3fce791c0256f46c96ef1121edff9fefb64-multiarch"
+  tag: "4c6a4eb5333a1d2f37aa68ca40f9435165c63063-multiarch"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -70,6 +72,7 @@ podAnnotations: {}
 service:
   type: ClusterIP
   port: 8080
+  grpcPort: 3000
 
 resources:
   {}
@@ -91,7 +94,7 @@ tolerations: []
 affinity: {}
 hostpathCopier:
   image:
-    repository: wiziopublic.azurecr.io/wiz-busybox
+    name: wiz-busybox
     tag: 1.36.0
 
 internetAccessCertificates:

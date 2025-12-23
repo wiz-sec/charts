@@ -1,0 +1,89 @@
+{{- if and .Values.hpa.enabled (eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true") }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "wiz-admission-controller.wiz-hpa-enforcer.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "wiz-admission-controller.wiz-admission-controller.wiz-hpa-enforcer.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "wiz-admission-controller-enforcer.name" . }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+    {{- if .Values.hpa.enableCPU }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- with .Values.hpa.customMetrics }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  behavior: {{ include "wiz-admission-controller.hpaBehavior" . | nindent 4 }}
+---
+{{- end }}
+{{- if and .Values.hpa.enabled .Values.kubernetesAuditLogsWebhook.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "wiz-admission-controller.wiz-hpa-audit-logs.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "wiz-admission-controller.wiz-hpa-audit-logs.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+    {{- if .Values.hpa.enableCPU }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- with .Values.hpa.customMetrics }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  behavior: {{ include "wiz-admission-controller.hpaBehavior" . | nindent 4 }}
+{{- end }}
+{{- if and .Values.hpa.enabled .Values.debugWebhook.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "wiz-admission-controller.wiz-hpa-debug.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "wiz-admission-controller.wiz-hpa-debug.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "wiz-debug-webhook.name" . }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+    {{- if .Values.hpa.enableCPU }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- with .Values.hpa.customMetrics }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  behavior: {{ include "wiz-admission-controller.hpaBehavior" . | nindent 4 }}
+{{- end }}

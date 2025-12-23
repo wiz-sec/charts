@@ -22,7 +22,7 @@ multitenancy:
 clusterDomain: cluster.local
 
 cli:
-  image: wiziopublic.azurecr.io/wiz-flux-cli
+  image: public-registry.wiz.io/wiz-flux-cli
   tag: v2.2.3
   nodeSelector: {}
   affinity: {}
@@ -35,8 +35,8 @@ cli:
 
 helmController:
   create: true
-  image: wiziopublic.azurecr.io/wiz-helm-controller
-  tag: v0.37.4
+  image: public-registry.wiz.io/wiz-helm-controller
+  tag: v1.3.0-3
   resources:
     limits: {}
     # cpu: 1000m
@@ -82,8 +82,8 @@ helmController:
   tolerations: []
 
 imageAutomationController:
-  create: false  # WIZ
-  image: wiziopublic.azurecr.io/wiz-image-automation-controller
+  create: false # WIZ
+  image: public-registry.wiz.io/wiz-image-automation-controller
   tag: v0.37.1
   resources:
     limits: {}
@@ -110,8 +110,8 @@ imageAutomationController:
   tolerations: []
 
 imageReflectionController:
-  create: false  # WIZ
-  image: wiziopublic.azurecr.io/wiz-image-reflector-controller
+  create: false # WIZ
+  image: public-registry.wiz.io/wiz-image-reflector-controller
   tag: v0.31.2
   resources:
     limits: {}
@@ -139,8 +139,8 @@ imageReflectionController:
 
 kustomizeController:
   create: true
-  image: wiziopublic.azurecr.io/wiz-kustomize-controller
-  tag: v1.2.2
+  image: public-registry.wiz.io/wiz-kustomize-controller
+  tag: v1.6.1-3
   resources:
     limits: {}
     # cpu: 1000m
@@ -186,8 +186,8 @@ kustomizeController:
   tolerations: []
 
 notificationController:
-  create: false  # WIZ
-  image: wiziopublic.azurecr.io/wiz-notification-controller
+  create: false # WIZ
+  image: public-registry.wiz.io/wiz-notification-controller
   tag: v1.2.4
   resources:
     limits: {}
@@ -233,15 +233,14 @@ notificationController:
       #    hosts:
       #      - flux-webhook.example.com
 
-
   nodeSelector: {}
   affinity: {}
   tolerations: []
 
 sourceController:
   create: true
-  image: wiziopublic.azurecr.io/wiz-source-controller
-  tag: v1.2.4
+  image: public-registry.wiz.io/wiz-source-controller
+  tag: v1.6.1-3
   resources:
     limits: {}
     # cpu: 1000m
@@ -281,7 +280,7 @@ rbac:
   roleRef:
     name: cluster-admin
 
-logLevel: error  # WIZ
+logLevel: error # WIZ
 watchAllNamespaces: true
 
 # -- contents of pod imagePullSecret in form 'name=[secretName]'; applied to all controllers

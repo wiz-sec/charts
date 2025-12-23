@@ -74,11 +74,14 @@ workflows:
             ^flux2/.* flux2 true
             ^git-proxy/.* git-proxy true
             ^wiz-broker/.* wiz-broker true
+            ^wiz-outpost-lite/.* wiz-outpost-lite true
             ^wiz-outpost-configuration/.* wiz-outpost-configuration true
             ^wiz-admission-controller/.* wiz-admission-controller true
             ^wiz-sensor/.* wiz-sensor true
             ^wiz-kubernetes-connector/.* wiz-kubernetes-connector true
             ^wiz-kubernetes-integration/.* wiz-kubernetes-integration true
+            ^wiz-network-analyzer/.* wiz-network-analyzer true
+            ^wiz-common/.* wiz-common true
           base-revision: << pipeline.git.branch >>
           filters:
             branches:

@@ -1,0 +1,222 @@
+# Default values for wiz-outpost-lite.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+agent:
+  secretName: outpost-lite-agent-creds
+  env: ""
+  clientId: ""
+  clientSecret: ""
+  outpostId: ""
+  outpostRegion: partition-1
+
+secret:
+  create: true
+
+image:
+  repository: wizio.azurecr.io
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "0.1-latest"
+  tagSuffix: ""
+
+autoUpdate: true
+
+# If set, controls the message processing concurrency of the runner
+concurrency: 0
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+apparmorProfile: ""
+
+resources:
+  limits:
+    memory: 4396M
+  requests:
+    memory: 1024M
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+internetAccessCertificates:
+  skipSslValidation: false
+
+extraEnv: {}
+extraEnvConfigMap: ""
+
+service:
+  type: ClusterIP
+  enabled: true
+  metricsPort: 9090
+
+httpProxyConfiguration:
+  enabled: false
+  name: wiz-http-proxy-configuration
+  # httpProxy: replaceme
+  # httpsProxy: replaceme
+  # noProxy:
+  #   - replaceme
+  #   - replaceme2
+  # caCertificate: |
+  #   --- BEGIN CERTIFICATE ---
+  #   replaceme
+  #   --- END CERTIFICATE ---
+
+terminationGracePeriodSeconds: 30
+
+# Set to true on specific runner when installing on OpenShift clusters to create a SecurityContextConstraint for our service-account
+openshift: false
+
+openshiftOverrides:
+  serviceAccount:
+    create: true
+  containerSecurityContext:
+    privileged: true
+
+serviceAccount:
+  create: false
+  volume:
+    mount: false
+    audienceTemplate: ""
+
+podSecurityContext: {}
+containerSecurityContext: {}
+
+modules:
+  vcs:
+    enabled: false
+    scrapableMetrics: true
+    image:
+      name: outpost-lite-runner-vcs
+    apparmorProfile: unconfined
+    containerSecurityContext:
+      capabilities:
+        add:
+        - SYS_ADMIN
+      seLinuxOptions:
+        type: spc_t
+  container-registry:
+    enabled: false
+    apparmorProfile: unconfined
+    containerSecurityContext:
+      capabilities:
+        add:
+        - SYS_ADMIN
+      seLinuxOptions:
+        type: spc_t
+  datascan:
+    enabled: false
+    serviceAccount:
+      create: true
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    containerSecurityContext:
+      capabilities:
+        drop:
+          - ALL
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      seLinuxOptions:
+        type: container_t
+  remediation:
+    enabled: false
+    image:
+      tag: 0.2-latest
+    serviceAccount:
+      create: true
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    containerSecurityContext:
+      capabilities:
+        drop:
+        - ALL
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      seLinuxOptions:
+        type: container_t
+  databricks:
+    enabled: false
+    image:
+      name: outpost-lite-runner-databricks
+    serviceAccount:
+      create: true
+      name: "sa-databricks"
+      volume:
+        mount: true
+        audienceTemplate: "databricks.wiz.io/{{ $.Values.agent.outpostId }}"
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+    containerSecurityContext:
+      capabilities:
+        drop:
+          - ALL
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      seLinuxOptions:
+        type: container_t
+
+keda:
+  enabled: false
+  pollingInterval: 60
+  cooldownPeriod: 120
+  minReplicaCount: 1
+  maxReplicaCount: 20
+  prometheus:
+    deploy: false
+    port: 9090
+    image:
+      repository: prom/prometheus
+      tag: v3.4.0
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        memory: 256Mi
+    retention: 2h
+    serverAddress: "" # Prometheus server address - leave empty to use deployed Prometheus or set to external Prometheus URL
+    metricName: "outpost_vcs_desired_runners" # The Prometheus metric to use for scaling (auto-builds query with runner_id label)
+    threshold: "1" # Target value: scale to match desired_runners metric
+    query: "" # Optional: Custom PromQL query template (can use {{ .runner }} for runner name). If empty, auto-generates: sum(metricName{runner_id="<runner>"})
+
+runners:
+  vcs-event-triggered:
+    concurrency: 4
+    terminationGracePeriodSeconds: 300 # 5 minutes
+
+encryption:
+  create: false
+  secretName: "" # defaults to wiz-encryption-key-<outpostID>
+  privateKey: ""
+
+secrets: [] # List of secrets to be used by the runner pod

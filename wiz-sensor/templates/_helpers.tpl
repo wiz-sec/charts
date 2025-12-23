@@ -33,12 +33,32 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
-Common labels
+Sensor image tag
 */}}
-{{- define "wiz-sensor.labels" -}}
-{{- $imageparts:= split "@" .Values.image.tag }}
+{{- define "wiz-sensor.imageTag" -}}
+{{- coalesce .Values.image.tag .Chart.AppVersion }}
+{{- end }}
+
+{{/*
+Disk scanner image tag
+*/}}
+{{- define "wiz-sensor.diskScanTag" -}}
+{{ .Values.image.diskScanTag | default (printf "v%s" .Chart.Annotations.diskScanAppVersion) }}
+{{- end }}
+
+{{/*
+Windows sensor image tag
+*/}}
+{{- define "wiz-sensor.windowsTag" -}}
+{{ .Values.image.windowsTag | default (printf "v%s" .Chart.Annotations.windowsAppVersion) }}
+{{- end }}
+
+{{/*
+Common labels shared between Linux and Windows
+Includes standard Helm labels and user-defined common labels from Values
+*/}}
+{{- define "wiz-sensor.commonLabels" -}}
 helm.sh/chart: {{ include "wiz-sensor.chart" . }}
-image/tag: {{ $imageparts._0 }}
 {{ include "wiz-sensor.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -49,6 +69,33 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{ $key }}: {{ tpl $value $ | quote }}
 {{- end }}
 {{- end }}
+{{- end }}
+
+{{/*
+Linux labels
+*/}}
+{{- define "wiz-sensor.labels" -}}
+{{ include "wiz-sensor.commonLabels" . }}
+{{- $imageparts:= split "@" (include "wiz-sensor.imageTag" .) }}
+{{- $dsimageparts:= split "@" (include "wiz-sensor.diskScanTag" .) }}
+image/tag: {{ $imageparts._0 }}
+dsimage/tag: {{ $dsimageparts._0 }}
+{{- if .Values.gkeAutopilot }}
+autopilot.gke.io/no-connect: "true"
+{{- if .Values.gkeAutopilotUseAllowlist }}
+cloud.google.com/matching-allowlist: {{ .Values.gkeAutopilotAllowlist }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Windows labels
+*/}}
+{{- define "wiz-sensor.windowsLabels" -}}
+{{ include "wiz-sensor.commonLabels" . }}
+{{- $imageparts:= split "@" (include "wiz-sensor.windowsTag" .) }}
+os: windows
+image/tag: {{ $imageparts._0 }}
 {{- end }}
 
 {{/*
@@ -93,12 +140,17 @@ Secrets
 {{ coalesce .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.secretName (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}
 
+{{- define "wiz-sensor.diskScanConfigName" -}}
+{{ coalesce .Values.diskScan.configName (printf "%s-%s" .Release.Name "disk-scan-config") }}
+{{- end }}
 
 {{/*
 TODO: Backward compatibility - remove
 */}}
 {{- define "wiz-sensor.createSecret" -}}
-{{- if .Values.apikey -}}
+{{- if (or .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount) }}
+false
+{{- else if .Values.apikey -}}
 {{- default true .Values.apikey.create -}}
 {{- else if (hasKey .Values.wizApiToken "createSecret") -}}
 {{- .Values.wizApiToken.createSecret -}}
@@ -111,7 +163,7 @@ true
 
 {{- define "wiz-sensor.imagePullSecretValue" -}}
 {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
-{{- printf "{\"auths\": {\"%s/%s\": {\"auth\": \"%s\"}}}" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository (printf "%s:%s" (required "A valid username for image pull secret required" .Values.imagePullSecret.username) .Values.imagePullSecret.password | b64enc) | b64enc }}
+{{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" (coalesce .Values.global.image.registry .Values.image.registry) (printf "%s:%s" (required "A valid username for image pull secret required" .Values.imagePullSecret.username) .Values.imagePullSecret.password | b64enc) | b64enc }}
 {{- else }}
 {{- printf "{\"auths\": {\"%s\": {\"auth\": \"%s\"}}}" .Values.image.repository (printf "%s:%s" (required "A valid username for image pull secret required" .Values.imagePullSecret.username) .Values.imagePullSecret.password | b64enc) | b64enc }}
 {{- end }}
@@ -134,4 +186,52 @@ log levels
 {{- else }}
 {{- default "error" .Values.logLevel -}}
 {{- end }}
+{{- end }}
+
+{{/*
+Registry Helpers
+*/}}
+{{- define "wiz-sensor.knownRegistries" -}}
+{{- list "wizio.azurecr.io" "wiziosensor.azurecr.io" "registry.wiz.io" "wizfedramp.azurecr.us" | toJson -}}
+{{- end -}}
+
+{{/*
+Rule Validation
+*/}}
+{{- define "validate.values" -}}
+{{- if .Values.exposeMetrics }}
+{{- if .Values.hostNetwork }}
+{{- fail "Cannot set hostNetwork to true when exposeMetrics is set to true" }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.fixedDefsVersion }}
+{{- if not (regexMatch "^[0-9]+\\.[0-9]+\\.[0-9]+$" .Values.fixedDefsVersion) }}
+{{- fail "fixedDefsVersion must be in major.minor.patch format (e.g. 1.2.3)" }}
+{{- end }}
+{{- end }}
+
+
+{{- if and .Values.gkeAutopilot .Values.gkeAutopilotUseAllowlist }}
+{{- if empty .Values.image.sha256 }}
+{{- if not (has .Values.image.registry (include "wiz-sensor.knownRegistries" . | fromJsonArray)) }}
+{{- fail "If using gkeAutopilotUseAllowlist and a private repo, make sure to set the image.sha256 value to a specific version" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- if and .Values.gkeAutopilot .Values.diskScan.enabled }}
+{{- fail "diskScan is not supported on GKE Autopilot" }}
+{{- end }}
+
+{{- if .Values.gkeAutopilot }}
+{{- $limits := .Values.daemonset.resources.limits }}
+{{- if .Values.apiSecurity.enabled }}
+{{- $limits = .Values.daemonset.resources.apiSecurityLimits }}
+{{- end }}
+{{- if not $limits }}
+{{- fail "gkeAutopilot requires resource limits to be defined (daemonset.resources.limits or daemonset.resources.apiSecurityLimits when apiSecurity is enabled)" }}
+{{- end }}
+{{- end }}
+
 {{- end }}

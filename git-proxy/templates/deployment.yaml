@@ -11,8 +11,9 @@ spec:
       {{- include "git-proxy.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        wiz.io/service-version: {{ .Values.image.tag | quote }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
@@ -28,12 +29,12 @@ spec:
       affinity:
         {{- toYaml .Values.affinity | nindent 8 }}
       {{- end }}
-      {{- if and (eq .Values.storageService "blob") (not .Values.blob.azureCreds) }}
+      {{- if and (eq .Values.storageService "blob") (not .Values.blob.azureCreds) (not .Values.blob.useAzureCredsSecret) }}
       {{/* since the main container is running in non-root we need to change the azure.json file permissions to allow
       us to read it */}}
       initContainers:
         - name: hostpath-copier
-          image: "{{ .Values.hostpathCopier.image.repository }}:{{ .Values.hostpathCopier.image.tag }}"
+          image: "{{ .Values.image.repository }}/{{ .Values.hostpathCopier.image.name }}:{{ .Values.hostpathCopier.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command: ["/bin/sh", "-c"]
           args: ["cp /etc/kubernetes/azure.json /target/azure.json; chmod 444 /target/azure.json"]
@@ -79,6 +80,8 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 
           env:
+          - name: COMPONENT_NAME
+            value: wiz-git-proxy
           {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
             value: "{{ $value }}"
@@ -96,12 +99,13 @@ spec:
             value: {{ .Values.oss.roleARN }}
           {{- end }}
           {{- if eq .Values.storageService "wiz" }}
-          - name: WIZ_OUTPOST_ID
-            value: {{ .Values.wiz.outpostId | quote }}
           {{- if .Values.wiz.env }}
           - name: ENV
             value: {{ .Values.wiz.env }}
           {{- end}}
+          {{- if .Values.wiz.outpostId }}
+          - name: WIZ_OUTPOST_ID
+            value: {{ .Values.wiz.outpostId | quote }}
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -112,6 +116,14 @@ spec:
               secretKeyRef:
                 name: {{ .Values.wiz.secretName }}
                 key: clientSecret
+          {{- else }}
+          {{- if .Values.wiz.serviceType}}
+          - name: WIZ_SERVICE_TYPE
+            value: {{ .Values.wiz.serviceType | quote }}
+          - name: WIZ_DATA_CENTER
+            value: {{ .Values.wiz.dataCenter | quote }}
+          {{- end }}
+          {{- end }}
           {{- end }}
           - name: http_proxy
             valueFrom:
@@ -149,8 +161,8 @@ spec:
                 name: {{ .Values.httpProxyConfiguration.name | quote }}
                 key: "noProxyAddress"
                 optional: true
-          - name: SSL_CERT_FILE
-            value: "/usr/local/share/ca-certificates/root.crt"
+          - name: SSL_CERT_DIR
+            value: "/usr/local/share/ca-certificates/:/certificates/"
           args: [
             {{- if gt (len .Values.image.tag) 17 }}
             "{{ .Values.storageService }}",
@@ -184,11 +196,19 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            - name: grpc
+              containerPort: {{ .Values.service.grpcPort }}
+              protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /tmp
               name: tmp-dir
+            {{- if and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId) }}
+            - name: secrets
+              mountPath: /mnt/secrets/
+              readOnly: true
+            {{- end }}
             {{- if eq .Values.storageService "blob" }}
             - mountPath: /etc/kubernetes/
               name: azure-creds
@@ -220,11 +240,21 @@ spec:
               - key: caCertificate
                 path: root.crt
             optional: true
+        {{- if and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId) }}
+        - name: secrets
+          projected:
+            sources:
+              - secret:
+                  name: {{ .Values.wiz.secretName }}
+                  items:
+                    - key: privateKey
+                      path: WIZ_PRIVATE_KEY
+        {{- end }}
         {{- if eq .Values.storageService "blob" }}
-        {{- if .Values.blob.azureCreds }}
+        {{- if or .Values.blob.useAzureCredsSecret .Values.blob.azureCreds }}
         - name: azure-creds
           secret:
-            secretName: azure-creds
+            secretName: {{ .Values.blob.azureCredsSecretName }}
         {{- else }}
         - name: azure-creds
           emptyDir:

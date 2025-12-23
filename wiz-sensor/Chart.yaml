@@ -1,6 +1,10 @@
 apiVersion: v2
-description: Wiz Sensor helm chart
-home: https://www.wiz.io/
 name: wiz-sensor
+description: Wiz Sensor helm chart
 type: application
-version: 1.0.3891
+home: https://www.wiz.io/
+version: 1.0.8831
+appVersion: 1.0.8831
+annotations:
+  diskScanAppVersion: 1.1.33
+  windowsAppVersion: 1.0.1

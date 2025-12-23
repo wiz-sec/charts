@@ -14,6 +14,28 @@ podAnnotations: {}
 # Additional environment variables to add to the components Pods as pairs “name”, “value”.
 podCustomEnvironmentVariables: []
 
+# Sensor-based workload scanner configuration. The following variables apply only to on-premises workloads.
+# Do not enable or modify these variables for cloud workloads.
+diskScan:
+  # Enable Sensor based workload scanning. Only applicable in on-prem environments.
+  enabled: false
+  # The runtime config to be used by the Sensor based workload scanner. Passing an empty object will use the default config.
+  config: {}
+  # Overriding default name for runtime config name. Default "{.Release.Name}-disk-scan-config"
+  configName: ""
+  # Use a custom SELinux type that is required by AWS bottlerocket nodes, but is incompatible with some
+  # other node types
+  bottlerocketMode: false
+
+# Sensor-based API security solution
+apiSecurity:
+  enabled: false
+
+# Expose some metrics to be consumed by Prometheus and other Metrics servers.
+# The default port can be changed in case of conflicts
+exposeMetrics: false
+metricsPort: 9100
+
 # create a SecurityContextConstraints CRD for our service-account - used when installing on OpenShift clusters
 openshift: false
 
@@ -21,10 +43,19 @@ openshift: false
 # see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits .
 # there are also other small changes
 gkeAutopilot: false
+# Newer GKE autopilot clusters support the use of an allowlist. This is required for some options in the chart.
+# Set to false for clusters before 1.32.2 that don't support the allowlist.
+gkeAutopilotUseAllowlist: true
+gkeAutopilotAllowlist: wiz-sensor-v7
+gkeAutopilotUseAllowlistSynchronizer: true
 
 # use a custom SELinux type that is required by flatcar Linux nodes, but is incompatible with some
 # other node types (like AWS bottlerocket)
 flatcarLinuxNodes: false
+
+# specify a custom SELinux type under the container's "seLinuxOptions" security context. note that
+# in case "flatcarLinuxNodes" is set, this won't be used.
+seLinuxType: "spc_t"
 
 # Set the cluster name in the Wiz portal. Will override the native cloud name. (optional)
 sensorClusterName: ""
@@ -36,16 +67,93 @@ customVolumeMounts: []
 # set to true to disallow runtime response from the sensor for this deployment
 disallowRuntimeResponse: false
 
-# set to false to set the sensor in its own network namespace
-hostNetwork: true
+# set to true to disallow forensics collection from the sensor for this deployment
+disallowForensicsCollection: false
+
+# set to true to run the sensor in the host network namespace
+hostNetwork: false
 
 # A range of seconds. Given a value X, the Sensor will choose a random value R between 0 and X.
 # It will then delay its start by R seconds. This can be useful to reduce load on shared resources
 # (mainly API-server) when a large amount of Sensors are starting concurrently.
 startDelayRange: 0
 
-# Run in fully privileged mode. Usually used as compatibility mode for unsual setups.
+# Run in fully privileged mode. Usually used as compatibility mode for unusual setups.
 privileged: false
+
+# Set to true to enable debug logging (useful for debugging install issues). Do not use
+# for a production deployment.
+debug: false
+
+# Force old-style annotation for AppArmor profile (compatibility with some gitops tools)
+oldAppArmorAnnotation: false
+# Force the use of an appArmorProfile element in the securityContext, and remove the old-style annotation, even for old Kubernetes versions
+newAppArmorAnnotation: false
+
+# The Sensor will sometimes cause its container to restart in order to check if a new docker image
+# version is available. Such a restart puts some increased load on the API-server and the node.
+# If the cluster is managed by a GitOps product (e.g. ArgoCD, Flux CD, etc.) then a version sync
+# can force an update at a selected time. In such cases it is recommended to disable the version
+# check by enabling this option.
+disableImageVersionCheck: false
+
+# add appropriate fsGroup to the pod's securityContext
+setFsGroup: false
+
+clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
+clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
+subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
+
+# A fixed version of the definitions to use. Won't upgrade even when a new version is available.
+# Format: major.minor.patch
+fixedDefsVersion: ""
+
+# The sensor will attempt to communicate with local kubelet instead of api-server for pod information.
+# If kubelet communication fails, the sensor will fallback to querying the api-server for pod information.
+# Non-pod information, like controllers and namespaces are always queried directly from api-server.
+# Set "forceKubeletCommunication" to true to force the sensor to use kubelet communication and not fallback to api-server.
+allowKubeletCommunication: false
+forceKubeletCommunication: false
+
+# enable liveness probe for the sensor container
+livenessProbe:
+  enabled: false
+  config:
+    # delay before liveness probe starts
+    initialDelaySeconds: 60
+    # period between liveness probe checks
+    periodSeconds: 60
+    # timeout for liveness probe
+    timeoutSeconds: 30
+    # number of failures before sensor pod is considered unhealthy
+    failureThreshold: 10
+
+# startup probe for the sensor container
+startupProbe:
+  enabled: false
+  config:
+    # delay before startup probe starts
+    initialDelaySeconds: 15
+    # period between startup probe checks
+    periodSeconds: 60
+    # timeout for startup probe
+    timeoutSeconds: 30
+    # number of failures before sensor pod is considered unhealthy
+    failureThreshold: 10
+
+# readiness probe for the sensor container
+readinessProbe:
+  enabled: false
+  config:
+    # delay before readiness probe starts
+    initialDelaySeconds: 15
+    # period between readiness probe checks
+    periodSeconds: 60
+    # timeout for readiness probe
+    timeoutSeconds: 30
+    # number of failures before sensor pod is considered not ready
+    failureThreshold: 10
 
 # the API key identifying this installation (for comm with Wiz portal)
 wizApiToken:
@@ -62,9 +170,26 @@ wizApiToken:
   # The chart will refuse to install unless these are set to valid values
   clientId: ""
   clientToken: ""
-  clientEndpoint: "" # Set custom endpoint (gov for example)
+  clientEndpoint: "" # Set custom endpoint - should be "fedramp" for FEDRAMP environments
+
+  # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
+  # token (client id and client token) via mounts, e.g. when using the Vault operator to inject secrets to Pods.
+  # In this case you are responsible for creating the mounts.
+  # You must also set `.Values.customVolumes` and `.Values.customVolumeMounts`.
+  # The mounts must have at least these 2 files:
+  # clientId - with this content: <wiz service account id>
+  # clientToken - with this content: <wiz service account token>
+  #
+  # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+  #      and this is how the mount looks like on the file system:
+  #      /var/api-client/clientId
+  #      /var/api-client/clientToken
+  #
+  # Implies `secret.enabled: false`.
+  wizApiTokensVolumeMount: ""
 
 httpProxyConfiguration:
+  # set to true to enable the use of a proxy. creates a secret with proxy configuration
   enabled: false
 
   # Specifies whether a proxy secret should be created
@@ -78,7 +203,8 @@ httpProxyConfiguration:
   annotations: {}
 
   # a URL of the form: http(s)://username:password@127.0.0.1:8080
-  # the username and password are optional
+  # the username and password are optional and should be used when basic-auth is the
+  # proxy authentication method
   httpsProxy: ""
 
   # (optional) Proxy CA certificate in PEM format. This is required for TLS intercept proxies
@@ -102,7 +228,7 @@ imagePullSecret:
   # In case you want use an existing value please mark "create" above as false.
   # For general directions on how to pre-create this kind of secret please refer to:
   # https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#registry-secret-existing-credentials
-  # the default registry server URL to use in the secret is wizio.azurecr.io/sensor
+  # the default registry server URL to use in the secret is wizio.azurecr.io. For FEDRAMP use wizfedramp.azurecr.us.
   username: ""
   password: ""
 
@@ -125,13 +251,37 @@ serviceAccount:
   # Needed to fetch kubernetes metadata from the api-server
   rbac: true
 
+  # Give sensor "get" permissions for all resources
+  # The permissions are needed to extract information on
+  # the high level controller of pods for CRDs that are not
+  # covered by the default list.
+  rbacGetAll: false
+
 image:
-  # set registry to an empty string if the image is local
+  # Set registry to an empty string if the image is local. The final image pulled is
+  # "registry/repository:tag" which defaults to "wizio.azurecr.io/sensor:v1".
+  # For FEDRAMP use registry: wizfedramp.azurecr.us, for a final URL of "wizfedramp.azurecr.us/sensor:v1".
   registry: wizio.azurecr.io
   repository: sensor
-  tag: "v1"
-  pullPolicy: Always
   args: {}
+  tag: "v1" # if not set, the chart's appVersion will be used
+  # The sha256 of the image to use. Should not be used normally. Exists for compatibility with GKE Autopilot
+  # with private registries. This overrides the tag variable when set.
+  sha256: ""
+  pullPolicy: Always
+
+  # Disk Scanner image configuration
+  # The final image pulled is "registry/diskScanRepository:diskScanTag" which defaults to "wizio.azurecr.io/wiz-app/wiz-workload-scanner:v1"
+  # For FEDRAMP use diskScanRepository: wiz-app/wiz-workload-scanner-fips, for a final URL of "wizfedramp.azurecr.us/wiz-app/wiz-workload-scanner-fips:v1"
+  diskScanRepository: wiz-app/wiz-workload-scanner
+  diskScanArgs: {}
+  diskScanTag: "v1" # if not set, the chart's diskScanAppVersion will be used
+  diskScanPullPolicy: Always
+
+  # Windows image configuration
+  windowsRepository: sensor-windows
+  windowsTag: "v1"
+  windowsPullPolicy: Always
 
 daemonset:
   # cache folder on the node
@@ -145,6 +295,7 @@ daemonset:
   priorityClassName: ""
 
   affinity:
+    # run on linux arm64 or amd64 nodes
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
@@ -189,16 +340,29 @@ daemonset:
   #- key: node.ocs.openshift.io/storage
   #  value: "true"
   #  effect: NoSchedule
+  #- key: CriticalAddonsOnly # allow running on EKS auto-mode system nodes
+  #  operator: Exists
+
+  windowsTolerations:
+  # Common tolerations for Windows nodes
+  - effect: NoSchedule
+    key: node.kubernetes.io/os
+    operator: Equal
+    value: "windows"
+  - effect: NoSchedule
+    key: os
+    operator: Equal
+    value: "windows"
 
   # Default strategy to update the daemonset
   updateStrategy:
     type: RollingUpdate
 
   # Time for which kubernetes waits for the sensor pod to terminate gracefully.
-  terminationGracePeriodSeconds: 90
+  terminationGracePeriodSeconds: 25
 
-  # resource values for the wiz sensor
   resources:
+    # resource values for the wiz sensor, without API security enabled
     limits:
       cpu: "300m"
       memory: "300Mi"
@@ -206,9 +370,42 @@ daemonset:
       cpu: "10m"
       memory: "50Mi"
 
+    # in case the API security module is enabled, used increased limit values here
+    apiSecurityLimits:
+      cpu: "1"
+      memory: "1Gi"
+
+    # resource values for the Sensor based workload scanner
+    diskScanLimits:
+      cpu: "200m"
+      memory: "500Mi"
+    diskScanRequests:
+      cpu: "10m"
+      memory: "100Mi"
+    diskScanScratchSpace: "5Gi"
+
+    # resource values for the Windows sensor
+    windowsLimits:
+      cpu: "1"
+      memory: "550Mi"
+    windowsRequests:
+      cpu: "100m"
+      memory: "150Mi"
+
   # If a non-standard path is used please specify it here. Usually not required.
   criSocketPath: ""
 
+   # (optional) Disable EMS requirement for TLS servers. Setting this to true makes the TLS client not comply with FIPS.
+  # This is required for some proxies that use old versions of OpenSSL that do not support EMS.
+  # Example error message: peer is incompatible: ExtendedMasterSecretExtensionRequired"
+  disableStrictEMS: false
+
+# Windows sensor configuration
+windows:
+  # Set to true to deploy the Windows sensor DaemonSet additionally to the Linux one
+  enabled: false
+  # Determine where the sensor will store its files
+  sensorInstallDir: 'C:\ProgramData\Wiz\Sensor'
 
 # Don't touch the following section, it is used by the wiz-kubernetes-integration chart
 global:
@@ -220,6 +417,8 @@ global:
     clientEndpoint: ""
     secret:
       name: ""
+    wizApiTokensVolumeMount: ""
+
 
   httpProxyConfiguration:
     secretName: ""
@@ -230,8 +429,13 @@ global:
   imagePullSecrets: []
   podAnnotations: {}
   podCustomEnvironmentVariables: []
-  customVolumes: [] # Additional volumes to add to the components Pods
-  customVolumeMounts: [] # Additional volume mounts to add to the components Pods
-  nodeSelector: {} # custom assignment to nodes
-  affinity: {} # custom affinity rules for node assignment
-  tolerations: [] # custom tolerations
+  customVolumes: []
+  customVolumeMounts: []
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  subscriptionExternalId: ""
+  clusterTags: {}
+  subscriptionTags: {}
+  clusterDisplayName: ""

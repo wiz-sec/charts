@@ -1,8 +1,10 @@
-{{- if .Values.global.broker.enabled }}
+{{- if .Values.enabled }}
 {{ $mountPath := "/etc/connectorData" }}
 {{ $connectorDataFileName := "data" }}
 {{ $connectorDataFilePath := printf "%s/%s" $mountPath "data" }}
 {{ $mtlsPath := "/etc/mtls" }}
+{{ $caCertificateMountPath := "/usr/local/share/ca-certificates" }}
+{{ $customCertificateFileName := "ca-certificates.crt" }}
 {{ $clientCertificateFileName := "client.cert" }}
 {{ $clientPrivateKeyFileName := "client.key" }}
 apiVersion: apps/v1
@@ -23,36 +25,51 @@ spec:
         {{- if .Values.rollmeAnnotation.enabled }}
         rollme: {{ randAlphaNum 5 | quote }}
         {{- end }}
+        {{- with .Values.global.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
+        wiz.io/component: "broker"
         {{- /* `labels` includes `selectorLabels` */}}
           {{- include "wiz-broker.labels" . | nindent 8 }}
     spec:
-      {{- with .Values.global.image.imagePullSecrets }}
+      {{- with .Values.global.podAdditionalSpec }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.podAdditionalSpec }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.global.broker.serviceAccount.name }}
+      serviceAccountName: {{ include "wiz-broker.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
+        {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 8 }}
+        {{- else }}
+        {{- toYaml .Values.global.podSecurityContext | nindent 8 }}
+        {{- end }}
       volumes:
+        {{- include "wiz-broker.spec.common.volumes" . | trim | nindent 8 }}
         - name: connector-data
           secret:
             secretName: {{ include "wiz-broker.connectorSecretName" . | trim }}
             items:
               - key: connectorData
                 path: {{ $connectorDataFileName }}
-        {{- if .Values.global.broker.caCertificate.enabled }}
+        {{- if .Values.caCertificate.enabled }}
         - name: ca-certificate
           secret:
             secretName: {{ include "wiz-broker.caCertificateSecretName" . | trim }}
             items:
               - key: caCertificate
-                path: target.crt
+                path: {{ $customCertificateFileName }}
         {{- end }}
-        {{- if .Values.global.broker.mtls.enabled }}
+        {{- if and .Values.mtls.enabled (not .Values.global.useHATunnel) }}
         - name: mtls
           secret:
             secretName: {{ include "wiz-broker.mtlsSecretName" . | trim }}
@@ -62,102 +79,173 @@ spec:
               - key: privateKey
                 path: {{ $clientPrivateKeyFileName }}
         {{- end }}
-        {{- with .Values.global.broker.customVolumes }}
+        {{- with .Values.global.customVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.global.image.registry }}/{{ .Values.global.image.repository }}:{{ .Values.global.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.global.image.pullPolicy }}
+            {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+            {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.global.securityContext | nindent 12 }}
+            {{- end }}
+          image: {{ include "wiz-broker.image" . }}
+          imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
           volumeMounts:
+          {{- include "wiz-broker.spec.common.volumeMounts" . | trim | nindent 10 }}
           - name: connector-data
             mountPath: {{ $mountPath }}
             readOnly: true
-          {{- if .Values.global.broker.caCertificate.enabled }}
+          {{- if .Values.caCertificate.enabled }}
           - name: ca-certificate
-            mountPath: /usr/local/share/ca-certificates
+            mountPath: {{ $caCertificateMountPath }}
             readOnly: true
           {{- end }}
-          {{- if .Values.global.broker.mtls.enabled }}
+          {{- if and .Values.mtls.enabled (not .Values.global.useHATunnel) }}
           - name: mtls
             mountPath: {{ $mtlsPath }}
             readOnly: true
           {{- end }}
-          {{- with .Values.global.broker.customVolumeMounts }}
+          {{- with .Values.global.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
-          args: [
-            {{ $connectorDataFilePath }}
-          ]
+          {{- with .Values.customVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          args:
+            - --connector-data-file-path
+            - {{ $connectorDataFilePath | quote }}
           env:
           {{- if .Values.global.logLevel }}
           - name: LOG_LEVEL
             value: {{ .Values.global.logLevel }}
           {{- end }}
           - name: WIZ_ENV
-            value: {{ .Values.global.wizApiToken.clientEndpoint | quote }}
-          {{- if not .Values.global.wizApiToken.usePodCustomEnvironmentVariablesFile }}
-          - name: WIZ_CLIENT_ID
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
-                key: clientId
-          - name: WIZ_CLIENT_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
-                key: clientToken
+            value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+          {{- if .Values.global.awsPrivateLink.enabled }}
+          - name: USE_WIZ_PRIVATE_LINK_ENDPOINTS
+            value: "true"
           {{- end }}
-          {{- if .Values.global.broker.wizManaged }}
+          {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+          - name: CLI_FILES_AS_ARGS
+          {{- $wizApiTokensPath := "" -}}
+          {{- if coalesce .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount }}
+          {{- $wizApiTokensPath = coalesce .Values.global.wizApiToken.wizApiTokensVolumeMount .Values.wizApiToken.wizApiTokensVolumeMount -}}
+          {{- else }}
+          {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
+          {{- end }}
+            value: "{{ $wizApiTokensPath }}/clientToken,{{ $wizApiTokensPath }}/clientId"
+          {{- end }}
+          {{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+          {{ include "wiz-common.proxy.env" . | trim | nindent 10 }}
+          {{- if or .Values.global.httpProxyConfiguration.clientCertificate .Values.httpProxyConfiguration.clientCertificate }}
+          - name: WIZ_HTTP_PROXY_CLIENT_CERT_PATH
+            value: "{{ include "wiz-common.proxy.dir" . }}/clientCertificate"
+          {{- end }}
+          {{- end }}
+          {{- if .Values.managed.enabled }}
           - name: WIZ_MANAGED
             value: "true"
           - name: WIZ_OUTPOST_ID
-            value: {{ .Values.global.broker.outpostId | quote }}
-          {{- end}}
-          {{- if .Values.global.broker.podCustomEnvironmentVariablesFile }}
+            value: {{ .Values.managed.outpostId | quote }}
+          - name: WIZ_ON_CALL_CLUSTER_ID
+            value: {{ .Values.managed.oncallClusterID | quote }}
+          {{- end }}
+          - name: TARGET_IP
+            value: {{ .Values.targetIp }}
+          - name: TARGET_PORT
+            value: {{ .Values.targetPort | quote }}
+          {{- if .Values.podCustomEnvironmentVariablesFile }}
           - name: CLI_ENV_FILE
-            value: {{ .Values.global.broker.podCustomEnvironmentVariablesFile }}
+            value: {{ .Values.podCustomEnvironmentVariablesFile }}
           - name: USE_CLI_ENV_FILE
             value: "true"
           {{- end }}
-          - name: TARGET_IP
-            value: {{ .Values.global.broker.targetIp }}
-          - name: TARGET_PORT
-            value: {{ .Values.global.broker.targetPort | quote }}
-          {{- if .Values.global.httpProxyConfiguration.enabled }}
-          - name: HTTP_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.proxySecretName" . | trim }}
-                key: httpsProxy # The frp project supports only HTTP_PROXY, it uses it for both http and https.  Our broker always uses https, so we're using the httpsProxy value here (See: https://github.com/fatedier/frp/#connecting-to-frps-via-http-proxy)
-          - name: HTTPS_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.proxySecretName" . | trim }}
-                key: httpsProxy
-                optional: false
-          - name: NO_PROXY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "wiz-broker.proxySecretName" . | trim }}
-                key: noProxyAddress
-                optional: false
-          {{- end }}
-          {{- if .Values.global.broker.skipTlsVerify }}
+          {{- if .Values.skipTlsVerify }}
           - name: DISABLE_TLS_VALIDATION
             value: "true"
           {{- end }}
-          {{- if .Values.global.broker.mtls.enabled }}
+          {{- if .Values.caCertificate.enabled }}
+          - name: CA_CERT_PATH
+            value: {{ printf "%s/%s" $caCertificateMountPath $customCertificateFileName }}
+          {{- end }}
+          {{- if and .Values.mtls.enabled (not .Values.global.useHATunnel) }}
           - name: CLIENT_CERT_PATH
             value: {{ printf "%s/%s" $mtlsPath $clientCertificateFileName }}
           - name: CLIENT_KEY_PATH
             value: {{ printf "%s/%s" $mtlsPath $clientPrivateKeyFileName }}
           {{- end }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+          {{- with .Values.global.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.podCustomEnvironmentVariables }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          - name: K8S_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: K8S_DEPLOYMENT_NAME
+            value: {{ include "wiz-broker.deploymentName" . }}
+          {{- if or .Values.global.istio.enabled .Values.istio.enabled }}
+          - name: WIZ_ISTIO_PROXY_ENABLED
+            value: "true"
+          - name: WIZ_ISTIO_PROXY_PORT
+            value: {{ coalesce .Values.global.istio.proxySidecarPort .Values.istio.proxySidecarPort | quote }}
+          {{- end }}
+          - name: WIZ_CHART_VERSION
+            value: "{{ .Chart.Version }}"
+          - name: WIZ_USE_HATUNNEL
+            value: {{ ternary "1" "0" .Values.global.useHATunnel | quote }}
+          {{- if .Values.global.useHATunnel }}
+          - name: WIZ_BROKER_HEARTBEAT_DISABLE_CLUSTER_ID
+            value: "1"
+          - name: WIZ_AUTO_ROLLOUT_ROLE
+            value: {{ ternary "true" "false" .Values.autoRolloutUpdate | quote }}
+          - name: WIZ_HEALTH_PORT
+            value: {{ .Values.healthPort | quote }}
+          {{- if .Values.connectorType }}
+          - name: CONNECTOR_TYPE
+            value: {{ .Values.connectorType | quote }}
+          {{- end }}
+          {{- if.Values.allowedEndpoints }}
+          - name: WIZ_ALLOWED_ENDPOINTS
+            value: {{ join "," .Values.allowedEndpoints | quote }}
+          {{- end }}
+          {{- if gt (int .Values.healthPort) 0 }}
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+            httpGet:
+              port: {{ .Values.healthPort }}
+              path: /ready
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 90 # 15 minutes
+            httpGet:
+              port: {{ .Values.healthPort }}
+              path: /live
+          ports:
+            - containerPort: {{ .Values.healthPort }}
+              name: health
+          {{- end }}
+          {{- end }}
+          {{- include "wiz-common.renderResources" (list .Values.resources (index .Values.global "wiz-kubernetes-connector" "resources")) | nindent 10 -}}
+      {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -165,8 +253,13 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- if (or .Values.global.tolerations .Values.tolerations) }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+        {{- with .Values.global.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- end }}
 {{- end }}

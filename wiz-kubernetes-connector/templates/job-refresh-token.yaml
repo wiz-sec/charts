@@ -1,0 +1,124 @@
+{{ if and .Values.refreshToken.enabled -}}
+{{/*  We require version 1.22 and above since we rely on the TokenRequest API in k8s which was introduced as part of "Bound service account token volume mechanism" which was supported in version 1.22
+https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/#bound-service-account-token-volume*/}}
+{{- if semverCompare "<1.22-0" (include "kubeVersion" .) }}
+{{- fail (printf "The refresh token job requires Kubernetes cluster version 1.22 or higher. Found version: %s. To mitigate this, either update your Kubernetes cluster version or set refreshToken.enabled to false." .Capabilities.KubeVersion.Version) }}
+{{- end }}
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "wiz-kubernetes-connector.name" . }}-refresh-token
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-kubernetes-connector.labels" . | nindent 4 }}
+  {{- if .Values.refreshToken.cronJobAnnotations}}
+  annotations:
+    {{- with (.Values.refreshToken.cronJobAnnotations) }}
+      {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
+spec:
+  schedule: "{{ coalesce .Values.refreshToken.schedule "0 */6 * * *" }}"
+  concurrencyPolicy: Forbid  # Ensures only one job instance runs at a time
+  jobTemplate:
+    metadata:
+      name: {{ include "wiz-kubernetes-connector.name" . }}-refresh-token-job
+      namespace: {{ .Release.Namespace | quote }}
+      labels:
+        {{- include "wiz-kubernetes-connector.labels" . | nindent 8 }}
+      {{- if .Values.refreshToken.jobAnnotations}}
+      annotations:
+        {{- with (.Values.refreshToken.jobAnnotations) }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+    spec:
+      activeDeadlineSeconds: {{ .Values.refreshToken.timeoutSeconds }}
+      ttlSecondsAfterFinished: {{ .Values.refreshToken.cleanupJobSeconds }}
+      template:
+        metadata:
+          annotations:
+            rollme.proxyHash: {{ include "wiz-kubernetes-connector.proxyHash" . }}
+            rollme.brokerHash: {{ include "wiz-kubernetes-connector.brokerHash" . }}
+            rollme.wizApiTokenHash: {{ include "wiz-kubernetes-connector.wizApiTokenHash" . }}
+            {{- with .Values.global.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.refreshToken.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          labels:
+            wiz.io/component: "refresh-kubernetes-connector-token"
+            {{- include "wiz-kubernetes-connector.labels" . | nindent 12 }}
+        spec:
+          {{- with .Values.autoCreateConnector.podAdditionalSpec }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.global.podAdditionalSpec }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          restartPolicy: Never
+          {{- with .Values.global.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          serviceAccountName: {{ .Values.refreshToken.serviceAccount.name }}
+          securityContext:
+            {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
+            {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 12 }}
+            {{- else }}
+            {{- toYaml .Values.global.podSecurityContext | nindent 12 }}
+            {{- end }}
+          containers:
+            - name: {{ .Chart.Name }}-refresh-token
+              securityContext:
+                {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+                {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 16 }}
+                {{- else }}
+                {{- toYaml .Values.global.securityContext | nindent 16 }}
+                {{- end }}
+              image: {{ include "wiz-broker.image" . }}
+              imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
+              command:
+                {{- include "wiz-kubernetes-connector.entrypoint" . | nindent 16 }}
+              args: {{- include "wiz-kubernetes-connector.argsListRefreshConnector" . | nindent 16 }}
+              env:
+              {{- include "wiz-kubernetes-connector.spec.common.envVars" . | trim | nindent 14 }}
+              {{- include "wiz-common.renderResources" (list .Values.resources (index .Values.global "wiz-kubernetes-connector" "resources")) | nindent 14 }}
+              volumeMounts:
+              {{- include "wiz-kubernetes-connector.spec.common.volumeMounts" . | trim | nindent 14 }}
+              {{- if or .Values.autoCreateConnector.customVolumeMounts .Values.global.customVolumeMounts }}
+              {{- with .Values.autoCreateConnector.customVolumeMounts }}
+                {{- toYaml . | nindent 14 }}
+              {{- end -}}
+              {{- with .Values.global.customVolumeMounts }}
+                {{- toYaml . | nindent 14 }}
+              {{- end }}
+              {{- end }}
+          {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if (or .Values.global.tolerations .Values.tolerations) }}
+          tolerations:
+            {{- with .Values.global.tolerations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.tolerations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          volumes:
+            {{- $volumes := include "wiz-kubernetes-connector.spec.common.volumes" . | trim }}
+            {{- if $volumes -}}
+            {{ $volumes | nindent 12 }}
+            {{- end -}}
+    {{- end }}

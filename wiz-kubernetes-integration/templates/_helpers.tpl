@@ -53,7 +53,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "wiz-kubernetes-integration.secretApiTokenName" -}}
-{{ coalesce (.Values.global.wizApiToken.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
+{{ coalesce (.Values.global.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-kubernetes-integration.proxySecretName" -}}

@@ -5,13 +5,14 @@
 nameOverride: "" # Override the release’s name.
 fullnameOverride: "" # Override the release’s full name.
 commonLabels: {} # Labels applied on all the resources (not used for selection)
+clusterDisplayName: "" # Optional. Overrides the Wiz deployment name. If left empty, the cluster external ID will be used to derive the cluster name.
 
 # Wiz Service Account used to authenticate to Wiz.
 wizApiToken:
   clientId: "" # Client ID of the Wiz Service Account.
   clientToken: "" # Client secret of the Wiz Service Account.
-  clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
-  
+  clientEndpoint: "" # Defaults to commercial.
+
   secret:
     # Should a Secret be created by the chart or not.
     # Set this to false if you wish to create the Secret yourself or using another tool.
@@ -21,9 +22,30 @@ wizApiToken:
     annotations: {}
     # The name of the Wiz Service Account Secret.
     name: ""
-  
-  # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
+
+  # Not suggested: avoid storing sensitive data in environment variables.
+  # Read API token from an environment file, which is specified in podCustomEnvironmentVariablesFile
+  # The file must contain the following lines:
+  # WIZ_CLIENT_ID=<wiz service account id>
+  # WIZ_CLIENT_TOKEN=<siz service account token>
+  # Implies `secret.enabled: false`.
   usePodCustomEnvironmentVariablesFile: false
+
+  # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
+  # token (client id and client token) via mounts, e.g. when using the Vault operator to inject secrets to Pods.
+  # In this case you are responsible for creating the mounts.
+  # You must also set `.Values.customVolumes` and `.Values.customVolumeMounts`.
+  # The mounts must have at least these 2 files:
+  # clientId - with this content: <wiz service account id>
+  # clientToken - with this content: <wiz service account token>
+  #
+  # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+  #      and this is how the mount looks like on the file system:
+  #      /var/api-client/clientId
+  #      /var/api-client/clientToken
+  #
+  # Implies `secret.enabled: false`.
+  wizApiTokensVolumeMount: ""
 
 # Redirect HTTP and/or HTTPS traffic through a proxy.
 httpProxyConfiguration:
@@ -37,9 +59,22 @@ httpProxyConfiguration:
   annotations: {} # Annotations to be set on the secret
   httpProxy: "" # URL to use as a proxy for outbound HTTP traffic.
   httpsProxy: "" # URL to use as a proxy for outbound HTTPS traffic.
-  noProxyAddress: # Comma or space-separated list of machine or domain names.
+  noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
+  # Proxy client certificate in PEM format. This is required for client certificate authentication.
+  # The file should contain a certificate and a private key in PEM format.
+  clientCertificate: ""
 
+# When Horizontal Pod Autoscaling (`hpa.enabled`) is enabled (`true`),
+# this field is discarded and set to an empty value.
 replicaCount: 2
+
+# Use PodDisruptionBudget for the admission controller enforcer deployment.
+# For more information about PodDisruptionBudget please refer to:
+# https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget:
+  enabled: false # Should a PodDisruptionBudget be created by the chart or not.
+  minAvailable: 1
+  maxUnavailable: null
 
 image:
   registry: wiziopublic.azurecr.io/wiz-app
@@ -47,14 +82,45 @@ image:
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+
 imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
 priorityClassName: ""
 
 webhook:
   errorEnforcementMethod: "AUDIT" # AUDIT/ BLOCK
-  policyEnforcementMethod: ""     # AUDIT/ BLOCK (Set this to override any admission policy action)
+                                  # This field determines what happens when Wiz Admission Controller
+                                  # has an internal error during processing / parsing of admission reviews.
+                                  #
+                                  # Valid values are AUDIT and BLOCK. The default is set to AUDIT.
+                                  #
+                                  # If an admission review is parsed correctly, the decision to AUDIT/BLOCK
+                                  # depends on the applied policies or the `policyEnforcementMethod`
+                                  # (if it is set).
+
+  policyEnforcementMethod: ""     # AUDIT / BLOCK / ""
+                                  # Set this to override any admission policy action.
+                                  # Each Admission Policy in Wiz has an Admission Controller Action
+                                  # that either audits or blocks failed admission reviews, i.e.
+                                  # admission reviews that didn't pass one of the cloud configuration
+                                  # rules associated with the policy.
+                                  #
+                                  # The `policyEnforcementMethod` field allows one to override the behavior
+                                  # set for all policies such that regardless of their Admission Controller Action,
+                                  # Wiz Admission controller would either AUDIT or BLOCK.
+                                  #
+                                  # For example, setting this to AUDIT would cause all policies
+                                  # to audit the admission reviews, even if some of them are set to
+                                  # block on the failed events.
+                                  #
+                                  # Valid values are AUDIT and BLOCK or "". The default is set to ""
+                                  # which means that each policy individually dictates the AUDIT/BLOCK
+                                  # behavior.
+
   clusterExternalId: "" # Wiz cluster external id (required only for on-prem and OKE clusters)
+  subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
+  clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
+  subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
 
   injectCaFrom: "" # Inject Certificate to webhook configurations. Format: "namespace/certificate". Prerequisite - https://cert-manager.io/docs/installation.
   createSelfSignedCert: false # Create and use a self-signed certificate using `cert-manager`. Prerequisite - https://cert-manager.io/docs/installation.
@@ -62,6 +128,20 @@ webhook:
   secret:
     name: "" # Name of the Certificate secret.
     annotations: {} # Annotations of the Certificate secret.
+
+  # Should the chart create the mutating and validating webhooks resources as Helm hooks or regular resources.
+  # The original behavior was to create them as helm-hooks to ensure they are created last, after the deployment is ready.
+  # However, this is not necessary since helm installation order is deterministic and the webhooks are created after the deployment.
+  # Also, the webhooks are configured with `failurePolicy: Ignore` so there is no need to wait for the deployment to be ready.
+  # We are currently keeping the default behavior to `true` for backwards compatibility, but this might change in future chart versions.
+  useHelmHooks: true
+
+
+customErrorMessage: ""            # Specifies a custom error message for admission review failures.
+                                  # This message will be overridden if a webhook-specific customErrorMessage is set.
+customErrorMessageMode: "prepend" # Defines how 'customErrorMessage' is applied:
+                                  # "prepend": Adds the custom message before the default error message.
+                                  # "override": Replaces the default error message entirely with the custom message.
 
 opaWebhook:
   enabled: true
@@ -76,15 +156,9 @@ opaWebhook:
       - "*"
       resources:
       - "namespaces"
-      - "secrets"
       - "configmaps"
-      - "storageclasses"
-      - "persistentvolumes"
-      - "persistentvolumeclaims"
-      - "controllerrevisions"
       - "ingresses"
       - "services"
-      - "networkpolicies"
       - "pods"
       - "deployments"
       - "jobs"
@@ -92,6 +166,9 @@ opaWebhook:
       - "replicasets"
       - "statefulsets"
       - "daemonsets"
+  # Additional rules to be appended to the default webhook rules.
+  # This allows extending the webhook scope without modifying the default rules.
+  additionalRules: []
   namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
     matchExpressions:
     - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
@@ -99,22 +176,38 @@ opaWebhook:
       values:
       - kube-system
       - kube-node-lease
+      - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
-  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
-  policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, by default AC will get policies from Wiz based on projects.  
-  
+  policies: [] # List of policies to enforce on the misconfiguration webhook. If not set, by default AC will get policies from Wiz based on projects.
+
   # Deprecated, don't use!
   errorEnforcementMethod: ""  # Deprecated, use `webhook.errorEnforcementMethod` instead
   policyEnforcementMethod: "" # Deprecated, use `webhook.policyEnforcementMethod` instead
   clusterExternalId: "" # Deprecated, use `webhook.clusterExternalId` instead
   secret: # Deprecated, use `webhook.secret` instead
-    annotations: {} 
+    annotations: {}
+
+  customErrorMessage: ""      # Specifies a custom error message for OPA admission check failures.
+                              # If set, this overrides the top-level 'customErrorMessage'.
+  customErrorMessageMode: ""  # Defines how 'opaWebhook.customErrorMessage' is applied:
+                              # "prepend": Adds the custom message before the default OPA error message.
+                              # "override": Replaces the default OPA error message entirely with the custom message.
+                              # If empty, the top-level 'customErrorMessageMode' will be used.
+
+  # Detailed error messages configuration for misconfiguration policies.
+  # When enabled, provides detailed output showing all failed policies with their
+  # enforcement type (AUDIT/BLOCK) and all failed rules by name.
+  detailedErrorMessages:
+    enabled: false  # Opt-in feature. When disabled, uses the legacy simple message format.
+    format: "table" # Output format for detailed messages. Options: "table" or "json".
+                    # "table" - Human-readable table format with colored enforcement types.
+                    # "json"  - Machine-readable JSON format for programmatic parsing.
 
 imageIntegrityWebhook:
-  enabled: false 
+  enabled: false
   policies: [] # List of policies to enforce on the image integrity webhook. If not set, by default AC will get policies from Wiz based on projects.
 
     # Override to run admission controller on specific resources.
@@ -134,6 +227,9 @@ imageIntegrityWebhook:
       - "replicasets"
       - "statefulsets"
       - "daemonsets"
+  # Additional rules to be appended to the default webhook rules.
+  # This allows extending the webhook scope without modifying the default rules.
+  additionalRules: []
   namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
     matchExpressions:
     - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
@@ -141,9 +237,9 @@ imageIntegrityWebhook:
       values:
       - kube-system
       - kube-node-lease
+      - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
-  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
   cacheImageDigestTTL: 1m # The TTL of the cache for the image digest. The cache is used to avoid querying the image registry for the same image digest multiple times.
@@ -151,12 +247,35 @@ imageIntegrityWebhook:
 
   patchImageDigestAnnotation: true # If true, annotate the pod with mapping between tag->digest.
 
+  customErrorMessage: ""      # Specifies a custom error message for image integrity check failures.
+                              # If set, this overrides the top-level 'customErrorMessage'.
+  customErrorMessageMode: ""  # Defines how 'imageIntegrityWebhook.customErrorMessage' is applied:
+                              # "prepend": Adds the custom message before the default image integrity error message.
+                              # "override": Replaces the default image integrity error message entirely with the custom message.
+                              # If empty, the top-level 'customErrorMessageMode' will be used.
+
+  # Detailed error messages configuration for image integrity policies.
+  # When enabled, provides detailed output showing all failed policies with their
+  # enforcement type (AUDIT/BLOCK) and all failed images.
+  detailedErrorMessages:
+    enabled: false  # Opt-in feature. When disabled, uses the legacy simple message format.
+    format: "table" # Output format for detailed messages. Options: "table" or "json".
+                    # "table" - Human-readable table format with colored enforcement types.
+                    # "json"  - Machine-readable JSON format for programmatic parsing.
+
 # This webhooks sends the audit logs to Wiz, and should never block any requests.
 kubernetesAuditLogsWebhook:
-  enabled: false 
+  enabled: false
 
   nameOverride: "" # Override the audit logs deployment name.
   replicaCount: 2
+  # Use PodDisruptionBudget for the admission controller audit logs deployment.
+  # For more information about PodDisruptionBudget please refer to:
+  # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  podDisruptionBudget:
+    enabled: false # Should a PodDisruptionBudget be created by the chart or not.
+    minAvailable: 1
+    maxUnavailable: null
 
   # Override to run audit logs collector on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
@@ -185,7 +304,6 @@ kubernetesAuditLogsWebhook:
         - "statefulsets"
         - "daemonsets"
         - "replicationcontrollers"
-        - "subjectaccessreviews"
         - "selfsubjectrulesreviews"
         - "selfsubjectreviews"
         - "pods/exec"
@@ -204,22 +322,148 @@ kubernetesAuditLogsWebhook:
         - "*"
       resources:
         - "events"
-  namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+  # Additional rules to be appended to the default webhook rules.
+  # This allows extending the webhook scope without modifying the default rules.
+  additionalRules: []
+  namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-z/extensible-admission-controllers/#matching-requests-namespaceselector
     matchExpressions:
     - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
       operator: NotIn
       values:
       - kube-system
       - kube-node-lease
+      - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
-  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
+sensorInject:
+  # This is a PREVIEW FEATURE - Do not enable without Wiz guidance.
+  enabled: false
+
+  nameOverride: "" # Override the sensor deployment name.
+  replicaCount: 2
+
+  namespaceSelector: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
+    matchExpressions:
+      - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
+        operator: NotIn
+        values:
+          - kube-system
+          - kube-node-lease
+          - wiz
+
+  timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
+
+  image: "wizio.azurecr.io/sensor-serverless:v1"
+  excludedContainers: [ ]
+  stdoutLogLevel: ""
+
+  # API key secret configuration for sensor authentication
+  # This provides flexibility for customers to either:
+  # 1. Create API key secrets manually in all namespaces (apiKeySecret.create: false)
+  # 2. Let the chart create secrets automatically (apiKeySecret.create: true)
+  apiKeySecret:
+    name: "" # The name of the API key secret in case it was already created in all namespaces.
+
+    # Should API key secrets be created by the chart or not.
+    # Set this to false if you wish to create the secrets yourself in all required namespaces.
+    # When set to true, the chart will create generic secrets in the specified namespaces.
+    #
+    # Example manual creation:
+    # kubectl create secret generic wiz-sensor-apikey \
+    #   --from-literal=clientId=<value> \
+    #   --from-literal=clientToken=<value> \
+    #   --namespace=<target-namespace>
+    create: true
+
+    # Controls how API key secrets are created when create: true
+    # - false (default): Use explicit clientId and clientToken values below
+    # - true: Read the secret specified by 'name' from the release namespace and replicate its data to target namespaces
+    #
+    # When replicateFromReleaseNamespace: true:
+    # 1. The secret specified by 'name' must exist in the release namespace (.Release.Namespace)
+    # 2. The chart will read the clientId and clientToken from that secret
+    # 3. The chart will create new secrets with the same data in all target namespaces
+    # 4. The clientId and clientToken fields below are ignored
+    replicateFromReleaseNamespace: true
+
+    # Wiz API credentials (required when create: true and replicateFromReleaseNamespace: false)
+    clientId: ""
+    clientToken: ""
+
+    # Namespaces where the API key secret should be created.
+    # Options:
+    # - List of specific namespace names: ["default", "production", "staging"]
+    # - All namespaces: ["*"] (creates secrets in all existing namespaces, excluding system namespaces)
+    #
+    # Note: When using ["*"], secrets are created only in namespaces that exist at install/upgrade time.
+    # For new namespaces created after installation, you'll need to create the secret manually or upgrade the chart.
+    namespaces: ["*"]
+    excludeNamespaces: [] # List of namespaces to exclude from the namespaces list. Only relevant when namespaces: ["*"]
+
+    # Annotations to add to the API key secrets
+    annotations: {}
+
+  # Registry secret configuration for sensor image pull
+  # This provides flexibility for customers to either:
+  # 1. Create registry secrets manually in all namespaces (registrySecret.create: false)
+  # 2. Let the chart create secrets automatically (registrySecret.create: true)
+  registrySecret:
+    name: sensor-image-pull
+
+    # Should registry secrets be created by the chart or not.
+    # Set this to false if you wish to create the secrets yourself in all required namespaces.
+    # When set to true, the chart will create docker-registry secrets in the specified namespaces.
+    #
+    # Example manual creation:
+    # kubectl create secret docker-registry sensor-image-pull \
+    #   --docker-server=wizio.azurecr.io \
+    #   --docker-username=<username> \
+    #   --docker-password=<password> \
+    #   --namespace=<target-namespace>
+    create: true
+
+    # Controls how registry secrets are created when create: true
+    # - false (default): Use explicit dockerServer, dockerUsername, and dockerPassword values below
+    # - true: Read the secret specified by 'name' from the release namespace and replicate its data to target namespaces
+    #
+    # When replicateFromReleaseNamespace: true:
+    # 1. The secret specified by 'name' must exist in the release namespace (.Release.Namespace)
+    # 2. The chart will read the .dockerconfigjson from that secret
+    # 3. The chart will create new secrets with the same data in all target namespaces
+    # 4. The dockerServer, dockerUsername, and dockerPassword fields below are ignored
+    replicateFromReleaseNamespace: true
+
+    # Docker registry server URL (required when create: true and replicateFromReleaseNamespace: false)
+    # Example: "wizio.azurecr.io"
+    dockerServer: "wizio.azurecr.io"
+
+    # Docker registry username (required when create: true and replicateFromReleaseNamespace: false)
+    dockerUsername: ""
+
+    # Docker registry password (required when create: true and replicateFromReleaseNamespace: false)
+    dockerPassword: ""
+
+    # Namespaces where the registry secret should be created.
+    # Options:
+    # - List of specific namespace names: ["default", "production", "staging"]
+    # - All namespaces: ["*"] (creates secrets in all existing namespaces, excluding system namespaces)
+    #
+    # Note: When using ["*"], secrets are created only in namespaces that exist at install/upgrade time.
+    # For new namespaces created after installation, you'll need to create the secret manually or upgrade the chart.
+    namespaces: ["*"]
+    excludeNamespaces: [] # List of namespaces to exclude from the namespaces list. Only relevant when namespaces: ["*"]
+
+    # Annotations to add to the registry secrets
+    annotations: {}
 
 # Debug webhook only logs the request
 debugWebhook:
   enabled: false
+
+  nameOverride: "" # Override the debug webhook deployment name.
+  replicaCount: 2
   # Override to run admission controller on specific resources.
   rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
     - operations:
@@ -247,6 +491,9 @@ debugWebhook:
       - "replicasets"
       - "statefulsets"
       - "daemonsets"
+  # Additional rules to be appended to the default webhook rules.
+  # This allows extending the webhook scope without modifying the default rules.
+  additionalRules: []
   namespaceSelector:  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-namespaceselector
     matchExpressions:
     - key: kubernetes.io/metadata.name # Using "kubernetes.io/metadata.name" key to exclude specific namespaces (https://github.com/kubernetes/enhancements/blob/master/keps/sig-api-machinery/2161-apiserver-default-labels/README.md#proposal)
@@ -254,18 +501,27 @@ debugWebhook:
       values:
       - kube-system
       - kube-node-lease
+      - wiz
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
-  failurePolicy: Ignore # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
 
 # The following values are used for image integrity webhook.
 imageRegistryClient:
-  createRole: true # Should a Role and RoleBinding be created by the chart or not.
-  pullSecrets: [] # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
-  secretsNamespace: "default" # Namespace of the pull secrets.
-  credentialHelpers: [] # List of credential helpers to use, Can be one of amazon, azure, google, github. 
+  # Should a Role and RoleBinding be created by the chart or not.
+  createRole: true
+  # Secret names for container image registry as described in https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry
+  pullSecrets: []
+  # Namespace of the pull secrets.
+  secretsNamespace: "default"
+  # List of credential helpers to use, Can be one of amazon, azure, google, github.
+  credentialHelpers: []
+  # The interval of the background reloader cache for image pull secrets. The cache is used to avoid querying the cluster for the same image pull secrets multiple times.
+  cacheImagePullSecretsInterval: 5m
+  # Ignore missing secret error on startup, the admission controller will continue to run without the secret value and tries to fetch the secret every cacheImagePullSecretsInterval.
+  # Useful when the secret is not available at the time of startup.
+  ignoreMissingSecretError: false
 
 kubernetesApiServer:
   cacheNamespaceLabelsTTL: 10m # The interval of the background reloder cache for namespace labels. The cache is used to avoid querying cluster for the same namespace multiple times.
@@ -274,6 +530,7 @@ kubernetesApiServer:
 serviceAccount:
   # If `create` is set to `false`` an existing service account will be used
   create: true
+  createRbac: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -281,10 +538,12 @@ serviceAccount:
   name: ""
 
 podAnnotations: {} # Annotations to add to the components Pods.
+podLabels: {} # Labels to add to the components Pods.
 
 podSecurityContext: {}
 
 podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
+
 podCustomEnvironmentVariablesFile: ""
 
 # Set the log level. Can be one of "debug", "info", "warn", or "error".
@@ -326,12 +585,20 @@ networkPolicy:
 tlsCertificate:
   # For using generated custom certificate set create to false and set the values
   create: true
+  # If true, reuse existing TLS certificate from secret on helm upgrade instead of regenerating
+  reuseExisting: true
   tlsCertificate: ""
   tlsKey: ""
 
-resources: {}
-  # The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
-  # To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
+# Uncomment the `resources` section below to specify custom resource requests and limits.
+# If left blank, and Horizontal Pod Autoscaling (`hpa.enabled`) is enabled, the following defaults will be applied:
+#   requests:
+#     cpu: 500m
+#     memory: 300Mi
+#
+# resources:
+  ## The recommended values should vary depending on the load in each cluster, the number of replicas, and more.
+  ## To make sure we cover most cases, the following is a suggestion for environments with a high load, we recommend adjusting it based on your needs.
   # requests:
   #   cpu: 0.5
   #   memory: 256M
@@ -344,7 +611,21 @@ customVolumeMounts: []
 
 nodeSelector: {}
 tolerations: []
-affinity: {}
+affinity:
+  # run on linux arm64 or amd64 nodes
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/os
+              operator: In
+              values:
+                - linux
+            - key: kubernetes.io/arch
+              operator: In
+              values:
+                - arm64
+                - amd64
 
 probes: # Probes config for the container
 # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
@@ -353,16 +634,83 @@ probes: # Probes config for the container
     initialDelaySeconds: 5
     timeoutSeconds: 300 # 5 minutes
     failureThreshold: 30 # 10s(default) * 30 attempts = 300 seconds for it to finish
-    
+
   readinessProbe:
     initialDelaySeconds: 5
+    periodSeconds: 5
     timeoutSeconds: 30
-    failureThreshold: 3
+    failureThreshold: 1
 
   livenessProbe:
     initialDelaySeconds: 5
     timeoutSeconds: 30
     failureThreshold: 3
+
+# Horizontal Pod Autoscaling.
+# Prerequisites: metrics-server installed on the cluster:
+# https://github.com/kubernetes-sigs/metrics-server
+hpa:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  enableCPU: true
+  targetCPUUtilizationPercentage: 80
+  customMetrics: []
+  # Uncomment the `behavior` section below to specify custom scaling policies and behavior.
+  # If left blank, the following default settings are applied:
+  # behavior:
+  #   scaleUp:
+  #     stabilizationWindowSeconds: 300
+  #   scaleDown:
+  #     stabilizationWindowSeconds: 300
+  #     policies:
+  #     - type: Pods
+  #       value: 1
+  #       periodSeconds: 300
+
+# CRD-based caching: When enabled, the wiz-admission-controller will use the WizAdmissionControllerCache CRD to persist
+# all cached data it needs to handle admission reviews. This means that even if the wiz-admission-controller pod looses
+# connectivity with wiz backend, it can still handle admission reviews based on the cached data.
+crdCache:
+  enabled: true # Should the CRD-based caching be enabled. When enabled, the WizAdmissionControllerCache CRD will be installed.
+  maxAge: 12h # In case of no connectivity to the backend, the admission controller will use the cache for up to this time, before starting to crash.
+
+wizManager:
+  enabled: true # Should the Wiz Manager be deployed.
+
+  autoRolloutRestart:
+    enabled: true # Should the manager trigger rollout restarts.
+
+  nameOverride: "" # Override the manager deployment name.
+  schedule: "0 * * * *"  # Every 1 hour
+  timeoutSeconds: 300 # The timeout for the manager job in seconds.
+  cleanupJobSeconds: 300 # The time in seconds after which the job should be deleted.
+
+  # K8s service account to be used by the manager
+  serviceAccount:
+    # If `create` is set to `false`` an existing service account will be used
+    create: true
+    createRbac: true
+    # Annotations to add to the service account
+    annotations: {}
+    # The name of the service account to use.
+    # If empty, a name is generated using the nameOverride
+    name: ""
+
+wizUninstallJob:
+  enabled: true # Should the uninstall job be deployed.
+  nameOverride: "" # Override the uninstall job name.
+  timeoutSeconds: 300 # The timeout for the uninstall job in seconds.
+  # Toggle the TTL (Time to Live) mechanism for automatic cleanup of finished Jobs.
+  # Set to `true` to enable Kubernetes to automatically delete Jobs after they complete or fail, based on the `ttlSecondsAfterFinished` field.
+  # Set to `false` if using Argo CD to manage Job lifecycle with deletion hooks, as TTL-based cleanup can cause Application to appear OutOfSync.
+  # See: https://argo-cd.readthedocs.io/en/stable/user-guide/resource_hooks/#sync-status-with-jobsworkflows-with-time-to-live-ttl
+  useJobTTL: true
+  jobAnnotations: {}
+  podAnnotations: {}
+  podAdditionalSpec: {}
+
+
 
 # Global values to override chart values.
 global:
@@ -372,29 +720,49 @@ global:
 
   # Wiz Service Account used to authenticate to Wiz.
   wizApiToken:
-    clientId: "" 
+    clientId: ""
     clientToken: ""
-    clientEndpoint: "" # Wiz endpoint to connect to (required for gov tenants).
-    
+    clientEndpoint: "" # Defaults to commercial.
+
     secret:
       # The name of the Wiz Service Account Secret.
       name: ""
+    # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
+    # token (client id and client token) via mounts, e.g. when using the Vault operator to inject secrets to Pods.
+    # In this case you are responsible for creating the mounts.
+    # You must also set `.Values.customVolumes` and `.Values.customVolumeMounts`.
+    # The mounts must have at least these 2 files:
+    # clientId - with this content: <wiz service account id>
+    # clientToken - with this content: <wiz service account token>
+    #
+    # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+    #      and this is how the mount looks like on the file system:
+    #      /var/api-client/clientId
+    #      /var/api-client/clientToken
+    #
+    # Implies `secret.enabled: false`.
+    wizApiTokensVolumeMount: ""
 
   # Redirect HTTP and/or HTTPS traffic through a proxy.
   httpProxyConfiguration:
     enabled: false # Should the components use a proxy.
     secretName: "" # The name of the proxy Secret.
-    
+
     httpProxy: ""
     httpsProxy: ""
-    noProxyAddress: ""
+    noProxyAddress: "kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local"
+    # Proxy client certificate in PEM format. This is required for client certificate authentication.
+    # The file should contain a certificate and a private key in PEM format.
+    clientCertificate: ""
 
   image:
     registry: "" # Registry to get the container images from.
     pullPolicy: "" # Container image pull policy. One of Always, Never, IfNotPresent.
+    tag: ""
   imagePullSecrets: [] # Secrets for container image registry keys as described in https://kubernetes.io/docs/concepts/containers/images/#referring-to-an-imagepullsecrets-on-a-pod
 
   podAnnotations: {} # Annotations to add to the components Pods.
+  podLabels: {} # Labels to add to the components Pods.
 
   podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
   customVolumes: [] # Additional volumes to add to the components Pods
@@ -403,3 +771,72 @@ global:
   nodeSelector: {} # custom assignment to nodes
   affinity: {} # custom affinity rules for node assignment
   tolerations: [] # custom tolerations
+  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  podTerminationGracePeriodSeconds: 60 # The grace period for pod termination in seconds. The value must be non-negative integer.
+  subscriptionExternalId: ""
+  clusterTags: {}
+  subscriptionTags: {}
+  clusterDisplayName: "" # Optional. Overrides the Wiz deployment name. If left empty, the cluster external ID will be used to derive the cluster name.
+
+  # Set this to true if you are using Istio in sidecar mode.
+  # When Istio uses sidecars, there are 2 issues when deploying cronJob:
+  # 1) The creation and deletion Jobs never complete (due to istio-proxy sidecar)
+  # 2) There is a race condition and possible network connectivity failures
+  #    when contacting the Wiz backend.
+  #
+  # When either of this happens, either the installation, upgrade or uninstallation
+  # of the charts fail.
+  # Setting this to true ensures that the istio-proxy gets a graceful shutdown
+  # and mitigates the networking race condition by waiting for the server to run before the Job starts.
+  # Learn more:
+  # https://istio.io/latest/blog/2023/native-sidecars/
+  istio:
+    enabled: false
+    proxySidecarPort: 15000
+
+  awsPrivateLink:
+    enabled: false
+
+  # Wiz Helm Charts process the security contexts
+  # in the following order:
+  # 1. Pod security context
+  #    lowPrivilegePodSecurityPolicy -> podSecurityContext
+  # 2. Containers security context
+  #    lowPrivilegeSecurityPolicy -> securityContext
+  #
+  # Populating the following overrides lowPrivilegeSecurityPolicy to your user-supplied values.yaml
+  # allows you to customize and override the defaults
+  # (useful for e.g. OpenShift installations that automatically
+  #  mutate the Pod and use the first UID and first GID from
+  #  the allowed range to run the Pod).
+  #
+  # lowPrivilegePodSecurityPolicy: {}
+  # lowPrivilegeSecurityPolicy: {}
+
+# Prometheus allows to scrape targets in two different ways:
+# 1. Annotations-based Service Discovery
+#    Where Prometheus discovers endpoints via Services enumeration via the Kubernetes API Server.
+#    To enable it with Wiz, you may need to also add the following annotations, e.g.
+#    podAnnotations:
+#      prometheus.io/scrape: "true"
+#      prometheus.io/port: "9090"
+#      prometheus.io/path: "/metrics"
+#
+# 2. ServiceMonitor-based Service Discovery
+#    Applicable if you are using the Prometheus Operator and the ServiceMonitor custom resource (CR).
+#    To enable it with Wiz, use the following selectors:
+#      selector:
+#        matchLabels:
+#          app.kubernetes.io/instance: <Helm release name> # e.g. wiz-kubernetes-integration
+#      namespaceSelector:
+#        matchNames:
+#          - wiz
+#
+prometheus:
+  enabled: false  # Enable the /metrics endpoint.
+  metricsPort: 9090
+  diableTLS: true # When TLS enabled uses the same TLS certificates that are used for all other webhooks.
+
+# When enabled, wiz-admission-controller can scrape the API-server metrics for debugging reasons.
+# See https://github.com/kubernetes/apiserver/blob/master/pkg/admission/metrics/metrics.go
+scrapeAPIServerMetricsEnabled: true

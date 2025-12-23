@@ -1,0 +1,198 @@
+{{- if .Values.windows.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "wiz-sensor.fullname" . }}-windows
+  labels: {{- include "wiz-sensor.windowsLabels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels: {{- include "wiz-sensor.selectorLabels" . | nindent 6 }}
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels: {{- include "wiz-sensor.windowsLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "wiz-sensor.serviceAccountName" . }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node.kubernetes.io/windows-build
+                operator: In
+                values:
+                  - "10.0.17763"   # Windows Server 2019
+                  - "10.0.20348"   # Windows Server 2022
+                  - "10.0.26100"   # Windows Server 2025
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                  - amd64
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                  - windows
+      {{- with .Values.daemonset.windowsTolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        windowsOptions:
+          hostProcess: true
+          runAsUserName: 'NT AUTHORITY\SYSTEM'
+      containers:
+      - name: wiz-sensor-windows
+        {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
+        image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.windowsRepository (include "wiz-sensor.windowsTag" .) }}
+        {{- else }}
+        image: {{ printf "%s:%s" .Values.image.windowsRepository (include "wiz-sensor.windowsTag" .) }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.image.windowsPullPolicy }}
+        resources:
+          {{- if .Values.daemonset.resources.windowsLimits }}
+          limits:
+{{ toYaml .Values.daemonset.resources.windowsLimits | indent 12 }}
+          {{- end }}
+          {{- if .Values.daemonset.resources.windowsRequests }}
+          requests:
+{{ toYaml .Values.daemonset.resources.windowsRequests | indent 12 }}
+          {{- end }}
+        env:
+        {{- if .Values.global.wizApiToken.clientEndpoint }}
+        - name: WIZ_BACKEND_ENV
+          value: {{ .Values.global.wizApiToken.clientEndpoint }}
+        {{- else }}
+        - name: WIZ_BACKEND_ENV
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "wiz-sensor.secretName" . }}
+              key: clientEndpoint
+              optional: true
+        {{- end }}
+        - name: WIZ_API_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "wiz-sensor.secretName" . }}
+              key: clientId
+        - name: WIZ_API_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "wiz-sensor.secretName" . }}
+              key: clientToken
+        - name: WIZ_HOST_STORE
+          value: {{ printf "%s\\host-store" .Values.windows.sensorInstallDir | quote }}
+        - name: WIZ_TMP_STORE
+          value: {{ printf "%s\\tmp-store" .Values.windows.sensorInstallDir | quote }}
+        - name: WIZ_LOG_FILE
+          value: {{ printf "%s\\host-store\\sensor_logs\\sensor.log" .Values.windows.sensorInstallDir | quote }}
+      {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+        - name: WIZ_HTTP_PROXY_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "wiz-sensor.proxySecretName" . }}
+              key: httpsProxy
+        - name: WIZ_HTTP_PROXY_CERT_PATH
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "wiz-sensor.proxySecretName" . }}
+              key: caCertificate
+        {{- end }}
+        {{- if .Values.tenantSuffix }}
+        - name: WIZ_TENANT_SUFFIX
+          value: {{ .Values.tenantSuffix }}
+        {{- end }}
+        {{- if .Values.ciMode }}
+        - name: WIZ_CI_MODE
+          value: "true"
+        {{- end }}
+        - name: SENSOR_VERSION
+          value: {{ .Values.image.windowsTag | quote }}
+        - name: RUST_LOG
+          value: {{ include "wiz-sensor.fileLogLevel" . | quote }}
+        - name: STDOUT_LOG
+          value: {{ include "wiz-sensor.stdoutLogLevel" . }}
+        - name: POD_IMAGE_TAG
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['image/tag']
+        - name: POD_IMAGE_REGISTRY
+          value: {{ coalesce .Values.global.image.registry .Values.image.registry }}
+        - name: POD_MEM_LIMITS
+          valueFrom:
+            resourceFieldRef:
+              containerName: wiz-sensor-windows
+              resource: limits.memory
+              divisor: "1Mi"
+        - name: POD_CPU_LIMITS
+          valueFrom:
+            resourceFieldRef:
+              containerName: wiz-sensor-windows
+              resource: limits.cpu
+              divisor: "1m"
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: SENSOR_CLUSTER_NAME
+          value: {{ coalesce .Values.global.clusterDisplayName .Values.sensorClusterName | quote }}
+        {{- if .Values.startDelayRange }}
+        - name: SENSOR_START_DELAY_RANGE
+          value: {{ .Values.startDelayRange | quote }}
+        {{- end }}
+        {{- if coalesce .Values.global.clusterExternalId .Values.clusterExternalId }}
+        - name: CLUSTER_EXTERNAL_ID
+          value: {{ coalesce .Values.global.clusterExternalId .Values.clusterExternalId }}
+        {{- end }}
+        {{- with coalesce .Values.global.subscriptionExternalId .Values.subscriptionExternalId }}
+        - name: SUBSCRIPTION_EXTERNAL_ID
+          value: {{ . | quote }}
+        {{- end }}
+        {{- with coalesce .Values.global.subscriptionTags .Values.subscriptionTags }}
+        - name: SUBSCRIPTION_TAGS
+          value: {{ . | toJson | quote }}
+        {{- end }}
+        {{- with coalesce .Values.global.clusterTags .Values.clusterTags }}
+        - name: CLUSTER_TAGS
+          value: {{ . | toJson | quote }}
+        {{- end }}
+
+        {{- with .Values.podCustomEnvironmentVariables }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.global.podCustomEnvironmentVariables }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.livenessProbe.enabled }}
+        livenessProbe:
+          exec:
+            command:
+              - powershell.exe
+              - -Command
+              - |
+                $enginePath = Join-Path -Path $env:WIZ_HOST_STORE -ChildPath "mount\WizSensorEngine.exe"
+                $p = Start-Process -Wait -NoNewWindow -FilePath $enginePath -ArgumentList "version" -PassThru | Out-Null
+                exit $p.ExitCode
+{{ toYaml .Values.livenessProbe.config | indent 10 }}
+        {{- end }}
+      restartPolicy: Always
+      hostNetwork: true
+      terminationGracePeriodSeconds: {{ .Values.daemonset.terminationGracePeriodSeconds }}
+      {{- if .Values.imagePullSecret.required }}
+      imagePullSecrets:
+        {{ include "wiz-sensor.imagePullSecretList" . }}
+      {{- end }}
+{{- end }}

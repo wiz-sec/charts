@@ -13,6 +13,25 @@ rules:
     resources: [
       "namespaces", "nodes", "daemonsets", "replicasets", "deployments",
       "jobs", "cronjobs", "statefulsets", "replicationcontrollers", "serviceaccounts",
+      "nodes/proxy"
     ]
     verbs: ["get", "list", "watch"]
+
+  - apiGroups:
+      - "argoproj.io"
+      - "sparkoperator.k8s.io"
+      - "ray.io"
+      - "tekton.dev"
+      - "composer.cloud.google.com"
+      - "kafka.strimzi.io"
+      - "actions.github.com"
+    resources: ["*"]
+    verbs: ["get"]
+
+{{- if .Values.serviceAccount.rbacGetAll }}
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["get"]
+{{- end }}
+
 {{- end -}}

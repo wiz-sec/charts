@@ -1,0 +1,19 @@
+You have successfully installed the Wiz Network Analyzer!
+
+Next steps:
+1. Wait for the Job to complete
+   kubectl wait --for=condition=complete job/{{ include "wiz-network-analyzer.name" . }} -n {{ .Release.Namespace }})
+
+2. Collect the support package from the cluster
+   POD_NAME=$(kubectl get pod -l app.kubernetes.io/name=wiz-network-analyzer -n {{ .Release.Namespace }})
+   kubectl -n wiz cp $POD_NAME:/support-package.zip .
+
+2. Upload it to Wiz
+   Follow the instructions in the support package to upload it to Wiz.
+
+3. (Optional) access the logs
+   POD_NAME=$(kubectl get pod -l app.kubernetes.io/name=wiz-network-analyzer -n {{ .Release.Namespace }})
+   kubectl -n {{ .Release.Namespace }}) logs $POD_NAME > wiz-network-analyzer.log
+
+Upon completion, the Job will remain for 5 minutes to allow extracting the support package.
+After that, the Job will be deleted automatically.

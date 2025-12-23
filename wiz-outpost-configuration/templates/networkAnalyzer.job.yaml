@@ -1,0 +1,200 @@
+
+{{- if .Values.networkAnalyzer.enabled }}
+{{- if or .Values.networkAnalyzer.publicRegistryEndpoints .Values.networkAnalyzer.privateRegistryEndpoints }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.networkAnalyzer.name }}-registry-endpoints
+  labels:
+      {{- include "wiz-outpost-configuration.labels" . | nindent 8 }}
+  annotations:
+    meta.helm.sh/release-name: "{{ .Release.Name }}"
+    meta.helm.sh/release-namespace: "{{ .Release.Namespace }}"
+data:
+  {{- with .Values.networkAnalyzer.publicRegistryEndpoints }}
+  public-registry-endpoints.txt: {{ join "\n" . | quote }}
+  {{- end }}
+  {{- with .Values.networkAnalyzer.privateRegistryEndpoints }}
+  private-registry-endpoints.txt: {{ join "\n" . | quote }}
+  {{- end }}
+
+---
+{{- end}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  {{- if .Values.networkAnalyzer.rollingUpdate }}
+  name: "{{ .Values.networkAnalyzer.name }}-{{ now | unixEpoch }}"
+  {{else}}
+  name: "{{ .Values.networkAnalyzer.name }}"
+  {{- end }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: wiz-network-analyzer
+  annotations:
+    "meta.helm.sh/release-name": "{{ .Release.Name }}"
+    "meta.helm.sh/release-namespace": "{{ .Release.Namespace }}"
+    {{- if .Values.networkAnalyzer.failDeploymentOnFailure }}
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    {{- end }}
+spec:
+  backoffLimit: 0  # Fail fast if the job fails
+  ttlSecondsAfterFinished: 30
+  activeDeadlineSeconds: 3600 # allow up to 1 hour of pending
+  manualSelector: true
+  selector:
+    matchLabels:
+      {{- include "wiz-outpost-configuration.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with (coalesce .Values.podAnnotations) }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "wiz-outpost-configuration.labels" . | nindent 8 }}
+        app.kubernetes.io/component: wiz-network-analyzer
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "wiz-outpost-configuration.serviceAccountName" . | trim }}
+      restartPolicy: "Never"
+      securityContext:
+        fsGroup: 1000
+        supplementalGroups:
+          - 1000
+      containers:
+        - name: wiz-network-analyzer
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            privileged: false
+            allowPrivilegeEscalation: false
+          image: {{ include "wiz-network-analyzer.image" . }}
+          imagePullPolicy: {{ .Values.networkAnalyzer.image.pullPolicy }}
+          command:
+            - "wiz-network-analyzer"
+          args:
+            - analyze
+            - --print-report-to-log
+            {{- with .Values.outpostId }}
+            - --outpost-id
+            - {{ . | quote }}
+            {{- end }}
+            - --region
+            - {{ .Values.networkAnalyzer.wizRegion }}
+            {{- with .Values.networkAnalyzer.forceHttp1 }}
+            - --http1
+            {{- end }}
+            - --wait
+            - "1h"
+          env:
+          - name: LOG_LEVEL
+            value: "info"
+          {{- with .Values.env }}
+          - name: ENV
+            value: {{ . | quote }}
+          {{- end}}
+          {{- with .Values.outpostId }}
+          - name: WIZ_OUTPOST_ID
+            value: {{ . | quote }}
+          {{- end }}
+          - name: WIZ_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agentCredsSecretName }}
+                key: clientId
+          - name: WIZ_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.agentCredsSecretName }}
+                key: clientSecret
+          - name: WIZ_DATA_CENTER
+            value: {{ .Values.networkAnalyzer.dataCenter | quote }}
+          {{- with .Values.networkAnalyzer.logsIngestionEndpoint }}
+          - name: WIZ_LOGS_INGESTION_ENDPOINT
+            value: {{ . | quote }}
+          {{- end }}
+          - name: http_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: HTTP_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpProxy"
+                optional: true
+          - name: https_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: HTTPS_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "httpsProxy"
+                optional: true
+          - name: no_proxy
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: NO_PROXY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.httpProxyConfiguration.name | quote }}
+                key: "noProxyAddress"
+                optional: true
+          - name: SSL_CERT_DIR
+            value: "/usr/local/share/ca-certificates/:/certificates/"
+          volumeMounts:
+          {{- if not .Values.outpostId }}
+          - name: secrets
+            mountPath: /mnt/secrets/
+            readOnly: true
+          {{- end }}
+          - mountPath: /usr/local/share/ca-certificates/
+            name: ca-certificate
+            readOnly: true
+          - mountPath: /registry-endpoints
+            name: registry-endpoints
+            readOnly: true
+          resources:
+            {{- toYaml .Values.networkAnalyzer.resources | nindent 12 }}
+      volumes:
+      - name: ca-certificate
+        secret:
+          defaultMode: 420
+          secretName: {{ .Values.httpProxyConfiguration.name | quote }}
+          items:
+            - key: caCertificate
+              path: root.crt
+          optional: true
+      {{- if not .Values.outpostId }}
+      - name: secrets
+        projected:
+          sources:
+            - secret:
+                name: {{ .Values.agentCredsSecretName }}
+                items:
+                  - key: privateKey
+                    path: WIZ_PRIVATE_KEY
+      {{- end}}
+      - name: registry-endpoints
+        configMap:
+          name: {{ .Values.networkAnalyzer.name }}-registry-endpoints
+          optional: true
+          defaultMode: 0744
+{{- end}}

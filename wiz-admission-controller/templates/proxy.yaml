@@ -1,5 +1,19 @@
+{{- if and (not (empty .Values.httpProxyConfiguration.httpsProxy)) (eq .Values.httpProxyConfiguration.enabled false) }}
+  {{- fail "Error: httpsProxy is set but httpProxyConfiguration.enabled is false. Please enable the proxy configuration or unset httpsProxy." }}
+{{- end }}
+
 {{- if .Values.httpProxyConfiguration.enabled }}
 {{- if .Values.httpProxyConfiguration.create }}
+  {{- if hasPrefix "https://" .Values.httpProxyConfiguration.httpsProxy }}
+    {{- if empty .Values.httpProxyConfiguration.clientCertificate }}
+      {{- fail "Error: HTTPS proxy requires a client certificate. Please provide clientCertificate in httpProxyConfiguration." }}
+    {{- end }}
+  {{- else }}
+    {{- if not (empty .Values.httpProxyConfiguration.clientCertificate) }}
+      {{- fail "Error: Client certificate is only supported for HTTPS proxies. Please remove clientCertificate or use an HTTPS proxy." }}
+    {{- end }}
+  {{- end }}
+
 apiVersion: v1
 kind: Secret
 type: Opaque
@@ -16,5 +30,6 @@ stringData:
   httpProxy: {{ .Values.httpProxyConfiguration.httpProxy | quote }}
   httpsProxy: {{ .Values.httpProxyConfiguration.httpsProxy | quote }}
   noProxyAddress: {{ .Values.httpProxyConfiguration.noProxyAddress | quote }}
+  clientCertificate: {{ .Values.httpProxyConfiguration.clientCertificate | quote }}
 {{- end }}
 {{- end }}

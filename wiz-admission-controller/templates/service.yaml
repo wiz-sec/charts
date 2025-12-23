@@ -1,18 +1,16 @@
-{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled .Values.debugWebhook.enabled}}
+{{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "wiz-admission-controller.fullname" . }}
+  name: {{ include "wiz-admission-controller-enforcer.name" . }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller-enforcement.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
+    {{- include "wiz-admission-controller.service.ports" . | nindent 4 }}
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-admission-controller-enforcement.selectorLabels" . | nindent 4 }}
@@ -29,10 +27,42 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
+    {{- include "wiz-admission-controller.service.ports" . | nindent 4 }}
   selector:
     {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
     {{- include "wiz-kubernetes-audit-log-collector.selectorLabels" . | nindent 4 }}
+{{- end }}
+{{ if .Values.sensorInject.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "wiz-sensor-inject.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-sensor-webhook.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    {{- include "wiz-admission-controller.service.ports" . | nindent 4 }}
+  selector:
+    {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
+    {{- include "wiz-sensor-webhook.selectorLabels" . | nindent 4 }}
+{{- end }}
+{{ if .Values.debugWebhook.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "wiz-debug-webhook.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-debug-webhook.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    {{- include "wiz-admission-controller.service.ports" . | nindent 4 }}
+  selector:
+    {{- include "wiz-admission-controller.selectorLabels" . | nindent 4 }}
+    {{- include "wiz-debug-webhook.selectorLabels" . | nindent 4 }}
 {{- end }}

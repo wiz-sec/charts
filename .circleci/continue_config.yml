@@ -26,7 +26,15 @@ parameters:
   wiz-outpost-configuration:
     default: false
     type: boolean
-
+  wiz-outpost-lite:
+    default: false
+    type: boolean
+  wiz-network-analyzer:
+    default: false
+    type: boolean
+  wiz-common:
+    default: false
+    type: boolean
 
 executors:
   ops:
@@ -34,7 +42,7 @@ executors:
       - image: dtzar/helm-kubectl:3.10.2
   golang:
     docker:
-      - image: golang:1.17
+      - image: golang:1.23
 
 commands:
   upload_new_chart:
@@ -51,22 +59,6 @@ commands:
             popd
 
 jobs:
-  run_chart_validation_test:
-    executor: golang
-    working_directory: ~/project/.circleci/tests/
-    steps:
-      - checkout:
-          path: ~/project
-      - run:
-          name: 'Creating directory for GOPATH and override it to be /go'
-          command: |
-            go env -w GOPATH=/go
-            go mod tidy
-      - run:
-          name: Run chart validation tests
-          command: |
-            go test -v .
-
   package_and_index_charts:
     executor:
       name: ops
@@ -82,6 +74,9 @@ jobs:
             - << pipeline.parameters.wiz-kubernetes-connector >>
             - << pipeline.parameters.wiz-kubernetes-integration >>
             - << pipeline.parameters.wiz-outpost-configuration >>
+            - << pipeline.parameters.wiz-outpost-lite >>
+            - << pipeline.parameters.wiz-network-analyzer >>
+            - << pipeline.parameters.wiz-common >>
           steps:
             - checkout:
                 path: ~/project
@@ -98,6 +93,11 @@ jobs:
                     IdentityFile ~/.ssh/id_rsa_4688b6e7049ef2cfcf4f0309e5581bf2
                     IdentitiesOnly yes' > ~/.ssh/config
                   git clone -b master git@gitops:wiz-sec/charts.git
+      - when:
+          condition: << pipeline.parameters.wiz-common >>
+          steps:
+            - upload_new_chart:
+                package: wiz-common
       - when:
           condition: << pipeline.parameters.flux2 >>
           steps:
@@ -119,6 +119,16 @@ jobs:
             - upload_new_chart:
                 package: wiz-outpost-configuration
       - when:
+          condition: << pipeline.parameters.wiz-outpost-lite >>
+          steps:
+            - upload_new_chart:
+                package: wiz-outpost-lite
+      - when:
+          condition: << pipeline.parameters.wiz-network-analyzer >>
+          steps:
+            - upload_new_chart:
+                package: wiz-network-analyzer
+      - when:
           condition: << pipeline.parameters.wiz-admission-controller >>
           steps:
             - upload_new_chart:
@@ -139,22 +149,6 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-kubernetes-integration
-      - when:
-          condition:
-            and:
-              - not << pipeline.parameters.wiz-kubernetes-integration >> # Skipping auto update wiz-kubernetes-integration chart if user update it manually
-              - or:
-                - << pipeline.parameters.wiz-admission-controller >>
-                - << pipeline.parameters.wiz-sensor >>
-                - << pipeline.parameters.wiz-kubernetes-connector >>
-              
-          steps:
-            - run:
-                name: Trigger update for wiz kubernetes integration chart
-                command: |
-                  pushd ~/project/charts/wiz-kubernetes-integration
-                  bash  ~/project/charts/.circleci/update_chart_version.sh
-                  popd
       - run:
           name: Run always
           command: echo "Done!" # Hack for empty runs
@@ -162,12 +156,8 @@ jobs:
 workflows:
   validate_and_package:
     jobs:
-      - run_chart_validation_test:
-          name: Validate chart
       - package_and_index_charts:
           name: Package and index charts
-          requires:
-            - "Validate chart"
           filters:
             branches:
               only:

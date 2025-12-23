@@ -1,0 +1,123 @@
+{{ if and .Values.wizManager.enabled -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "wiz-admission-controller-manager.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-admission-controller-manager.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.wizManager.schedule }}"
+  concurrencyPolicy: Forbid  # Ensures only one job instance runs at a time
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: {{ .Values.wizManager.timeoutSeconds }}
+      ttlSecondsAfterFinished: {{ .Values.wizManager.cleanupJobSeconds }}
+      template:
+        metadata:
+          annotations:
+            rollme.proxyHash: {{ include "wiz-admission-controller.proxyHash" . }}
+            rollme.wizApiTokenHash: {{ include "wiz-admission-controller.wizApiTokenHash" . }}
+            {{- with .Values.global.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          labels:
+            wiz.io/component: "admission-controller-manager"
+            {{- include "wiz-admission-controller-manager.labels" . | nindent 12 }}
+            {{- with .Values.global.podLabels  }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.podLabels  }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+        spec:
+          restartPolicy: Never
+          {{- if .Values.priorityClassName }}
+          priorityClassName: {{ .Values.priorityClassName }}
+          {{- end }}
+          {{- with (coalesce .Values.global.imagePullSecrets .Values.imagePullSecrets) }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          serviceAccountName: {{ include "wiz-admission-controller.manager.serviceAccountName" . }}
+          securityContext:
+            {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
+              {{- toYaml .Values.global.lowPrivilegePodSecurityPolicy | nindent 12 }}
+            {{- else }}
+              {{- toYaml .Values.podSecurityContext | nindent 12 }}
+            {{- end }}
+          {{- if .Values.hostNetwork }}
+          hostNetwork: true
+          {{- end }}
+          terminationGracePeriodSeconds: {{ .Values.global.podTerminationGracePeriodSeconds }}
+          containers:
+            - name: {{ .Chart.Name }}-manager
+              securityContext:
+                {{- if hasKey .Values.global "lowPrivilegeSecurityPolicy" }}
+                {{- toYaml .Values.global.lowPrivilegeSecurityPolicy | nindent 16 }}
+                {{- else }}
+                {{- toYaml .Values.securityContext | nindent 16 }}
+                {{- end }}
+              image: {{ include "wiz-admission-controller.image" . }}
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command:
+              - "/usr/bin/wiz-admission-controller"
+              - "manager"
+              {{- include "wiz-admission-controller.spec.common.commandArgs" . | trim | nindent 14 }}
+              {{- include "wiz-admission-controller.wiz-admission-controller.autoUpdate.deployments.arg" . | trim | nindent 14 }}
+              # Auto update flags
+              - "--auto-update-enabled={{ .Values.wizManager.autoRolloutRestart.enabled }}"
+              - "--release-namespace={{ .Release.Namespace }}"
+              env:
+              {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 14 }}
+              - name: WIZ_DELETE_UNSEEN_ENABLED
+                value: "true"
+              {{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
+              - name: WIZ_ENFORCER_DEPLOYMENT_NAME
+                value: {{ include "wiz-admission-controller-enforcer.name" . }}
+              {{- end -}}
+              {{- if .Values.kubernetesAuditLogsWebhook.enabled }}
+              - name: WIZ_KUBERNETES_AUDIT_LOG_COLLECTOR_DEPLOYMENT_NAME
+                value: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
+              {{- end }}
+              resources:
+              {{- include "wiz-admission-controller.resources" . | trim | nindent 16 }}
+              volumeMounts:
+              {{- include "wiz-admission-controller.spec.common.volumeMounts" . | trim | nindent 14 }}
+              {{- if or .Values.customVolumeMounts .Values.global.customVolumeMounts }}
+              {{- with .Values.customVolumeMounts }}
+                {{- toYaml . | nindent 14 }}
+              {{- end }}
+              {{- with .Values.global.customVolumeMounts }}
+                {{- toYaml . | nindent 14 }}
+              {{- end }}
+              {{- end }}
+          volumes:
+            {{- include "wiz-admission-controller.spec.common.volumes" . | trim | nindent 12 }}
+            {{- with .Values.customVolumes }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.global.customVolumes }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if (or .Values.global.tolerations .Values.tolerations)}}
+          tolerations:
+            {{- with .Values.global.tolerations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- with .Values.tolerations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+{{- end }}

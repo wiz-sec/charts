@@ -1,0 +1,27 @@
+{{- if .Values.keda.prometheus.deploy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "wiz-outpost-lite.name" . }}-prometheus
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "wiz-outpost-lite.name" . }}-prometheus
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 30s
+      evaluation_interval: 30s
+
+    scrape_configs:
+      {{- range $values := (include "wiz-outpost-lite.runners" $ | fromJson) }}
+      {{- with merge $values (omit $ "Values") }}
+      {{- if and .Values.enabled .Values.service.enabled .Values.scrapableMetrics }}
+      - job_name: '{{ .runner }}'
+        static_configs:
+          - targets: ['{{ include "wiz-outpost-lite.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.metricsPort }}']
+            labels:
+              runner_id: '{{ .runnerID }}'
+      {{- end }}
+      {{- end }}
+      {{- end }}
+{{- end }}

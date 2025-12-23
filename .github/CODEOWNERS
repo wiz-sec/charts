@@ -1,0 +1,13 @@
+# Teams can be specified as code owners as well. Teams should
+# be identified in the format @org/team-name. Teams must have
+# explicit write access to the repository. In this example,
+# the octocats team in the octo-org organization owns all .txt files.
+/wiz-admission-controller/ @wiz-sec/wiz-devops @wiz-sec/Wiz-Charts-Approvers circleci@wiz.io
+/wiz-broker/ @wiz-sec/wiz-devops @wiz-sec/Wiz-Charts-Approvers circleci@wiz.io
+/wiz-common/ @wiz-sec/wiz-devops @wiz-sec/Wiz-Charts-Approvers circleci@wiz.io
+/wiz-kubernetes-connector/ @wiz-sec/wiz-devops @wiz-sec/Wiz-Charts-Approvers circleci@wiz.io
+/.github/ @wiz-sec/wiz-devops
+/.circleci/ @wiz-sec/wiz-devops
+/.circleci/tests/ @wiz-sec/Wiz-Charts-Approvers
+/wiz-outpost-lite/**/* @yarinm
+/wiz-sensor/**/* @ariknem

@@ -60,3 +60,7 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "wiz-network-analyzer.image" -}}
+{{ .Values.networkAnalyzer.image.registry }}/{{ .Values.networkAnalyzer.image.repository }}:{{ .Values.networkAnalyzer.image.tag | default .Chart.AppVersion }}
+{{- end -}}

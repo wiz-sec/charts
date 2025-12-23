@@ -1,1 +1,4 @@
-.idea
+.idea/*
+!/.idea/runConfigurations
+
+.DS_Store

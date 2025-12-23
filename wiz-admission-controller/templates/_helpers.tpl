@@ -26,18 +26,76 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
+{{- define "wiz-admission-controller-enforcer.name" -}}
+{{- (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{- define "wiz-kubernetes-audit-log-collector.name" -}}
 {{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
 {{- .Values.kubernetesAuditLogsWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := "wiz-audit-logs-collector" }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- $suffix := "-audit-log-collector" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-sensor-inject.name" -}}
+{{- if .Values.sensorInject.nameOverride }}
+{{- .Values.sensorInject.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- $suffix := "-sensor-inject" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
 {{- end }}
 {{- end }}
+
+{{- define "wiz-debug-webhook.name" -}}
+{{- if .Values.debugWebhook.nameOverride }}
+{{- .Values.debugWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $suffix := "-debug" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-admission-controller-manager.name" -}}
+{{- if .Values.wizManager.nameOverride }}
+{{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $suffix := "-manager" -}}
+{{- $maxLength := int (sub 52 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-admission-controller-uninstall.name" -}}
+{{- if .Values.wizUninstallJob.nameOverride }}
+{{- .Values.wizUninstallJob.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $suffix := "-uninstall" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-admission-controller.wiz-hpa-enforcer.name" -}}
+{{- $suffix := "-hpa" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+
+{{- define "wiz-admission-controller.wiz-hpa-audit-logs.name" -}}
+{{- $suffix := "-hpa" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-kubernetes-audit-log-collector.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- end }}
+
+{{- define "wiz-admission-controller.wiz-hpa-debug.name" -}}
+{{- $suffix := "-hpa" -}}
+{{- $maxLength := int (sub 63 (len $suffix)) -}}
+{{- printf "%s%s" (include "wiz-debug-webhook.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
 {{- end }}
 
 {{/*
@@ -48,13 +106,20 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 {{/*
+App version for the admission controller
+*/}}
+{{- define "wiz-admission-controller.appVersion" -}}
+{{- coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}
+{{- end }}
+
+{{/*
 Common labels
 */}}
 {{- define "wiz-admission-controller.labels" -}}
 helm.sh/chart: {{ include "wiz-admission-controller.chart" . }}
 {{ include "wiz-admission-controller.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ include "wiz-admission-controller.appVersion" . | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.commonLabels }}
@@ -91,6 +156,35 @@ Wiz kubernetes audit logs webhook server selector labels
 app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
 {{- end }}
 
+{{/*
+Wiz sensor webhook server selector labels
+*/}}
+{{- define "wiz-sensor-webhook.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-sensor-inject.name" . }}
+{{- end }}
+
+{{/*
+Wiz debug webhook server selector labels
+*/}}
+{{- define "wiz-debug-webhook.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-debug-webhook.name" . }}
+{{- end }}
+
+{{/*
+Wiz manager selector labels
+*/}}
+{{- define "wiz-admission-controller-manager.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-admission-controller-manager.name" . }}
+{{- end }}
+
+{{/*
+Wiz uninstall selector labels
+*/}}
+{{- define "wiz-admission-controller-uninstall.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "wiz-admission-controller-uninstall.name" . }}
+{{- end }}
+
+
 {{- define "wiz-admission-controller-enforcement.labels" -}}
 {{ include "wiz-admission-controller.labels" . }}
 {{ include "wiz-admission-controller-enforcement.selectorLabels" . }}
@@ -101,7 +195,45 @@ app.kubernetes.io/name: {{ include "wiz-kubernetes-audit-log-collector.name" . }
 {{ include "wiz-kubernetes-audit-log-collector.selectorLabels" . }}
 {{- end }}
 
+{{- define "wiz-sensor-webhook.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-sensor-webhook.selectorLabels" . }}
+{{- end }}
+
+{{- define "wiz-debug-webhook.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-debug-webhook.selectorLabels" . }}
+{{- end }}
+
+{{- define "wiz-admission-controller-manager.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-admission-controller-manager.selectorLabels" . }}
+{{- end }}
+
+{{- define "wiz-admission-controller-uninstall.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+{{ include "wiz-admission-controller-uninstall.selectorLabels" . }}
+{{- end }}
+
 {{/*
+Wiz Horizontal Pod Autoscaler labels
+*/}}
+
+{{- define "wiz-admission-controller.wiz-admission-controller.wiz-hpa-enforcer.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+app.kubernetes.io/name: {{ include "wiz-admission-controller.wiz-hpa-enforcer.name" . }}
+{{- end }}
+
+{{- define "wiz-admission-controller.wiz-hpa-audit-logs.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+app.kubernetes.io/name: {{ include "wiz-admission-controller.wiz-hpa-audit-logs.name" . }}
+{{- end }}
+
+{{- define "wiz-admission-controller.wiz-hpa-debug.labels" -}}
+{{ include "wiz-admission-controller.labels" . }}
+app.kubernetes.io/name: {{ include "wiz-admission-controller.wiz-hpa-debug.name" . }}
+{{- end }}
+
 
 {{/*
 Create the name of the service account to use
@@ -110,8 +242,17 @@ Create the name of the service account to use
 {{ coalesce (.Values.serviceAccount.name) (include "wiz-admission-controller.fullname" .) }}
 {{- end }}
 
+{{- define "wiz-admission-controller.manager.serviceAccountName" -}}
+{{ coalesce (.Values.wizManager.serviceAccount.name) (include "wiz-admission-controller-manager.name" .) }}
+{{- end }}
+
+
 {{- define "wiz-admission-controller.secretApiTokenName" -}}
 {{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
+{{- end }}
+
+{{- define "wiz-admission-controller.globalLeaderLeaseName" -}}
+{{- printf "wiz-admission-controller-global-lease" }}
 {{- end }}
 
 {{- define "wiz-admission-controller.secretServerCert" -}}
@@ -122,18 +263,41 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-{{- define "wiz-admission-controller.opaCliParams.policies" -}}
+{{- define "wiz-admission-controller.opaEnvVars.policies" -}}
 {{- if .Values.opaWebhook.policies }}
-{{- range .Values.opaWebhook.policies }}
-- "--policy={{ . }}"
-{{- end }}
+- name: WIZ_POLICY
+  value: {{ .Values.opaWebhook.policies | join "," | quote }}
 {{- end }}
 {{- end }}
 
-{{- define "wiz-admission-controller.imageIntegrityCliParams.policies" -}}
+{{- define "wiz-admission-controller.imageIntegrityEnvVars.policies" -}}
 {{- if .Values.imageIntegrityWebhook.policies }}
-{{- range .Values.imageIntegrityWebhook.policies }}
-- "--image-integrity-policy={{ . }}"
+- name: WIZ_IMAGE_INTEGRITY_POLICY
+  value: {{ .Values.imageIntegrityWebhook.policies | join "," | quote }}
+{{- end }}
+{{- end }}
+
+{{- define "wiz-admission-controller.sensorApiKeySecretName" -}}
+  {{- $secretName := coalesce .Values.sensorInject.apiKeySecret.name .Values.global.wizApiToken.secret.name .Values.wizApiToken.secret.name -}}
+  {{- if not (empty $secretName) -}}
+    {{- $secretName -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.sensorCliParams" -}}
+{{- if .Values.sensorInject.enabled }}
+- "--sensor-api-key-secret-name={{ required "one of sensorInject.apiKeySecret.name or wizApiToken.secret.name or global.wizApiToken.secret.name is required when sensorInject.enabled is true" ( include "wiz-admission-controller.sensorApiKeySecretName" .) }}"
+- "--sensor-registry-secret-name={{ required "sensorInject.registrySecret.name is required when sensorInject.enabled is true" .Values.sensorInject.registrySecret.name }}"
+{{- if .Values.sensorInject.image }}
+- "--sensor-image={{ .Values.sensorInject.image }}"
+{{- end }}
+{{- if .Values.sensorInject.excludedContainers }}
+{{- range .Values.sensorInject.excludedContainers }}
+- "--sensor-excluded-containers={{ . }}"
+{{- end }}
+{{- end }}
+{{- if .Values.sensorInject.stdoutLogLevel }}
+- "--sensor-stdout-log-level={{ .Values.sensorInject.stdoutLogLevel }}"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -159,13 +323,6 @@ Create the name of the service account to use
 {{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-%s" .Release.Name "proxy-configuration") }}
 {{- end }}
 
-{{- define "helpers.calculateHash" -}}
-{{- $list := . -}}
-{{- $hash := printf "%s" $list | sha256sum -}}
-{{- $hash := $hash | trimSuffix "\n" -}}
-{{- $hash -}}
-{{- end -}}
-
 {{- define "wiz-admission-controller.proxyHash" -}}
 {{ include "helpers.calculateHash" (list .Values.global.httpProxyConfiguration.httpProxy .Values.global.httpProxyConfiguration.httpsProxy .Values.global.httpProxyConfiguration.noProxyAddress .Values.global.httpProxyConfiguration.secretName .Values.httpProxyConfiguration.httpProxy .Values.httpProxyConfiguration.httpsProxy .Values.httpProxyConfiguration.noProxyAddress .Values.httpProxyConfiguration.secretName) }}
 {{- end }}
@@ -182,10 +339,367 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{- define "wiz-admission-controller.resources" -}}
+{{- if hasKey .Values "resources" }}
+{{- toYaml .Values.resources }}
+{{- else -}}
+{{- if .Values.hpa.enabled }}
+requests:
+    cpu: 500m
+    memory: 300Mi
+{{- else }}
+{}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.isEnforcerEnabled" -}}
+  {{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled }}
+    true
+  {{- else }}
+    false
+  {{- end }}
+{{- end }}
+
+{{- define "wiz-admission-controller.hpaBehavior" -}}
+{{- if hasKey .Values.hpa "behavior" }}
+{{- toYaml .Values.hpa.behavior }}
+{{- else -}}
+scaleUp:
+  stabilizationWindowSeconds: 300
+scaleDown:
+  stabilizationWindowSeconds: 300
+  policies:
+  - type: Pods
+    value: 1
+    periodSeconds: 300
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.autoUpdate.deployments" -}}
+{{- $list := list -}}
+{{- if eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true" }}
+{{- $list = append $list (include "wiz-admission-controller-enforcer.name" . ) -}}
+{{- end -}}
+{{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
+{{- $list = append $list (include "wiz-kubernetes-audit-log-collector.name" . ) -}}
+{{- end -}}
+{{- if .Values.sensorInject.enabled -}}
+{{- $list = append $list (include "wiz-sensor-inject.name" . ) -}}
+{{- end -}}
+{{- if .Values.debugWebhook.enabled -}}
+{{- $list = append $list (include "wiz-debug-webhook.name" . ) -}}
+{{- end -}}
+{{- $list | toJson -}}
+{{- end -}}
+
 {{/*
-This function dump the value of a variable and fail the template execution.
-Use for debug purpose only.
+Clean the list of deployments for the auto-update flag, removing quotes and brackets
 */}}
-{{- define "helpers.var_dump" -}}
-{{- . | mustToPrettyJson | printf "\nThe JSON output of the dumped var is: \n%s" | fail }}
+{{- define "wiz-admission-controller.wiz-admission-controller.autoUpdate.deployments.arg" -}}
+{{- $deployments := include "wiz-admission-controller.autoUpdate.deployments" .  -}}
+{{- $deployments = replace "[" "" $deployments -}}
+{{- $deployments = replace "]" "" $deployments -}}
+{{- $deployments = replace "\"" "" $deployments -}}
+- "--update-deployments={{ $deployments }}"
+{{- end -}}
+
+{{- define "wiz-admission-controller.spec.common.commandArgs" -}}
+# Cluster identification flags
+{{- with (coalesce .Values.global.clusterExternalId .Values.webhook.clusterExternalId .Values.opaWebhook.clusterExternalId) }}
+- --cluster-external-id
+- {{ . | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.subscriptionExternalId .Values.webhook.subscriptionExternalId) }}
+- --subscription-external-id
+- {{ . | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.clusterTags .Values.webhook.clusterTags) }}
+- --cluster-tags
+- {{ . | toJson | quote }}
+{{- end }}
+{{- with (coalesce .Values.global.subscriptionTags .Values.webhook.subscriptionTags) }}
+- --subscription-tags
+- {{ . | toJson | quote }}
+{{- end }}
+{{- end -}}
+
+{{- define "spec.admissionControllerRunner.commandArgs" -}}
+# Server flags
+- "--port={{ .Values.service.targetPort }}"
+- "--tls-private-key-file=/var/server-certs/tls.key"
+- "--tls-cert-file=/var/server-certs/tls.crt"
+- "--readiness-port={{ .Values.healthPort }}"
+# Kubernetes API server flags
+- "--namespace-cache-ttl={{ .Values.kubernetesApiServer.cacheNamespaceLabelsTTL }}"
+{{- end -}}
+
+{{- define "wiz-admission-controller.isWizApiTokenSecretEnabled" -}}
+  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
+    true
+  {{- else }}
+    false
+  {{- end }}
+{{- end }}
+
+{{- define "wiz-admission-controller.isWizApiClientVolumeMountEnabled" -}}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
+
+
+{{- define "wiz-admission-controller.spec.common.volumeMounts" -}}
+{{- if eq (include "wiz-admission-controller.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
+- name: {{ include "wiz-common.volumes.apiClientName" . }}
+  mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
+  readOnly: true
+{{- end -}}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+{{ include "wiz-common.proxy.volumeMount" . | trim }}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.spec.common.volumes" -}}
+{{- if eq (include "wiz-admission-controller.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
+- name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
+  secret:
+    secretName: {{ include "wiz-admission-controller.secretApiTokenName" . | trim }}
+{{- end }}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+{{ include "wiz-common.proxy.volume" (list (include "wiz-admission-controller.proxySecretName" . | trim )) | trim }}
+{{- end -}}
+{{- end -}}
+
+
+{{- define "wiz-admission-controller.spec.common.envVars" -}}
+{{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
+- name: CLI_FILES_AS_ARGS
+{{- $wizApiTokensPath := "" -}}
+{{- if coalesce .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount }}
+  {{- $wizApiTokensPath = coalesce .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount -}}
+{{- else }}
+  {{- $wizApiTokensPath = printf "/var/%s" (include "wiz-common.volumes.apiClientName" .) -}}
+{{- end }}
+  value: "{{ $wizApiTokensPath }}/clientToken,{{ $wizApiTokensPath }}/clientId"
+{{- end }}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+{{ include "wiz-common.proxy.env" . | trim }}
+{{- if or .Values.global.httpProxyConfiguration.clientCertificate .Values.httpProxyConfiguration.clientCertificate }}
+- name: WIZ_HTTP_PROXY_CLIENT_CERT_PATH
+  value: "{{ include "wiz-common.proxy.dir" . }}/clientCertificate"
+{{- end }}
+{{- end }}
+- name: WIZ_ENV
+  value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+{{- if .Values.global.awsPrivateLink.enabled }}
+- name: USE_WIZ_PRIVATE_LINK_ENDPOINTS
+  value: "true"
+{{- end }}
+{{- if .Values.logLevel }}
+- name: LOG_LEVEL
+  value: {{ .Values.logLevel }}
+{{- end }}
+{{- with .Values.podCustomEnvironmentVariables }}
+{{ toYaml . }}
+{{- end }}
+{{- with .Values.global.podCustomEnvironmentVariables }}
+{{ toYaml . }}
+{{- end }}
+{{- if .Values.podCustomEnvironmentVariablesFile }}
+- name: CLI_ENV_FILE
+  value: {{ .Values.podCustomEnvironmentVariablesFile }}
+- name: USE_CLI_ENV_FILE
+  value: "true"
+{{- end }}
+- name: WIZ_RUNTIME_METADATA_POD_NAME
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.name
+- name: WIZ_RUNTIME_METADATA_NODE_NAME
+  valueFrom:
+    fieldRef:
+      fieldPath: spec.nodeName
+- name: K8S_NAMESPACE
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.namespace
+- name: WIZ_TERMINATION_GRACE_PERIOD
+  value: "{{ .Values.global.podTerminationGracePeriodSeconds }}s"
+{{- if .Values.crdCache.enabled }}
+- name: WIZ_CRD_CACHE_ENABLED
+  value: "true"
+- name: WIZ_CRD_CACHE_MAX_AGE
+  value: "{{ .Values.crdCache.maxAge }}"
+{{- end }}
+{{- if .Values.global.istio.enabled }}
+- name: WIZ_ISTIO_PROXY_ENABLED
+  value: "true"
+- name: WIZ_ISTIO_PROXY_PORT
+  value: "{{ .Values.global.istio.proxySidecarPort }}"
+{{- end }}
+- name: WIZ_CHART_VERSION
+  value: "{{ .Chart.Version}}"
+{{- if (or .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage) }}
+- name: WIZ_IMAGE_INTEGRITY_CUSTOM_ERROR_MESSAGE
+  value:  "{{ coalesce .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage }}"
+{{- if (or .Values.imageIntegrityWebhook.customErrorMessageMode .Values.customErrorMessageMode) }}
+- name: WIZ_IMAGE_INTEGRITY_CUSTOM_ERROR_MESSAGE_MODE
+  value:  "{{ coalesce .Values.imageIntegrityWebhook.customErrorMessageMode .Values.customErrorMessageMode }}"
+{{- end -}}
+{{- end -}}
+{{- if (or .Values.opaWebhook.customErrorMessage .Values.customErrorMessage) }}
+- name: WIZ_MISCONFIGURATION_CUSTOM_ERROR_MESSAGE
+  value:  "{{ coalesce .Values.opaWebhook.customErrorMessage .Values.customErrorMessage }}"
+{{- if (or .Values.opaWebhook.customErrorMessageMode .Values.customErrorMessageMode) }}
+- name: WIZ_MISCONFIGURATION_CUSTOM_ERROR_MESSAGE_MODE
+  value:  "{{ coalesce .Values.opaWebhook.customErrorMessageMode .Values.customErrorMessageMode }}"
+{{- end -}}
+{{- end -}}
+{{- if coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName }}
+- name: WIZ_CLUSTER_NAME
+  value: {{ coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName | quote }}
+{{- end }}
+{{- if .Values.prometheus.enabled }}
+# Prometheus metrics configuration
+- name: WIZ_METRICS_ENABLED
+  value: {{ .Values.prometheus.enabled | quote }}
+- name: WIZ_METRICS_PORT
+  value: {{ .Values.prometheus.metricsPort | quote }}
+- name: WIZ_DISABLE_TLS_METRICS
+  value: {{ .Values.prometheus.diableTLS | quote }}
+{{- end }}
+- name: WIZ_GLOBAL_LEADER_LEASE_NAME
+  value: {{ include "wiz-admission-controller.globalLeaderLeaseName" . }}
+- name: WIZ_SCRAPE_API_SERVER_METRICS_ENABLED
+  value: {{ include "wiz-admission-controller.scrapeAPIServerMetricsEnabled" . | trim | quote }}
+{{- end -}}
+
+{{- define "wiz-admission-controller.image" -}}
+{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ include "wiz-admission-controller.appVersion" . }}
+{{- end -}}
+
+{{/*
+Common service ports configuration
+*/}}
+{{- define "wiz-admission-controller.service.ports" -}}
+- port: {{ .Values.service.port }}
+  targetPort: {{ .Values.service.targetPort }}
+  protocol: TCP
+  name: webhook
+{{- if .Values.prometheus.enabled }}
+- port: {{ .Values.prometheus.metricsPort }}
+  targetPort: metrics
+  protocol: TCP
+  name: metrics
+{{- end }}
+{{- end -}}
+
+{{/*
+Get Kubernetes version, with support for mocking in tests
+*/}}
+{{- define "wiz-admission-controller.kubeVersion" -}}
+{{- if and .Values.mockCapabilities .Values.mockCapabilities.kubeVersion .Values.mockCapabilities.kubeVersion.version -}}
+{{ .Values.mockCapabilities.kubeVersion.version }}
+{{- else -}}
+{{ .Capabilities.KubeVersion.Version }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Lookup existing TLS secret, with support for mocking in tests
+*/}}
+{{- define "wiz-admission-controller.lookupTlsSecret" -}}
+{{- if .Values.mockLookup -}}
+{{- .Values.mockLookup.tlsSecret | default dict | toJson -}}
+{{- else -}}
+{{- $secretName := include "wiz-admission-controller.secretServerCert" . | trim -}}
+{{- lookup "v1" "Secret" .Release.Namespace $secretName | default dict | toJson -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Determine if scraping API server metrics is enabled, considering K8s version >= 1.21 (GA API for EndpointSlices)
+*/}}
+{{- define "wiz-admission-controller.scrapeAPIServerMetricsEnabled" -}}
+{{- if and .Values.scrapeAPIServerMetricsEnabled (semverCompare ">=1.21-0" (include "wiz-admission-controller.kubeVersion" .)) -}}
+true
+{{- else -}}
+false
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Common container ports configuration
+*/}}
+{{- define "wiz-admission-controller.container.ports" -}}
+- containerPort: {{ .Values.service.targetPort }}
+{{- if .Values.prometheus.enabled }}
+- name: metrics
+  containerPort: {{ .Values.prometheus.metricsPort }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Runner type constants
+*/}}
+{{- define "wiz-admission-controller.runnerType.enforcer" -}}
+enforcer
+{{- end -}}
+
+{{- define "wiz-admission-controller.runnerType.kdr" -}}
+kdr
+{{- end -}}
+
+{{- define "wiz-admission-controller.runnerType.sensor" -}}
+sensor
+{{- end -}}
+
+{{/*
+Get list of all enabled runner types
+Returns: list of runner types that are enabled
+*/}}
+{{- define "wiz-admission-controller.enabledRunnerTypes" -}}
+{{- $types := list -}}
+{{- if or .Values.opaWebhook.enabled .Values.imageIntegrityWebhook.enabled -}}
+{{- $types = append $types (include "wiz-admission-controller.runnerType.enforcer" .) -}}
+{{- end -}}
+{{- if .Values.kubernetesAuditLogsWebhook.enabled -}}
+{{- $types = append $types (include "wiz-admission-controller.runnerType.kdr" .) -}}
+{{- end -}}
+{{- if .Values.sensorInject.enabled -}}
+{{- $types = append $types (include "wiz-admission-controller.runnerType.sensor" .) -}}
+{{- end -}}
+{{- $types | toJson -}}
+{{- end -}}
+
+{{/*
+Get the leader lock ID for a specific runner type
+*/}}
+{{- define "wiz-admission-controller.leaderLockId" -}}
+{{- $runnerType := . -}}
+{{- printf "wiz-admission-controller-crd-cache-%s" $runnerType -}}
+{{- end -}}
+
+{{/*
+Get the cache name prefix for a specific runner type
+*/}}
+{{- define "wiz-admission-controller.cacheNamePrefix" -}}
+{{- $runnerType := . -}}
+{{- printf "cache-%s" $runnerType -}}
+{{- end -}}
+
+{{/*
+Generate CRD cache environment variables for a specific runner type
+Usage: include "wiz-admission-controller.crdCacheEnvVars" "enforcer"
+*/}}
+{{- define "wiz-admission-controller.crdCacheEnvVars" -}}
+{{- $runnerType := . -}}
+- name: WIZ_CRD_CACHE_LEADER_LOCK_ID
+  value: {{ include "wiz-admission-controller.leaderLockId" $runnerType }}
+- name: WIZ_CRD_CACHE_NAME_PREFIX
+  value: {{ include "wiz-admission-controller.cacheNamePrefix" $runnerType }}
 {{- end -}}

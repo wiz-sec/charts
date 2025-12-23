@@ -1,0 +1,118 @@
+name: tag version of resources for v3 pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  id-token: write
+  packages: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  list-changed-charts:
+    name: list changed charts
+    runs-on: ubuntu-latest
+    outputs:
+      charts_matrix: ${{ steps.changed-charts.outputs.charts_matrix }}
+      any_changed: ${{ steps.changed-charts.outputs.any_changed }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # https://github.com/actions/checkout/releases/tag/v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: get changed charts
+        id: changed-charts
+        run: .github/workflows/scripts/get_changed_charts.sh
+
+  push-chart-to-ghcr:
+    needs: list-changed-charts
+    if: ${{ needs.list-changed-charts.outputs.any_changed == 'true' }}
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.list-changed-charts.outputs.charts_matrix) }}
+    concurrency:
+      group: "${{ matrix.chart }}-${{ matrix.version }}"
+      cancel-in-progress: false
+    name: push chart to ghcr
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # https://github.com/actions/checkout/releases/tag/v4.2.2
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@3454372f43399081ed03b604cb2d021dabca52bb # https://github.com/sigstore/cosign-installer/releases/tag/v3.8.2
+
+      - name: Log into ghcr.io
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # https://github.com/docker/login-action/releases/tag/v3.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: helm dependency update
+        id: helm-dependency-update
+        run: |
+          cd ${{ matrix.chart }}
+          ATTEMPTS=20
+          SLEEP_INTERVAL=30
+          for i in $(seq 1 $ATTEMPTS); do
+              set +e
+              # Try updating package dependencies
+              output=$(helm dependency update . 2>&1)
+              exit_code=$?
+              set -e
+
+              if grep -q "can't get a valid version" <<< "$output"; then
+                  echo "Attempt $i/$ATTEMPTS: Dependency not available yet. Retrying in $SLEEP_INTERVAL seconds..."
+                  sleep $SLEEP_INTERVAL
+              elif [ $exit_code -eq 0 ]; then
+                  echo "Dependency update succeeded."
+                  break
+              else
+                  echo "Error: $output"
+                  exit 1
+              fi
+          done
+
+      - name: helm package
+        id: helm-package
+        run: |
+          cd ${{ matrix.chart }}
+          helm package . --version ${{ matrix.version }}
+
+      - name: helm push
+        id: helm-push
+        run: |
+          lowercase_repo_name=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          HELM_REPO_NAME="ghcr.io/$lowercase_repo_name"
+          cd ${{ matrix.chart }}
+          helm push ./${{ matrix.chart }}-${{ matrix.version }}.tgz \
+                    "oci://$HELM_REPO_NAME" 2>&1 | tee push_output.txt
+          digest="$(cat push_output.txt | grep -Eo "sha256:.*$")"
+          echo "digest=${digest}" >>"$GITHUB_OUTPUT"
+          echo "helm_repo_name=${HELM_REPO_NAME}" >>"$GITHUB_OUTPUT"
+
+      - name: Sign the container image
+        run: |
+          cosign sign --yes ${{ steps.helm-push.outputs.helm_repo_name }}/${{ matrix.chart }}@${{ steps.helm-push.outputs.digest }}
+
+      - name: Verify the image signing
+        run: |
+          cosign verify ${{ steps.helm-push.outputs.helm_repo_name }}/${{ matrix.chart }}@${{ steps.helm-push.outputs.digest }} \
+            --certificate-identity "https://github.com/${{ github.repository }}/.github/workflows/release.yaml@refs/heads/${{ github.ref_name }}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" | \
+          jq .
+
+      - name: Create github release
+        uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631 # https://github.com/softprops/action-gh-release/releases/tag/v2.2.2
+        with:
+          tag_name: ${{ matrix.chart }}-${{ matrix.version }}
+          files: |
+            ${{ matrix.chart }}/${{ matrix.chart }}-${{ matrix.version }}.tgz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

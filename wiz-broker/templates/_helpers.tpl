@@ -23,7 +23,9 @@ Deployment name.
 Service account name.
 */}}
 {{- define "wiz-broker.serviceAccountName" -}}
-{{ coalesce (.Values.global.broker.serviceAccount.name) (printf "%s-wiz-broker-sa" .Release.Name) }}
+{{- if or .Values.serviceAccount.create (.Values.serviceAccount.name | trim) (and .Values.global.useHATunnel .Values.autoRolloutUpdate) -}}
+{{ coalesce (.Values.serviceAccount.name | trim) (printf "%s-wiz-broker-sa" .Release.Name | trim) }}
+{{- end -}}
 {{- end }}
 
 {{/*
@@ -38,6 +40,11 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.commonLabels }}
 {{- range $index, $content := .Values.commonLabels }}
+{{ $index }}: {{ tpl $content $ | quote }}
+{{- end }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- range $index, $content := .Values.global.commonLabels }}
 {{ $index }}: {{ tpl $content $ | quote }}
 {{- end }}
 {{- end }}
@@ -56,14 +63,16 @@ Create Wiz broker properties to use
 */}}
 
 {{- define "wiz-broker.wizConnectorSecretData" -}}
-{{- if .Values.global.broker.createSecret }}
-ConnectorId: {{ required "A valid .Values.global.wizConnector.connectorId entry required!" .Values.global.wizConnector.connectorId | quote}}
-TunnelToken: {{ required "A valid .Values.global.wizConnector.connectorToken entry required!" .Values.global.wizConnector.connectorToken | quote }}
-TunnelDomain: {{ required "A valid .Values.global.wizConnector.targetDomain entry required!" .Values.global.wizConnector.targetDomain | quote }}
-TunnelServerDomain: {{ required "A valid .Values.global.wizConnector.tunnelServerDomain entry required!" .Values.global.wizConnector.tunnelServerDomain | quote }}
-TunnelServerPort: {{ required "A valid .Values.global.wizConnector.tunnelServerPort entry required!" .Values.global.wizConnector.tunnelServerPort | quote }}
-{{- if .Values.global.wizConnector.tunnelClientAllowedDomains }}
-TunnelClientAllowedDomains: "{{ range $index, $domain := .Values.global.wizConnector.tunnelClientAllowedDomains }}{{ if $index }},{{ end }}{{ $domain }}{{ end }}"
+{{- if and .Values.wizConnector.createSecret (not .Values.wizConnector.autoCreated) }}
+ConnectorId: {{ required "A valid .Values.wizConnector.connectorId entry required!" .Values.wizConnector.connectorId | quote}}
+TunnelToken: {{ default "" .Values.wizConnector.connectorToken | quote }}
+TunnelDomain: {{ default "" .Values.wizConnector.targetDomain | quote }}
+TunnelServerDomain: {{ default "" .Values.wizConnector.tunnelServerDomain | quote }}
+TunnelServerPort: {{ default 443 .Values.wizConnector.tunnelServerPort }}
+TargetIp: {{ default "" .Values.wizConnector.targetIp | quote }}
+TargetPort: {{ default 443 .Values.wizConnector.targetPort }}
+{{- if .Values.wizConnector.tunnelClientAllowedDomains }}
+TunnelClientAllowedDomains: "{{ range $index, $domain := .Values.wizConnector.tunnelClientAllowedDomains }}{{ if $index }},{{ end }}{{ $domain }}{{ end }}"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -73,15 +82,15 @@ Secrets names
 */}}
 
 {{- define "wiz-broker.apiTokenSecretName" -}}
-{{ coalesce (.Values.global.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
+{{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-api-token" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-broker.caCertificateSecretName" -}}
-{{ coalesce (.Values.global.broker.caCertificate.secretName) (printf "%s-ca-certificate" .Release.Name) }}
+{{ coalesce (.Values.caCertificate.secretName) (printf "%s-ca-certificate" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-broker.mtlsSecretName" -}}
-{{- with .Values.global.broker.mtls }}
+{{- with .Values.mtls }}
 {{- if and .createSecret (not (and .certificate .privateKey)) }}
   {{- fail "Both client certificate and private key must be provided" }}
 {{- end }}
@@ -90,9 +99,52 @@ Secrets names
 {{- end }}
 
 {{- define "wiz-broker.proxySecretName" -}}
-{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
+{{ coalesce (.Values.global.httpProxyConfiguration.secretName) (.Values.httpProxyConfiguration.secretName) (printf "%s-proxy-configuration" .Release.Name) }}
 {{- end }}
 
 {{- define "wiz-broker.connectorSecretName" -}}
-{{ coalesce (.Values.global.wizConnector.secretName) (printf "%s-connector" .Release.Name) }}
+{{ coalesce (.Values.wizConnector.secretName) (printf "%s-connector" .Release.Name) }}
 {{- end }}
+
+{{- define "wiz-broker.image" -}}
+{{ coalesce .Values.global.image.registry .Values.image.registry }}/{{ coalesce .Values.global.image.repository .Values.image.repository }}:{{ coalesce .Values.global.image.tag .Values.image.tag | default .Chart.AppVersion }}{{ coalesce .Values.global.image.tagSuffix .Values.image.tagSuffix }}
+{{- end -}}
+
+{{- define "wiz-broker.isWizApiTokenSecretEnabled" -}}
+  {{- if and (.Values.wizApiToken.secret.create) (eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true") }}
+    true
+  {{- else }}
+    false
+  {{- end }}
+{{- end }}
+
+{{- define "wiz-broker.isWizApiClientVolumeMountEnabled" -}}
+{{- if eq (include "wiz-common.isWizApiClientVolumeMountEnabled" (list .Values.wizApiToken.usePodCustomEnvironmentVariablesFile .Values.wizApiToken.wizApiTokensVolumeMount .Values.global.wizApiToken.wizApiTokensVolumeMount) | trim | lower) "true" -}}
+true
+{{- else -}}
+false
+{{- end }}
+{{- end }}
+
+
+{{- define "wiz-broker.spec.common.volumeMounts" -}}
+{{- if eq (include "wiz-broker.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
+- name: {{ include "wiz-common.volumes.apiClientName" . }}
+  mountPath: /var/{{ include "wiz-common.volumes.apiClientName" . }}
+  readOnly: true
+{{- end -}}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+{{ include "wiz-common.proxy.volumeMount" . | trim }}
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-broker.spec.common.volumes" -}}
+{{- if eq (include "wiz-broker.isWizApiClientVolumeMountEnabled" . | trim | lower) "true" }}
+- name: {{ include "wiz-common.volumes.apiClientName" . | trim }}
+  secret:
+    secretName: {{ include "wiz-broker.apiTokenSecretName" . | trim }}
+{{- end }}
+{{- if or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled }}
+{{ include "wiz-common.proxy.volume" (list (include "wiz-broker.proxySecretName" . | trim )) | trim }}
+{{- end -}}
+{{- end -}}

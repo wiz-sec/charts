@@ -1,0 +1,126 @@
+{{- if .Values.outpostController.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiz-outpost-configuration.fullname" . }}-outpost-controller
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: outpost-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "wiz-outpost-configuration.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: outpost-controller
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "wiz-outpost-configuration.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: outpost-controller
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.outpostController.serviceAccountName }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: outpost-controller
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.outpostController.image.repository }}/{{ .Values.outpostController.image.name }}:{{ .Values.outpostController.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.outpostController.image.pullPolicy }}
+        args:
+          - --outpostID={{ .Values.outpostId }}
+          - --region={{ .Values.clusterRegion }}
+        env:
+        - name: WIZ_ENV
+          value: {{ .Values.env | default "prod" | quote }}
+        - name: WIZ_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.agentCredsSecretName }}
+              key: clientId
+        - name: WIZ_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.agentCredsSecretName }}
+              key: clientSecret
+        - name: http_proxy
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.httpProxyConfiguration.name | quote }}
+              key: "httpProxy"
+              optional: true
+        - name: HTTP_PROXY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.httpProxyConfiguration.name | quote }}
+              key: "httpProxy"
+              optional: true
+        - name: https_proxy
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.httpProxyConfiguration.name | quote }}
+              key: "httpsProxy"
+              optional: true
+        - name: HTTPS_PROXY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.httpProxyConfiguration.name | quote }}
+              key: "httpsProxy"
+              optional: true
+        - name: no_proxy
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.httpProxyConfiguration.name | quote }}
+              key: "noProxyAddress"
+              optional: true
+        - name: NO_PROXY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.httpProxyConfiguration.name | quote }}
+              key: "noProxyAddress"
+              optional: true
+        - name: SSL_CERT_DIR
+          value: "/usr/local/share/ca-certificates/:/certificates/"
+        volumeMounts:
+          - mountPath: /usr/local/share/ca-certificates/
+            name: ca-certificate
+            readOnly: true
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: metrics
+          containerPort: 8081
+          protocol: TCP
+        resources:
+          {{- toYaml .Values.outpostController.resources | nindent 12 }}
+      volumes:
+        - name: ca-certificate
+          secret:
+            defaultMode: 420
+            secretName: {{ .Values.httpProxyConfiguration.name | quote }}
+            items:
+              - key: caCertificate
+                path: root.crt
+            optional: true
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
