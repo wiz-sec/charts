@@ -157,6 +157,12 @@ modules:
       readOnlyRootFilesystem: true
       seLinuxOptions:
         type: container_t
+    resources:
+      limits:
+        memory: 4396M
+      requests:
+        memory: 128M
+    concurrency: 1
   databricks:
     enabled: false
     image:
