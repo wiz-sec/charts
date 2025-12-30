@@ -206,7 +206,9 @@ spec:
             value: {{ coalesce .Values.global.istio.proxySidecarPort .Values.istio.proxySidecarPort | quote }}
           {{- end }}
           - name: WIZ_CHART_VERSION
-            value: "{{ .Chart.Version }}"
+            value: {{ .Chart.Version | quote }}
+          - name: WIZ_IMAGE_REF
+            value: {{ include "wiz-broker.image" . | quote }}
           - name: WIZ_USE_HATUNNEL
             value: {{ ternary "1" "0" .Values.global.useHATunnel | quote }}
           {{- if .Values.global.useHATunnel }}
