@@ -117,6 +117,7 @@ clusterRegistrar:
 #      podIdentityName: ""
 #      nodeResourceGroup: ""
 #      kubernetesServiceAccountName: ""
+#      workerManagedIdentityID: ""
 #      subnetId: ""
 
     # GCP-specific configuration
