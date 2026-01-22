@@ -1,3 +1,4 @@
+{{- if not .Values.crsOnly }}
 {{- if and .Values.policies.create}}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -60,4 +61,5 @@ spec:
       app: notification-controller
   policyTypes:
   - Ingress
+{{- end }}
 {{- end }}

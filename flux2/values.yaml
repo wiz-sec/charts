@@ -1,5 +1,10 @@
 # global
 
+# When true, only deploy Custom Resources (GitRepository, Kustomization)
+# without controllers, CRDs, RBAC, or service accounts.
+# Use this when Flux is already installed in the cluster.
+crsOnly: false
+
 installCRDs: true
 crds:
   # -- Add annotations to all CRD resources, e.g. "helm.sh/resource-policy": keep

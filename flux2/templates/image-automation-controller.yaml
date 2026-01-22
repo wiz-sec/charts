@@ -1,3 +1,4 @@
+{{- if not .Values.crsOnly }}
 {{- if and .Values.imageAutomationController.create}}
 apiVersion: apps/v1
 kind: Deployment
@@ -132,4 +133,5 @@ spec:
       {{- with .Values.imageAutomationController.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}
 {{- end }}

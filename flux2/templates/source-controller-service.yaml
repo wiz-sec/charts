@@ -1,3 +1,4 @@
+{{- if not .Values.crsOnly }}
 {{- if .Values.sourceController.create }}
 apiVersion: v1
 kind: Service
@@ -26,4 +27,5 @@ spec:
   selector:
     app: source-controller
   type: ClusterIP
+{{- end }}
 {{- end }}

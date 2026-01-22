@@ -1,3 +1,4 @@
+{{- if not .Values.crsOnly }}
 {{- if .Values.sourceController.create }}
 apiVersion: apps/v1
 kind: Deployment
@@ -137,4 +138,5 @@ spec:
       {{- with .Values.sourceController.tolerations }}
       tolerations: {{ toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}
 {{- end }}

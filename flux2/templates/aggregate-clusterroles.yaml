@@ -1,3 +1,4 @@
+{{- if not .Values.crsOnly }}
 {{- if .Values.rbac.createAggregation }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -44,4 +45,5 @@ rules:
       - get
       - list
       - watch
+{{- end }}
 {{- end }}

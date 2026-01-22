@@ -1,3 +1,4 @@
+{{- if not .Values.crsOnly }}
 {{- if and .Values.notificationController.create -}}
 {{- if .Values.notificationController.serviceAccount.create -}}
 apiVersion: v1
@@ -14,5 +15,6 @@ metadata:
   {{- with .Values.notificationController.serviceAccount.annotations }}
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
+{{- end -}}
 {{- end -}}
 {{- end -}}

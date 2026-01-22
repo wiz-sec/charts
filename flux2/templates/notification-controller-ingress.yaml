@@ -1,3 +1,4 @@
+{{- if not .Values.crsOnly }}
 {{- if and .Values.notificationController.create .Values.notificationController.webhookReceiver.ingress.create }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -46,4 +47,5 @@ spec:
                   number: 80
           {{- end }}
     {{- end }}
+{{- end }}
 {{- end }}
