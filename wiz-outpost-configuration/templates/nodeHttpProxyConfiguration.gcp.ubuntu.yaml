@@ -91,6 +91,10 @@ spec:
       {{- end }}
     spec:
       hostPID: true
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: root-mount
           hostPath:
