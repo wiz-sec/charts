@@ -1,5 +1,5 @@
 {{- include "validate.values" . }}
-{{- $kubeVersion := printf "%s.%s" (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Major "") (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Minor "") }}
+{{- $kubeVersion := include "wiz-sensor.kubeVersion" . -}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -231,6 +231,14 @@ spec:
           value: {{ .Values.daemonset.httpProxyPassword }}
         - name: HTTP_PROXY_CERT
           value: {{ .Values.daemonset.httpProxyCaCert }}
+        {{- if .Values.httpProxyConfiguration.usernameFile }}
+        - name: WIZ_HTTP_PROXY_USERNAME_FILE
+          value: {{ .Values.httpProxyConfiguration.usernameFile | quote }}
+        {{- end }}
+        {{- if .Values.httpProxyConfiguration.passwordFile }}
+        - name: WIZ_HTTP_PROXY_PASSWORD_FILE
+          value: {{ .Values.httpProxyConfiguration.passwordFile | quote }}
+        {{- end }}
         {{- if .Values.daemonset.disableStrictEMS }}
         - name: WIZ_DISABLE_STRICT_EMS
           value: "true"
@@ -597,7 +605,10 @@ spec:
       {{- with .Values.global.customVolumes }}
         {{- toYaml . | nindent 6 }}
       {{- end }}
-      {{- if .Values.daemonset.sensorHostCacheCreate }}
+      {{- if .Values.externalStorage.sensorHostCache }}
+      - name: sensor-host-cache
+        {{- toYaml .Values.externalStorage.sensorHostCache | nindent 8 }}
+      {{- else if .Values.daemonset.sensorHostCacheCreate }}
       - name: sensor-host-cache
         hostPath:
           path: {{ .Values.daemonset.sensorHostCacheFolder }}
@@ -639,9 +650,14 @@ spec:
             - key: clientCertificate
               path: client-cert
       {{- end }}
+      {{- if .Values.externalStorage.sensorStore }}
+      - name: sensor-store
+        {{- toYaml .Values.externalStorage.sensorStore | nindent 8 }}
+      {{- else }}
       - name: sensor-store
         emptyDir:
           sizeLimit: "1Gi"
+      {{- end }}
       - name: tmp-store
         emptyDir:
           sizeLimit: "100Mi"
@@ -654,7 +670,12 @@ spec:
         emptyDir:
           sizeLimit: "100Mi"
           medium: "Memory"
+      {{- if .Values.externalStorage.sensorScannerTmpStore }}
+      - name: sensor-scanner-tmp-store
+        {{- toYaml .Values.externalStorage.sensorScannerTmpStore | nindent 8 }}
+      {{- else }}
       - name: sensor-scanner-tmp-store
         emptyDir:
           sizeLimit: {{ .Values.daemonset.resources.diskScanScratchSpace }}
+      {{- end }}
       {{- end }}

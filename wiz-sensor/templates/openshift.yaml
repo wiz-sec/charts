@@ -42,12 +42,13 @@ seccompProfiles:
   - "*"
 users:
   - system:serviceaccount:{{ .Release.Namespace }}:{{ include "wiz-sensor.serviceAccountName" . }}
+# Keep alphabetically sorted
 volumes:
+  - configMap
   - downwardAPI
   - emptyDir
   - hostPath
-  - secret
-  - configMap
   - persistentVolumeClaim
   - projected
+  - secret
 {{- end }}

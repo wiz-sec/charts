@@ -43,11 +43,7 @@ openshift: false
 # see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits .
 # there are also other small changes
 gkeAutopilot: false
-# Newer GKE autopilot clusters support the use of an allowlist. This is required for some options in the chart.
-# Set to false for clusters before 1.32.2 that don't support the allowlist.
-gkeAutopilotUseAllowlist: true
 gkeAutopilotAllowlist: wiz-sensor-v7
-gkeAutopilotUseAllowlistSynchronizer: true
 
 # use a custom SELinux type that is required by flatcar Linux nodes, but is incompatible with some
 # other node types (like AWS bottlerocket)
@@ -63,6 +59,31 @@ sensorClusterName: ""
 # additional volumes to mount in the sensor pod (usually used for extra CA certificates)
 customVolumes: []
 customVolumeMounts: []
+
+# External storage configuration for sensor volumes
+# Use this to replace default emptyDir/hostPath volumes with custom volume specs
+# (e.g., PVC, CSI volumes, NFS, etc.)
+externalStorage:
+  # Replace sensor-host-cache (default: hostPath to /var/lib/wiz/)
+  # Used by: wiz-sensor at /wiz-host-cache/
+  sensorHostCache: {}
+  # Example:
+  #   persistentVolumeClaim:
+  #     claimName: wiz-sensor-host-cache
+
+  # Replace sensor-store (default: emptyDir 1Gi)
+  # Used by: wiz-sensor at /wiz-sensor-store/
+  sensorStore: {}
+  # Example:
+  #   persistentVolumeClaim:
+  #     claimName: wiz-sensor-store
+
+  # Replace sensor-scanner-tmp-store (default: emptyDir, size from diskScanScratchSpace)
+  # Used by: wiz-disk-scanner at /tmp/
+  sensorScannerTmpStore: {}
+  # Example:
+  #   persistentVolumeClaim:
+  #     claimName: wiz-scanner-scratch
 
 # set to true to disallow runtime response from the sensor for this deployment
 disallowRuntimeResponse: false
@@ -115,6 +136,11 @@ fixedDefsVersion: ""
 # Set "forceKubeletCommunication" to true to force the sensor to use kubelet communication and not fallback to api-server.
 allowKubeletCommunication: false
 forceKubeletCommunication: false
+# When allowKubeletCommunication is enabled, the chart automatically selects the appropriate permission:
+# - Kubernetes 1.33+: uses the granular "nodes/pods" permission (KubeletFineGrainedAuthz feature)
+# - Kubernetes <1.33: uses the broader "nodes/proxy" permission
+# Set kubeletLegacyProxy to true to force "nodes/proxy" even on newer clusters.
+kubeletLegacyProxy: false
 
 # enable liveness probe for the sensor container
 livenessProbe:
@@ -180,10 +206,10 @@ wizApiToken:
   # clientId - with this content: <wiz service account id>
   # clientToken - with this content: <wiz service account token>
   #
-  # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+  # e.g. wizApiTokensVolumeMount: "/api-client/"
   #      and this is how the mount looks like on the file system:
-  #      /var/api-client/clientId
-  #      /var/api-client/clientToken
+  #      /api-client/clientId
+  #      /api-client/clientToken
   #
   # Implies `secret.enabled: false`.
   wizApiTokensVolumeMount: ""
@@ -213,6 +239,23 @@ httpProxyConfiguration:
   # (optional) Proxy client certificate in PEM format. This is required for client certificate authentication.
   # The file should contain a certificate and a private key in PEM format.
   clientCertificate: ""
+
+  # (optional) Proxy credentials from external secrets (e.g., HashiCorp Vault)
+  # Mount secrets via customVolumes/customVolumeMounts and set these paths.
+  # These OVERRIDE any credentials embedded in the httpsProxy URL or env vars.
+  #
+  # Example with Vault-synced secrets:
+  #   customVolumes:
+  #     - name: proxy-creds
+  #       secret:
+  #         secretName: vault-proxy-credentials
+  #   customVolumeMounts:
+  #     - name: proxy-creds
+  #       mountPath: /vault-proxy
+  #   usernameFile: /vault-proxy/username
+  #   passwordFile: /vault-proxy/password
+  usernameFile: ""
+  passwordFile: ""
 
 imagePullSecret:
   # Set to false if image is retrieved from a registry that doesn't require pull secret

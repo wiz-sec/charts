@@ -82,9 +82,7 @@ image/tag: {{ $imageparts._0 }}
 dsimage/tag: {{ $dsimageparts._0 }}
 {{- if .Values.gkeAutopilot }}
 autopilot.gke.io/no-connect: "true"
-{{- if .Values.gkeAutopilotUseAllowlist }}
 cloud.google.com/matching-allowlist: {{ .Values.gkeAutopilotAllowlist }}
-{{- end }}
 {{- end }}
 {{- end }}
 
@@ -196,6 +194,13 @@ Registry Helpers
 {{- end -}}
 
 {{/*
+Kubernetes version for semver comparisons
+*/}}
+{{- define "wiz-sensor.kubeVersion" -}}
+{{- printf "%s.%s" (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Major "") (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Minor "") -}}
+{{- end -}}
+
+{{/*
 Rule Validation
 */}}
 {{- define "validate.values" -}}
@@ -212,10 +217,10 @@ Rule Validation
 {{- end }}
 
 
-{{- if and .Values.gkeAutopilot .Values.gkeAutopilotUseAllowlist }}
+{{- if .Values.gkeAutopilot }}
 {{- if empty .Values.image.sha256 }}
 {{- if not (has .Values.image.registry (include "wiz-sensor.knownRegistries" . | fromJsonArray)) }}
-{{- fail "If using gkeAutopilotUseAllowlist and a private repo, make sure to set the image.sha256 value to a specific version" }}
+{{- fail "When using gkeAutopilot with a private repo, make sure to set the image.sha256 value to a specific version" }}
 {{- end }}
 {{- end }}
 {{- end }}
