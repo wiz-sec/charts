@@ -62,6 +62,7 @@ networkAnalyzer:
   dataCenter: ""
   logsIngestionEndpoint: ""
   forceHttp1: false
+  skipDnsResolveCheck: true
   image:
     registry: public-registry.wiz.io/wiz-app
     repository: wiz-network-analyzer

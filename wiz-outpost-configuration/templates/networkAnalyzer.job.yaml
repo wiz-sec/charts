@@ -92,6 +92,9 @@ spec:
             {{- with .Values.networkAnalyzer.forceHttp1 }}
             - --http1
             {{- end }}
+            {{- with .Values.networkAnalyzer.skipDnsResolveCheck }}
+            - --skip-dns-resolve
+            {{- end }}
             - --wait
             - "1h"
           env:
