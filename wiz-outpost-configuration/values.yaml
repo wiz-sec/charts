@@ -81,6 +81,10 @@ networkAnalyzer:
 outpostController:
   enabled: false
   serviceAccountName: outpost-controller-sa
+  # When true, use reduced permissions instead of cluster-admin.
+  # Only use this when the outpost-controller will only install git-proxy (FluxCRsOnly mode).
+  # Requires the namespace to be pre-created.
+  reducedPermissions: false
   image:
     repository: public-registry.wiz.io
     name: wiz-outpost-controller

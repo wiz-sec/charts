@@ -1,0 +1,15 @@
+{{- if and .Values.outpostController.enabled .Values.outpostController.reducedPermissions }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "wiz-outpost-configuration.fullname" . }}-outpost-controller
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: outpost-controller
+rules:
+  # Namespace admin - full control within this namespace
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
+{{- end }}
