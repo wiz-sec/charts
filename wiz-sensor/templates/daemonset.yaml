@@ -192,7 +192,7 @@ spec:
         - name: WIZ_TMP_STORE
           value: "/wiz-sensor-store/"
         - name: WIZ_HOST_STORE
-        {{- if .Values.daemonset.sensorHostCacheCreate }}
+        {{- if or .Values.daemonset.sensorHostCacheCreate .Values.externalStorage.sensorHostCache }}
           value: "/wiz-host-cache/"
         {{- else }}
           value: "/wiz-sensor-store/"
@@ -355,7 +355,7 @@ spec:
         {{- with .Values.global.customVolumeMounts }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- if .Values.daemonset.sensorHostCacheCreate }}
+        {{- if or .Values.daemonset.sensorHostCacheCreate .Values.externalStorage.sensorHostCache }}
         - name: sensor-host-cache
           mountPath: /wiz-host-cache/
         {{- end }}

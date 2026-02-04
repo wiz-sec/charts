@@ -64,8 +64,10 @@ customVolumeMounts: []
 # Use this to replace default emptyDir/hostPath volumes with custom volume specs
 # (e.g., PVC, CSI volumes, NFS, etc.)
 externalStorage:
-  # Replace sensor-host-cache (default: hostPath to /var/lib/wiz/)
+  # Replace sensor-host-cache with a custom volume spec (e.g., PVC, CSI, NFS)
   # Used by: wiz-sensor at /wiz-host-cache/
+  # Note: If set, this takes precedence over the default hostPath volume.
+  # To disable host cache entirely, leave this empty AND set daemonset.sensorHostCacheCreate=false.
   sensorHostCache: {}
   # Example:
   #   persistentVolumeClaim:
@@ -327,7 +329,9 @@ image:
   windowsPullPolicy: Always
 
 daemonset:
-  # cache folder on the node
+  # Create a hostPath volume for sensor cache on the node.
+  # Set to false to disable the default hostPath volume (e.g., for read-only filesystems).
+  # Note: externalStorage.sensorHostCache takes precedence if set.
   sensorHostCacheCreate: true
   sensorHostCacheFolder: "/var/lib/wiz/"
 
