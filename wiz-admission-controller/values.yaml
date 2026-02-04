@@ -788,6 +788,7 @@ global:
   # Setting this to true ensures that the istio-proxy gets a graceful shutdown
   # and mitigates the networking race condition by waiting for the server to run before the Job starts.
   # Note: This is currently not supported for Istio in Ambient Mode.
+  #
   # Learn more:
   # https://istio.io/latest/blog/2023/native-sidecars/
   istio:
