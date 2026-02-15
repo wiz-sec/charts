@@ -47,9 +47,6 @@ tolerations: []
 
 affinity: {}
 
-internetAccessCertificates:
-  skipSslValidation: false
-
 extraEnv: {}
 extraEnvConfigMap: ""
 
@@ -58,6 +55,10 @@ service:
   enabled: true
   metricsPort: 9090
 
+# Configures HTTP proxy settings and/or custom TLS root certificates for the pod.
+# Must be enabled to take effect. Creates a secret that injects proxy env vars and
+# mounts a CA certificate. Set enabled to true with just caCertificate (without
+# httpProxy/httpsProxy) to inject a custom TLS root certificate into the pod.
 httpProxyConfiguration:
   enabled: false
   name: wiz-http-proxy-configuration
