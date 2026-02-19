@@ -3,4 +3,4 @@ appVersion: 0.0.1
 description: A Helm chart for Kubernetes
 name: wiz-outpost-configuration
 type: application
-version: 2026.02.17
+version: 2026.02.19

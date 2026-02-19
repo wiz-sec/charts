@@ -1,6 +1,7 @@
-{{- if and .Values.outpostController.enabled .Values.outpostController.reducedPermissions .Values.outpostController.fluxRbacEnabled }}
+{{- if and .Values.outpostController.enabled .Values.outpostController.reducedPermissions }}
 {{- $nsPrefix := (index (splitList "-" .Release.Namespace) 0) }}
-{{- $fluxNamespace := ternary "flux-system" (printf "%s-flux-system" $nsPrefix) (eq .Release.Namespace "default") }}
+{{- $autoFluxNamespace := ternary "flux-system" (printf "%s-flux-system" $nsPrefix) (eq .Release.Namespace "default") }}
+{{- $fluxNamespace := default $autoFluxNamespace .Values.outpostController.wizFluxNamespace }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
