@@ -82,6 +82,7 @@ workflows:
             ^wiz-kubernetes-integration/.* wiz-kubernetes-integration true
             ^wiz-network-analyzer/.* wiz-network-analyzer true
             ^wiz-common/.* wiz-common true
+            ^wiz-outpost-common/.* wiz-outpost-common true
           base-revision: << pipeline.git.branch >>
           filters:
             branches:
