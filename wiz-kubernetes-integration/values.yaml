@@ -31,10 +31,10 @@ global:
     # clientId - with this content: <wiz service account id>
     # clientToken - with this content: <wiz service account token>
     #
-    # e.g. wizApiTokensVolumeMount: "/var/api-client/"
+    # e.g. wizApiTokensVolumeMount: "/api-client/"
     #      and this is how the mount looks like on the file system:
-    #      /var/api-client/clientId
-    #      /var/api-client/clientToken
+    #      /api-client/clientId
+    #      /api-client/clientToken
     #
     # Implies `secret.enabled: false`.
     wizApiTokensVolumeMount: ""
