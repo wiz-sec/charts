@@ -85,6 +85,10 @@ outpostController:
   # Only use this when the outpost-controller will only install git-proxy (FluxCRsOnly mode).
   # Requires the namespace to be pre-created.
   reducedPermissions: false
+  # Flux namespace for RBAC (secrets, configmaps, gitrepositories, kustomizations).
+  # When set, creates Role and RoleBinding in this namespace.
+  # If empty, auto-derives from release namespace prefix (e.g., wiz-default -> wiz-flux-system).
+  wizFluxNamespace: wiz-flux-system
   image:
     repository: public-registry.wiz.io
     name: wiz-outpost-controller
