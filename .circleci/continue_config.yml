@@ -35,6 +35,9 @@ parameters:
   wiz-common:
     default: false
     type: boolean
+  wiz-outpost-common:
+    default: false
+    type: boolean
 
 executors:
   ops:
@@ -77,6 +80,7 @@ jobs:
             - << pipeline.parameters.wiz-outpost-lite >>
             - << pipeline.parameters.wiz-network-analyzer >>
             - << pipeline.parameters.wiz-common >>
+            - << pipeline.parameters.wiz-outpost-common >>
           steps:
             - checkout:
                 path: ~/project
@@ -98,6 +102,11 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-common
+      - when:
+          condition: << pipeline.parameters.wiz-outpost-common >>
+          steps:
+            - upload_new_chart:
+                package: wiz-outpost-common
       - when:
           condition: << pipeline.parameters.flux2 >>
           steps:
