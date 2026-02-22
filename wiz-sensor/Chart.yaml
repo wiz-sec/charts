@@ -3,8 +3,8 @@ name: wiz-sensor
 description: Wiz Sensor helm chart
 type: application
 home: https://www.wiz.io/
-version: 1.0.9527
+version: 1.0.9813
 appVersion: 1.0.9526
 annotations:
   diskScanAppVersion: 1.1.39
-  windowsAppVersion: 1.0.1
+  windowsAppVersion: 1.0.9724

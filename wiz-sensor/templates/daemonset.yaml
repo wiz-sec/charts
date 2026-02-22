@@ -533,7 +533,7 @@ spec:
           value: "/proxy-config"
         {{- end }}
         {{- if .Values.startDelayRange }}
-        - name: WIZ_ONPREM_ORCHESTRATOR_MAX_JITTER_DELAY
+        - name: WIZ_DISK_SCANNER_MAX_INITIAL_DELAY
           value: "{{ .Values.startDelayRange }}s"
         {{- end }}
         - name: WIZ_BACKEND_ENV

@@ -93,11 +93,6 @@ spec:
             secretKeyRef:
               name: {{ include "wiz-sensor.proxySecretName" . }}
               key: httpsProxy
-        - name: WIZ_HTTP_PROXY_CERT_PATH
-          valueFrom:
-            secretKeyRef:
-              name: {{ include "wiz-sensor.proxySecretName" . }}
-              key: caCertificate
         {{- end }}
         {{- if .Values.tenantSuffix }}
         - name: WIZ_TENANT_SUFFIX
@@ -176,6 +171,11 @@ spec:
         {{- with .Values.global.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+        volumeMounts:
+        - name: proxy-secret
+          mountPath: /proxy-config/
+        {{- end }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
@@ -184,13 +184,22 @@ spec:
               - -Command
               - |
                 $enginePath = Join-Path -Path $env:WIZ_HOST_STORE -ChildPath "mount\WizSensorEngine.exe"
-                $p = Start-Process -Wait -NoNewWindow -FilePath $enginePath -ArgumentList "version" -PassThru | Out-Null
+                $p = Start-Process -Wait -NoNewWindow -FilePath $enginePath -ArgumentList "version" -PassThru -RedirectStandardOutput NUL
                 exit $p.ExitCode
 {{ toYaml .Values.livenessProbe.config | indent 10 }}
         {{- end }}
       restartPolicy: Always
       hostNetwork: true
       terminationGracePeriodSeconds: {{ .Values.daemonset.terminationGracePeriodSeconds }}
+      {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
+      volumes:
+      - name: proxy-secret
+        secret:
+          secretName: {{ include "wiz-sensor.proxySecretName" . }}
+          items:
+            - key: caCertificate
+              path: ca-cert
+      {{- end }}
       {{- if .Values.imagePullSecret.required }}
       imagePullSecrets:
         {{ include "wiz-sensor.imagePullSecretList" . }}
