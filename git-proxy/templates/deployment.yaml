@@ -13,6 +13,7 @@ spec:
     metadata:
       annotations:
         wiz.io/service-version: {{ .Values.image.tag | quote }}
+        {{- include "wiz.controlplane-tls-ca-hash-annotation" . | nindent 8 }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -163,6 +164,7 @@ spec:
                 optional: true
           - name: SSL_CERT_DIR
             value: "/usr/local/share/ca-certificates/:/certificates/"
+          {{- include "wiz.controlplane-tls-env" . | nindent 10 }}
           args: [
             {{- if gt (len .Values.image.tag) 17 }}
             "{{ .Values.storageService }}",
@@ -204,7 +206,7 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp-dir
-            {{- if and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId) }}
+            {{- if or (and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId)) .Values.controlPlaneTLS.enabled }}
             - name: secrets
               mountPath: /mnt/secrets/
               readOnly: true
@@ -240,15 +242,18 @@ spec:
               - key: caCertificate
                 path: root.crt
             optional: true
-        {{- if and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId) }}
+        {{- if or (and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId)) .Values.controlPlaneTLS.enabled }}
         - name: secrets
           projected:
             sources:
+              {{- if and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId) }}
               - secret:
                   name: {{ .Values.wiz.secretName }}
                   items:
                     - key: privateKey
                       path: WIZ_PRIVATE_KEY
+              {{- end }}
+              {{- include "wiz.controlplane-tls-volume-sources" (dict "root" . "ca" false "server" true) | nindent 14 }}
         {{- end }}
         {{- if eq .Values.storageService "blob" }}
         {{- if or .Values.blob.useAzureCredsSecret .Values.blob.azureCreds }}

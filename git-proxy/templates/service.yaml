@@ -4,6 +4,9 @@ metadata:
   name: {{ include "git-proxy.fullname" . }}
   labels:
     {{- include "git-proxy.labels" . | nindent 4 }}
+    {{- if .Values.controlPlaneTLS.enabled }}
+    wiz.io/control-plane-tls: "true"
+    {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -25,6 +28,9 @@ metadata:
   name: git-proxy
   labels:
     {{- include "git-proxy.labels" . | nindent 4 }}
+    {{- if .Values.controlPlaneTLS.enabled }}
+    wiz.io/control-plane-tls: "true"
+    {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
