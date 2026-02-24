@@ -11,11 +11,4 @@ rules:
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list", "watch"]
-  # Flux CRs - for crsOnly mode (GitRepository, Kustomization in flux-system namespace)
-  - apiGroups: ["source.toolkit.fluxcd.io"]
-    resources: ["gitrepositories"]
-    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-  - apiGroups: ["kustomize.toolkit.fluxcd.io"]
-    resources: ["kustomizations"]
-    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
 {{- end }}

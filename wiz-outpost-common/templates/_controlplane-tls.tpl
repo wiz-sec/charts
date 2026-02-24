@@ -6,14 +6,16 @@ Parameters (passed as a dict):
   - cn: common name for the certificate
   - dnsBase: base DNS name for SAN entries (may differ from cn)
   - labelTemplate: name of the chart's labels template to include
+  - secretName: (optional) name of the Secret to create; defaults to controlPlaneTLS.serverSecretName
 */}}
 {{- define "wiz.controlplane-server-cert" -}}
 {{- if .root.Values.controlPlaneTLS.enabled }}
+{{- $secretName := .secretName | default .root.Values.controlPlaneTLS.serverSecretName }}
 {{- $caSecret := lookup "v1" "Secret" .root.Release.Namespace .root.Values.controlPlaneTLS.caSecretName }}
 {{- if $caSecret }}
 {{- $ca := buildCustomCert (index $caSecret.data "ca.crt") (index $caSecret.data "ca.key") }}
 {{- $caHash := index $caSecret.data "ca.crt" | b64dec | sha256sum }}
-{{- $existingCert := lookup "v1" "Secret" .root.Release.Namespace .root.Values.controlPlaneTLS.serverSecretName }}
+{{- $existingCert := lookup "v1" "Secret" .root.Release.Namespace $secretName }}
 {{- $regenerate := true }}
 {{- $cert := dict }}
 
@@ -35,7 +37,7 @@ Parameters (passed as a dict):
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .root.Values.controlPlaneTLS.serverSecretName }}
+  name: {{ $secretName }}
   labels:
     {{- include .labelTemplate .root | nindent 4 }}
   annotations:

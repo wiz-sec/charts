@@ -1,0 +1,41 @@
+{{- if and .Values.outpostController.enabled .Values.outpostController.reducedPermissions }}
+{{- $nsPrefix := (index (splitList "-" .Release.Namespace) 0) }}
+{{- $autoFluxNamespace := ternary "flux-system" (printf "%s-flux-system" $nsPrefix) (eq .Release.Namespace "default") }}
+{{- $fluxNamespace := default $autoFluxNamespace .Values.outpostController.wizFluxNamespace }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "wiz-outpost-configuration.fullname" . }}-outpost-controller-flux
+  namespace: {{ $fluxNamespace }}
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: outpost-controller
+rules:
+  - apiGroups: [""]
+    resources: ["secrets", "configmaps"]
+    verbs: ["get", "list", "watch", "create", "update", "delete"]
+  - apiGroups: ["source.toolkit.fluxcd.io"]
+    resources: ["gitrepositories"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+    resources: ["kustomizations"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "wiz-outpost-configuration.fullname" . }}-outpost-controller-flux
+  namespace: {{ $fluxNamespace }}
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+    app.kubernetes.io/component: outpost-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "wiz-outpost-configuration.fullname" . }}-outpost-controller-flux
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.outpostController.serviceAccountName }}
+  namespace: {{ .Release.Namespace }}
+{{- end }}
+
