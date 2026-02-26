@@ -262,6 +262,16 @@ imageIntegrityWebhook:
                     # "table" - Human-readable table format with colored enforcement types.
                     # "json"  - Machine-readable JSON format for programmatic parsing.
 
+  # When enabled, uses a ValidatingWebhookConfiguration instead of MutatingWebhookConfiguration.
+  #
+  # Behavior: digest resolution and policy evaluation proceed as normal, but no image mutation is performed.
+  #
+  # Security note: mutation pins the image to the exact digest that was verified, preventing a TOCTOU
+  # (time-of-check-to-time-of-use) race where a tag could be re-pointed between validation and pod start.
+  # It is recommended to enable this flag when all images are referenced by digest
+  # (e.g., image@sha256:abc123...) rather than by tag alone.
+  disableMutation: false
+
 # This webhooks sends the audit logs to Wiz, and should never block any requests.
 kubernetesAuditLogsWebhook:
   enabled: false

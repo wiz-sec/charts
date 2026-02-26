@@ -135,6 +135,10 @@ spec:
           {{- end }}
           - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
             value: {{ .Values.imageIntegrityWebhook.patchImageDigestAnnotation | quote }}
+          {{- if .Values.imageIntegrityWebhook.disableMutation }}
+          - name: WIZ_IMAGE_INTEGRITY_DISABLE_MUTATION
+            value: "true"
+          {{- end }}
            # For running pod with read only file system we write all the cache files to /var/cache volume mount, used by image integrity hook
           - name: TUF_ROOT
             value: "/var/cache/.sigstore"
