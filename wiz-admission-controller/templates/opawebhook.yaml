@@ -34,7 +34,6 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   name: {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "misconfigurations" }}
-  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
@@ -82,7 +81,6 @@ kind: MutatingWebhookConfiguration
 {{- end }}
 metadata:
   name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "image-integrity" }}
-  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
@@ -126,7 +124,6 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   name: {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "kubernetes-audit-logs" }}
-  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
@@ -170,7 +167,6 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
   name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "debug" }}
-  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:
@@ -214,7 +210,6 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   name:  {{ include "wiz-sensor-inject.name" . }}
-  namespace: {{ .Release.Namespace | quote }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
   annotations:

@@ -1,12 +1,24 @@
 For uninstalling the wiz admission controller you need to delete helm hooks resources manually:
-1. Delete validating webhook configuration - kubectl delete validatingwebhookconfiguration {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "misconfigurations" }}
-2. Delete {{ if .Values.imageIntegrityWebhook.disableMutation }}validating{{ else }}mutating{{ end }} webhook configuration - kubectl delete {{ if .Values.imageIntegrityWebhook.disableMutation }}validatingwebhookconfiguration{{ else }}mutatingwebhookconfiguration{{ end }} {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "image-integrity" }}
-
+{{- if .Values.opaWebhook.enabled }}
+- Delete validating webhook configuration - kubectl delete validatingwebhookconfiguration {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "misconfigurations" }}
+{{- end }}
+{{- if .Values.imageIntegrityWebhook.enabled }}
+- Delete {{ if .Values.imageIntegrityWebhook.disableMutation }}validating{{ else }}mutating{{ end }} webhook configuration - kubectl delete {{ if .Values.imageIntegrityWebhook.disableMutation }}validatingwebhookconfiguration{{ else }}mutatingwebhookconfiguration{{ end }} {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "image-integrity" }}
+{{- end }}
+{{- if .Values.kubernetesAuditLogsWebhook.enabled }}
+- Delete validating webhook configuration - kubectl delete validatingwebhookconfiguration {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "kubernetes-audit-logs" }}
+{{- end }}
+{{- if .Values.sensorInject.enabled }}
+- Delete mutating webhook configuration - kubectl delete mutatingwebhookconfiguration {{ include "wiz-sensor-inject.name" . }}
+{{- end }}
+{{- if .Values.debugWebhook.enabled }}
+- Delete validating webhook configuration - kubectl delete validatingwebhookconfiguration {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "debug" }}
+{{- end }}
 {{- if not .Values.webhook.secret.name }}
-3. Delete certificates secret - kubectl delete -n {{ .Release.Namespace }} secret  {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+- Delete certificates secret - kubectl delete -n {{ .Release.Namespace }} secret  {{ include "wiz-admission-controller.secretServerCert" . | trim }}
 {{- end }}
 {{- if eq .Values.opaWebhook.failurePolicy "Fail" }}
 
 WARNING!!!
-opaWebhook.failurePolicy is Fail, You need to delete validatingwebhookconfiguration before uninstall, if webhook exists without chart resources you can’t create resources in your cluster!
+opaWebhook.failurePolicy is Fail, You need to delete validatingwebhookconfiguration before uninstall, if webhook exists without chart resources you can't create resources in your cluster!
 {{- end }}
