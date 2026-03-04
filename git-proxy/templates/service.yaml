@@ -4,7 +4,7 @@ metadata:
   name: {{ include "git-proxy.fullname" . }}
   labels:
     {{- include "git-proxy.labels" . | nindent 4 }}
-    {{- if .Values.controlPlaneTLS.enabled }}
+    {{- if include "wiz.controlplane-tls-active" . }}
     wiz.io/control-plane-tls: "true"
     {{- end }}
 spec:
@@ -28,7 +28,7 @@ metadata:
   name: git-proxy
   labels:
     {{- include "git-proxy.labels" . | nindent 4 }}
-    {{- if .Values.controlPlaneTLS.enabled }}
+    {{- if include "wiz.controlplane-tls-active" . }}
     wiz.io/control-plane-tls: "true"
     {{- end }}
 spec:

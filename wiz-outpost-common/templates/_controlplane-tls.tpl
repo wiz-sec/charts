@@ -66,14 +66,20 @@ wiz.io/control-plane-ca-hash: {{ index $caConfigMap.data "ca.crt" | sha256sum | 
 {{- end -}}
 
 {{/*
-WIZ_CONTROL_PLANE_TLS env var, set when TLS is required or CA ConfigMap exists.
+Returns "true" when control plane TLS is active: enabled AND either required or
+the CA ConfigMap already exists in the cluster. Accepts the chart root context.
+*/}}
+{{- define "wiz.controlplane-tls-active" -}}
+{{- if and .Values.controlPlaneTLS.enabled (or .Values.controlPlaneTLS.required (lookup "v1" "ConfigMap" .Release.Namespace .Values.controlPlaneTLS.caConfigMapName)) }}true{{- end }}
+{{- end -}}
+
+{{/*
+WIZ_CONTROL_PLANE_TLS env var, set when control plane TLS is active.
 */}}
 {{- define "wiz.controlplane-tls-env" -}}
-{{- if .Values.controlPlaneTLS.enabled }}
-{{- if or .Values.controlPlaneTLS.required (lookup "v1" "ConfigMap" .Release.Namespace .Values.controlPlaneTLS.caConfigMapName) }}
+{{- if include "wiz.controlplane-tls-active" . }}
 - name: WIZ_CONTROL_PLANE_TLS
   value: "true"
-{{- end }}
 {{- end }}
 {{- end -}}
 
@@ -87,7 +93,7 @@ Parameters (passed as a dict):
   - client: include client cert (optional, default false)
 */}}
 {{- define "wiz.controlplane-tls-volume-sources" -}}
-{{- if .root.Values.controlPlaneTLS.enabled }}
+{{- if include "wiz.controlplane-tls-active" .root }}
 {{- if or (not (hasKey . "ca")) .ca }}
 - configMap:
     name: {{ .root.Values.controlPlaneTLS.caConfigMapName }}

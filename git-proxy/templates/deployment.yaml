@@ -206,7 +206,7 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp-dir
-            {{- if or (and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId)) .Values.controlPlaneTLS.enabled }}
+            {{- if or (and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId)) (include "wiz.controlplane-tls-active" .) }}
             - name: secrets
               mountPath: /mnt/secrets/
               readOnly: true
@@ -242,7 +242,7 @@ spec:
               - key: caCertificate
                 path: root.crt
             optional: true
-        {{- if or (and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId)) .Values.controlPlaneTLS.enabled }}
+        {{- if or (and (eq .Values.storageService "wiz") (not .Values.wiz.outpostId)) (include "wiz.controlplane-tls-active" .) }}
         - name: secrets
           projected:
             sources:
