@@ -7,7 +7,7 @@ spec:
   interval: 3m0s
   ref:
     branch: {{ required "branch is required" .Values.git.branch }}
-  url: {{ required "git.url is required" .Values.git.url }}
+  url: {{ required "git.url is required" .Values.git.url | replace "http://" (include "flux2.wiz-tls-scheme" . | default "http://") }}
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

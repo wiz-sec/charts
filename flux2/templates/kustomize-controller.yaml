@@ -28,6 +28,7 @@ spec:
     metadata:
       {{- with .Values.kustomizeController.annotations }}
       annotations: {{ toYaml . | nindent 8 }}
+        {{- include "wiz.controlplane-tls-ca-hash-annotation" $ | nindent 8 }}
       {{- end }}
       labels:
         app: kustomize-controller
@@ -62,6 +63,7 @@ spec:
         {{- with .Values.kustomizeController.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- include "flux2.wiz-consumer-env" . | nindent 8 }}
         {{- if or (.Values.kustomizeController.envFrom.map.name) (.Values.kustomizeController.envFrom.secret.name) }}
         envFrom:
           {{- if .Values.kustomizeController.envFrom.map.name }}
@@ -116,6 +118,7 @@ spec:
         {{- if .Values.kustomizeController.volumeMounts }}
         {{- toYaml .Values.kustomizeController.volumeMounts | nindent 8 }}
         {{- end}}
+        {{- include "flux2.wiz-consumer-vmounts" . | nindent 8 }}
       {{- if .Values.kustomizeController.priorityClassName }}
       priorityClassName: {{ .Values.kustomizeController.priorityClassName | quote }}
       {{- end }}
@@ -147,6 +150,7 @@ spec:
         secret:
           secretName: {{ .secretName }}
       {{- end }}
+      {{- include "flux2.wiz-consumer-vols" . | nindent 6 }}
       {{- with .Values.kustomizeController.nodeSelector }}
       nodeSelector: {{ toYaml . | nindent 8 }}
       {{- end }}

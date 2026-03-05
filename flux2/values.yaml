@@ -41,7 +41,7 @@ cli:
 helmController:
   create: true
   image: public-registry.wiz.io/wiz-helm-controller
-  tag: v1.4.5-5
+  tag: v1.4.5-6
   resources:
     limits: {}
     # cpu: 1000m
@@ -145,7 +145,7 @@ imageReflectionController:
 kustomizeController:
   create: true
   image: public-registry.wiz.io/wiz-kustomize-controller
-  tag: v1.7.3-6
+  tag: v1.7.3-7
   resources:
     limits: {}
     # cpu: 1000m
@@ -245,7 +245,7 @@ notificationController:
 sourceController:
   create: true
   image: public-registry.wiz.io/wiz-source-controller
-  tag: v1.7.4-3
+  tag: v1.7.4-6
   resources:
     limits: {}
     # cpu: 1000m
@@ -334,3 +334,14 @@ git:
   url: http://git-proxy.default.svc.cluster.local
   branch: master
   path: #./replaceme/
+
+# WIZ - Control plane TLS configuration
+# When enabled, source-controller serves HTTPS via its built-in proxy,
+# and consumer controllers (helm, kustomize) trust the CA.
+controlPlaneTLS:
+  enabled: false
+  required: false
+  caSecretName: wiz-control-plane-ca
+  caConfigMapName: wiz-control-plane-ca
+  serverSecretName: wiz-source-controller-server-cert
+  caSourceNamespace: default

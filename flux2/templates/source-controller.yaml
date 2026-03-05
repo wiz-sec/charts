@@ -26,6 +26,7 @@ spec:
     metadata:
       {{- with .Values.sourceController.annotations }}
       annotations: {{ toYaml . | nindent 8 }}
+        {{- include "wiz.controlplane-tls-ca-hash-annotation" $ | nindent 8 }}
       {{- end }}
       labels:
         app: source-controller
@@ -46,7 +47,7 @@ spec:
         - --log-encoding=json
         - --enable-leader-election
         - --storage-path=/data
-        - --storage-adv-addr=source-controller.$(RUNTIME_NAMESPACE).svc.{{ .Values.clusterDomain | default "cluster.local" }}.
+        - --storage-adv-addr={{ include "flux2.wiz-tls-scheme" . }}source-controller.$(RUNTIME_NAMESPACE).svc.{{ .Values.clusterDomain | default "cluster.local" }}.
         {{- range .Values.sourceController.container.additionalArgs }}
         - {{ . }}
         {{- end}}
@@ -58,6 +59,7 @@ spec:
         {{- with .Values.sourceController.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- include "flux2.wiz-source-controller-env" . | nindent 8 }}
         image: {{ template "template.image" .Values.sourceController }}
         {{- if .Values.sourceController.imagePullPolicy }}
         imagePullPolicy: {{ .Values.sourceController.imagePullPolicy }}
@@ -107,6 +109,8 @@ spec:
         {{- if .Values.sourceController.volumeMounts }}
         {{- toYaml .Values.sourceController.volumeMounts | nindent 8 }}
         {{- end}}
+        {{- include "flux2.wiz-source-controller-vmounts" . | nindent 8 }}
+      {{- include "flux2.wiz-source-controller-proxy-sidecar" . | nindent 6 }}
       {{- if .Values.sourceController.priorityClassName }}
       priorityClassName: {{ .Values.sourceController.priorityClassName | quote }}
       {{- end }}
@@ -129,6 +133,7 @@ spec:
       {{- if .Values.sourceController.volumes }}
       {{- toYaml .Values.sourceController.volumes | nindent 6 }}
       {{- end}}
+      {{- include "flux2.wiz-source-controller-vols" . | nindent 6 }}
       {{- with .Values.sourceController.nodeSelector }}
       nodeSelector: {{ toYaml . | nindent 8 }}
       {{- end }}

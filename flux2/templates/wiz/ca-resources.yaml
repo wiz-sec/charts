@@ -1,0 +1,18 @@
+{{- /* WIZ: Replicate CA ConfigMap from the source namespace into the flux namespace */ -}}
+{{- if .Values.controlPlaneTLS.enabled }}
+{{- $caSecret := lookup "v1" "Secret" .Values.controlPlaneTLS.caSourceNamespace .Values.controlPlaneTLS.caSecretName }}
+{{- if $caSecret }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.controlPlaneTLS.caConfigMapName }}
+  labels:
+    {{- include "flux2.labels" . | nindent 4 }}
+data:
+  ca.crt: |
+{{ index $caSecret.data "ca.crt" | b64dec | indent 4 }}
+{{- else if .Values.controlPlaneTLS.required }}
+{{- fail (printf "controlPlaneTLS is required but CA secret '%s' not found in namespace '%s'" .Values.controlPlaneTLS.caSecretName .Values.controlPlaneTLS.caSourceNamespace) }}
+{{- end }}
+{{- end }}

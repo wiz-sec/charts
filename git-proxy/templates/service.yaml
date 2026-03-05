@@ -10,10 +10,17 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
+    {{- if include "wiz.controlplane-tls-active" . }}
+    - port: 443
+      targetPort: http
+      protocol: TCP
+      name: https
+    {{- else }}
     - port: 80
       targetPort: http
       protocol: TCP
       name: http
+    {{- end }}
     - port: 3000
       targetPort: grpc
       protocol: TCP
@@ -34,10 +41,17 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
+    {{- if include "wiz.controlplane-tls-active" . }}
+    - port: 443
+      targetPort: http
+      protocol: TCP
+      name: https
+    {{- else }}
     - port: 80
       targetPort: http
       protocol: TCP
       name: http
+    {{- end }}
     - port: 3000
       targetPort: grpc
       protocol: TCP

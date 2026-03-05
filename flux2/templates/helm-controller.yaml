@@ -28,6 +28,7 @@ spec:
     metadata:
       {{- with .Values.helmController.annotations }}
       annotations: {{ toYaml . | nindent 8 }}
+        {{- include "wiz.controlplane-tls-ca-hash-annotation" $ | nindent 8 }}
       {{- end }}
       labels:
         app: helm-controller
@@ -62,6 +63,7 @@ spec:
         {{- with .Values.helmController.extraEnv }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- include "flux2.wiz-consumer-env" . | nindent 8 }}
         image: {{ template "template.image" .Values.helmController }}
         {{- if .Values.helmController.imagePullPolicy }}
         imagePullPolicy: {{ .Values.helmController.imagePullPolicy }}
@@ -105,6 +107,7 @@ spec:
         {{- if .Values.helmController.volumeMounts }}
         {{- toYaml .Values.helmController.volumeMounts | nindent 8 }}
         {{- end}}
+        {{- include "flux2.wiz-consumer-vmounts" . | nindent 8 }}
       {{- if .Values.helmController.priorityClassName }}
       priorityClassName: {{ .Values.helmController.priorityClassName | quote }}
       {{- end }}
@@ -122,6 +125,7 @@ spec:
       {{- if .Values.helmController.volumes }}
       {{- toYaml .Values.helmController.volumes | nindent 6 }}
       {{- end}}
+      {{- include "flux2.wiz-consumer-vols" . | nindent 6 }}
       {{- with .Values.helmController.nodeSelector }}
       nodeSelector: {{ toYaml . | nindent 8 }}
       {{- end }}

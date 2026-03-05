@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 2026.3.3
+version: 2026.3.4
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -23,5 +23,5 @@ version: 2026.3.3
 appVersion: 0.0.1
 dependencies:
   - name: wiz-outpost-common
-    version: "2026.3.3"
+    version: "2026.3.4"
     repository: https://wiz-sec.github.io/charts

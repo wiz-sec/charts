@@ -7,11 +7,14 @@ Parameters (passed as a dict):
   - dnsBase: base DNS name for SAN entries (may differ from cn)
   - labelTemplate: name of the chart's labels template to include
   - secretName: (optional) name of the Secret to create; defaults to controlPlaneTLS.serverSecretName
+  - caNamespace: (optional) namespace to look up the CA secret; defaults to Release.Namespace
+  - extraDnsBases: (optional) additional base DNS names; each gets the same namespace suffix variants as dnsBase
 */}}
 {{- define "wiz.controlplane-server-cert" -}}
 {{- if .root.Values.controlPlaneTLS.enabled }}
 {{- $secretName := .secretName | default .root.Values.controlPlaneTLS.serverSecretName }}
-{{- $caSecret := lookup "v1" "Secret" .root.Release.Namespace .root.Values.controlPlaneTLS.caSecretName }}
+{{- $caNamespace := .caNamespace | default .root.Release.Namespace }}
+{{- $caSecret := lookup "v1" "Secret" $caNamespace .root.Values.controlPlaneTLS.caSecretName }}
 {{- if $caSecret }}
 {{- $ca := buildCustomCert (index $caSecret.data "ca.crt") (index $caSecret.data "ca.key") }}
 {{- $caHash := index $caSecret.data "ca.crt" | b64dec | sha256sum }}
@@ -30,7 +33,15 @@ Parameters (passed as a dict):
 
 {{- /* Generate new server certificate if needed */ -}}
 {{- if $regenerate }}
-  {{- $dnsNames := list .dnsBase (printf "%s.%s" .dnsBase .root.Release.Namespace) (printf "%s.%s.svc" .dnsBase .root.Release.Namespace) (printf "%s.%s.svc.cluster.local" .dnsBase .root.Release.Namespace) }}
+  {{- $ns := .root.Release.Namespace }}
+  {{- $allBases := prepend (.extraDnsBases | default list) .dnsBase }}
+  {{- $dnsNames := list }}
+  {{- range $allBases }}
+    {{- $dnsNames = append $dnsNames . }}
+    {{- $dnsNames = append $dnsNames (printf "%s.%s" . $ns) }}
+    {{- $dnsNames = append $dnsNames (printf "%s.%s.svc" . $ns) }}
+    {{- $dnsNames = append $dnsNames (printf "%s.%s.svc.cluster.local" . $ns) }}
+  {{- end }}
   {{- $cert = genSignedCert .cn nil $dnsNames 3650 $ca }}
 {{- end }}
 ---
@@ -47,7 +58,7 @@ data:
   tls.crt: {{ $cert.Cert | b64enc }}
   tls.key: {{ $cert.Key | b64enc }}
 {{- else if .root.Values.controlPlaneTLS.required }}
-{{- fail (printf "controlPlaneTLS is required but CA secret '%s' not found in namespace '%s'" .root.Values.controlPlaneTLS.caSecretName .root.Release.Namespace) }}
+{{- fail (printf "controlPlaneTLS is required but CA secret '%s' not found in namespace '%s'" .root.Values.controlPlaneTLS.caSecretName $caNamespace) }}
 {{- end }}
 {{- end }}
 {{- end -}}
@@ -55,10 +66,12 @@ data:
 {{/*
 Pod annotation for tracking CA certificate changes.
 Triggers pod restart when the CA cert is rotated.
+Uses caSourceNamespace if set, otherwise falls back to Release.Namespace.
 */}}
 {{- define "wiz.controlplane-tls-ca-hash-annotation" -}}
 {{- if .Values.controlPlaneTLS.enabled }}
-{{- $caConfigMap := lookup "v1" "ConfigMap" .Release.Namespace .Values.controlPlaneTLS.caConfigMapName }}
+{{- $ns := .Values.controlPlaneTLS.caSourceNamespace | default .Release.Namespace }}
+{{- $caConfigMap := lookup "v1" "ConfigMap" $ns .Values.controlPlaneTLS.caConfigMapName }}
 {{- if $caConfigMap }}
 wiz.io/control-plane-ca-hash: {{ index $caConfigMap.data "ca.crt" | sha256sum | quote }}
 {{- end }}
@@ -67,10 +80,12 @@ wiz.io/control-plane-ca-hash: {{ index $caConfigMap.data "ca.crt" | sha256sum | 
 
 {{/*
 Returns "true" when control plane TLS is active: enabled AND either required or
-the CA ConfigMap already exists in the cluster. Accepts the chart root context.
+the CA ConfigMap already exists in the cluster. Uses caSourceNamespace if set,
+otherwise falls back to Release.Namespace.
 */}}
 {{- define "wiz.controlplane-tls-active" -}}
-{{- if and .Values.controlPlaneTLS.enabled (or .Values.controlPlaneTLS.required (lookup "v1" "ConfigMap" .Release.Namespace .Values.controlPlaneTLS.caConfigMapName)) }}true{{- end }}
+{{- $ns := .Values.controlPlaneTLS.caSourceNamespace | default .Release.Namespace }}
+{{- if and .Values.controlPlaneTLS.enabled (or .Values.controlPlaneTLS.required (lookup "v1" "ConfigMap" $ns .Values.controlPlaneTLS.caConfigMapName)) }}true{{- end }}
 {{- end -}}
 
 {{/*

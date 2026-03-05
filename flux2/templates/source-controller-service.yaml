@@ -17,10 +17,7 @@ metadata:
   {{- end }}
 spec:
   ports:
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: http
+  {{- include "flux2.wiz-source-controller-service-port" . | nindent 2 }}
   {{- if .Values.sourceController.service.ports }}
   {{- toYaml .Values.sourceController.service.ports | nindent 2 }}
   {{- end}}

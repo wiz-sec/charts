@@ -11,8 +11,8 @@ rules:
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list", "watch"]
-  # Helm operations - required to manage helm releases (stored as secrets)
+  # Namespace operations - read-only for discovery, namespaces are pre-created
   - apiGroups: [""]
-    resources: ["secrets"]
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+    resources: ["namespaces"]
+    verbs: ["get", "list"]
 {{- end }}
