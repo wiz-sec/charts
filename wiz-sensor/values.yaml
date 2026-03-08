@@ -96,6 +96,10 @@ disallowForensicsCollection: false
 # set to true to run the sensor in the host network namespace
 hostNetwork: false
 
+# Override the pod's DNS policy. When empty, defaults to "ClusterFirstWithHostNet"
+# if hostNetwork is true, otherwise uses Kubernetes default ("ClusterFirst").
+dnsPolicy: ""
+
 # A range of seconds. Given a value X, the Sensor will choose a random value R between 0 and X.
 # It will then delay its start by R seconds. This can be useful to reduce load on shared resources
 # (mainly API-server) when a large amount of Sensors are starting concurrently.

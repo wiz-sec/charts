@@ -52,7 +52,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ printf "%s-%s" .Chart.Name .runner }}
-          image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}{{ .Values.image.tagSuffix }}"
+          image: "{{ include "wiz-outpost-lite.imageRepository" . }}/{{ .Values.image.name }}:{{ .Values.image.tag }}{{ .Values.image.tagSuffix }}"
           command: [ "/entrypoint"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.extraEnvConfigMap }}

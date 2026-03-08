@@ -65,6 +65,10 @@ spec:
 
       {{- if .Values.hostNetwork }}
       hostNetwork: true
+      {{- end }}
+      {{- if .Values.dnsPolicy }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      {{- else if .Values.hostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
 
@@ -287,6 +291,10 @@ spec:
               divisor: "1m"
         {{- if .Values.disallowRuntimeResponse }}
         - name: DISALLOW_RUNTIME_RESPONSE
+          value: "true"
+        {{- end}}
+        {{- if .Values.privileged }}
+        - name: PRIVILEGED_INSTALL
           value: "true"
         {{- end}}
         {{- if .Values.startDelayRange }}

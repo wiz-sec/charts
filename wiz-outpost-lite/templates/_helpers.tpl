@@ -53,6 +53,20 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
+Determine the image repository based on environment.
+If env starts with "fed" and repository is the default, use FedRAMP registry.
+*/}}
+{{- define "wiz-outpost-lite.imageRepository" -}}
+{{- $defaultRepo := "wizio.azurecr.io" -}}
+{{- $fedRepo := "wizfedramp.azurecr.us" -}}
+{{- if and (hasPrefix "fed" .Values.agent.env) (eq .Values.image.repository $defaultRepo) -}}
+{{- $fedRepo -}}
+{{- else -}}
+{{- .Values.image.repository -}}
+{{- end -}}
+{{- end }}
+
+{{/*
 Selector labels
 */}}
 {{- define "wiz-outpost-lite.selectorLabels" -}}
