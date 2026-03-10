@@ -13,7 +13,7 @@ spec:
     metadata:
       annotations:
         wiz.io/service-version: {{ .Values.image.tag | quote }}
-        {{- include "wiz.controlplane-tls-ca-hash-annotation" . | nindent 8 }}
+        {{- include "wiz.controlplane-tls-server-cert-hash-annotation" . | nindent 8 }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

@@ -1,2 +1,2 @@
 {{- /* WIZ: Generate source-controller server cert for controlPlaneTLS */ -}}
-{{- include "wiz.controlplane-server-cert" (dict "root" . "cn" "source-controller" "dnsBase" "source-controller" "labelTemplate" "flux2.labels" "caNamespace" .Values.controlPlaneTLS.caSourceNamespace) }}
+{{- include "wiz.controlplane-server-certs" . }}

@@ -27,7 +27,7 @@ When syncing with the upstream fluxcd-community chart:
 
 | Where | What to add |
 |-------|-------------|
-| Inside `{{- with .Values.sourceController.annotations }}` block, after `{{ toYaml . \| nindent 8 }}` | `{{- include "wiz.controlplane-tls-ca-hash-annotation" $ \| nindent 8 }}` |
+| Inside `{{- with .Values.sourceController.annotations }}` block, after `{{ toYaml . \| nindent 8 }}` | `{{- include "wiz.controlplane-tls-server-cert-hash-annotation" $ \| nindent 8 }}` |
 | In the `--storage-adv-addr=` argument, add scheme prefix after `=` | `{{ include "flux2.wiz-tls-scheme" . }}` (inline, e.g. `--storage-adv-addr={{ include "flux2.wiz-tls-scheme" . }}source-controller...`) |
 | After the `sourceController.extraEnv` block | `{{- include "flux2.wiz-source-controller-env" . \| nindent 8 }}` |
 | After the `sourceController.volumeMounts` block | `{{- include "flux2.wiz-source-controller-vmounts" . \| nindent 8 }}` |

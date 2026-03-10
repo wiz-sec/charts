@@ -11,8 +11,15 @@ rules:
   - apiGroups: [""]
     resources: ["nodes"]
     verbs: ["get", "list", "watch"]
-  # Namespace operations - read-only for discovery, namespaces are pre-created
+  # Namespace operations - required for Helm deployments (CreateNamespace=true in code)
   - apiGroups: [""]
     resources: ["namespaces"]
+    verbs: ["get", "list", "create"]
+  # Helm release metadata - read-only cluster-wide access required by Helm client
+  # Note: Helm stores release metadata in secrets and the controller's Helm client
+  # requires cluster-wide read access. Write access to secrets is restricted to
+  # the wiz-default and wiz-flux-system namespaces via namespace-scoped Roles.
+  - apiGroups: [""]
+    resources: ["secrets"]
     verbs: ["get", "list"]
 {{- end }}

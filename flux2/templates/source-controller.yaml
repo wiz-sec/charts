@@ -26,7 +26,7 @@ spec:
     metadata:
       {{- with .Values.sourceController.annotations }}
       annotations: {{ toYaml . | nindent 8 }}
-        {{- include "wiz.controlplane-tls-ca-hash-annotation" $ | nindent 8 }}
+        {{- include "wiz.controlplane-tls-server-cert-hash-annotation" $ | nindent 8 }}
       {{- end }}
       labels:
         app: source-controller
