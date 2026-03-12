@@ -1,4 +1,42 @@
 {{/*
+================================================================================
+Control Plane TLS — CA Rotation Design
+================================================================================
+
+Architecture:
+  The wiz-outpost-configuration chart (controlplane-cert.secret.yaml) owns the
+  CA lifecycle: it creates the CA Secret, CA ConfigMap (trust bundle), and client
+  certificate. Consumer charts (diskanalyzer-operator, etc.) use _this_ template
+  library to generate server certificates signed by that CA.
+
+  wiz-outpost-configuration is always applied as a separate Helm release BEFORE
+  the consumer charts, so lookup calls here see the fully-applied CA resources.
+  This means current-ca is always the CA that pods trust, and server certs can
+  be signed with it directly — no signing CA selection needed.
+
+CA naming (see controlplane-cert.secret.yaml for full lifecycle docs):
+  - current-ca: the trusted CA, always used for signing.
+  - next-ca: a newly generated CA waiting for promotion.
+  - retiring-ca: the old current-ca after promotion, kept for trust continuity.
+
+Resource layout:
+  CA Secret        — current-ca.crt/key, next-ca.crt/key, retiring-ca.crt/key
+  CA ConfigMap     — ca.crt (PEM trust bundle: current + next or retiring)
+  Client cert      — tls.crt, tls.key (signed by current CA)
+  Server certs     — tls.crt, tls.key per service (signed by current CA)
+
+Pod restart annotations:
+  - wiz.io/control-plane-ca-hash: hash of ConfigMap ca.crt (trust bundle).
+    Used by pods that only mount CA/client certs. Changes when bundle changes.
+  - wiz.io/control-plane-cert-hash: hash of all server cert inputs (CA hash,
+    cert logic version, serverCertGeneration, DNS names). Used by pods that
+    mount server certs. Since the hash is derived from ConfigMap data, pods
+    won't restart until the ConfigMap is current — preventing restarts into a
+    state where new certs can't be verified.
+================================================================================
+*/}}
+
+{{/*
 Version of the shared cert generation logic. Bump when changing DNS expansion,
 cert validity, SAN construction, or any other shared cert generation behavior.
 */}}
@@ -62,11 +100,17 @@ Usage:
   {{- include "wiz.controlplane-server-certs" . }}
 */}}
 {{- define "wiz.controlplane-server-certs" -}}
-{{- if .Values.controlPlaneTLS.enabled }}
+{{- if include "wiz.controlplane-tls-active" . }}
 {{- $caNamespace := .Values.controlPlaneTLS.caSourceNamespace | default .Release.Namespace }}
 {{- $caSecret := lookup "v1" "Secret" $caNamespace .Values.controlPlaneTLS.caSecretName }}
-{{- if $caSecret }}
-{{- $ca := buildCustomCert (index $caSecret.data "ca.crt") (index $caSecret.data "ca.key") }}
+{{- if not $caSecret }}
+  {{- fail (printf "controlPlaneTLS is active but CA secret '%s' not found in namespace '%s'" .Values.controlPlaneTLS.caSecretName $caNamespace) }}
+{{- end }}
+{{- /* current-ca is always the trusted CA — no signing CA selection needed.
+       wiz-outpost-configuration is applied before consumer charts, so current-ca
+       is always the CA that pods trust. */ -}}
+{{- $ca := buildCustomCert (index $caSecret.data "current-ca.crt") (index $caSecret.data "current-ca.key") }}
+
 {{- $certHash := include "wiz.controlplane-server-cert-hash" . }}
 {{- $labelTemplate := .Values.controlPlaneTLS.labelTemplate }}
 {{- $ns := .Release.Namespace }}
@@ -123,9 +167,6 @@ data:
 {{- end }}
 {{- end }}
 
-{{- else if .Values.controlPlaneTLS.required }}
-{{- fail (printf "controlPlaneTLS is required but CA secret '%s' not found in namespace '%s'" .Values.controlPlaneTLS.caSecretName $caNamespace) }}
-{{- end }}
 {{- end }}
 {{- end -}}
 
@@ -136,20 +177,21 @@ Use on deployments that only mount CA/client certs (not server certs).
 Uses caSourceNamespace if set, otherwise falls back to Release.Namespace.
 */}}
 {{- define "wiz.controlplane-tls-ca-hash-annotation" -}}
-{{- if .Values.controlPlaneTLS.enabled }}
+{{- if include "wiz.controlplane-tls-active" . }}
 {{- $ns := .Values.controlPlaneTLS.caSourceNamespace | default .Release.Namespace }}
 {{- $caConfigMap := lookup "v1" "ConfigMap" $ns .Values.controlPlaneTLS.caConfigMapName }}
-{{- if $caConfigMap }}
-wiz.io/control-plane-ca-hash: {{ index $caConfigMap.data "ca.crt" | sha256sum | quote }}
+{{- if not $caConfigMap }}
+  {{- fail (printf "controlPlaneTLS is active but CA ConfigMap '%s' not found in namespace '%s'" .Values.controlPlaneTLS.caConfigMapName $ns) }}
 {{- end }}
+wiz.io/control-plane-ca-hash: {{ index $caConfigMap.data "ca.crt" | sha256sum | quote }}
 {{- end }}
 {{- end -}}
 
 {{/*
 Computes the combined server certificate hash from all cert inputs.
-Returns the sha256 hash string, or empty if the CA ConfigMap is not found.
+Callers must check wiz.controlplane-tls-active before calling this.
 
-Inputs hashed: CA cert, commonCertLogicVersion, serverCertGeneration,
+Inputs hashed: CA trust bundle, certLogicVersion, serverCertGeneration,
 and each enabled serverCerts entry's CN + DNS names.
 
 Usage:
@@ -158,7 +200,9 @@ Usage:
 {{- define "wiz.controlplane-server-cert-hash" -}}
 {{- $ns := .Values.controlPlaneTLS.caSourceNamespace | default .Release.Namespace }}
 {{- $caConfigMap := lookup "v1" "ConfigMap" $ns .Values.controlPlaneTLS.caConfigMapName }}
-{{- if $caConfigMap }}
+{{- if not $caConfigMap }}
+  {{- fail (printf "controlPlaneTLS is active but CA ConfigMap '%s' not found in namespace '%s'" .Values.controlPlaneTLS.caConfigMapName $ns) }}
+{{- end }}
 {{- $certs := list }}
 {{- range $certEntry := .Values.controlPlaneTLS.serverCerts }}
   {{- if include "wiz.controlplane-cert-entry-enabled" (dict "certEntry" $certEntry "root" $) }}
@@ -167,7 +211,6 @@ Usage:
   {{- end }}
 {{- end }}
 {{- dict "caHash" (index $caConfigMap.data "ca.crt" | sha256sum) "certLogicVersion" (include "wiz.controlplane-cert-logic-version" .) "serverCertGeneration" .Values.controlPlaneTLS.serverCertGeneration "certs" $certs | toJson | sha256sum }}
-{{- end }}
 {{- end -}}
 
 {{/*
@@ -182,22 +225,24 @@ Usage:
   {{- include "wiz.controlplane-tls-server-cert-hash-annotation" . | nindent 8 }}
 */}}
 {{- define "wiz.controlplane-tls-server-cert-hash-annotation" -}}
-{{- if .Values.controlPlaneTLS.enabled }}
-{{- $hash := include "wiz.controlplane-server-cert-hash" . }}
-{{- if $hash }}
-wiz.io/control-plane-cert-hash: {{ $hash | quote }}
-{{- end }}
+{{- if include "wiz.controlplane-tls-active" . }}
+wiz.io/control-plane-cert-hash: {{ include "wiz.controlplane-server-cert-hash" . | quote }}
 {{- end }}
 {{- end -}}
 
 {{/*
-Returns "true" when control plane TLS is active: enabled AND either required or
-the CA ConfigMap already exists in the cluster. Uses caSourceNamespace if set,
-otherwise falls back to Release.Namespace.
+Returns "true" when control plane TLS is active: enabled AND the CA ConfigMap
+exists in the cluster. Fails if enabled AND required but ConfigMap is missing.
+Uses caSourceNamespace if set, otherwise falls back to Release.Namespace.
 */}}
 {{- define "wiz.controlplane-tls-active" -}}
+{{- if .Values.controlPlaneTLS.enabled }}
 {{- $ns := .Values.controlPlaneTLS.caSourceNamespace | default .Release.Namespace }}
-{{- if and .Values.controlPlaneTLS.enabled (or .Values.controlPlaneTLS.required (lookup "v1" "ConfigMap" $ns .Values.controlPlaneTLS.caConfigMapName)) }}true{{- end }}
+{{- if lookup "v1" "ConfigMap" $ns .Values.controlPlaneTLS.caConfigMapName }}true
+{{- else if .Values.controlPlaneTLS.required }}
+{{- fail (printf "controlPlaneTLS is required but CA ConfigMap '%s' not found in namespace '%s'" .Values.controlPlaneTLS.caConfigMapName $ns) }}
+{{- end }}
+{{- end }}
 {{- end -}}
 
 {{/*

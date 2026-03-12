@@ -27,7 +27,7 @@ When syncing with the upstream fluxcd-community chart:
 
 | Where | What to add |
 |-------|-------------|
-| Inside `{{- with .Values.sourceController.annotations }}` block, after `{{ toYaml . \| nindent 8 }}` | `{{- include "wiz.controlplane-tls-server-cert-hash-annotation" $ \| nindent 8 }}` |
+| Replace the upstream `{{- with .Values.sourceController.annotations }}` block (annotations through `{{- end }}`) | `{{- include "flux2.wiz-source-controller-pod-annotations" . \| nindent 6 }}` |
 | In the `--storage-adv-addr=` argument, add scheme prefix after `=` | `{{ include "flux2.wiz-tls-scheme" . }}` (inline, e.g. `--storage-adv-addr={{ include "flux2.wiz-tls-scheme" . }}source-controller...`) |
 | After the `sourceController.extraEnv` block | `{{- include "flux2.wiz-source-controller-env" . \| nindent 8 }}` |
 | After the `sourceController.volumeMounts` block | `{{- include "flux2.wiz-source-controller-vmounts" . \| nindent 8 }}` |
@@ -44,7 +44,7 @@ When syncing with the upstream fluxcd-community chart:
 
 | Where | What to add |
 |-------|-------------|
-| Inside `{{- with .Values.helmController.annotations }}` block, after `{{ toYaml . \| nindent 8 }}` | `{{- include "wiz.controlplane-tls-ca-hash-annotation" $ \| nindent 8 }}` |
+| Replace the upstream `{{- with .Values.helmController.annotations }}` block (annotations through `{{- end }}`) | `{{- include "flux2.wiz-helm-controller-pod-annotations" . \| nindent 6 }}` |
 | After the `helmController.extraEnv` block | `{{- include "flux2.wiz-consumer-env" . \| nindent 8 }}` |
 | After the `helmController.volumeMounts` block | `{{- include "flux2.wiz-consumer-vmounts" . \| nindent 8 }}` |
 | After the `helmController.volumes` block | `{{- include "flux2.wiz-consumer-vols" . \| nindent 6 }}` |
@@ -53,7 +53,7 @@ When syncing with the upstream fluxcd-community chart:
 
 | Where | What to add |
 |-------|-------------|
-| Inside `{{- with .Values.kustomizeController.annotations }}` block, after `{{ toYaml . \| nindent 8 }}` | `{{- include "wiz.controlplane-tls-ca-hash-annotation" $ \| nindent 8 }}` |
+| Replace the upstream `{{- with .Values.kustomizeController.annotations }}` block (annotations through `{{- end }}`) | `{{- include "flux2.wiz-kustomize-controller-pod-annotations" . \| nindent 6 }}` |
 | After the `kustomizeController.extraEnv` block | `{{- include "flux2.wiz-consumer-env" . \| nindent 8 }}` |
 | After the `kustomizeController.volumeMounts` block | `{{- include "flux2.wiz-consumer-vmounts" . \| nindent 8 }}` |
 | After the `kustomizeController.extraSecretMounts` volumes block | `{{- include "flux2.wiz-consumer-vols" . \| nindent 6 }}` |

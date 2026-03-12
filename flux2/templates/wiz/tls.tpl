@@ -13,6 +13,23 @@ app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 {{- end -}}
 
+{{/*
+Pod annotations for source-controller: merges user annotations with the server cert hash annotation.
+Outputs the full annotations: block, or nothing if both are empty.
+*/}}
+{{- define "flux2.wiz-source-controller-pod-annotations" -}}
+{{- $tlsAnnotation := include "wiz.controlplane-tls-server-cert-hash-annotation" . -}}
+{{- if or .Values.sourceController.annotations $tlsAnnotation -}}
+annotations:
+  {{- with .Values.sourceController.annotations }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- with $tlsAnnotation }}
+  {{- . | nindent 2 }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
 {{/* ---- Source-controller (server side) ---- */}}
 
 {{/*
@@ -119,6 +136,40 @@ Service port for source-controller: HTTPS (443→https) when TLS is active, HTTP
   port: 80
   protocol: TCP
   targetPort: http
+{{- end }}
+{{- end -}}
+
+{{/*
+Pod annotations for helm-controller: merges user annotations with the CA hash annotation.
+Outputs the full annotations: block, or nothing if both are empty.
+*/}}
+{{- define "flux2.wiz-helm-controller-pod-annotations" -}}
+{{- $tlsAnnotation := include "wiz.controlplane-tls-ca-hash-annotation" . -}}
+{{- if or .Values.helmController.annotations $tlsAnnotation -}}
+annotations:
+  {{- with .Values.helmController.annotations }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- with $tlsAnnotation }}
+  {{- . | nindent 2 }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Pod annotations for kustomize-controller: merges user annotations with the CA hash annotation.
+Outputs the full annotations: block, or nothing if both are empty.
+*/}}
+{{- define "flux2.wiz-kustomize-controller-pod-annotations" -}}
+{{- $tlsAnnotation := include "wiz.controlplane-tls-ca-hash-annotation" . -}}
+{{- if or .Values.kustomizeController.annotations $tlsAnnotation -}}
+annotations:
+  {{- with .Values.kustomizeController.annotations }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+  {{- with $tlsAnnotation }}
+  {{- . | nindent 2 }}
+  {{- end }}
 {{- end }}
 {{- end -}}
 

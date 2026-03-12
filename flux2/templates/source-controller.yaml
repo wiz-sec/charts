@@ -24,10 +24,7 @@ spec:
     type: Recreate
   template:
     metadata:
-      {{- with .Values.sourceController.annotations }}
-      annotations: {{ toYaml . | nindent 8 }}
-        {{- include "wiz.controlplane-tls-server-cert-hash-annotation" $ | nindent 8 }}
-      {{- end }}
+      {{- include "flux2.wiz-source-controller-pod-annotations" . | nindent 6 }}
       labels:
         app: source-controller
 {{ with .Values.sourceController.labels }}{{ toYaml . | indent 8 }}{{ end }}
