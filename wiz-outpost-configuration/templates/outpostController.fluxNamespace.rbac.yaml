@@ -12,7 +12,7 @@ metadata:
     app.kubernetes.io/component: outpost-controller
 rules:
   - apiGroups: [""]
-    resources: ["secrets", "configmaps"]
+    resources: ["secrets", "configmaps", "events"]
     verbs: ["get", "list", "watch", "create", "update", "delete"]
   - apiGroups: ["source.toolkit.fluxcd.io"]
     resources: ["gitrepositories"]

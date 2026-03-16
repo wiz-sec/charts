@@ -98,9 +98,18 @@ networkAnalyzer:
 outpostController:
   enabled: false
   serviceAccountName: outpost-controller-sa
-  # When true, use reduced permissions instead of cluster-admin.
-  # Only use this when the outpost-controller will only install git-proxy (FluxCRsOnly mode).
-  # Requires the namespace to be pre-created.
+  # When true, use a constrained cluster role instead of cluster-admin.
+  # This mode is intended only for Git‑proxy (FluxCRsOnly) deployments; the
+  # controller will *not* be granted cluster-admin, but it will still be able
+  # to do what Helm needs:
+  #   * read nodes (health checks)
+  #   * create/get/list namespaces (the namespace must already exist when
+  #     reducedPermissions is enabled)
+  #   * read secrets cluster-wide for Helm release metadata
+  #   * manage the Flux CRDs (helmreleases, kustomizations, gitrepositories,
+  #     etc.) – the chart installs these on startup.
+  # If you need any other cluster-scoped permissions, either leave this set to
+  # false or add additional rules to the ClusterRole template above.
   reducedPermissions: false
   # Flux namespace for RBAC (secrets, configmaps, gitrepositories, kustomizations).
   # When set, creates Role and RoleBinding in this namespace.
