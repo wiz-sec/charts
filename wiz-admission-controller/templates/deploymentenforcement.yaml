@@ -149,6 +149,14 @@ spec:
             value: {{ .Values.imageRegistryClient.ignoreMissingSecretError | quote }}
           - name: WIZ_REGISTRY_IMAGE_PULL_SECRET_RELOAD_INTERVAL
             value: {{ .Values.imageRegistryClient.cacheImagePullSecretsInterval | quote }}
+          {{- if .Values.imageRegistryClient.registryMapping }}
+          - name: WIZ_REGISTRY_MAPPING
+            value: {{ .Values.imageRegistryClient.registryMapping | toJson | quote }}
+          {{- end }}
+          {{- if .Values.imageRegistryClient.registryMappingConfigMap.name }}
+          - name: WIZ_REGISTRY_MAPPING_FILE
+            value: "/var/registry-mapping/{{ .Values.imageRegistryClient.registryMappingConfigMap.key }}"
+          {{- end }}
           {{- if .Values.opaWebhook.detailedErrorMessages.enabled }}
           - name: WIZ_MISCONFIGURATION_DETAILED_ERROR_MESSAGES_ENABLED
             value: "true"
@@ -175,6 +183,11 @@ spec:
           - mountPath: /var/server-certs
             name: server-certs
             readOnly: true
+          {{- if .Values.imageRegistryClient.registryMappingConfigMap.name }}
+          - mountPath: /var/registry-mapping
+            name: registry-mapping
+            readOnly: true
+          {{- end }}
           {{- with .Values.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
@@ -189,6 +202,11 @@ spec:
           secret:
             defaultMode: 444
             secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+        {{- if .Values.imageRegistryClient.registryMappingConfigMap.name }}
+        - name: registry-mapping
+          configMap:
+            name: {{ .Values.imageRegistryClient.registryMappingConfigMap.name }}
+        {{- end }}
         {{- with .Values.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
