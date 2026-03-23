@@ -77,6 +77,32 @@ wiz.io/runner: {{ .runner | quote }}
 {{- end }}
 {{- end }}
 
+{{/*
+Get the Kubernetes version, with support for mocking in tests.
+*/}}
+{{- define "wiz-outpost-lite.kubeVersion" -}}
+{{- if and .Values.mockCapabilities .Values.mockCapabilities.kubeVersion .Values.mockCapabilities.kubeVersion.version -}}
+{{- .Values.mockCapabilities.kubeVersion.version -}}
+{{- else -}}
+{{- printf "%s.%s" (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Major "") (regexReplaceAll "[^0-9]" .Capabilities.KubeVersion.Minor "") -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Convert annotation-style AppArmor profile to field-based appArmorProfile.
+Maps: "unconfined" -> Unconfined, "runtime/default" -> RuntimeDefault, "localhost/<name>" -> Localhost with localhostProfile.
+*/}}
+{{- define "wiz-outpost-lite.appArmorProfileType" -}}
+{{- if eq . "unconfined" -}}
+Unconfined
+{{- else if eq . "runtime/default" -}}
+RuntimeDefault
+{{- else if hasPrefix "localhost/" . -}}
+Localhost
+{{- end -}}
+{{- end -}}
+
 {{- define "wiz-outpost-lite.runners" -}}
 {{- $runnerValues := dict }}
 {{- range $runner, $values := $.Values.runners }}

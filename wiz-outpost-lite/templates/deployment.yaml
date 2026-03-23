@@ -1,6 +1,9 @@
+{{- $kubeVersion := include "wiz-outpost-lite.kubeVersion" $ -}}
 {{- range $values := (include "wiz-outpost-lite.runners" . | fromJson) }}
 {{- with merge $values (omit $ "Values") }}
 {{- if .Values.enabled }}
+{{- $useAppArmorAnnotation := and .Values.apparmorProfile (semverCompare "<1.31" $kubeVersion) -}}
+{{- $useAppArmorField := and .Values.apparmorProfile (semverCompare ">=1.30" $kubeVersion) -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,12 +20,12 @@ spec:
       {{- include "wiz-outpost-lite.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- if or .Values.podAnnotations .Values.apparmorProfile }}
+      {{- if or .Values.podAnnotations $useAppArmorAnnotation }}
       annotations:
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-        {{- if .Values.apparmorProfile }}
+        {{- if $useAppArmorAnnotation }}
         container.apparmor.security.beta.kubernetes.io/{{ printf "%s-%s" .Chart.Name .runner }}: {{ .Values.apparmorProfile }}
         {{- end }}
       {{- end }}
@@ -155,9 +158,20 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.containerSecurityContext }}
+          {{- if or .Values.containerSecurityContext $useAppArmorField }}
           securityContext:
+            {{- $csc := .Values.containerSecurityContext }}
+            {{- if $useAppArmorField }}{{- $csc = omit $csc "appArmorProfile" }}{{- end }}
+            {{- with $csc }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- if $useAppArmorField }}
+            appArmorProfile:
+              type: {{ include "wiz-outpost-lite.appArmorProfileType" .Values.apparmorProfile }}
+              {{- if hasPrefix "localhost/" .Values.apparmorProfile }}
+              localhostProfile: {{ trimPrefix "localhost/" .Values.apparmorProfile }}
+              {{- end }}
+            {{- end }}
           {{- end }}
           volumeMounts:
             - mountPath: /var/wiz
