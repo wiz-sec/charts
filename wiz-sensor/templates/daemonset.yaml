@@ -329,6 +329,10 @@ spec:
         - name: DISABLE_FORENSICS
           value: "true"
         {{- end}}
+        {{- if .Values.disableRuntimeDetection }}
+        - name: DISABLE_RUNTIME_DETECTION
+          value: "true"
+        {{- end}}
         {{- if .Values.openshift }}
         - name: OPENSHIFT
           value: "true"
@@ -342,6 +346,10 @@ spec:
         {{- end }}
         {{- with .Values.global.podCustomEnvironmentVariables }}
           {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.global.wizApiToken.wizApiTokensVolumeMount }}
+        - name: WIZ_API_CONFIG_DIR
+          value: {{ .Values.global.wizApiToken.wizApiTokensVolumeMount | quote }}
         {{- end }}
         {{- if .Values.fixedDefsVersion }}
         - name: FIXED_DEFS_VERSION

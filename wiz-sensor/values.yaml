@@ -93,6 +93,11 @@ disallowRuntimeResponse: false
 # set to true to disallow forensics collection from the sensor for this deployment
 disallowForensicsCollection: false
 
+# set to true to disable runtime detection.
+# Vulnerability scanning via the disk scanner remains enabled.
+# Requires diskScan.enabled=true.
+disableRuntimeDetection: false
+
 # set to true to run the sensor in the host network namespace
 hostNetwork: false
 

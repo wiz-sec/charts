@@ -1,7 +1,6 @@
 apiVersion: v2
 name: wiz-outpost-configuration
 description: A Helm chart for Kubernetes
-
 type: application
-version: 2026.3.16
+version: 2026.3.23
 appVersion: 0.0.1

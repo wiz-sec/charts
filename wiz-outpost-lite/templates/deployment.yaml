@@ -3,7 +3,7 @@
 {{- with merge $values (omit $ "Values") }}
 {{- if .Values.enabled }}
 {{- $useAppArmorAnnotation := and .Values.apparmorProfile (semverCompare "<1.31" $kubeVersion) -}}
-{{- $useAppArmorField := and .Values.apparmorProfile (semverCompare ">=1.30" $kubeVersion) -}}
+{{- $useAppArmorField := and .Values.apparmorProfile (semverCompare ">=1.30" $kubeVersion) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:

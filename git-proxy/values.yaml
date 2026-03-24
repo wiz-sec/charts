@@ -28,14 +28,12 @@ blob:
   containerName: gitops-state
   globalStorageAccountIP: ""
   storageAccountDomain: core.windows.net
-
 wiz:
   secretName: wiz-outpost-agent-creds
   env: ""
   outpostId: ""
   serviceType: ""
   dataCenter: ""
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
@@ -44,66 +42,53 @@ serviceAccount:
   # The name of the service account to use.
   # If empty, a name is generated using the fullname template
   name: ""
-
 objectstorage:
   region:
   namespaceName:
   bucketName:
-
 oss:
   oidcProviderARN: ""
   roleARN: ""
   region:
   bucketName:
-
 image:
   repository: public-registry.wiz.io
   namePrefix: wiz-git-proxy
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "9d5301eac87c37db870395ac1b36f1361285532b-multiarch"
+  tag: "29346d87f15f40e4e8312cf07f70370d54fb3977-multiarch"
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
 podAnnotations: {}
-
 service:
   type: ClusterIP
   port: 8080
   grpcPort: 3000
-
-resources:
-  {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources: {}
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+# limits:
+#   cpu: 100m
+#   memory: 128Mi
+# requests:
+#   cpu: 100m
+#   memory: 128Mi
 
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}
 hostpathCopier:
   image:
     name: wiz-busybox
     tag: 1.36.0
-
 internetAccessCertificates:
   skipSslValidation: false
-
 extraEnv: {}
-
 httpProxyConfiguration:
   name: wiz-http-proxy-configuration
-
 # Control plane TLS configuration
 # When enabled, generates and mounts TLS certificates for secure gRPC communication
 controlPlaneTLS:

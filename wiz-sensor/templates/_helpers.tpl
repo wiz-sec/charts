@@ -229,6 +229,10 @@ Rule Validation
 {{- fail "diskScan is not supported on GKE Autopilot" }}
 {{- end }}
 
+{{- if and .Values.disableRuntimeDetection (not .Values.diskScan.enabled) }}
+{{- fail "disableRuntimeDetection requires diskScan to be enabled (set diskScan.enabled=true)" }}
+{{- end }}
+
 {{- if .Values.gkeAutopilot }}
 {{- $limits := .Values.daemonset.resources.limits }}
 {{- if .Values.apiSecurity.enabled }}
