@@ -2217,20 +2217,6 @@ entries:
   wiz-admission-controller:
   - apiVersion: v2
     appVersion: "2.12"
-    created: "2026-03-26T09:21:32.676091166Z"
-    dependencies:
-    - name: wiz-common
-      repository: https://wiz-sec.github.io/charts
-      version: 0.1.9
-    description: Wiz admission controller
-    digest: f0da0eaa1f25c6d83e340c370d1d9735949c089ff8f5f206f3c48f0560455db5
-    name: wiz-admission-controller
-    type: application
-    urls:
-    - https://wiz-sec.github.io/charts/wiz-admission-controller-3.12.11.tgz
-    version: 3.12.11
-  - apiVersion: v2
-    appVersion: "2.12"
     created: "2026-03-26T09:21:32.673365219Z"
     dependencies:
     - name: wiz-common
