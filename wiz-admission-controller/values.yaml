@@ -531,32 +531,6 @@ imageRegistryClient:
   # Ignore missing secret error on startup, the admission controller will continue to run without the secret value and tries to fetch the secret every cacheImagePullSecretsInterval.
   # Useful when the secret is not available at the time of startup.
   ignoreMissingSecretError: false
-  # Registry URL mapping - redirects digest resolution from source to destination registry.
-  # Use the canonical registry hostname as the key (the hostname that appears after parsing):
-  #   - Docker Hub: use "index.docker.io" (not "docker.io")
-  #   - ECR: use full hostname e.g., "123456789.dkr.ecr.us-east-1.amazonaws.com"
-  #   - JFrog Artifactory: use full hostname e.g., "mycompany.jfrog.io"
-  #   - GCR: use "gcr.io", "us.gcr.io", etc.
-  # For small number of mappings, use inline JSON:
-  # Example: {"index.docker.io": "mirror.docker.io", "gcr.io": "mirror-gcr.mycompany.com"}
-  # Note: When the same key exists in both registryMapping (inline) and registryMappingConfigMap,
-  # the inline value takes precedence.
-  registryMapping: {}
-  # For large number of mappings (100+), use a ConfigMap instead.
-  # The ConfigMap should contain a JSON file with the mapping (same canonical hostname rules apply).
-  # Example ConfigMap:
-  #   apiVersion: v1
-  #   kind: ConfigMap
-  #   metadata:
-  #     name: registry-mappings
-  #   data:
-  #     mappings.json: |
-  #       {"primary.artifactory.mycompany.com": "dr.artifactory.mycompany.com", "index.docker.io": "mirror.docker.io"}
-  registryMappingConfigMap:
-    # Name of the ConfigMap containing registry mappings (leave empty to disable)
-    name: ""
-    # Key in the ConfigMap containing the JSON mapping
-    key: "mappings.json"
 
 kubernetesApiServer:
   cacheNamespaceLabelsTTL: 10m # The interval of the background reloder cache for namespace labels. The cache is used to avoid querying cluster for the same namespace multiple times.
