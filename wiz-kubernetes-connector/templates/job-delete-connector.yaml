@@ -56,7 +56,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.autoCreateConnector.serviceAccount.name }}
+      serviceAccountName: {{ .Values.autoCreateConnector.serviceAccount.name }}-delete
       restartPolicy: "Never"
       securityContext:
         {{- if hasKey .Values.global "lowPrivilegePodSecurityPolicy" }}
