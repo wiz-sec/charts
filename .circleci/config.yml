@@ -1,12 +1,12 @@
 version: 2.1
 orbs:
-  path-filtering: circleci/path-filtering@0.1.3
+  path-filtering: circleci/path-filtering@1.1.0
   continuation: circleci/continuation@0.2.0
 
 executors:
   python:
     docker:
-      - image: cimg/python:3.10
+      - image: 197171649850.dkr.ecr.us-east-2.amazonaws.com/beyond/external/ops-python-only:3.12-main-multiarch
 
 setup: true
 
@@ -38,7 +38,7 @@ jobs:
         description: Mapping of path regular expressions to pipeline parameters and values. One mapping per line, whitespace-delimited.
         type: string
       resource_class:
-        default: small
+        default: wiz-sec/prod-generic-ci-small-amd64
         type: string
       parameters-output-path:
         default: /tmp/pipeline-parameters.json
