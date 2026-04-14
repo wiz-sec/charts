@@ -41,11 +41,9 @@ parameters:
 
 executors:
   ops:
+    resource_class: wiz-sec/prod-generic-ci-small-amd64
     docker:
-      - image: dtzar/helm-kubectl:3.10.2
-  golang:
-    docker:
-      - image: golang:1.23
+      - image: 197171649850.dkr.ecr.us-east-2.amazonaws.com/beyond/external/wiz-ci:stable
 
 commands:
   upload_new_chart:
