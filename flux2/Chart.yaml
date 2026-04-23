@@ -8,8 +8,8 @@ name: flux2
 sources:
   - https://github.com/fluxcd-community/helm-charts
 type: application
-version: 2026.4.16
+version: 2026.4.20
 dependencies:
   - name: wiz-outpost-common
-    version: 2026.4.16
+    version: 2026.4.20
     repository: https://wiz-sec.github.io/charts
