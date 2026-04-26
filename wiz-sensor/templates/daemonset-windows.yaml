@@ -104,8 +104,6 @@ spec:
         {{- end }}
         - name: SENSOR_VERSION
           value: {{ .Values.image.windowsTag | quote }}
-        - name: RUST_LOG
-          value: {{ include "wiz-sensor.fileLogLevel" . | quote }}
         - name: STDOUT_LOG
           value: {{ include "wiz-sensor.stdoutLogLevel" . }}
         - name: POD_IMAGE_TAG

@@ -26,6 +26,7 @@ allowedCapabilities:
   - SYSLOG # syslog
   - CHOWN # Access filesystem with overlayFS.
   - SETPCAP # Drop capabilities when not needed.
+  - LEASE # for safe mmap
 requiredDropCapabilities: null
 fsGroup:
   type: RunAsAny

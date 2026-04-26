@@ -170,14 +170,6 @@ true
 {{/*
 log levels
 */}}
-{{- define "wiz-sensor.fileLogLevel" -}}
-{{- if .Values.debug }}
-{{- "debug" -}}
-{{- else }}
-{{- default "info" .Values.logLevel -}}
-{{- end }}
-{{- end }}
-
 {{- define "wiz-sensor.stdoutLogLevel" -}}
 {{- if .Values.debug }}
 {{- "debug" -}}

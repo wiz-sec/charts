@@ -311,6 +311,19 @@ serviceAccount:
   # covered by the default list.
   rbacGetAll: false
 
+  # Additional CRD API groups the sensor may query for controller resolution.
+  # Only used when rbacGetAll is false.
+  # Added on top of the built-in groups ("", "apps", "batch").
+  # Must match the RBAC permissions granted in clusterrole.yaml.
+  extraControllerApiGroups:
+    - "argoproj.io"
+    - "sparkoperator.k8s.io"
+    - "ray.io"
+    - "tekton.dev"
+    - "composer.cloud.google.com"
+    - "kafka.strimzi.io"
+    - "actions.github.com"
+
 image:
   # Set registry to an empty string if the image is local. The final image pulled is
   # "registry/repository:tag" which defaults to "wizio.azurecr.io/sensor:v1".
@@ -365,12 +378,17 @@ daemonset:
             values:
             - arm64
             - amd64
+            - s390x
 
   tolerations:
-  # Makes pods run on ARM64 as well
+  # Makes pods run on ARM64 and s390x as well
   - key: kubernetes.io/arch
     operator: Equal
     value: arm64
+    effect: NoSchedule
+  - key: kubernetes.io/arch
+    operator: Equal
+    value: s390x
     effect: NoSchedule
   # Make pods run on GKE spot an preemptible nodes
   - key: "cloud.google.com/gke-spot"

@@ -152,6 +152,7 @@ spec:
             - SYS_PTRACE # eBPF
           {{- if not .Values.gkeAutopilot }}
             - SYSLOG # kernel symbol resolve
+            - LEASE # for safe mmap
           {{- end }}
           {{- if not .Values.disallowRuntimeResponse }}
             - KILL # response
@@ -265,8 +266,6 @@ spec:
         {{- end }}
         - name: SENSOR_CLUSTER_NAME
           value: {{ coalesce .Values.global.clusterDisplayName .Values.sensorClusterName }}
-        - name: RUST_LOG
-          value: {{ include "wiz-sensor.fileLogLevel" . }}
         - name: STDOUT_LOG
           value: {{ include "wiz-sensor.stdoutLogLevel" . }}
         {{- if not .Values.gkeAutopilot }}
@@ -362,6 +361,13 @@ spec:
           value: {{ .Values.allowKubeletCommunication | quote }}
         - name: FORCE_KUBELET_COMMUNICATION
           value: {{ .Values.forceKubeletCommunication | quote }}
+        {{- if .Values.serviceAccount.rbacGetAll }}
+        - name: ALLOWED_CONTROLLER_API_GROUPS
+          value: '["*"]'
+        {{- else }}
+        - name: ALLOWED_CONTROLLER_API_GROUPS
+          value: {{ concat (list "" "apps" "batch") .Values.serviceAccount.extraControllerApiGroups | toJson | quote }}
+        {{- end }}
         {{- end }}
 
         volumeMounts:

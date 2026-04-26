@@ -27,16 +27,14 @@ rules:
     verbs: ["get"]
 {{- end }}
 
+{{- if .Values.serviceAccount.extraControllerApiGroups }}
   - apiGroups:
-      - "argoproj.io"
-      - "sparkoperator.k8s.io"
-      - "ray.io"
-      - "tekton.dev"
-      - "composer.cloud.google.com"
-      - "kafka.strimzi.io"
-      - "actions.github.com"
+    {{- range .Values.serviceAccount.extraControllerApiGroups }}
+      - {{ . | quote }}
+    {{- end }}
     resources: ["*"]
     verbs: ["get"]
+{{- end }}
 
 {{- if .Values.serviceAccount.rbacGetAll }}
   - apiGroups: ["*"]
