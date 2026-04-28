@@ -475,7 +475,8 @@ spec:
             - FOWNER # Access filesystem with overlayFS.
             - CHOWN # Access filesystem with overlayFS.
             - SETPCAP # Drop capabilities when not needed.
-            - SYS_PTRACE # Fine-tune OOM behavior
+            - SYS_PTRACE # Fine-tune OOM behavior.
+            - IPC_LOCK # Fine-tune page thrashing behaviour.
           privileged: false
           runAsNonRoot: true
           runAsUser: 2202

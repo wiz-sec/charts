@@ -542,6 +542,14 @@ false
 {{- end }}
 - name: WIZ_CHART_VERSION
   value: "{{ .Chart.Version}}"
+{{- if .Values.memmonitor.enabled }}
+- name: WIZ_MEMMONITOR_ENABLED
+  value: {{ .Values.memmonitor.enabled | quote }}
+- name: WIZ_MEMMONITOR_UPLOAD_ENABLED
+  value: {{ .Values.memmonitor.uploadEnabled | quote }}
+- name: WIZ_MEMMONITOR_MEMORY_LIMIT_RATIO
+  value: {{ .Values.memmonitor.memoryLimitRatio | quote }}
+{{- end }}
 {{- if (or .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage) }}
 - name: WIZ_IMAGE_INTEGRITY_CUSTOM_ERROR_MESSAGE
   value:  "{{ coalesce .Values.imageIntegrityWebhook.customErrorMessage .Values.customErrorMessage }}"

@@ -843,6 +843,19 @@ global:
 #        matchNames:
 #          - wiz
 #
+# Memory monitoring configuration. The admission controller can watch its own
+# memory usage and, when an upper threshold is crossed, capture a heap pprof
+# and upload it to Wiz for diagnosis.
+memmonitor:
+  # When true, sample RSS and trigger a heap profile capture when usage
+  # exceeds `memoryLimitRatio` * cgroup memory limit.
+  enabled: false
+  # When true, upload captured heap profiles to Wiz. When false, profiles
+  # are captured and top memory consuming functions are logged.
+  uploadEnabled: false
+  # Fraction of the cgroup memory limit at which a profile is captured.
+  memoryLimitRatio: 0.9
+
 prometheus:
   enabled: false  # Enable the /metrics endpoint.
   metricsPort: 9090
