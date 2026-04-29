@@ -175,6 +175,10 @@ spec:
           - mountPath: /var/server-certs
             name: server-certs
             readOnly: true
+          {{- if .Values.memmonitor.enabled }}
+          - mountPath: /tmp
+            name: tmp
+          {{- end }}
           {{- with .Values.customVolumeMounts }}
             {{- toYaml . | nindent 10 }}
           {{- end }}
@@ -189,6 +193,11 @@ spec:
           secret:
             defaultMode: 444
             secretName: {{ include "wiz-admission-controller.secretServerCert" . | trim }}
+        {{- if .Values.memmonitor.enabled }}
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi
+        {{- end }}
         {{- with .Values.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
