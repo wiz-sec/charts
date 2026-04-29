@@ -29,13 +29,41 @@ supplementalGroups:
   type: RunAsAny
 seccompProfiles:
   - '*'
-users:
-- system:serviceaccount:{{ .Release.Namespace }}:sa-{{ .runner }}
+users: []
 volumes:
   - downwardAPI
   - emptyDir
   - hostPath
   - secret
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "wiz-outpost-lite.fullname" . }}-scc
+  labels: {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - security.openshift.io
+  resourceNames:
+  - {{ include "wiz-outpost-lite.fullname" . }}-scc
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "wiz-outpost-lite.fullname" . }}-scc
+  labels: {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: sa-{{ .runner }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "wiz-outpost-lite.fullname" . }}-scc
+  apiGroup: rbac.authorization.k8s.io
 ---
 {{- end }}
 {{- end }}
