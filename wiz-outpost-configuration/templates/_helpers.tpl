@@ -64,3 +64,22 @@ Create the name of the service account to use
 {{- define "wiz-network-analyzer.image" -}}
 {{ .Values.networkAnalyzer.image.registry }}/{{ .Values.networkAnalyzer.image.repository }}:{{ .Values.networkAnalyzer.image.tag | default .Chart.AppVersion }}
 {{- end -}}
+
+{{/*
+Data block for the wiz-http-proxy-configuration Secret. Shared by the in-namespace
+secret and the flux-namespace copy so both expose the same set of keys.
+*/}}
+{{- define "wiz-outpost-configuration.httpProxyConfiguration.data" -}}
+{{- $noProxyCommaSeparatedList := join "," .Values.httpProxyConfiguration.noProxy -}}
+{{- $noProxySpaceSeparatedList := join " " .Values.httpProxyConfiguration.noProxy -}}
+httpProxy: {{ .Values.httpProxyConfiguration.httpProxy | default "" | b64enc | quote }}
+http-proxy: {{ .Values.httpProxyConfiguration.httpProxy | default "" | b64enc | quote }}
+httpsProxy: {{ .Values.httpProxyConfiguration.httpsProxy | default "" | b64enc | quote }}
+https-proxy: {{ .Values.httpProxyConfiguration.httpsProxy | default "" | b64enc | quote }}
+no-proxy-address: {{ $noProxySpaceSeparatedList | default "" | b64enc | quote }}
+no-proxy-address-cs: {{ $noProxyCommaSeparatedList | default "" | b64enc | quote }}
+noProxyAddress: {{ $noProxyCommaSeparatedList | default "" | b64enc | quote }}
+noProxyAddressSpaceSepareted: {{ $noProxySpaceSeparatedList | default "" | b64enc | quote }}
+caCertificate: {{ .Values.httpProxyConfiguration.caCertificate | default "" | b64enc | quote }}
+clientCertificate: {{ .Values.httpProxyConfiguration.clientCertificate | default "" | b64enc | quote }}
+{{- end -}}
