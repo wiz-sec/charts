@@ -66,6 +66,20 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
+Resolve the flux namespace. Precedence:
+  1. .Values.wizFluxNamespace                   (canonical, set by provisioner)
+  2. .Values.outpostController.wizFluxNamespace (DEPRECATED, backward-compat)
+  3. auto-derived from .Release.Namespace prefix
+     (wiz-default -> wiz-flux-system, default -> flux-system).
+*/}}
+{{- define "wiz-outpost-configuration.fluxNamespace" -}}
+{{- $nsPrefix := (index (splitList "-" .Release.Namespace) 0) -}}
+{{- $autoFluxNamespace := ternary "flux-system" (printf "%s-flux-system" $nsPrefix) (eq .Release.Namespace "default") -}}
+{{- $deprecated := default $autoFluxNamespace .Values.outpostController.wizFluxNamespace -}}
+{{- default $deprecated .Values.wizFluxNamespace -}}
+{{- end -}}
+
+{{/*
 Data block for the wiz-http-proxy-configuration Secret. Shared by the in-namespace
 secret and the flux-namespace copy so both expose the same set of keys.
 */}}

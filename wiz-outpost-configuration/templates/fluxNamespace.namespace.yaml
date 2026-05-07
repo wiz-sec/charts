@@ -1,0 +1,16 @@
+{{- $needFluxNamespace := or
+  (and .Values.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.createFluxNamespaceCopy)
+  (and .Values.outpostController.enabled .Values.outpostController.reducedPermissions) }}
+{{- if $needFluxNamespace }}
+{{- $fluxNamespace := include "wiz-outpost-configuration.fluxNamespace" . }}
+{{- if ne $fluxNamespace .Release.Namespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $fluxNamespace }}
+  labels:
+    {{- include "wiz-outpost-configuration.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+{{- end }}
+{{- end }}
