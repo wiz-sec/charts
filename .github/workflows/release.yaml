@@ -17,7 +17,7 @@ defaults:
 jobs:
   list-changed-charts:
     name: list changed charts
-    runs-on: prod-selfhosted
+    runs-on: ubuntu-latest_static-ip
     outputs:
       charts_matrix: ${{ steps.changed-charts.outputs.charts_matrix }}
       any_changed: ${{ steps.changed-charts.outputs.any_changed }}
