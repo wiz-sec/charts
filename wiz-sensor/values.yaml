@@ -53,7 +53,8 @@ flatcarLinuxNodes: false
 # in case "flatcarLinuxNodes" is set, this won't be used.
 seLinuxType: "spc_t"
 
-# Set the cluster name in the Wiz portal. Will override the native cloud name. (optional)
+# Set the cluster name in the Wiz portal. Only applied for on-prem clusters; cloud-managed
+# clusters always use the cloud-provided name. (optional)
 sensorClusterName: ""
 
 # additional volumes to mount in the sensor pod (usually used for extra CA certificates)

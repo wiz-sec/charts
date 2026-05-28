@@ -45,9 +45,7 @@ spec:
         fsGroup: {{- if .Values.privileged }} 0 {{- else }} 2202 {{- end }}
       {{- end }}
 
-      {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "wiz-sensor.serviceAccountName" . }}
-      {{- end }}
 
       {{- with .Values.daemonset.nodeSelector }}
       nodeSelector:
