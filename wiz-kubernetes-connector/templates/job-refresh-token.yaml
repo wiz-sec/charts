@@ -91,13 +91,11 @@ spec:
               {{- include "wiz-common.renderResources" (list .Values.resources (index .Values.global "wiz-kubernetes-connector" "resources")) | nindent 14 }}
               volumeMounts:
               {{- include "wiz-kubernetes-connector.spec.common.volumeMounts" . | trim | nindent 14 }}
-              {{- if or .Values.autoCreateConnector.customVolumeMounts .Values.global.customVolumeMounts }}
               {{- with .Values.autoCreateConnector.customVolumeMounts }}
                 {{- toYaml . | nindent 14 }}
               {{- end -}}
               {{- with .Values.global.customVolumeMounts }}
                 {{- toYaml . | nindent 14 }}
-              {{- end }}
               {{- end }}
           {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
           nodeSelector:
@@ -121,4 +119,10 @@ spec:
             {{- if $volumes -}}
             {{ $volumes | nindent 12 }}
             {{- end -}}
+            {{ with .Values.global.customVolumes }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{ with .Values.autoCreateConnector.customVolumes }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
     {{- end }}
