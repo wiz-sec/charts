@@ -583,6 +583,12 @@ false
   value: {{ include "wiz-admission-controller.globalLeaderLeaseName" . }}
 - name: WIZ_SCRAPE_API_SERVER_METRICS_ENABLED
   value: {{ include "wiz-admission-controller.scrapeAPIServerMetricsEnabled" . | trim | quote }}
+{{- if and .Values.wizManager.enabled .Values.wizManager.selfLoop.enabled }}
+- name: WIZ_SELFLOOP_ENABLED
+  value: "true"
+- name: WIZ_SELFLOOP_PROBE_LABEL
+  value: {{ .Values.wizManager.selfLoop.probeLabel | quote }}
+{{- end }}
 {{- end -}}
 
 {{- define "wiz-admission-controller.image" -}}
@@ -632,7 +638,7 @@ Lookup existing TLS secret, with support for mocking in tests
 Determine if scraping API server metrics is enabled, considering K8s version >= 1.21 (GA API for EndpointSlices)
 */}}
 {{- define "wiz-admission-controller.scrapeAPIServerMetricsEnabled" -}}
-{{- if and .Values.scrapeAPIServerMetricsEnabled (semverCompare ">=1.21-0" (include "wiz-admission-controller.kubeVersion" .)) -}}
+{{- if and .Values.scrapeAPIServerMetrics.enabled (semverCompare ">=1.21-0" (include "wiz-admission-controller.kubeVersion" .)) -}}
 true
 {{- else -}}
 false
@@ -711,3 +717,102 @@ Usage: include "wiz-admission-controller.crdCacheEnvVars" "enforcer"
 - name: WIZ_CRD_CACHE_NAME_PREFIX
   value: {{ include "wiz-admission-controller.cacheNamePrefix" $runnerType }}
 {{- end -}}
+
+{{/*
+Renders a webhook entry from a config dict.
+Params:
+  root              - root context (.)
+  webhookName       - e.g. "misconfigurationsadmissionvalidator"
+  serviceName       - K8s service name
+  path              - webhook path, e.g. "/opa-validator"
+  tlsCrt            - base64-encoded CA cert
+  useCertManagerCerts - bool, skip caBundle if true
+  rules             - list of RuleWithOperations
+  additionalRules   - optional extra rules to append
+  namespaceSelector - namespace selector dict
+  objectSelector    - optional object selector dict
+  timeoutSeconds    - webhook timeout
+  sideEffects       - e.g. "None"
+*/}}
+{{- define "wiz-admission-controller.webhookEntry" -}}
+- name: {{ .webhookName }}
+  admissionReviewVersions: ["v1", "v1beta1"]
+  clientConfig:
+    service:
+      namespace: {{ .root.Release.Namespace }}
+      name: {{ .serviceName }}
+      path: {{ .path }}
+      port: {{ .root.Values.service.port }}
+{{- if not .useCertManagerCerts }}
+    caBundle: {{ .tlsCrt }}
+{{- end }}
+  {{- with .rules }}
+  rules:
+    {{- toYaml . | nindent 4 }}
+    {{- with $.additionalRules }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
+  {{- with .namespaceSelector }}
+  namespaceSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .objectSelector }}
+  objectSelector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  timeoutSeconds: {{ .timeoutSeconds }}
+  failurePolicy: {{ .failurePolicy | default "Ignore" }}
+  sideEffects: {{ .sideEffects }}
+{{- end -}}
+
+{{/*
+Fixed rules for the sensor webhook — only watches pod creates.
+*/}}
+{{- define "wiz-admission-controller.sensor.rules" -}}
+- operations: ["CREATE"]
+  apiGroups: ["*"]
+  apiVersions: ["*"]
+  resources: ["pods"]
+{{- end -}}
+
+{{/*
+Fixed rules for self-loop webhook entries — only watches deployment updates.
+*/}}
+{{- define "wiz-admission-controller.selfLoop.rules" -}}
+- operations: ["UPDATE"]
+  apiGroups: ["apps"]
+  apiVersions: ["v1"]
+  resources: ["deployments"]
+{{- end -}}
+
+{{/*
+Self-loop webhook names — the unique identifier for each self-loop entry.
+Used in: webhook entry name, objectSelector label value, and manager env vars.
+*/}}
+{{- define "wiz-admission-controller.selfLoop.name.misconfiguration" -}}selfloop.misconfigurationsadmissionvalidator.wiz.io{{- end -}}
+{{- define "wiz-admission-controller.selfLoop.name.imageIntegrity" -}}selfloop.imageintegrityadmissionvalidator.wiz.io{{- end -}}
+{{- define "wiz-admission-controller.selfLoop.name.kdr" -}}selfloop.kubernetesauditlogs.wiz.io{{- end -}}
+
+{{/*
+objectSelector for self-loop webhook entries.
+Params (passed as a list): [root, selfLoopName]
+*/}}
+{{- define "wiz-admission-controller.selfLoop.objectSelector" -}}
+{{- $root := index . 0 -}}
+{{- $selfLoopName := index . 1 -}}
+matchLabels:
+  {{ $root.Values.wizManager.selfLoop.probeLabel }}: {{ $selfLoopName | quote }}
+{{- end -}}
+
+{{/*
+namespaceSelector for self-loop webhook entries — locked to release namespace.
+*/}}
+{{- define "wiz-admission-controller.selfLoop.namespaceSelector" -}}
+matchExpressions:
+- key: kubernetes.io/metadata.name
+  operator: In
+  values:
+  - {{ .Release.Namespace }}
+{{- end -}}
+

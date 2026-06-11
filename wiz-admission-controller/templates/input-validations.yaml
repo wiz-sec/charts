@@ -1,1 +1,4 @@
 {{ include "wiz-common.requireHelm310" . }}
+{{- if not .Values.scrapeAPIServerMetricsEnabled }}
+{{- fail "ERROR: 'scrapeAPIServerMetricsEnabled' is deprecated, please use 'scrapeAPIServerMetrics.enabled' instead." }}
+{{- end }}

@@ -45,31 +45,35 @@ metadata:
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
 webhooks:
-- name: misconfigurationsadmissionvalidator.wiz.io
-  admissionReviewVersions: ["v1", "v1beta1"]
-  clientConfig:
-    service:
-      namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller-enforcer.name" . }}
-      path: /opa-validator
-      port: {{ .Values.service.port }}
-{{- if not $useCertManagerCerts }}
-    caBundle: {{ $tlsCrt }}
+{{ include "wiz-admission-controller.webhookEntry" (dict
+  "root" .
+  "webhookName" "misconfigurationsadmissionvalidator.wiz.io"
+  "serviceName" (include "wiz-admission-controller-enforcer.name" .)
+  "path" "/opa-validator"
+  "tlsCrt" $tlsCrt
+  "useCertManagerCerts" $useCertManagerCerts
+  "rules" .Values.opaWebhook.rules
+  "additionalRules" .Values.opaWebhook.additionalRules
+  "namespaceSelector" .Values.opaWebhook.namespaceSelector
+  "timeoutSeconds" .Values.opaWebhook.timeoutSeconds
+  "sideEffects" .Values.opaWebhook.sideEffects
+) }}
+{{- if and .Values.wizManager.enabled .Values.wizManager.selfLoop.enabled }}
+{{ include "wiz-admission-controller.webhookEntry" (dict
+  "root" .
+  "webhookName" (include "wiz-admission-controller.selfLoop.name.misconfiguration" .)
+  "serviceName" (include "wiz-admission-controller-enforcer.name" .)
+  "path" "/self-loop"
+  "tlsCrt" $tlsCrt
+  "useCertManagerCerts" $useCertManagerCerts
+  "rules" (include "wiz-admission-controller.selfLoop.rules" . | fromYamlArray)
+  "namespaceSelector" (include "wiz-admission-controller.selfLoop.namespaceSelector" . | fromYaml)
+  "objectSelector" (include "wiz-admission-controller.selfLoop.objectSelector" (list . (include "wiz-admission-controller.selfLoop.name.misconfiguration" .)) | fromYaml)
+  "timeoutSeconds" .Values.opaWebhook.timeoutSeconds
+  "sideEffects" "None"
+  "failurePolicy" "Fail"
+) }}
 {{- end }}
-  {{- with .Values.opaWebhook.rules }}
-  rules:
-    {{- toYaml . | nindent 4 }}
-    {{- with $.Values.opaWebhook.additionalRules }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- end }}
-  {{- with .Values.opaWebhook.namespaceSelector }}
-  namespaceSelector:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  timeoutSeconds: {{ .Values.opaWebhook.timeoutSeconds }}
-  failurePolicy: Ignore
-  sideEffects: {{ .Values.opaWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.imageIntegrityWebhook.enabled -}}
 ---
@@ -92,31 +96,35 @@ metadata:
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
 webhooks:
-- name: imageintegrityadmissionvalidator.wiz.io
-  admissionReviewVersions: ["v1", "v1beta1"]
-  clientConfig:
-    service:
-      namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-admission-controller-enforcer.name" . }}
-      path: /image-integrity-validator
-      port: {{ .Values.service.port }}
-{{- if not $useCertManagerCerts }}
-    caBundle: {{ $tlsCrt }}
+{{ include "wiz-admission-controller.webhookEntry" (dict
+  "root" .
+  "webhookName" "imageintegrityadmissionvalidator.wiz.io"
+  "serviceName" (include "wiz-admission-controller-enforcer.name" .)
+  "path" "/image-integrity-validator"
+  "tlsCrt" $tlsCrt
+  "useCertManagerCerts" $useCertManagerCerts
+  "rules" .Values.imageIntegrityWebhook.rules
+  "additionalRules" .Values.imageIntegrityWebhook.additionalRules
+  "namespaceSelector" .Values.imageIntegrityWebhook.namespaceSelector
+  "timeoutSeconds" .Values.imageIntegrityWebhook.timeoutSeconds
+  "sideEffects" .Values.imageIntegrityWebhook.sideEffects
+) }}
+{{- if and .Values.wizManager.enabled .Values.wizManager.selfLoop.enabled }}
+{{ include "wiz-admission-controller.webhookEntry" (dict
+  "root" .
+  "webhookName" (include "wiz-admission-controller.selfLoop.name.imageIntegrity" .)
+  "serviceName" (include "wiz-admission-controller-enforcer.name" .)
+  "path" "/self-loop"
+  "tlsCrt" $tlsCrt
+  "useCertManagerCerts" $useCertManagerCerts
+  "rules" (include "wiz-admission-controller.selfLoop.rules" . | fromYamlArray)
+  "namespaceSelector" (include "wiz-admission-controller.selfLoop.namespaceSelector" . | fromYaml)
+  "objectSelector" (include "wiz-admission-controller.selfLoop.objectSelector" (list . (include "wiz-admission-controller.selfLoop.name.imageIntegrity" .)) | fromYaml)
+  "timeoutSeconds" .Values.imageIntegrityWebhook.timeoutSeconds
+  "sideEffects" "None"
+  "failurePolicy" "Fail"
+) }}
 {{- end }}
-  {{- with .Values.imageIntegrityWebhook.rules }}
-  rules:
-    {{- toYaml . | nindent 4 }}
-    {{- with $.Values.imageIntegrityWebhook.additionalRules }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- end }}
-  {{- with .Values.imageIntegrityWebhook.namespaceSelector }}
-  namespaceSelector:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  timeoutSeconds: {{ .Values.imageIntegrityWebhook.timeoutSeconds }}
-  failurePolicy: Ignore
-  sideEffects: {{ .Values.imageIntegrityWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.kubernetesAuditLogsWebhook.enabled -}}
 ---
@@ -135,31 +143,35 @@ metadata:
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
 webhooks:
-- name: kubernetesauditlogs.wiz.io
-  admissionReviewVersions: ["v1", "v1beta1"]
-  clientConfig:
-    service:
-      namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
-      path: /kubernetes-audit-logs
-      port: {{ .Values.service.port }}
-{{- if not $useCertManagerCerts }}
-    caBundle: {{ $tlsCrt }}
+{{ include "wiz-admission-controller.webhookEntry" (dict
+  "root" .
+  "webhookName" "kubernetesauditlogs.wiz.io"
+  "serviceName" (include "wiz-kubernetes-audit-log-collector.name" .)
+  "path" "/kubernetes-audit-logs"
+  "tlsCrt" $tlsCrt
+  "useCertManagerCerts" $useCertManagerCerts
+  "rules" .Values.kubernetesAuditLogsWebhook.rules
+  "additionalRules" .Values.kubernetesAuditLogsWebhook.additionalRules
+  "namespaceSelector" .Values.kubernetesAuditLogsWebhook.namespaceSelector
+  "timeoutSeconds" .Values.kubernetesAuditLogsWebhook.timeoutSeconds
+  "sideEffects" .Values.kubernetesAuditLogsWebhook.sideEffects
+) }}
+{{- if and .Values.wizManager.enabled .Values.wizManager.selfLoop.enabled }}
+{{ include "wiz-admission-controller.webhookEntry" (dict
+  "root" .
+  "webhookName" (include "wiz-admission-controller.selfLoop.name.kdr" .)
+  "serviceName" (include "wiz-kubernetes-audit-log-collector.name" .)
+  "path" "/self-loop"
+  "tlsCrt" $tlsCrt
+  "useCertManagerCerts" $useCertManagerCerts
+  "rules" (include "wiz-admission-controller.selfLoop.rules" . | fromYamlArray)
+  "namespaceSelector" (include "wiz-admission-controller.selfLoop.namespaceSelector" . | fromYaml)
+  "objectSelector" (include "wiz-admission-controller.selfLoop.objectSelector" (list . (include "wiz-admission-controller.selfLoop.name.kdr" .)) | fromYaml)
+  "timeoutSeconds" .Values.kubernetesAuditLogsWebhook.timeoutSeconds
+  "sideEffects" "None"
+  "failurePolicy" "Fail"
+) }}
 {{- end }}
-  {{- with .Values.kubernetesAuditLogsWebhook.rules }}
-  rules:
-    {{- toYaml . | nindent 4 }}
-    {{- with $.Values.kubernetesAuditLogsWebhook.additionalRules }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- end }}
-  {{- with .Values.kubernetesAuditLogsWebhook.namespaceSelector }}
-  namespaceSelector:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  timeoutSeconds: {{ .Values.kubernetesAuditLogsWebhook.timeoutSeconds }}
-  failurePolicy: Ignore
-  sideEffects: {{ .Values.kubernetesAuditLogsWebhook.sideEffects }}
 {{- end }}
 {{ if .Values.debugWebhook.enabled -}}
 ---
@@ -178,31 +190,19 @@ metadata:
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
 webhooks:
-- name: debug.wiz.io
-  admissionReviewVersions: ["v1", "v1beta1"]
-  clientConfig:
-    service:
-      namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-debug-webhook.name" . }}
-      path: /dumper
-      port: {{ .Values.service.port }}
-{{- if not $useCertManagerCerts }}
-    caBundle: {{ $tlsCrt }}
-{{- end }}
-  {{- with .Values.debugWebhook.rules }}
-  rules:
-    {{- toYaml . | nindent 4 }}
-    {{- with $.Values.debugWebhook.additionalRules }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- end }}
-  {{- with .Values.debugWebhook.namespaceSelector }}
-  namespaceSelector:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  timeoutSeconds: {{ .Values.debugWebhook.timeoutSeconds }}
-  failurePolicy: Ignore
-  sideEffects: {{ .Values.debugWebhook.sideEffects }}
+{{ include "wiz-admission-controller.webhookEntry" (dict
+  "root" .
+  "webhookName" "debug.wiz.io"
+  "serviceName" (include "wiz-debug-webhook.name" .)
+  "path" "/dumper"
+  "tlsCrt" $tlsCrt
+  "useCertManagerCerts" $useCertManagerCerts
+  "rules" .Values.debugWebhook.rules
+  "additionalRules" .Values.debugWebhook.additionalRules
+  "namespaceSelector" .Values.debugWebhook.namespaceSelector
+  "timeoutSeconds" .Values.debugWebhook.timeoutSeconds
+  "sideEffects" .Values.debugWebhook.sideEffects
+) }}
 {{- end }}
 {{ if .Values.sensorInject.enabled -}}
 ---
@@ -221,33 +221,18 @@ metadata:
     "cert-manager.io/inject-ca-from": {{ include "wiz-admission-controller.certManagerInject" . }}
   {{- end }}
 webhooks:
-- name: sensor.wiz.io
-  admissionReviewVersions: ["v1", "v1beta1"]
-  clientConfig:
-    service:
-      namespace: {{ .Release.Namespace }}
-      name: {{ include "wiz-sensor-inject.name" . }}
-      path: /sensor
-      port: {{ .Values.service.port }}
-{{- if not $useCertManagerCerts }}
-    caBundle: {{ $tlsCrt }}
-{{- end }}
-  rules: # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-rules
-    - operations:
-        - CREATE
-      apiGroups:
-        - "*"
-      apiVersions:
-        - "*"
-      resources:
-        - "pods"
-  {{- with .Values.sensorInject.namespaceSelector }}
-  namespaceSelector:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-  timeoutSeconds: {{ .Values.sensorInject.timeoutSeconds }}
-  failurePolicy: Ignore
-  sideEffects: None
+{{ include "wiz-admission-controller.webhookEntry" (dict
+  "root" .
+  "webhookName" "sensor.wiz.io"
+  "serviceName" (include "wiz-sensor-inject.name" .)
+  "path" "/sensor"
+  "tlsCrt" $tlsCrt
+  "useCertManagerCerts" $useCertManagerCerts
+  "rules" (include "wiz-admission-controller.sensor.rules" . | fromYamlArray)
+  "namespaceSelector" .Values.sensorInject.namespaceSelector
+  "timeoutSeconds" .Values.sensorInject.timeoutSeconds
+  "sideEffects" "None"
+) }}
 {{- end }}
 {{- $isEnforcer := (eq (include "wiz-admission-controller.isEnforcerEnabled" . | trim | lower) "true") }}
 {{- $isAuditLog := .Values.kubernetesAuditLogsWebhook.enabled }}

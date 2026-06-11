@@ -690,6 +690,10 @@ wizManager:
   autoRolloutRestart:
     enabled: true # Should the manager trigger rollout restarts.
 
+  selfLoop:
+    enabled: false # When enabled, the manager sends dry-run deployment patches to verify the full AC pipeline is working per-webhook.
+    probeLabel: "wiz.io/self-loop-probe" # Label key to identify self-loop probe requests on deployment objects
+
   nameOverride: "" # Override the manager deployment name.
   schedule: "0 * * * *"  # Every 1 hour
   timeoutSeconds: 300 # The timeout for the manager job in seconds.
@@ -861,6 +865,25 @@ prometheus:
   metricsPort: 9090
   diableTLS: true # When TLS enabled uses the same TLS certificates that are used for all other webhooks.
 
+# DEPRECATED: use scrapeAPIServerMetrics.enabled instead. Kept for backward
+# compatibility; setting this to false still disables the feature and triggers
+# a deprecation warning at install time.
+scrapeAPIServerMetricsEnabled: true
+
 # When enabled, wiz-admission-controller can scrape the API-server metrics for debugging reasons.
 # See https://github.com/kubernetes/apiserver/blob/master/pkg/admission/metrics/metrics.go
-scrapeAPIServerMetricsEnabled: true
+#
+# RBAC: by default a ClusterRole/ClusterRoleBinding is used so the chart does not
+# create namespaced resources in "default" (where the kubernetes Service lives),
+# which is commonly blocked on hardened clusters by ValidatingAdmissionPolicies.
+# Same shape as kube-state-metrics' rbac.useClusterRole.
+scrapeAPIServerMetrics:
+  enabled: true
+  rbac:
+    # If false, a Role + RoleBinding (in the namespace below) is created instead of
+    # a ClusterRole + ClusterRoleBinding.
+    useClusterRole: true
+    # Namespace for the Role + RoleBinding when useClusterRole is false. The
+    # kubernetes Service lives in "default", so leave this as "default" unless your
+    # cluster is configured otherwise.
+    namespace: default

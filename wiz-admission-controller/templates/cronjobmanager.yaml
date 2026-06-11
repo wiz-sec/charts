@@ -83,6 +83,20 @@ spec:
               - name: WIZ_KUBERNETES_AUDIT_LOG_COLLECTOR_DEPLOYMENT_NAME
                 value: {{ include "wiz-kubernetes-audit-log-collector.name" . }}
               {{- end }}
+              {{- if .Values.wizManager.selfLoop.enabled }}
+              {{- if .Values.opaWebhook.enabled }}
+              - name: WIZ_SELFLOOP_MISCONFIGURATION_WEBHOOK_NAME
+                value: {{ include "wiz-admission-controller.selfLoop.name.misconfiguration" . | quote }}
+              {{- end }}
+              {{- if .Values.imageIntegrityWebhook.enabled }}
+              - name: WIZ_SELFLOOP_IMAGE_INTEGRITY_WEBHOOK_NAME
+                value: {{ include "wiz-admission-controller.selfLoop.name.imageIntegrity" . | quote }}
+              {{- end }}
+              {{- if .Values.kubernetesAuditLogsWebhook.enabled }}
+              - name: WIZ_SELFLOOP_KUBERNETES_AUDIT_LOG_WEBHOOK_NAME
+                value: {{ include "wiz-admission-controller.selfLoop.name.kdr" . | quote }}
+              {{- end }}
+              {{- end }}
               resources:
               {{- include "wiz-admission-controller.resources" . | trim | nindent 16 }}
               volumeMounts:
