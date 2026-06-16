@@ -20,7 +20,7 @@ spec:
       annotations:
         rollme.proxyHash: {{ include "wiz-admission-controller.proxyHash" . }}
         rollme.wizApiTokenHash: {{ include "wiz-admission-controller.wizApiTokenHash" . }}
-        rollme.webhookCert: {{ include (print $.Template.BasePath "/opawebhook.yaml") . | sha256sum }}
+        rollme.webhookCert: {{ include (print $.Template.BasePath "/webhook.yaml") . | sha256sum }}
         {{- with .Values.global.podAnnotations }}
           {{- toYaml . | nindent 8 }}
         {{- end }}

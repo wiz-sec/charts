@@ -36,6 +36,7 @@ metadata:
   name: {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "misconfigurations" }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+    wiz.io/webhook-type: misconfiguration
   annotations:
   {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
@@ -87,6 +88,7 @@ metadata:
   name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "image-integrity" }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+    wiz.io/webhook-type: image-trust
   annotations:
   {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
@@ -134,6 +136,7 @@ metadata:
   name: {{ printf "%s-%s" (include "wiz-admission-controller-enforcer.name" . ) "kubernetes-audit-logs" }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+    wiz.io/webhook-type: audit-log-collector
   annotations:
   {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
@@ -181,6 +184,7 @@ metadata:
   name: {{ printf "%s-%s" (include "wiz-admission-controller.fullname" . ) "debug" }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+    wiz.io/webhook-type: debug
   annotations:
   {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
@@ -212,6 +216,7 @@ metadata:
   name:  {{ include "wiz-sensor-inject.name" . }}
   labels:
     {{- include "wiz-admission-controller.labels" . | nindent 4 }}
+    wiz.io/webhook-type: sensor
   annotations:
   {{- if .Values.webhook.useHelmHooks }}
     "helm.sh/hook": "post-install, post-upgrade"
