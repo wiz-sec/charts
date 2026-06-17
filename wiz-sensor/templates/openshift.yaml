@@ -7,7 +7,9 @@ metadata:
 allowHostDirVolumePlugin: true
 allowPrivilegedContainer: true
 allowHostIPC: true
+{{- if .Values.hostNetwork }}
 allowHostNetwork: true
+{{- end }}
 allowHostPID: true
 allowHostPorts: true
 allowedCapabilities:
