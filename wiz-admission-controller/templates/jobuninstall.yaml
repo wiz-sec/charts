@@ -50,7 +50,7 @@ spec:
       {{- end }}
     spec:
       {{- with .Values.wizUninstallJob.podAdditionalSpec }}
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml . | nindent 6 }}
       {{- end }}
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
