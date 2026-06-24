@@ -43,7 +43,7 @@ executors:
   ops:
     resource_class: wiz-sec/prod-generic-ci-small-amd64
     docker:
-      - image: 197171649850.dkr.ecr.us-east-2.amazonaws.com/beyond/external/wiz-ci:stable
+      - image: 615167489761.dkr.ecr.us-east-2.amazonaws.com/wiz/external/wiz-ci:stable
 
 commands:
   upload_new_chart:
