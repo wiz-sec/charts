@@ -187,7 +187,7 @@ spec:
 {{ toYaml .Values.livenessProbe.config | indent 10 }}
         {{- end }}
       restartPolicy: Always
-      hostNetwork: true
+      hostNetwork: true # required for HostProcess pods
       terminationGracePeriodSeconds: {{ .Values.daemonset.terminationGracePeriodSeconds }}
       {{- if (or .Values.global.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.enabled) }}
       volumes:

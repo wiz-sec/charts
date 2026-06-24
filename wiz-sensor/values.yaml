@@ -405,6 +405,11 @@ daemonset:
     operator: Equal
     value: spot
     effect: NoSchedule
+  # Make pods run on GKE Sandbox (gVisor) nodes, which are tainted by default
+  - key: sandbox.gke.io/runtime
+    operator: Equal
+    value: gvisor
+    effect: NoSchedule
   # Uncomment to make pods run on control-plane nodes. Relevant for OpenShift and other self-hosted clusters
   #- key: node-role.kubernetes.io/infra
   #  effect: NoSchedule

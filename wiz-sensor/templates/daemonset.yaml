@@ -200,6 +200,10 @@ spec:
         {{- else }}
           value: "/wiz-sensor-store/"
         {{- end }}
+        {{- if .Values.daemonset.sensorHostCacheCreate }}
+        - name: WIZ_HOST_STORE_HOST_PATH
+          value: {{ .Values.daemonset.sensorHostCacheFolder | quote }}
+        {{- end }}
         - name: WIZ_RAMFS_STORE
           value: "/tmp/"
         - name: LOG_FILE
