@@ -30,13 +30,21 @@ If release name contains chart name it will be used as a full name.
 {{- (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{/*
+Append a fixed suffix to a base name, truncating the base (never the suffix) so the
+result stays within max chars (default 63 — the Kubernetes DNS name limit).
+Args: dict "base" <name> "suffix" "-..." [ "max" 63 ]
+*/}}
+{{- define "wiz-admission-controller.truncatedNameWithSuffix" -}}
+{{- $max := .max | default 63 -}}
+{{- printf "%s%s" (.base | trunc (int (sub $max (len .suffix))) | trimSuffix "-") .suffix -}}
+{{- end -}}
+
 {{- define "wiz-kubernetes-audit-log-collector.name" -}}
 {{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
 {{- .Values.kubernetesAuditLogsWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-audit-log-collector" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-audit-log-collector") -}}
 {{- end }}
 {{- end }}
 
@@ -44,9 +52,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.sensorInject.nameOverride }}
 {{- .Values.sensorInject.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-sensor-inject" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-sensor-inject") -}}
 {{- end }}
 {{- end }}
 
@@ -54,9 +60,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.debugWebhook.nameOverride }}
 {{- .Values.debugWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-debug" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-debug") -}}
 {{- end }}
 {{- end }}
 
@@ -64,9 +68,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.wizManager.nameOverride }}
 {{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-manager" -}}
-{{- $maxLength := int (sub 52 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-manager" "max" 52) -}}
 {{- end }}
 {{- end }}
 
@@ -74,28 +76,20 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.wizUninstallJob.nameOverride }}
 {{- .Values.wizUninstallJob.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-uninstall" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-uninstall") -}}
 {{- end }}
 {{- end }}
 
 {{- define "wiz-admission-controller.wiz-hpa-enforcer.name" -}}
-{{- $suffix := "-hpa" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-hpa") -}}
 {{- end }}
 
 {{- define "wiz-admission-controller.wiz-hpa-audit-logs.name" -}}
-{{- $suffix := "-hpa" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-kubernetes-audit-log-collector.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-kubernetes-audit-log-collector.name" .) "suffix" "-hpa") -}}
 {{- end }}
 
 {{- define "wiz-admission-controller.wiz-hpa-debug.name" -}}
-{{- $suffix := "-hpa" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-debug-webhook.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-debug-webhook.name" .) "suffix" "-hpa") -}}
 {{- end }}
 
 {{/*
