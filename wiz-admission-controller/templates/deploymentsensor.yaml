@@ -105,7 +105,7 @@ spec:
           - name: WIZ_KUBERNETES_AUDIT_LOGS_ENABLED
             value: "false"
           {{- if .Values.crdCache.enabled }}
-          {{- include "wiz-admission-controller.crdCacheEnvVars" (include "wiz-admission-controller.runnerType.sensor" .) | nindent 10 }}
+          {{- include "wiz-admission-controller.crdCacheEnvVars" (dict "root" . "runnerType" (include "wiz-admission-controller.runnerType.sensor" .)) | nindent 10 }}
           {{- end }}
           # Skip heartbeat for sensor webhook
           - name: WIZ_SKIP_HEARTBEAT

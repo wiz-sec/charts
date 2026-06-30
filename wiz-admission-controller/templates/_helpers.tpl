@@ -245,8 +245,13 @@ Create the name of the service account to use
 {{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
 {{- end }}
 
+{{/*
+Leader-lease and CRD-cache resources are named off the chart fullname so multiple
+releases on the same cluster don't share a lease/cache. The runner type lives in
+the suffix so it always survives truncation.
+*/}}
 {{- define "wiz-admission-controller.globalLeaderLeaseName" -}}
-{{- printf "wiz-admission-controller-global-lease" }}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-global-lease") -}}
 {{- end }}
 
 {{- define "wiz-admission-controller.secretServerCert" -}}
@@ -686,30 +691,29 @@ Returns: list of runner types that are enabled
 
 {{/*
 Get the leader lock ID for a specific runner type
+Args: dict "root" $ "runnerType" "enforcer"
 */}}
 {{- define "wiz-admission-controller.leaderLockId" -}}
-{{- $runnerType := . -}}
-{{- printf "wiz-admission-controller-crd-cache-%s" $runnerType -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .root) "suffix" (printf "-crd-cache-%s" .runnerType)) -}}
 {{- end -}}
 
 {{/*
 Get the cache name prefix for a specific runner type
+Args: dict "root" $ "runnerType" "enforcer"
 */}}
 {{- define "wiz-admission-controller.cacheNamePrefix" -}}
-{{- $runnerType := . -}}
-{{- printf "cache-%s" $runnerType -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .root) "suffix" (printf "-cache-%s" .runnerType)) -}}
 {{- end -}}
 
 {{/*
 Generate CRD cache environment variables for a specific runner type
-Usage: include "wiz-admission-controller.crdCacheEnvVars" "enforcer"
+Usage: include "wiz-admission-controller.crdCacheEnvVars" (dict "root" $ "runnerType" "enforcer")
 */}}
 {{- define "wiz-admission-controller.crdCacheEnvVars" -}}
-{{- $runnerType := . -}}
 - name: WIZ_CRD_CACHE_LEADER_LOCK_ID
-  value: {{ include "wiz-admission-controller.leaderLockId" $runnerType }}
+  value: {{ include "wiz-admission-controller.leaderLockId" . }}
 - name: WIZ_CRD_CACHE_NAME_PREFIX
-  value: {{ include "wiz-admission-controller.cacheNamePrefix" $runnerType }}
+  value: {{ include "wiz-admission-controller.cacheNamePrefix" . }}
 {{- end -}}
 
 {{/*
