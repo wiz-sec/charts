@@ -691,7 +691,7 @@ wizManager:
     enabled: true # Should the manager trigger rollout restarts.
 
   selfLoop:
-    enabled: false # When enabled, the manager sends dry-run deployment patches to verify the full AC pipeline is working per-webhook.
+    enabled: true # When enabled, the manager sends dry-run deployment patches to verify the full AC pipeline is working per-webhook.
     probeLabel: "wiz.io/self-loop-probe" # Label key to identify self-loop probe requests on deployment objects
 
   nameOverride: "" # Override the manager deployment name.

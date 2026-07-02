@@ -30,13 +30,21 @@ If release name contains chart name it will be used as a full name.
 {{- (include "wiz-admission-controller.fullname" .) | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{/*
+Append a fixed suffix to a base name, truncating the base (never the suffix) so the
+result stays within max chars (default 63 — the Kubernetes DNS name limit).
+Args: dict "base" <name> "suffix" "-..." [ "max" 63 ]
+*/}}
+{{- define "wiz-admission-controller.truncatedNameWithSuffix" -}}
+{{- $max := .max | default 63 -}}
+{{- printf "%s%s" (.base | trunc (int (sub $max (len .suffix))) | trimSuffix "-") .suffix -}}
+{{- end -}}
+
 {{- define "wiz-kubernetes-audit-log-collector.name" -}}
 {{- if .Values.kubernetesAuditLogsWebhook.nameOverride }}
 {{- .Values.kubernetesAuditLogsWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-audit-log-collector" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-audit-log-collector") -}}
 {{- end }}
 {{- end }}
 
@@ -44,9 +52,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.sensorInject.nameOverride }}
 {{- .Values.sensorInject.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-sensor-inject" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-sensor-inject") -}}
 {{- end }}
 {{- end }}
 
@@ -54,9 +60,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.debugWebhook.nameOverride }}
 {{- .Values.debugWebhook.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-debug" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-debug") -}}
 {{- end }}
 {{- end }}
 
@@ -64,9 +68,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.wizManager.nameOverride }}
 {{- .Values.wizManager.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-manager" -}}
-{{- $maxLength := int (sub 52 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-manager" "max" 52) -}}
 {{- end }}
 {{- end }}
 
@@ -74,28 +76,20 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.wizUninstallJob.nameOverride }}
 {{- .Values.wizUninstallJob.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $suffix := "-uninstall" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-uninstall") -}}
 {{- end }}
 {{- end }}
 
 {{- define "wiz-admission-controller.wiz-hpa-enforcer.name" -}}
-{{- $suffix := "-hpa" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-admission-controller.fullname" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-hpa") -}}
 {{- end }}
 
 {{- define "wiz-admission-controller.wiz-hpa-audit-logs.name" -}}
-{{- $suffix := "-hpa" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-kubernetes-audit-log-collector.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-kubernetes-audit-log-collector.name" .) "suffix" "-hpa") -}}
 {{- end }}
 
 {{- define "wiz-admission-controller.wiz-hpa-debug.name" -}}
-{{- $suffix := "-hpa" -}}
-{{- $maxLength := int (sub 63 (len $suffix)) -}}
-{{- printf "%s%s" (include "wiz-debug-webhook.name" . | trunc $maxLength | trimSuffix "-") $suffix -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-debug-webhook.name" .) "suffix" "-hpa") -}}
 {{- end }}
 
 {{/*
@@ -251,8 +245,13 @@ Create the name of the service account to use
 {{ coalesce (.Values.global.wizApiToken.secret.name) (.Values.wizApiToken.secret.name) (printf "%s-%s" .Release.Name "api-token") }}
 {{- end }}
 
+{{/*
+Leader-lease and CRD-cache resources are named off the chart fullname so multiple
+releases on the same cluster don't share a lease/cache. The runner type lives in
+the suffix so it always survives truncation.
+*/}}
 {{- define "wiz-admission-controller.globalLeaderLeaseName" -}}
-{{- printf "wiz-admission-controller-global-lease" }}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .) "suffix" "-global-lease") -}}
 {{- end }}
 
 {{- define "wiz-admission-controller.secretServerCert" -}}
@@ -692,30 +691,29 @@ Returns: list of runner types that are enabled
 
 {{/*
 Get the leader lock ID for a specific runner type
+Args: dict "root" $ "runnerType" "enforcer"
 */}}
 {{- define "wiz-admission-controller.leaderLockId" -}}
-{{- $runnerType := . -}}
-{{- printf "wiz-admission-controller-crd-cache-%s" $runnerType -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .root) "suffix" (printf "-crd-cache-%s" .runnerType)) -}}
 {{- end -}}
 
 {{/*
 Get the cache name prefix for a specific runner type
+Args: dict "root" $ "runnerType" "enforcer"
 */}}
 {{- define "wiz-admission-controller.cacheNamePrefix" -}}
-{{- $runnerType := . -}}
-{{- printf "cache-%s" $runnerType -}}
+{{- include "wiz-admission-controller.truncatedNameWithSuffix" (dict "base" (include "wiz-admission-controller.fullname" .root) "suffix" (printf "-cache-%s" .runnerType)) -}}
 {{- end -}}
 
 {{/*
 Generate CRD cache environment variables for a specific runner type
-Usage: include "wiz-admission-controller.crdCacheEnvVars" "enforcer"
+Usage: include "wiz-admission-controller.crdCacheEnvVars" (dict "root" $ "runnerType" "enforcer")
 */}}
 {{- define "wiz-admission-controller.crdCacheEnvVars" -}}
-{{- $runnerType := . -}}
 - name: WIZ_CRD_CACHE_LEADER_LOCK_ID
-  value: {{ include "wiz-admission-controller.leaderLockId" $runnerType }}
+  value: {{ include "wiz-admission-controller.leaderLockId" . }}
 - name: WIZ_CRD_CACHE_NAME_PREFIX
-  value: {{ include "wiz-admission-controller.cacheNamePrefix" $runnerType }}
+  value: {{ include "wiz-admission-controller.cacheNamePrefix" . }}
 {{- end -}}
 
 {{/*

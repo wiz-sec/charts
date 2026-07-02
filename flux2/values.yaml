@@ -41,11 +41,11 @@ cli:
 helmController:
   create: true
   image: public-registry.wiz.io/wiz-helm-controller
-  tag: v1.4.5-14
+  tag: v1.4.5-15
   resources:
-    limits: {}
-    # cpu: 1000m
-    # memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 16Gi
     requests:
       cpu: 20m
       memory: 64Mi
@@ -91,9 +91,9 @@ imageAutomationController:
   image: public-registry.wiz.io/wiz-image-automation-controller
   tag: v0.37.1
   resources:
-    limits: {}
-    # cpu: 1000m
-    # memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 16Gi
     requests:
       cpu: 20m
       memory: 64Mi
@@ -119,9 +119,9 @@ imageReflectionController:
   image: public-registry.wiz.io/wiz-image-reflector-controller
   tag: v0.31.2
   resources:
-    limits: {}
-    # cpu: 1000m
-    # memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 16Gi
     requests:
       cpu: 20m
       memory: 64Mi
@@ -147,9 +147,9 @@ kustomizeController:
   image: public-registry.wiz.io/wiz-kustomize-controller
   tag: v1.7.3-17
   resources:
-    limits: {}
-    # cpu: 1000m
-    # memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 16Gi
     requests:
       cpu: 20m
       memory: 64Mi
@@ -195,9 +195,9 @@ notificationController:
   image: public-registry.wiz.io/wiz-notification-controller
   tag: v1.2.4
   resources:
-    limits: {}
-    # cpu: 1000m
-    # memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 16Gi
     requests:
       cpu: 20m
       memory: 64Mi
@@ -245,11 +245,11 @@ notificationController:
 sourceController:
   create: true
   image: public-registry.wiz.io/wiz-source-controller
-  tag: v1.7.4-16
+  tag: v1.7.4-19
   resources:
-    limits: {}
-    # cpu: 1000m
-    # memory: 1Gi
+    limits:
+      cpu: 2
+      memory: 16Gi
     requests:
       cpu: 20m
       memory: 64Mi
