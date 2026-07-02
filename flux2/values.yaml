@@ -245,7 +245,7 @@ notificationController:
 sourceController:
   create: true
   image: public-registry.wiz.io/wiz-source-controller
-  tag: v1.7.4-18
+  tag: v1.7.4-19
   resources:
     limits:
       cpu: 2
