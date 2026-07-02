@@ -6,7 +6,7 @@ orbs:
 executors:
   python:
     docker:
-      - image: 197171649850.dkr.ecr.us-east-2.amazonaws.com/beyond/external/ops-python-only:3.12-main-multiarch
+      - image: 615167489761.dkr.ecr.us-east-2.amazonaws.com/wiz/external/ops-python-only:3.12-main-multiarch
 
 setup: true
 
