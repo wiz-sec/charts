@@ -5,6 +5,10 @@ kind: DaemonSet
 metadata:
   name: {{ include "wiz-sensor.fullname" . }}
   labels: {{- include "wiz-sensor.labels" . | nindent 4 }}
+  {{- with .Values.daemonset.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   namespace: {{ .Release.Namespace }}
 
 spec:
@@ -42,7 +46,7 @@ spec:
     spec:
       {{- if .Values.setFsGroup }}
       securityContext:
-        fsGroup: {{- if .Values.privileged }} 0 {{- else }} 2202 {{- end }}
+        fsGroup: {{- if or .Values.privileged .Values.runAsRoot }} 0 {{- else }} 2202 {{- end }}
       {{- end }}
 
       serviceAccountName: {{ include "wiz-sensor.serviceAccountName" . }}
@@ -160,9 +164,14 @@ spec:
             - KILL # response
           {{- end }}
           privileged: false
+          {{- if .Values.runAsRoot }}
+          runAsUser: 0
+          runAsGroup: 0
+          {{- else }}
           runAsNonRoot: true
           runAsUser: 2202
           runAsGroup: 2202
+          {{- end }}
         {{- end }}
           readOnlyRootFilesystem: true
 
@@ -480,9 +489,14 @@ spec:
             - SYS_PTRACE # Fine-tune OOM behavior.
             - IPC_LOCK # Fine-tune page thrashing behaviour.
           privileged: false
+          {{- if .Values.runAsRoot }}
+          runAsUser: 0
+          runAsGroup: 0
+          {{- else }}
           runAsNonRoot: true
           runAsUser: 2202
           runAsGroup: 2202
+          {{- end }}
         {{- end }}
           readOnlyRootFilesystem: true
           {{- if or (.Values.newAppArmorAnnotation) (and (semverCompare ">=1.30" $kubeVersion) (not .Values.oldAppArmorAnnotation)) }}

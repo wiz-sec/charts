@@ -4,6 +4,10 @@ kind: DaemonSet
 metadata:
   name: {{ include "wiz-sensor.fullname" . }}-windows
   labels: {{- include "wiz-sensor.windowsLabels" . | nindent 4 }}
+  {{- with .Values.daemonset.windowsAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
