@@ -565,9 +565,10 @@ false
   value:  "{{ coalesce .Values.opaWebhook.customErrorMessageMode .Values.customErrorMessageMode }}"
 {{- end -}}
 {{- end -}}
-{{- if coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName }}
+{{- $clusterName := coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName -}}
+{{- if $clusterName }}
 - name: WIZ_CLUSTER_NAME
-  value: {{ coalesce .Values.global.clusterDisplayName .Values.clusterDisplayName | quote }}
+  value: {{ tpl $clusterName . | quote }}
 {{- end }}
 {{- if .Values.prometheus.enabled }}
 # Prometheus metrics configuration

@@ -145,7 +145,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         - name: SENSOR_CLUSTER_NAME
-          value: {{ coalesce .Values.global.clusterDisplayName .Values.sensorClusterName | quote }}
+          value: {{ tpl (coalesce .Values.global.clusterDisplayName .Values.sensorClusterName) . | quote }}
         {{- if .Values.startDelayRange }}
         - name: SENSOR_START_DELAY_RANGE
           value: {{ .Values.startDelayRange | quote }}

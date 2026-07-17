@@ -276,7 +276,7 @@ spec:
           value: {{ .Values.tenantSuffix }}
         {{- end }}
         - name: SENSOR_CLUSTER_NAME
-          value: {{ coalesce .Values.global.clusterDisplayName .Values.sensorClusterName }}
+          value: "{{ tpl (coalesce .Values.global.clusterDisplayName .Values.sensorClusterName) . }}"
         - name: STDOUT_LOG
           value: {{ include "wiz-sensor.stdoutLogLevel" . }}
         {{- if not .Values.gkeAutopilot }}
@@ -529,7 +529,7 @@ spec:
         - name: WIZ_IMAGE_REGISTRY
           value: "{{ coalesce .Values.global.image.registry .Values.image.registry }}"
         - name: WIZ_SENSOR_CLUSTER_NAME
-          value: "{{ coalesce .Values.global.clusterDisplayName .Values.sensorClusterName }}"
+          value: "{{ tpl (coalesce .Values.global.clusterDisplayName .Values.sensorClusterName) . }}"
         - name: WIZ_HELM_VERSION
           valueFrom:
             fieldRef:
