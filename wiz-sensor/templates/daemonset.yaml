@@ -276,7 +276,7 @@ spec:
           value: {{ .Values.tenantSuffix }}
         {{- end }}
         - name: SENSOR_CLUSTER_NAME
-          value: "{{ tpl (coalesce .Values.global.clusterDisplayName .Values.sensorClusterName) . }}"
+          value: {{ tpl (coalesce .Values.global.clusterDisplayName .Values.sensorClusterName | default "") . | quote }}
         - name: STDOUT_LOG
           value: {{ include "wiz-sensor.stdoutLogLevel" . }}
         {{- if not .Values.gkeAutopilot }}
