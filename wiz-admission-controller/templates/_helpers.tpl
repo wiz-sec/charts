@@ -759,6 +759,10 @@ Params:
   objectSelector:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .matchConditions }}
+  matchConditions:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   timeoutSeconds: {{ .timeoutSeconds }}
   failurePolicy: {{ .failurePolicy | default "Ignore" }}
   sideEffects: {{ .sideEffects }}

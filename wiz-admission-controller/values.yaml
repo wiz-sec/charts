@@ -177,6 +177,10 @@ opaWebhook:
       - kube-node-lease
       - wiz
 
+  # CEL match conditions to further scope when the webhook is invoked (Kubernetes >= 1.30).
+  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-matchconditions
+  matchConditions: []
+
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
@@ -237,6 +241,10 @@ imageIntegrityWebhook:
       - kube-system
       - kube-node-lease
       - wiz
+
+  # CEL match conditions to further scope when the webhook is invoked (Kubernetes >= 1.30).
+  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-matchconditions
+  matchConditions: []
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
@@ -343,6 +351,10 @@ kubernetesAuditLogsWebhook:
       - kube-node-lease
       - wiz
 
+  # CEL match conditions to further scope when the webhook is invoked (Kubernetes >= 1.30).
+  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-matchconditions
+  matchConditions: []
+
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects
 
@@ -361,6 +373,10 @@ sensorInject:
           - kube-system
           - kube-node-lease
           - wiz
+
+  # CEL match conditions to further scope when the webhook is invoked (Kubernetes >= 1.30).
+  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-matchconditions
+  matchConditions: []
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
 
@@ -511,6 +527,10 @@ debugWebhook:
       - kube-system
       - kube-node-lease
       - wiz
+
+  # CEL match conditions to further scope when the webhook is invoked (Kubernetes >= 1.30).
+  # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#matching-requests-matchconditions
+  matchConditions: []
 
   timeoutSeconds: 8 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#timeouts
   sideEffects: None # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#side-effects

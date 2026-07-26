@@ -56,6 +56,7 @@ webhooks:
   "rules" .Values.opaWebhook.rules
   "additionalRules" .Values.opaWebhook.additionalRules
   "namespaceSelector" .Values.opaWebhook.namespaceSelector
+  "matchConditions" .Values.opaWebhook.matchConditions
   "timeoutSeconds" .Values.opaWebhook.timeoutSeconds
   "sideEffects" .Values.opaWebhook.sideEffects
 ) }}
@@ -108,6 +109,7 @@ webhooks:
   "rules" .Values.imageIntegrityWebhook.rules
   "additionalRules" .Values.imageIntegrityWebhook.additionalRules
   "namespaceSelector" .Values.imageIntegrityWebhook.namespaceSelector
+  "matchConditions" .Values.imageIntegrityWebhook.matchConditions
   "timeoutSeconds" .Values.imageIntegrityWebhook.timeoutSeconds
   "sideEffects" .Values.imageIntegrityWebhook.sideEffects
 ) }}
@@ -156,6 +158,7 @@ webhooks:
   "rules" .Values.kubernetesAuditLogsWebhook.rules
   "additionalRules" .Values.kubernetesAuditLogsWebhook.additionalRules
   "namespaceSelector" .Values.kubernetesAuditLogsWebhook.namespaceSelector
+  "matchConditions" .Values.kubernetesAuditLogsWebhook.matchConditions
   "timeoutSeconds" .Values.kubernetesAuditLogsWebhook.timeoutSeconds
   "sideEffects" .Values.kubernetesAuditLogsWebhook.sideEffects
 ) }}
@@ -204,6 +207,7 @@ webhooks:
   "rules" .Values.debugWebhook.rules
   "additionalRules" .Values.debugWebhook.additionalRules
   "namespaceSelector" .Values.debugWebhook.namespaceSelector
+  "matchConditions" .Values.debugWebhook.matchConditions
   "timeoutSeconds" .Values.debugWebhook.timeoutSeconds
   "sideEffects" .Values.debugWebhook.sideEffects
 ) }}
@@ -235,6 +239,7 @@ webhooks:
   "useCertManagerCerts" $useCertManagerCerts
   "rules" (include "wiz-admission-controller.sensor.rules" . | fromYamlArray)
   "namespaceSelector" .Values.sensorInject.namespaceSelector
+  "matchConditions" .Values.sensorInject.matchConditions
   "timeoutSeconds" .Values.sensorInject.timeoutSeconds
   "sideEffects" "None"
 ) }}
