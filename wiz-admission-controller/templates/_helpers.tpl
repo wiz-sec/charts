@@ -473,6 +473,60 @@ false
 {{- end -}}
 
 
+{{- define "wiz-admission-controller.fsQueue.dir" -}}
+/var/run/wiz/queue
+{{- end -}}
+
+{{- /* Converts a Kubernetes memory quantity (e.g. 150Mi, 1Gi, 500M) to bytes.
+       Suffix matching is case-sensitive to mirror Kubernetes quantity parsing, so
+       values that would be rejected at apply time also fail our validation. */ -}}
+{{- define "wiz-admission-controller.memoryToBytes" -}}
+  {{- $q := . | toString -}}
+  {{- $bytes := 0.0 -}}
+  {{- if hasSuffix "Ki" $q -}}
+    {{- $bytes = mulf (trimSuffix "Ki" $q | float64) 1024.0 -}}
+  {{- else if hasSuffix "Mi" $q -}}
+    {{- $bytes = mulf (trimSuffix "Mi" $q | float64) 1048576.0 -}}
+  {{- else if hasSuffix "Gi" $q -}}
+    {{- $bytes = mulf (trimSuffix "Gi" $q | float64) 1073741824.0 -}}
+  {{- else if hasSuffix "Ti" $q -}}
+    {{- $bytes = mulf (trimSuffix "Ti" $q | float64) 1099511627776.0 -}}
+  {{- else if hasSuffix "Pi" $q -}}
+    {{- $bytes = mulf (trimSuffix "Pi" $q | float64) 1125899906842624.0 -}}
+  {{- else if hasSuffix "k" $q -}}
+    {{- $bytes = mulf (trimSuffix "k" $q | float64) 1000.0 -}}
+  {{- else if hasSuffix "M" $q -}}
+    {{- $bytes = mulf (trimSuffix "M" $q | float64) 1000000.0 -}}
+  {{- else if hasSuffix "G" $q -}}
+    {{- $bytes = mulf (trimSuffix "G" $q | float64) 1000000000.0 -}}
+  {{- else if hasSuffix "T" $q -}}
+    {{- $bytes = mulf (trimSuffix "T" $q | float64) 1000000000000.0 -}}
+  {{- else if hasSuffix "P" $q -}}
+    {{- $bytes = mulf (trimSuffix "P" $q | float64) 1000000000000000.0 -}}
+  {{- else -}}
+    {{- $bytes = $q | float64 -}}
+  {{- end -}}
+  {{- printf "%.0f" $bytes -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.spec.common.runner.volumeMounts" -}}
+{{- include "wiz-admission-controller.spec.common.volumeMounts" . }}
+{{- if .Values.fsQueue.enabled }}
+- mountPath: {{ include "wiz-admission-controller.fsQueue.dir" . }}
+  name: fs-queue
+{{- end -}}
+{{- end -}}
+
+{{- define "wiz-admission-controller.spec.common.runner.volumes" -}}
+{{- include "wiz-admission-controller.spec.common.volumes" . }}
+{{- if .Values.fsQueue.enabled }}
+- name: fs-queue
+  emptyDir:
+    medium: Memory
+    sizeLimit: {{ .Values.fsQueue.sizeLimit }}
+{{- end -}}
+{{- end -}}
+
 {{- define "wiz-admission-controller.spec.common.envVars" -}}
 {{- if not .Values.wizApiToken.usePodCustomEnvironmentVariablesFile }}
 - name: CLI_FILES_AS_ARGS
@@ -493,6 +547,12 @@ false
 {{- end }}
 - name: WIZ_ENV
   value: {{ coalesce .Values.global.wizApiToken.clientEndpoint .Values.wizApiToken.clientEndpoint | quote }}
+{{- if .Values.fsQueue.enabled }}
+- name: WIZ_FS_DIR
+  value: {{ include "wiz-admission-controller.fsQueue.dir" . | quote }}
+- name: WIZ_FS_VOLUME_SIZE
+  value: {{ .Values.fsQueue.sizeLimit | quote }}
+{{- end }}
 {{- if .Values.global.awsPrivateLink.enabled }}
 - name: USE_WIZ_PRIVATE_LINK_ENDPOINTS
   value: "true"

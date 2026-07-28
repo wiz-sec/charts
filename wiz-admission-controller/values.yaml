@@ -483,6 +483,19 @@ sensorInject:
     # Annotations to add to the registry secrets
     annotations: {}
 
+# This is a PREVIEW FEATURE
+# Buffers admission hook results to a memory-backed volume instead of buffering them in-memory.
+# Only affects reporting — webhook decisions are unaffected.
+fsQueue:
+  enabled: false
+  # sizeLimit caps the queue volume. Notes:
+  # * The volume is a tmpfs (emptyDir medium: Memory): buffered results live in RAM, count against the pod's
+  #   memory limit, and never touch the node's disk.
+  # * Since the tmpfs and the runner's heap share that limit, always size the two together: when
+  #   `resources.limits.memory` is set, keep sizeLimit at no more than 50% of it so a full queue can't OOM-kill the pod.
+  # * Minimum 150Mi — below that (or empty) the filesystem publisher is disabled, too small to buffer usefully.
+  sizeLimit: 200Mi
+
 # Debug webhook only logs the request
 debugWebhook:
   enabled: false

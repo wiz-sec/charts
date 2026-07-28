@@ -118,7 +118,7 @@ spec:
           resources:
             {{- include "wiz-admission-controller.resources" . | trim | nindent 12 }}
           volumeMounts:
-          {{- include "wiz-admission-controller.spec.common.volumeMounts" . | trim | nindent 10 }}
+          {{- include "wiz-admission-controller.spec.common.runner.volumeMounts" . | trim | nindent 10 }}
           - mountPath: /var/server-certs
             name: server-certs
             readOnly: true
@@ -129,7 +129,7 @@ spec:
             {{- toYaml . | nindent 10 }}
           {{- end }}
       volumes:
-      {{- include "wiz-admission-controller.spec.common.volumes" . | trim | nindent 8 }}
+      {{- include "wiz-admission-controller.spec.common.runner.volumes" . | trim | nindent 8 }}
         - name: server-certs
           secret:
             defaultMode: 444

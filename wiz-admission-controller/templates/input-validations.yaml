@@ -2,3 +2,17 @@
 {{- if not .Values.scrapeAPIServerMetricsEnabled }}
 {{- fail "ERROR: 'scrapeAPIServerMetricsEnabled' is deprecated, please use 'scrapeAPIServerMetrics.enabled' instead." }}
 {{- end }}
+{{- if .Values.fsQueue.enabled }}
+{{- $sizeLimitBytes := include "wiz-admission-controller.memoryToBytes" .Values.fsQueue.sizeLimit | float64 }}
+{{- $minBytes := include "wiz-admission-controller.memoryToBytes" "150Mi" | float64 }}
+{{- if lt $sizeLimitBytes $minBytes }}
+{{- fail (printf "fsQueue.sizeLimit (%s) is too small, it must be at least 150Mi." .Values.fsQueue.sizeLimit) }}
+{{- end }}
+{{- $memoryLimit := dig "limits" "memory" "" (.Values.resources | default dict) }}
+{{- if $memoryLimit }}
+{{- $memoryLimitBytes := include "wiz-admission-controller.memoryToBytes" $memoryLimit | float64 }}
+{{- if gt $sizeLimitBytes (mulf $memoryLimitBytes 0.5) }}
+{{- fail (printf "fsQueue.sizeLimit (%s) must not exceed 50%% of resources.limits.memory (%s)." .Values.fsQueue.sizeLimit $memoryLimit) }}
+{{- end }}
+{{- end }}
+{{- end }}

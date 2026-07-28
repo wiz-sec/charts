@@ -1,11 +1,11 @@
 {{- range $values := (include "wiz-outpost-lite.runners" . | fromJson) }}
 {{- with merge $values (omit $ "Values") }}
-{{- if and .Values.openshift (eq .runner "container-registry") -}}
+{{- $needsElevatedScc := has "SYS_ADMIN" (dig "capabilities" "add" (list) .Values.containerSecurityContext) -}}
+{{- if and .Values.enabled .Values.openshift $needsElevatedScc -}}
 apiVersion: security.openshift.io/v1
 kind: SecurityContextConstraints
 metadata:
   name: {{ include "wiz-outpost-lite.fullname" . }}-scc
-  namespace: {{ .Release.Namespace }}
   labels: {{- include "wiz-outpost-lite.labels" . | nindent 4 }}
 allowHostDirVolumePlugin: true
 allowPrivilegedContainer: true
@@ -30,7 +30,7 @@ supplementalGroups:
 seccompProfiles:
   - '*'
 users:
-- system:serviceaccount:{{ .Release.Namespace }}:sa-{{ .runner }}
+- system:serviceaccount:{{ .Release.Namespace }}:{{ .Values.serviceAccount.name | default (printf "sa-%s" .runner) }}
 volumes:
   - downwardAPI
   - emptyDir
