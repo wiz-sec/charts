@@ -6,6 +6,10 @@ replicaCount: 1
 
 agent:
   secretName: outpost-lite-agent-creds
+  # Mount WIZ_CLIENT_ID/SECRET as secret-volume files (WIZ_CLIENT_ID_FILE/WIZ_CLIENT_SECRET_FILE)
+  # instead of injecting them as env vars, which leak via /proc/<pid>/environ and crash dumps.
+  # Off by default; enabled per module (see modules.remediation).
+  mountCredentialsAsFiles: false
   env: ""
   clientId: ""
   clientSecret: ""
@@ -137,6 +141,8 @@ modules:
         type: container_t
   remediation:
     enabled: false
+    agent:
+      mountCredentialsAsFiles: true
     image:
       tag: 0.2-latest
     serviceAccount:

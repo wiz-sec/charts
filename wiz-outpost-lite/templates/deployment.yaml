@@ -90,6 +90,12 @@ spec:
             value: {{ required "Missing required value agent.outpostId is required" .Values.agent.outpostId | quote }}
           - name: WIZ_OUTPOST_RUNNER_ID
             value: "{{ .runnerID }}"
+          {{- if .Values.agent.mountCredentialsAsFiles }}
+          - name: WIZ_CLIENT_ID_FILE
+            value: /mnt/secrets/wiz-credentials/wiz-client-id
+          - name: WIZ_CLIENT_SECRET_FILE
+            value: /mnt/secrets/wiz-credentials/wiz-client-secret
+          {{- else }}
           - name: WIZ_CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -100,6 +106,7 @@ spec:
               secretKeyRef:
                 name: {{ .Values.agent.secretName }}
                 key: clientSecret
+          {{- end }}
           - name: OUTPOST_LITE_RUNNER_REGION
             value: "{{ .Values.agent.outpostRegion }}"
           {{- if .Values.service.enabled }}
@@ -181,6 +188,11 @@ spec:
               name: encryption-key
               readOnly: true
             {{- end }}
+            {{- if .Values.agent.mountCredentialsAsFiles }}
+            - mountPath: /mnt/secrets/wiz-credentials
+              name: wiz-credentials
+              readOnly: true
+            {{- end }}
             {{- if .Values.serviceAccount.volume.mount }}
             - mountPath: /mnt/secrets/service-account-token/
               name: service-account-token
@@ -206,6 +218,16 @@ spec:
       volumes:
         - name: working-dir
           emptyDir: {}
+        {{- if .Values.agent.mountCredentialsAsFiles }}
+        - name: wiz-credentials
+          secret:
+            secretName: {{ .Values.agent.secretName }}
+            items:
+              - key: clientId
+                path: wiz-client-id
+              - key: clientSecret
+                path: wiz-client-secret
+        {{- end }}
         {{- if or .Values.encryption.privateKey .Values.encryption.secretName }}
         - name: encryption-key
           secret:
