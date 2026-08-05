@@ -336,7 +336,8 @@ image:
   # For FEDRAMP use registry: wizfedramp.azurecr.us, for a final URL of "wizfedramp.azurecr.us/sensor:v1".
   registry: wizio.azurecr.io
   repository: sensor
-  args: {}
+  command: []
+  args: []
   tag: "v1" # if not set, the chart's appVersion will be used
   # The sha256 of the image to use. Should not be used normally. Exists for compatibility with GKE Autopilot
   # with private registries. This overrides the tag variable when set.

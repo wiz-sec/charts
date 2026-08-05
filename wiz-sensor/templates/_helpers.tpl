@@ -78,7 +78,7 @@ Linux labels
 {{ include "wiz-sensor.commonLabels" . }}
 {{- $imageparts:= split "@" (include "wiz-sensor.imageTag" .) }}
 {{- $dsimageparts:= split "@" (include "wiz-sensor.diskScanTag" .) }}
-image/tag: {{ $imageparts._0 }}
+image/tag: {{ $imageparts._0 | quote }}
 dsimage/tag: {{ $dsimageparts._0 }}
 {{- if .Values.gkeAutopilot }}
 autopilot.gke.io/no-connect: "true"
@@ -93,7 +93,7 @@ Windows labels
 {{ include "wiz-sensor.commonLabels" . }}
 {{- $imageparts:= split "@" (include "wiz-sensor.windowsTag" .) }}
 os: windows
-image/tag: {{ $imageparts._0 }}
+image/tag: {{ $imageparts._0 | quote }}
 {{- end }}
 
 {{/*
