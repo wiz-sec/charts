@@ -2,4 +2,4 @@ apiVersion: v2
 name: wiz-outpost-common
 description: Common library chart for shared outpost templates
 type: library
-version: 2026.7.27
+version: 2026.8.5
