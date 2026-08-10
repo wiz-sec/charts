@@ -1,0 +1,91 @@
+# Default values for wiz-opentelemetry-exporter.
+
+nameOverride: "" # Override the chart name.
+fullnameOverride: "" # Override the fully qualified app name.
+commonLabels: {} # Labels applied on all the resources (not used for selection).
+
+image:
+  registry: public-registry.wiz.io/wiz-app
+  repository: wiz-opentelemetry-exporter
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+
+replicaCount: 1
+
+wizApiToken:
+  clientId: "" # Client ID of the Wiz Service Account.
+  clientToken: "" # Client secret of the Wiz Service Account.
+  clientEndpoint: "" # Defaults to commercial.
+  secret:
+    # Should a Secret be created by the chart or not.
+    # Set this to false to reference an externally-managed Secret (e.g. the one
+    # your existing Wiz Kubernetes integration already uses).
+    # The Secret must contain clientId and clientToken keys.
+    create: true
+    annotations: {}
+    # The name of the secret to use. If not set, a name is generated.
+    name: ""
+
+# External ID of the cluster in Wiz. Set this to the same value your existing
+# Wiz Kubernetes integration uses so audit logs attach to the same cluster.
+clusterExternalId: ""
+
+otlp:
+  grpc:
+    # Expose the OTLP gRPC port on the Service. The exporter always listens on
+    # both protocols inside the pod; this only controls Service exposure.
+    enabled: true
+    port: 4317
+  http:
+    enabled: true
+    port: 4318
+
+health:
+  port: 13133
+
+service:
+  type: ClusterIP
+
+# CPU/memory requests and limits are fully configurable. Defaults reflect what
+# we validated in testing; override or set to {} as needed.
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    memory: 512Mi
+
+probes:
+  livenessProbe:
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+podAnnotations: {}
+podCustomEnvironmentVariables: [] # Extra env vars as {name, value} pairs.
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

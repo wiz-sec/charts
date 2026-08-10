@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiz-opentelemetry-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-opentelemetry-exporter.labels" . | nindent 4 }}
+    wiz.io/component: "opentelemetry-exporter"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "wiz-opentelemetry-exporter.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "wiz-opentelemetry-exporter.selectorLabels" . | nindent 8 }}
+        wiz.io/component: "opentelemetry-exporter"
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ include "wiz-opentelemetry-exporter.name" . }}
+          image: {{ include "wiz-opentelemetry-exporter.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: WIZ_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "wiz-opentelemetry-exporter.apiTokenSecretName" . | trim }}
+                  key: clientId
+                  optional: false
+            - name: WIZ_CLIENT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "wiz-opentelemetry-exporter.apiTokenSecretName" . | trim }}
+                  key: clientToken
+                  optional: false
+            {{- with .Values.wizApiToken.clientEndpoint }}
+            - name: WIZ_ENV
+              value: {{ . | quote }}
+            {{- end }}
+            {{- with .Values.clusterExternalId }}
+            - name: WIZ_CLUSTER_EXTERNAL_ID
+              value: {{ . | quote }}
+            {{- end }}
+            {{- if .Values.otlp.grpc.enabled }}
+            - name: WIZ_OTLP_GRPC_ENDPOINT
+              value: "0.0.0.0:{{ .Values.otlp.grpc.port }}"
+            {{- end }}
+            {{- if .Values.otlp.http.enabled }}
+            - name: WIZ_OTLP_HTTP_ENDPOINT
+              value: "0.0.0.0:{{ .Values.otlp.http.port }}"
+            {{- end }}
+            - name: WIZ_HEALTH_ENDPOINT
+              value: "0.0.0.0:{{ .Values.health.port }}"
+            {{- range .Values.podCustomEnvironmentVariables }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          ports:
+            - name: health
+              containerPort: {{ .Values.health.port }}
+              protocol: TCP
+            {{- if .Values.otlp.grpc.enabled }}
+            - name: grpc
+              containerPort: {{ .Values.otlp.grpc.port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.otlp.http.enabled }}
+            - name: http
+              containerPort: {{ .Values.otlp.http.port }}
+              protocol: TCP
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            {{- toYaml .Values.probes.livenessProbe | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: health
+            {{- toYaml .Values.probes.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

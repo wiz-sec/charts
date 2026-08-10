@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "wiz-opentelemetry-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- include "wiz-opentelemetry-exporter.labels" . | nindent 4 }}
+    wiz.io/component: "opentelemetry-exporter"
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    {{- if .Values.otlp.grpc.enabled }}
+    - port: {{ .Values.otlp.grpc.port }}
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+    {{- end }}
+    {{- if .Values.otlp.http.enabled }}
+    - port: {{ .Values.otlp.http.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    {{- end }}
+  selector:
+    {{- include "wiz-opentelemetry-exporter.selectorLabels" . | nindent 4 }}

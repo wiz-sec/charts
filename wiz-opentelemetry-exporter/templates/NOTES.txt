@@ -1,0 +1,7 @@
+The Wiz OpenTelemetry exporter has been installed.
+
+Point your OpenTelemetry Collector's OTLP exporter at the Service:
+
+  {{ include "wiz-opentelemetry-exporter.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+    gRPC: {{ .Values.otlp.grpc.port }}{{ if not .Values.otlp.grpc.enabled }} (not exposed on the Service){{ end }}
+    HTTP: {{ .Values.otlp.http.port }}{{ if not .Values.otlp.http.enabled }} (not exposed on the Service){{ end }}
