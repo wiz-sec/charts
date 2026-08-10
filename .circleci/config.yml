@@ -83,6 +83,7 @@ workflows:
             ^wiz-network-analyzer/.* wiz-network-analyzer true
             ^wiz-common/.* wiz-common true
             ^wiz-outpost-common/.* wiz-outpost-common true
+            ^wiz-opentelemetry-exporter/.* wiz-opentelemetry-exporter true
           base-revision: << pipeline.git.branch >>
           filters:
             branches:

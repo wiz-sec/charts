@@ -38,6 +38,9 @@ parameters:
   wiz-outpost-common:
     default: false
     type: boolean
+  wiz-opentelemetry-exporter:
+    default: false
+    type: boolean
 
 executors:
   ops:
@@ -79,6 +82,7 @@ jobs:
             - << pipeline.parameters.wiz-network-analyzer >>
             - << pipeline.parameters.wiz-common >>
             - << pipeline.parameters.wiz-outpost-common >>
+            - << pipeline.parameters.wiz-opentelemetry-exporter >>
           steps:
             - checkout:
                 path: ~/project
@@ -135,6 +139,11 @@ jobs:
           steps:
             - upload_new_chart:
                 package: wiz-network-analyzer
+      - when:
+          condition: << pipeline.parameters.wiz-opentelemetry-exporter >>
+          steps:
+            - upload_new_chart:
+                package: wiz-opentelemetry-exporter
       - when:
           condition: << pipeline.parameters.wiz-admission-controller >>
           steps:
