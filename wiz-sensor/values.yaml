@@ -19,6 +19,8 @@ podCustomEnvironmentVariables: []
 diskScan:
   # Enable Sensor based workload scanning. Only applicable in on-prem environments.
   enabled: false
+  # Set to HostToContainer to enable mount propagation for the host mount. Leave empty to omit it.
+  mountPropagation: ""
   # The runtime config to be used by the Sensor based workload scanner. Passing an empty object will use the default config.
   config: {}
   # Overriding default name for runtime config name. Default "{.Release.Name}-disk-scan-config"

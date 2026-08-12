@@ -225,6 +225,10 @@ Rule Validation
 {{- fail "disableRuntimeDetection requires diskScan to be enabled (set diskScan.enabled=true)" }}
 {{- end }}
 
+{{- if and .Values.diskScan.mountPropagation (not (has .Values.diskScan.mountPropagation (list "HostToContainer"))) }}
+{{- fail "diskScan.mountPropagation must be empty or HostToContainer" }}
+{{- end }}
+
 {{- if .Values.gkeAutopilot }}
 {{- $limits := .Values.daemonset.resources.limits }}
 {{- if .Values.apiSecurity.enabled }}

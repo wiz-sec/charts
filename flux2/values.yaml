@@ -145,7 +145,7 @@ imageReflectionController:
 kustomizeController:
   create: true
   image: public-registry.wiz.io/wiz-kustomize-controller
-  tag: v1.7.3-19
+  tag: v1.7.3-20
   resources:
     limits:
       cpu: 2
@@ -245,7 +245,7 @@ notificationController:
 sourceController:
   create: true
   image: public-registry.wiz.io/wiz-source-controller
-  tag: v1.7.4-23
+  tag: v1.7.4-24
   resources:
     limits:
       cpu: 2

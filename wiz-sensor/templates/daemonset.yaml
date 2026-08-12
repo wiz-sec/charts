@@ -610,6 +610,9 @@ spec:
         - name: host-mount
           mountPath: /host
           readOnly: true
+          {{- with .Values.diskScan.mountPropagation }}
+          mountPropagation: {{ . }}
+          {{- end }}
         {{- if not .Values.global.wizApiToken.wizApiTokensVolumeMount }}
         - name: api-client-secret
           mountPath: /api-client/
