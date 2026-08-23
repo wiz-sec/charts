@@ -230,6 +230,15 @@ imageIntegrityWebhook:
       - "replicasets"
       - "statefulsets"
       - "daemonsets"
+    - operations:
+      - CREATE
+      - UPDATE
+      apiGroups:
+      - "argoproj.io"
+      apiVersions:
+      - "v1alpha1"
+      resources:
+      - "rollouts"
   # Additional rules to be appended to the default webhook rules.
   # This allows extending the webhook scope without modifying the default rules.
   additionalRules: []
