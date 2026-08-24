@@ -678,6 +678,37 @@ affinity:
                 - arm64
                 - amd64
 
+# Scheduling settings for each component.
+#
+# By default, the shared `nodeSelector`, `tolerations`, and `affinity` above are
+# used for BOTH deployments (the enforcement one and the audit-log one). Use the
+# blocks below to give one component its own scheduling rules. For example, you
+# can add a `podAntiAffinity` that spreads the replicas of only that deployment
+# across nodes for High Availability. The rule will not affect the other
+# deployment.
+#
+# For each field, the component value is used first, then the shared one:
+#   <component>.affinity     is used instead of   affinity
+#   <component>.nodeSelector is used instead of   global.nodeSelector / nodeSelector
+#   <component>.tolerations  is used instead of   global.tolerations + tolerations
+#
+# Keep a field as null (the default) to use the shared value. Then existing
+# installations do not change.
+#
+# NOTE: `affinity` is one object. If you set `<component>.affinity`, it fully
+# replaces the shared affinity for that component. This also removes the default
+# linux/arm64/amd64 nodeAffinity above. If you set your own affinity, add those
+# nodeAffinity rules again, unless you want to remove them.
+enforcement:
+  affinity: null
+  nodeSelector: null
+  tolerations: null
+
+auditLogs:
+  affinity: null
+  nodeSelector: null
+  tolerations: null
+
 probes: # Probes config for the container
 # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 # Note that httpGet already configured in the deployment.yaml

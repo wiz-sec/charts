@@ -140,15 +140,19 @@ spec:
         {{- with .Values.global.customVolumes }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with (coalesce .Values.global.nodeSelector .Values.nodeSelector) }}
+      {{- $auditLogs := .Values.auditLogs | default dict }}
+      {{- with (coalesce $auditLogs.nodeSelector .Values.global.nodeSelector .Values.nodeSelector) }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with (coalesce $auditLogs.affinity .Values.affinity) }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if (or .Values.global.tolerations .Values.tolerations)}}
+      {{- if $auditLogs.tolerations }}
+      tolerations:
+        {{- toYaml $auditLogs.tolerations | nindent 8 }}
+      {{- else if (or .Values.global.tolerations .Values.tolerations) }}
       tolerations:
         {{- with .Values.global.tolerations }}
           {{- toYaml . | nindent 8 }}
