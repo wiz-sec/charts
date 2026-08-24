@@ -678,6 +678,36 @@ affinity:
                 - arm64
                 - amd64
 
+# Per-component scheduling overrides.
+#
+# By default the shared `nodeSelector`, `tolerations`, and `affinity` above are
+# applied identically to BOTH the enforcement and the audit-log deployments. Set
+# the blocks below to give a component its own scheduling rules — for example a
+# `podAntiAffinity` that spreads only that deployment's replicas across nodes for
+# High Availability, without the rule leaking into the other deployment.
+#
+# Precedence (per field, per component):
+#   <component>.affinity     overrides   affinity
+#   <component>.nodeSelector overrides   global.nodeSelector / nodeSelector
+#   <component>.tolerations  overrides   global.tolerations + tolerations
+#
+# Leave a field null (the default) to inherit the shared value unchanged, so
+# existing installations render identically and are unaffected.
+#
+# NOTE: `affinity` is a single object, so setting `<component>.affinity` REPLACES
+# the shared affinity for that component — including the default
+# linux/arm64/amd64 nodeAffinity above. If you override affinity, re-include
+# those nodeAffinity terms unless you intend to drop them.
+enforcement:
+  affinity: null
+  nodeSelector: null
+  tolerations: null
+
+auditLogs:
+  affinity: null
+  nodeSelector: null
+  tolerations: null
+
 probes: # Probes config for the container
 # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 # Note that httpGet already configured in the deployment.yaml
