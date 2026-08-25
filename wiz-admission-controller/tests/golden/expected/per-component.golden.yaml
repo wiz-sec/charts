@@ -1,0 +1,375 @@
+---
+# Source: wiz-admission-controller/templates/deploymentenforcement.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ac-wiz-admission-controller
+  namespace: "default"
+  labels:
+    wiz.io/component: "admission-controller-enforcer"
+    helm.sh/chart: wiz-admission-controller-__CHART_VERSION__
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: ac
+    app.kubernetes.io/version: "2.12"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: wiz-admission-controller
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/chartName: wiz-admission-controller
+      app.kubernetes.io/instance: ac
+      app.kubernetes.io/name: wiz-admission-controller
+  template:
+    metadata:
+      annotations:
+        rollme.proxyHash: 87ac4cfc477c5fb7044983b253c60009e1ca9c2823574cf5353b6e8ce9f3c2b4
+        rollme.wizApiTokenHash: 91fd9937400bae0e8b2c253d65bcd1f49779d8fa7fd97bb061a24cf9e779e1e0
+        rollme.webhookCert: __NONDETERMINISTIC__
+      labels:
+        wiz.io/component: "admission-controller-enforcer"
+        
+        helm.sh/chart: wiz-admission-controller-__CHART_VERSION__
+        app.kubernetes.io/chartName: wiz-admission-controller
+        app.kubernetes.io/instance: ac
+        app.kubernetes.io/version: "2.12"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: wiz-admission-controller
+    spec:
+      serviceAccountName: ac-wiz-admission-controller
+      securityContext:
+        {}
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: wiz-admission-controller
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: wiziopublic.azurecr.io/wiz-app/wiz-admission-controller:2.12
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 10250
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 1
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            timeoutSeconds: 30
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 30
+            initialDelaySeconds: 5
+            timeoutSeconds: 300
+
+          command:
+          - "/usr/bin/wiz-admission-controller"
+          # Cluster identification flags
+          # Server flags
+          - "--port=10250"
+          - "--tls-private-key-file=/var/server-certs/tls.key"
+          - "--tls-cert-file=/var/server-certs/tls.crt"
+          - "--readiness-port=8000"
+          # Kubernetes API server flags
+          - "--namespace-cache-ttl=10m"
+          # Webhook flags # check opaWebhook for backward compatibility
+          - "--error-enforcement-method=AUDIT"
+          # Image integrity webhook flags
+          env:
+          - name: CLI_FILES_AS_ARGS
+            value: "/var/api-client/clientToken,/var/api-client/clientId"
+          - name: WIZ_ENV
+            value: 
+          - name: LOG_LEVEL
+            value: info
+          - name: WIZ_RUNTIME_METADATA_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: WIZ_RUNTIME_METADATA_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: WIZ_TERMINATION_GRACE_PERIOD
+            value: "60s"
+          - name: WIZ_CRD_CACHE_ENABLED
+            value: "true"
+          - name: WIZ_CRD_CACHE_MAX_AGE
+            value: "12h"
+          - name: WIZ_CHART_VERSION
+            value: "__CHART_VERSION__"
+          - name: WIZ_GLOBAL_LEADER_LEASE_NAME
+            value: ac-wiz-admission-controller-global-lease
+          - name: WIZ_SCRAPE_API_SERVER_METRICS_ENABLED
+            value: "true"
+          - name: WIZ_SELFLOOP_ENABLED
+            value: "true"
+          - name: WIZ_SELFLOOP_PROBE_LABEL
+            value: "wiz.io/self-loop-probe"
+          # Webhook enabled flags
+          - name: WIZ_MISCONFIGURATION_ENABLED
+            value: "true"
+          - name: WIZ_IMAGE_INTEGRITY_ENABLED
+            value: "false"
+          - name: WIZ_KUBERNETES_AUDIT_LOGS_ENABLED
+            value: "false"
+          
+          
+          - name: WIZ_CRD_CACHE_LEADER_LOCK_ID
+            value: ac-wiz-admission-controller-crd-cache-enforcer
+          - name: WIZ_CRD_CACHE_NAME_PREFIX
+            value: ac-wiz-admission-controller-cache-enforcer
+          - name: WIZ_MISCONFIGURATION_WEBHOOK_CONFIG
+            value: |
+              {"additionalRules":[],"clusterExternalId":"","customErrorMessage":"","customErrorMessageMode":"","detailedErrorMessages":{"enabled":false,"format":"table"},"enabled":true,"errorEnforcementMethod":"","matchConditions":[],"namespaceSelector":{"matchExpressions":[{"key":"kubernetes.io/metadata.name","operator":"NotIn","values":["kube-system","kube-node-lease","wiz"]}]},"policies":[],"policyEnforcementMethod":"","rules":[{"apiGroups":["*"],"apiVersions":["*"],"operations":["CREATE","UPDATE"],"resources":["namespaces","configmaps","ingresses","services","pods","deployments","jobs","cronjobs","replicasets","statefulsets","daemonsets"]}],"secret":{"annotations":{}},"sideEffects":"None","timeoutSeconds":8}
+          - name: WIZ_IMAGE_INTEGRITY_PATCH_IMAGE_DIGEST_ANNOTATION
+            value: "true"
+           # For running pod with read only file system we write all the cache files to /var/cache volume mount, used by image integrity hook
+          - name: TUF_ROOT
+            value: "/var/cache/.sigstore"
+          - name: AWS_ECR_CACHE_DIR
+            value: "/var/cache/.ecr"
+           ## Image registry client flags
+          - name: WIZ_REGISTRY_IGNORE_SECRET_MISSING_ERROR
+            value: "false"
+          - name: WIZ_REGISTRY_IMAGE_PULL_SECRET_RELOAD_INTERVAL
+            value: "5m"
+          ## Enable debug webhook that only logs the request
+          resources:
+            {}
+          volumeMounts:
+          - name: api-client
+            mountPath: /var/api-client
+            readOnly: true
+          - mountPath: /var/cache
+            name: cache
+          - mountPath: /var/server-certs
+            name: server-certs
+            readOnly: true
+      volumes:
+        - name: api-client
+          secret:
+            secretName: ac-api-token
+        - name: cache
+          emptyDir: {}
+        - name: server-certs
+          secret:
+            defaultMode: 444
+            secretName: ac-wiz-admission-controller-cert
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                wiz.io/component: admission-controller-enforcer
+            topologyKey: kubernetes.io/hostname
+---
+# Source: wiz-admission-controller/templates/deploymentauditlogs.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ac-wiz-admission-controller-audit-log-collector
+  namespace: "default"
+  labels:
+    wiz.io/component: "kubernetes-audit-log-collector"
+    helm.sh/chart: wiz-admission-controller-__CHART_VERSION__
+    app.kubernetes.io/chartName: wiz-admission-controller
+    app.kubernetes.io/instance: ac
+    app.kubernetes.io/version: "2.12"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ac-wiz-admission-controller-audit-log-collector
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/chartName: wiz-admission-controller
+      app.kubernetes.io/instance: ac
+      app.kubernetes.io/name: ac-wiz-admission-controller-audit-log-collector
+  template:
+    metadata:
+      annotations:
+        rollme.proxyHash: 87ac4cfc477c5fb7044983b253c60009e1ca9c2823574cf5353b6e8ce9f3c2b4
+        rollme.wizApiTokenHash: 91fd9937400bae0e8b2c253d65bcd1f49779d8fa7fd97bb061a24cf9e779e1e0
+        rollme.webhookCert: __NONDETERMINISTIC__
+      labels:
+        wiz.io/component: "kubernetes-audit-log-collector"
+        
+        helm.sh/chart: wiz-admission-controller-__CHART_VERSION__
+        app.kubernetes.io/chartName: wiz-admission-controller
+        app.kubernetes.io/instance: ac
+        app.kubernetes.io/version: "2.12"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: ac-wiz-admission-controller-audit-log-collector
+    spec:
+      serviceAccountName: ac-wiz-admission-controller
+      securityContext:
+        {}
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: wiz-admission-controller
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: wiziopublic.azurecr.io/wiz-app/wiz-admission-controller:2.12
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 10250
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 1
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            timeoutSeconds: 30
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+              scheme: HTTPS
+            failureThreshold: 30
+            initialDelaySeconds: 5
+            timeoutSeconds: 300
+          command:
+          - "/usr/bin/wiz-admission-controller"
+          # Cluster identification flags
+          # Server flags
+          - "--port=10250"
+          - "--tls-private-key-file=/var/server-certs/tls.key"
+          - "--tls-cert-file=/var/server-certs/tls.crt"
+          - "--readiness-port=8000"
+          # Kubernetes API server flags
+          - "--namespace-cache-ttl=10m"
+          # Webhook flags
+          - "--error-enforcement-method=AUDIT"
+          - "--policy-enforcement-method=AUDIT"
+          env:
+          - name: CLI_FILES_AS_ARGS
+            value: "/var/api-client/clientToken,/var/api-client/clientId"
+          - name: WIZ_ENV
+            value: 
+          - name: LOG_LEVEL
+            value: info
+          - name: WIZ_RUNTIME_METADATA_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: WIZ_RUNTIME_METADATA_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: K8S_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: WIZ_TERMINATION_GRACE_PERIOD
+            value: "60s"
+          - name: WIZ_CRD_CACHE_ENABLED
+            value: "true"
+          - name: WIZ_CRD_CACHE_MAX_AGE
+            value: "12h"
+          - name: WIZ_CHART_VERSION
+            value: "__CHART_VERSION__"
+          - name: WIZ_GLOBAL_LEADER_LEASE_NAME
+            value: ac-wiz-admission-controller-global-lease
+          - name: WIZ_SCRAPE_API_SERVER_METRICS_ENABLED
+            value: "true"
+          - name: WIZ_SELFLOOP_ENABLED
+            value: "true"
+          - name: WIZ_SELFLOOP_PROBE_LABEL
+            value: "wiz.io/self-loop-probe"
+          # Webhook enabled flags
+          - name: WIZ_KUBERNETES_AUDIT_LOGS_ENABLED
+            value: "true"
+          - name: WIZ_MISCONFIGURATION_ENABLED
+            value: "false"
+          - name: WIZ_IMAGE_INTEGRITY_ENABLED
+            value: "false"
+          - name: WIZ_CRD_CACHE_LEADER_LOCK_ID
+            value: ac-wiz-admission-controller-crd-cache-kdr
+          - name: WIZ_CRD_CACHE_NAME_PREFIX
+            value: ac-wiz-admission-controller-cache-kdr
+          - name: WIZ_KUBERNETES_AUDIT_LOG_WEBHOOK_CONFIG
+            value: |
+              {"additionalRules":[],"enabled":true,"matchConditions":[],"nameOverride":"","namespaceSelector":{"matchExpressions":[{"key":"kubernetes.io/metadata.name","operator":"NotIn","values":["kube-system","kube-node-lease","wiz"]}]},"podDisruptionBudget":{"enabled":false,"maxUnavailable":null,"minAvailable":1},"replicaCount":2,"rules":[{"apiGroups":["*"],"apiVersions":["*"],"operations":["*"],"resources":["namespaces","secrets","configmaps","storageclasses","persistentvolumes","persistentvolumeclaims","controllerrevisions","ingresses","services","networkpolicies","pods","deployments","jobs","cronjobs","replicasets","statefulsets","daemonsets","replicationcontrollers","selfsubjectrulesreviews","selfsubjectreviews","pods/exec","pods/portforward","pods/attach","clusterroles","roles","rolebindings","clusterrolebindings","serviceaccounts"]},{"apiGroups":["*"],"apiVersions":["*"],"operations":["DELETE"],"resources":["events"]}],"sideEffects":"None","timeoutSeconds":8}
+          ## Enable debug webhook that only logs the request
+          resources:
+            {}
+          volumeMounts:
+          - name: api-client
+            mountPath: /var/api-client
+            readOnly: true
+          - mountPath: /var/server-certs
+            name: server-certs
+            readOnly: true
+      volumes:
+        - name: api-client
+          secret:
+            secretName: ac-api-token
+        - name: server-certs
+          secret:
+            defaultMode: 444
+            secretName: ac-wiz-admission-controller-cert
+      nodeSelector:
+        dedicated: audit-logs
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values:
+                - linux
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - arm64
+                - amd64
+      tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          operator: Equal
+          value: audit-logs

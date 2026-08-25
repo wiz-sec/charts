@@ -1,0 +1,5 @@
+# Scenario: default (no scheduling overrides).
+# Both deployments inherit the shared default affinity (linux/arm64/amd64
+# nodeAffinity). This is the baseline that must remain byte-identical to the
+# pre-change chart.
+{}

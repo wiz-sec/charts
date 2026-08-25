@@ -1,0 +1,37 @@
+# Scenario: existing customer on the CURRENT chart.
+#
+# Represents a customer who configured HA today via the SHARED affinity block
+# (the only mechanism available before this change). With no per-component fields
+# set, the new chart renders this IDENTICALLY to the old chart — proving the
+# upgrade is a no-op (see tests/golden/README.md for the master-vs-branch diff).
+#
+# It also captures the pre-existing limitation this PR fixes: the shared
+# podAntiAffinity is injected into BOTH deployments, so the audit-log pods
+# anti-affine against ENFORCER pods (app.kubernetes.io/name = the enforcer),
+# not their own replicas.
+nodeSelector:
+  workload: wiz
+tolerations:
+  - key: dedicated
+    operator: Equal
+    value: wiz
+    effect: NoSchedule
+affinity:
+  # Customer re-includes the default nodeAffinity because overriding `affinity`
+  # replaces the whole object.
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/os
+              operator: In
+              values: [linux]
+            - key: kubernetes.io/arch
+              operator: In
+              values: [arm64, amd64]
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: wiz-admission-controller

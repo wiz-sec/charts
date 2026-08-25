@@ -1,0 +1,28 @@
+# Scenario: the fix — independent scheduling per component.
+#
+# The enforcer gets an HA podAntiAffinity that spreads only ITS replicas across
+# nodes; the audit-log collector gets its own nodeSelector + tolerations. Neither
+# rule leaks into the other deployment.
+enforcement:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In
+                values: [linux]
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchLabels:
+              wiz.io/component: admission-controller-enforcer
+auditLogs:
+  nodeSelector:
+    dedicated: audit-logs
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: audit-logs
+      effect: NoSchedule

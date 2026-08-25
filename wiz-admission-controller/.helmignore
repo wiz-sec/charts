@@ -21,3 +21,5 @@
 .idea/
 *.tmproj
 .vscode/
+# Chart tests (golden-file regression suite) — not part of the packaged chart
+tests/

@@ -1,0 +1,8 @@
+# Shared base for golden-file scenarios.
+# Fixed api-token so the rollme.wizApiTokenHash annotation is deterministic, and
+# the audit-log deployment enabled so both deployments render.
+wizApiToken:
+  clientId: "golden-test-client-id"
+  clientToken: "golden-test-client-token"
+kubernetesAuditLogsWebhook:
+  enabled: true
