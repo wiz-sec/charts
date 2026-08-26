@@ -142,7 +142,7 @@ create-kubernetes-connector
 --is-on-prem={{ include "wiz-kubernetes-connector.brokerEnabled" . | trim}}
 {{- with (coalesce .Values.global.clusterDisplayName .Values.autoCreateConnector.connectorName) }}
 --connector-name
-{{ . | quote }}
+{{ tpl . $ | quote }}
 {{- end }}
 {{- with .Values.autoCreateConnector.clusterFlavor }}
 --service-type
