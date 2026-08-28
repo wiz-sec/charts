@@ -591,7 +591,9 @@ serviceAccount:
 podAnnotations: {} # Annotations to add to the components Pods.
 podLabels: {} # Labels to add to the components Pods.
 
-podSecurityContext: {}
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
 
 podCustomEnvironmentVariables: [] # Additional environment variables to add to the components Pods as pairs “name”, “value”.
 
@@ -608,6 +610,8 @@ securityContext:
   readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 1000
+  seccompProfile:
+    type: RuntimeDefault
 
 service:
   type: ClusterIP

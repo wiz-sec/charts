@@ -319,6 +319,8 @@ global:
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 10000
+    seccompProfile:
+      type: RuntimeDefault
 
   securityContext:
     runAsNonRoot: true
@@ -326,6 +328,8 @@ global:
     readOnlyRootFilesystem: true
     runAsGroup: 10000
     runAsUser: 10000
+    seccompProfile:
+      type: RuntimeDefault
     capabilities:
       drop:
         - ALL
