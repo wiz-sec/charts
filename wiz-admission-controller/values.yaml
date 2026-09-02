@@ -492,11 +492,10 @@ sensorInject:
     # Annotations to add to the registry secrets
     annotations: {}
 
-# This is a PREVIEW FEATURE
 # Buffers admission hook results to a memory-backed volume instead of buffering them in-memory.
 # Only affects reporting — webhook decisions are unaffected.
 fsQueue:
-  enabled: false
+  enabled: true
   # sizeLimit caps the queue volume. Notes:
   # * The volume is a tmpfs (emptyDir medium: Memory): buffered results live in RAM, count against the pod's
   #   memory limit, and never touch the node's disk.
