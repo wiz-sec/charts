@@ -203,6 +203,9 @@ opaWebhook:
   # Detailed error messages configuration for misconfiguration policies.
   # When enabled, provides detailed output showing all failed policies with their
   # enforcement type (AUDIT/BLOCK) and all failed rules by name.
+  # NOTE: the detailed "table"/"json" output is returned only for BLOCK (denied) admissions.
+  # AUDIT admissions are surfaced as Kubernetes admission warnings, which must be single-line,
+  # so they always return a compact summary regardless of this setting.
   detailedErrorMessages:
     enabled: false  # Opt-in feature. When disabled, uses the legacy simple message format.
     format: "table" # Output format for detailed messages. Options: "table" or "json".
@@ -273,6 +276,9 @@ imageIntegrityWebhook:
   # Detailed error messages configuration for image integrity policies.
   # When enabled, provides detailed output showing all failed policies with their
   # enforcement type (AUDIT/BLOCK) and all failed images.
+  # NOTE: the detailed "table"/"json" output is returned only for BLOCK (denied) admissions.
+  # AUDIT admissions are surfaced as Kubernetes admission warnings, which must be single-line,
+  # so they always return a compact summary regardless of this setting.
   detailedErrorMessages:
     enabled: false  # Opt-in feature. When disabled, uses the legacy simple message format.
     format: "table" # Output format for detailed messages. Options: "table" or "json".
