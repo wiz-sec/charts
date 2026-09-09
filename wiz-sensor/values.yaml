@@ -352,6 +352,8 @@ image:
   diskScanRepository: wiz-app/wiz-workload-scanner
   diskScanArgs: {}
   diskScanTag: "v1" # if not set, the chart's diskScanAppVersion will be used
+  # The sha256 of the Disk Scanner image to use. This overrides diskScanTag when set.
+  diskScanSha256: ""
   diskScanPullPolicy: Always
 
   # Windows image configuration

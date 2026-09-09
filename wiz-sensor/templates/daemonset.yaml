@@ -93,7 +93,11 @@ spec:
         image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.repository (include "wiz-sensor.imageTag" .) }}
           {{- end }}
         {{- else }}
+          {{- if .Values.image.sha256 }}
+        image: {{ printf "%s@sha256:%s" .Values.image.repository .Values.image.sha256 }}
+          {{- else }}
         image: {{ printf "%s:%s" .Values.image.repository (include "wiz-sensor.imageTag" .) }}
+          {{- end }}
         {{- end }}
         imagePullPolicy: {{ coalesce .Values.global.image.pullPolicy .Values.image.pullPolicy }}
         {{- if .Values.image.command }}
@@ -443,9 +447,17 @@ spec:
       {{- if .Values.diskScan.enabled }}
       - name: wiz-disk-scanner
         {{- if (coalesce .Values.global.image.registry .Values.image.registry) }}
+          {{- if .Values.image.diskScanSha256 }}
+        image: {{ printf "%s/%s@sha256:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository .Values.image.diskScanSha256 }}
+          {{- else }}
         image: {{ printf "%s/%s:%s" (coalesce .Values.global.image.registry .Values.image.registry) .Values.image.diskScanRepository (include "wiz-sensor.diskScanTag" .) }}
+          {{- end }}
         {{- else }}
+          {{- if .Values.image.diskScanSha256 }}
+        image: {{ printf "%s@sha256:%s" .Values.image.diskScanRepository .Values.image.diskScanSha256 }}
+          {{- else }}
         image: {{ printf "%s:%s" .Values.image.diskScanRepository (include "wiz-sensor.diskScanTag" .) }}
+          {{- end }}
         {{- end }}
         imagePullPolicy: {{ .Values.image.diskScanPullPolicy }}
         {{- with .Values.image.diskScanArgs }}
