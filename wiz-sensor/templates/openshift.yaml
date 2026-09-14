@@ -16,7 +16,9 @@ allowedCapabilities:
   - SYS_ADMIN # for kernels <5.8 (CAP_BPF and CAP_PERFMON)
   - SYS_CHROOT # setns (file hash)
   - SYS_RESOURCE # eBPF
-  - SYS_RAWIO # file hashing
+  {{- if not .Values.dropSysRawio }}
+  - SYS_RAWIO
+  {{- end }}
   - DAC_OVERRIDE # file hashing
   - DAC_READ_SEARCH # file hashing
   - NET_ADMIN # network events

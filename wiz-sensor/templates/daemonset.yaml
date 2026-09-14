@@ -152,7 +152,9 @@ spec:
             - SYS_ADMIN # moving between namespaces
             - SYS_CHROOT # moving between namespaces
             - SYS_RESOURCE # eBPF
-            - SYS_RAWIO # file hashing
+          {{- if not .Values.dropSysRawio }}
+            - SYS_RAWIO
+          {{- end }}
             - DAC_OVERRIDE # file hashing
             - DAC_READ_SEARCH # file hashing
             - NET_ADMIN # network events
