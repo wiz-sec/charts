@@ -156,7 +156,9 @@ spec:
             - SYS_ADMIN # moving between namespaces
             - SYS_CHROOT # moving between namespaces
             - SYS_RESOURCE # eBPF
-            - SYS_RAWIO # file hashing
+          {{- if not .Values.dropSysRawio }}
+            - SYS_RAWIO
+          {{- end }}
             - DAC_OVERRIDE # file hashing
             - DAC_READ_SEARCH # file hashing
             - NET_ADMIN # network events
@@ -215,6 +217,8 @@ spec:
         - name: HELM_CHART_COMPAT_VER
           value: "1"
         {{- end }}
+        - name: SENSOR_TYPE
+          value: "k8s"
         - name: WIZ_TMP_STORE
           value: "/wiz-sensor-store/"
         - name: WIZ_HOST_STORE

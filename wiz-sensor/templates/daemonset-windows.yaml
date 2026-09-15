@@ -85,6 +85,8 @@ spec:
             secretKeyRef:
               name: {{ include "wiz-sensor.secretName" . }}
               key: clientToken
+        - name: SENSOR_TYPE
+          value: "k8s"
         - name: WIZ_HOST_STORE
           value: {{ printf "%s\\host-store" .Values.windows.sensorInstallDir | quote }}
         - name: WIZ_TMP_STORE
