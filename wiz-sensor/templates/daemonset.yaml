@@ -213,6 +213,8 @@ spec:
         - name: HELM_CHART_COMPAT_VER
           value: "1"
         {{- end }}
+        - name: SENSOR_TYPE
+          value: "k8s"
         - name: WIZ_TMP_STORE
           value: "/wiz-sensor-store/"
         - name: WIZ_HOST_STORE
