@@ -73,6 +73,10 @@ spec:
       {{- else if .Values.hostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
       {{- end }}
+      {{- with .Values.dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 
       hostPID: true
       hostIPC: true
