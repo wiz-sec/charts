@@ -71,6 +71,11 @@ spec:
             runAsGroup: 1000
             privileged: false
             allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
           {{ if gt (len .Values.image.tag) 17 }}
           image: "{{ .Values.image.repository }}/{{ .Values.image.namePrefix}}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command: [ "/entrypoint"]
