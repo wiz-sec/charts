@@ -11,6 +11,10 @@ spec:
   {{- if not .Values.hpa.enabled }}
   replicas: {{ .Values.kubernetesAuditLogsWebhook.replicaCount }}
   {{- end }}
+  {{- with .Values.updateStrategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "wiz-admission-controller.selectorLabels" . | nindent 6 }}

@@ -68,6 +68,20 @@ httpProxyConfiguration:
 # this field is discarded and set to an empty value.
 replicaCount: 2
 
+# Update strategy for all admission controller deployments. Accepts a standard
+# Kubernetes Deployment strategy object
+# (https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy).
+# When empty, the Kubernetes default (RollingUpdate with 25% surge) is used.
+#
+# Useful with `hostNetwork: true`, where the default surge pod cannot be scheduled
+# on a node that already runs an admission controller pod. For example:
+# updateStrategy:
+#   type: RollingUpdate
+#   rollingUpdate:
+#     maxSurge: 0
+#     maxUnavailable: 1
+updateStrategy: {}
+
 # Use PodDisruptionBudget for the admission controller enforcer deployment.
 # For more information about PodDisruptionBudget please refer to:
 # https://kubernetes.io/docs/tasks/run-application/configure-pdb/
