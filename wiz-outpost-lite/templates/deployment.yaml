@@ -217,7 +217,11 @@ spec:
       {{- end }}
       volumes:
         - name: working-dir
+          {{- if .Values.workingDirVolume }}
+          {{- toYaml .Values.workingDirVolume | nindent 10 }}
+          {{- else }}
           emptyDir: {}
+          {{- end }}
         {{- if .Values.agent.mountCredentialsAsFiles }}
         - name: wiz-credentials
           secret:

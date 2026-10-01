@@ -45,6 +45,10 @@ resources:
   requests:
     memory: 1024M
 
+# Defaults to emptyDir. For large Autopilot workspaces, use a generic ephemeral PVC
+# to avoid the 10Gi pod ephemeral-storage limit. Include static data and VFS layer copies when sizing.
+workingDirVolume: {}
+
 nodeSelector: {}
 
 tolerations: []
@@ -111,6 +115,10 @@ modules:
         type: spc_t
   container-registry:
     enabled: false
+    # Selects VFS storage and confined container security settings without SYS_ADMIN.
+    # This is not rootless: VFS still needs root and baseline capabilities including SYS_CHROOT.
+    # On Autopilot, size resources explicitly and use workingDirVolume for workspaces exceeding the ephemeral-storage limit.
+    reducedPrivileges: false
     apparmorProfile: unconfined
     containerSecurityContext:
       capabilities:

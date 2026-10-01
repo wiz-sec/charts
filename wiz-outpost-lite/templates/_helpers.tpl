@@ -159,6 +159,26 @@ container-registry -> outpost-lite-runner-container-registry
 {{- $values = set $values "podSecurityContext" $values.podSecurityContextOverride }}
 {{- end }}
 
+{{- if and (eq $moduleType "container-registry") $values.reducedPrivileges }}
+{{- if $values.openshift }}
+{{- fail "container-registry.reducedPrivileges cannot be combined with openshift" }}
+{{- end }}
+{{- $extraEnv := $values.extraEnv | default (dict) }}
+{{- $_ := set $extraEnv "OUTPOST_LITE_RUNNER_CRIO_USE_VFS" "true" }}
+{{- $values = set $values "extraEnv" $extraEnv }}
+{{- $values = set $values "apparmorProfile" "runtime/default" }}
+{{- $capabilities := get $values.containerSecurityContext "capabilities" | default (dict) }}
+{{- $dropCapabilities := concat ($capabilities.drop | default (list)) (list "NET_RAW") | uniq }}
+{{- $securityContext := omit $values.containerSecurityContext "capabilities" "seLinuxOptions" "appArmorProfile" }}
+{{- $securityContext = mergeOverwrite $securityContext (dict
+  "privileged" false
+  "allowPrivilegeEscalation" false
+  "seccompProfile" (dict "type" "RuntimeDefault")
+  "capabilities" (dict "drop" $dropCapabilities)
+) }}
+{{- $values = set $values "containerSecurityContext" $securityContext }}
+{{- end }}
+
 {{/* Generate final values be used inside a "with" statement */}}
 {{- $values = dict "runner" $runner "runnerID" $runnerID "Values" $values -}}
 
