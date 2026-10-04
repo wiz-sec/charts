@@ -239,6 +239,14 @@ spec:
                       description: Namespace of the referent, when not specified it
                         acts as LocalObjectReference.
                       type: string
+                    readyExpr:
+                      description: |-
+                        ReadyExpr is a CEL expression that can be used to assess the readiness
+                        of a dependency. When specified, the built-in readiness check
+                        is replaced by the logic defined in the CEL expression.
+                        To make the CEL expression additive to the built-in readiness check,
+                        the feature gate `AdditiveCELDependencyCheck` must be set to `true`.
+                      type: string
                   required:
                   - name
                   type: object
