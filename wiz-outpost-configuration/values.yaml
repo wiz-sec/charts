@@ -117,7 +117,7 @@ outpostController:
     name: wiz-outpost-controller
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: eec81eb23e9d07eb584e820396b4190505b31a13-multiarch
+    tag: cc7050fffc2d9a5809ce326230e69c6f45fb58dc-multiarch
   resources: {}
 clusterRegistrar:
   enabled: false
@@ -127,7 +127,7 @@ clusterRegistrar:
     name: wiz-outpost-cluster-registrar
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: eec81eb23e9d07eb584e820396b4190505b31a13-multiarch
+    tag: cc7050fffc2d9a5809ce326230e69c6f45fb58dc-multiarch
   # Single configuration object that gets passed as JSON
   config:
     cloudProvider: "" # Required: aws, azure, gcp, or oci

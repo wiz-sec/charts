@@ -398,9 +398,10 @@ daemonset:
             - arm64
             - amd64
             - s390x
+            - ppc64le
 
   tolerations:
-  # Makes pods run on ARM64 and s390x as well
+  # Makes pods run on ARM64, s390x and ppc64le as well
   - key: kubernetes.io/arch
     operator: Equal
     value: arm64
@@ -408,6 +409,10 @@ daemonset:
   - key: kubernetes.io/arch
     operator: Equal
     value: s390x
+    effect: NoSchedule
+  - key: kubernetes.io/arch
+    operator: Equal
+    value: ppc64le
     effect: NoSchedule
   # Make pods run on GKE spot an preemptible nodes
   - key: "cloud.google.com/gke-spot"
