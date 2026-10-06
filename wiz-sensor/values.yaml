@@ -110,6 +110,16 @@ hostNetwork: false
 # if hostNetwork is true, otherwise uses Kubernetes default ("ClusterFirst").
 dnsPolicy: ""
 
+# Override the pod's DNS config, e.g. to set ndots. Only takes effect when dnsPolicy
+# is "None" or "ClusterFirst"/"ClusterFirstWithHostNet" (per Kubernetes rules for
+# combining dnsPolicy and dnsConfig). Leave empty to omit it.
+# Example:
+#   dnsConfig:
+#     options:
+#       - name: ndots
+#         value: "2"
+dnsConfig: {}
+
 # A range of seconds. Given a value X, the Sensor will choose a random value R between 0 and X.
 # It will then delay its start by R seconds. This can be useful to reduce load on shared resources
 # (mainly API-server) when a large amount of Sensors are starting concurrently.
