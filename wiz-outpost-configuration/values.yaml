@@ -39,9 +39,9 @@ httpProxyConfiguration:
   #   - replaceme
   #   - replaceme2
   # caCertificate: |
-  #   ----- BEGIN CERTIFICATE -----
+  #   -----BEGIN CERTIFICATE-----
   #   replace me
-  #   ----- END CERTIFICATE -----
+  #   -----END CERTIFICATE-----
   # clientCertificate: |
   #   ----- BEGIN CERTIFICATE -----
   #   replace me
