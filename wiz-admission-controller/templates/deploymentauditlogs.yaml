@@ -101,6 +101,8 @@ spec:
           - "--policy-enforcement-method=AUDIT"
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          - name: WIZ_RUNTIME_METADATA_DEPLOYMENT_NAME
+            value: {{ include "wiz-kubernetes-audit-log-collector.name" . | quote }}
           # Webhook enabled flags
           - name: WIZ_KUBERNETES_AUDIT_LOGS_ENABLED
             value: "true"

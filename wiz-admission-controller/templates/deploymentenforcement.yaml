@@ -115,6 +115,8 @@ spec:
           {{- end }}
           env:
           {{- include "wiz-admission-controller.spec.common.envVars" . | trim | nindent 10 }}
+          - name: WIZ_RUNTIME_METADATA_DEPLOYMENT_NAME
+            value: {{ include "wiz-admission-controller-enforcer.name" . | quote }}
           # Webhook enabled flags
           - name: WIZ_MISCONFIGURATION_ENABLED
             value: {{ .Values.opaWebhook.enabled | quote }}
