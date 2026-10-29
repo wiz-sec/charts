@@ -61,6 +61,10 @@ spec:
       {{- if .Values.hostNetwork }}
       hostNetwork: true
       {{- end }}
+      {{- with .Values.dnsConfig }}
+      dnsConfig:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.global.podTerminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
