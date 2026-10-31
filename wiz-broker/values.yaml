@@ -113,7 +113,7 @@ wizApiToken:
   # API token should be read from an environment file, which is specified in podCustomEnvironmentVariablesFile
   # The file must contain the following lines:
   # WIZ_CLIENT_ID=<wiz service account id>
-  # WIZ_CLIENT_TOKEN=<siz service account token>
+  # WIZ_CLIENT_TOKEN=<wiz service account token>
   usePodCustomEnvironmentVariablesFile: false
 
   # Set the `wizApiTokensVolumeMount` below to a non-empty string if you are passing the Wiz service account
