@@ -127,7 +127,7 @@ clusterRegistrar:
     name: wiz-outpost-cluster-registrar
     pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: ecc972070a3e604c59c6cd3cf9018591db307d37-multiarch
+    tag: 86818ba572ed219ece25d19c606a1e8bba744ce5-multiarch
   # Single configuration object that gets passed as JSON
   config:
     cloudProvider: "" # Required: aws, azure, gcp, or oci

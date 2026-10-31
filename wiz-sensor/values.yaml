@@ -136,7 +136,7 @@ newAppArmorAnnotation: false
 # version is available. Such a restart puts some increased load on the API-server and the node.
 # If the cluster is managed by a GitOps product (e.g. ArgoCD, Flux CD, etc.) then a version sync
 # can force an update at a selected time. In such cases it is recommended to disable the version
-# check by enabling this option.
+# check by enabling this option. This also applies to the disk scanner container.
 disableImageVersionCheck: false
 
 # add appropriate fsGroup to the pod's securityContext
