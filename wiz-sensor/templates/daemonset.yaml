@@ -597,6 +597,10 @@ spec:
         - name: WIZ_DISK_SCANNER_MAX_INITIAL_DELAY
           value: "{{ .Values.startDelayRange }}s"
         {{- end }}
+        {{- if .Values.disableImageVersionCheck }}
+        - name: DISABLE_IMAGE_VERSION_CHECK
+          value: "true"
+        {{- end }}
         - name: WIZ_BACKEND_ENV
           valueFrom:
             secretKeyRef:
