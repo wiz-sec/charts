@@ -142,7 +142,7 @@ disableImageVersionCheck: false
 # add appropriate fsGroup to the pod's securityContext
 setFsGroup: false
 
-clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+clusterExternalId: "" # OKE only: the cluster OCID. Leave empty elsewhere: with any value set the sensor engine refuses to start on a non-OKE cluster ("use of external ID is not allowed for non-OKE clusters") and the pods still report Ready (the readiness probe is an exec), so the sensor protects nothing and serves no metrics.
 subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
 clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
 subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
@@ -541,7 +541,7 @@ global:
   nodeSelector: {}
   affinity: {}
   tolerations: []
-  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  clusterExternalId: "" # OKE only: the cluster OCID. Leave empty elsewhere: with any value set the sensor engine refuses to start on a non-OKE cluster ("use of external ID is not allowed for non-OKE clusters") and the pods still report Ready (the readiness probe is an exec), so the sensor protects nothing and serves no metrics.
   subscriptionExternalId: ""
   clusterTags: {}
   subscriptionTags: {}
