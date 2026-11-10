@@ -645,6 +645,15 @@ service:
 # running in hostNetwork mode.
 hostNetwork: false
 
+# Custom DNS configuration for the Deployment pods (enforcement, audit logs, sensor, debug),
+# e.g. to lower ndots and avoid search-list NXDOMAIN lookups for external hosts such as
+# logs-ingestion.wiz.io. Same format as the Pod spec `dnsConfig` field.
+# dnsConfig:
+#   options:
+#     - name: ndots
+#       value: "1"
+dnsConfig: {}
+
 # Port of the health server used by the readiness and liveness probes
 healthPort: 8000
 
