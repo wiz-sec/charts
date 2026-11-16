@@ -15,7 +15,7 @@ metadata:
   labels:
     {{- include "wiz-broker.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "wiz-broker.selectorLabels" . | nindent 6 }}
@@ -253,6 +253,10 @@ spec:
       {{- end }}
       {{- with .Values.affinity }}
       affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- if (or .Values.global.tolerations .Values.tolerations) }}
