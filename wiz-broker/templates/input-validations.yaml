@@ -1,5 +1,22 @@
 {{ include "wiz-common.requireHelm310" . }}
 
+{{- $podAdditionalSpec := (.Values.podAdditionalSpec | default dict) }}
+{{- $globalPodAdditionalSpec := ((.Values.global).podAdditionalSpec | default dict) }}
+{{- if not (kindIs "map" $podAdditionalSpec) }}
+  {{- fail (printf "podAdditionalSpec must be a mapping of Pod spec fields, got %s." (kindOf $podAdditionalSpec)) }}
+{{- end }}
+{{- if not (kindIs "map" $globalPodAdditionalSpec) }}
+  {{- fail (printf "global.podAdditionalSpec must be a mapping of Pod spec fields, got %s." (kindOf $globalPodAdditionalSpec)) }}
+{{- end }}
+{{- if .Values.topologySpreadConstraints }}
+  {{- if hasKey $podAdditionalSpec "topologySpreadConstraints" }}
+    {{- fail "topologySpreadConstraints cannot be set both directly and via podAdditionalSpec. Please use only topologySpreadConstraints." }}
+  {{- end }}
+  {{- if hasKey $globalPodAdditionalSpec "topologySpreadConstraints" }}
+    {{- fail "topologySpreadConstraints cannot be set both directly and via global.podAdditionalSpec. Please use only topologySpreadConstraints." }}
+  {{- end }}
+{{- end }}
+
 {{- range $index, $endpoint := .Values.allowedEndpoints }}
   {{- if contains "://" $endpoint }}
     {{- fail (printf "Error: 'allowedEndpoints' entry must be in host:port format and not in URL format, got '%s'." $endpoint) }}

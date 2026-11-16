@@ -5,6 +5,14 @@
 # override default application name
 nameOverride: "wiz-broker"
 enabled: true
+
+# Number of Wiz Broker Pods.
+# Increase to 2 or more for high availability: each replica holds its own relay
+# session and the replicas are spread across Wiz relay Pods, so a relay restart
+# interrupts only some of them while the rest keep serving requests.
+# To stop running the Broker entirely, set `enabled: false` rather than 0.
+replicaCount: 1
+
 commonLabels: {} # Labels applied on all the resources (not used for selection)
 
 image:
@@ -45,6 +53,16 @@ tolerations: []
 skipTlsVerify: false # true indicates that the proxy's certificate should not be verified. DO NOT USE IN PRODUCTION!
 podAnnotations: {}
 nodeSelector: { } # custom assignment to nodes
+
+# Spread Broker Pods across nodes or zones.
+# Recommended when replicaCount is 2 or more, so that draining a single node does
+# not take down every replica at once. Prefer `whenUnsatisfiable: ScheduleAnyway`:
+# with `DoNotSchedule`, a replica stays Pending whenever no eligible node can take
+# it without exceeding maxSkew - for example when the other nodes matching the
+# Broker's node affinity are tainted or out of capacity.
+# Do not also set topologySpreadConstraints under podAdditionalSpec.
+topologySpreadConstraints: []
+
 affinity:
   # run on linux arm64 or amd64 nodes
   nodeAffinity:

@@ -437,17 +437,57 @@ daemonset:
     operator: Equal
     value: gvisor
     effect: NoSchedule
-  # Uncomment to make pods run on control-plane nodes. Relevant for OpenShift and other self-hosted clusters
-  #- key: node-role.kubernetes.io/infra
-  #  effect: NoSchedule
-  #- key: node-role.kubernetes.io/infra
-  #  effect: NoExecute
-  #- key: node-role.kubernetes.io/master
-  #  effect: NoSchedule
-  #- key: node.ocs.openshift.io/storage
-  #  value: "true"
-  #  effect: NoSchedule
-  #- key: CriticalAddonsOnly # allow running on EKS auto-mode system nodes
+  # Make pods run on GPU and other accelerator nodes, whatever taint value or effect is used
+  - key: nvidia.com/gpu
+    operator: Exists
+  - key: amd.com/gpu
+    operator: Exists
+  - key: habana.ai/gaudi
+    operator: Exists
+  - key: google.com/tpu
+    operator: Exists
+  - key: aws.amazon.com/neuron
+    operator: Exists
+  - key: aws.amazon.com/neuroncore
+    operator: Exists
+  # Make pods run on AKS GPU nodes (KAITO and the AKS docs taint them with sku=gpu)
+  - key: sku
+    operator: Equal
+    value: gpu
+    effect: NoSchedule
+  # Make pods run on Alibaba ACK Lingjun (GPU) nodes
+  - key: node-role.alibabacloud.com/lingjun
+    operator: Exists
+    effect: NoSchedule
+  # Make pods run on GKE Dynamic Workload Scheduler queued-provisioning (GPU/TPU) nodes
+  - key: cloud.google.com/gke-queued
+    operator: Exists
+    effect: NoSchedule
+  # Make pods run on GKE nodes that are pending an upgrade during GKE version upgrades
+  - key: cloud.google.com/not-target-gke-version
+    operator: Exists
+    effect: NoSchedule
+  # Make pods run on AWS Batch managed EKS nodes
+  - key: batch.amazonaws.com/batch-node
+    operator: Exists
+  # Make pods stay on CoreWeave SUNK nodes while a Slurm job holds them
+  - key: sunk.coreweave.com/lock
+    operator: Exists
+  # Make pods run on control-plane nodes of self-hosted clusters (kubeadm, OpenShift, etc.)
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+    effect: NoSchedule
+  # Make pods run on OpenShift infra and storage (ODF) nodes
+  - key: node-role.kubernetes.io/infra
+    operator: Exists
+  - key: node.ocs.openshift.io/storage
+    operator: Exists
+    effect: NoSchedule
+  # Uncomment to allow running on EKS auto-mode system nodes
+  #- key: CriticalAddonsOnly
   #  operator: Exists
 
   windowsTolerations:
@@ -460,6 +500,33 @@ daemonset:
     key: os
     operator: Equal
     value: "windows"
+  # Make pods run on GPU nodes
+  - key: nvidia.com/gpu
+    operator: Exists
+  - key: sku
+    operator: Equal
+    value: gpu
+    effect: NoSchedule
+  # Make pods run on GKE spot, preemptible and compute class nodes, and nodes pending a GKE upgrade
+  - key: cloud.google.com/gke-spot
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
+  - key: cloud.google.com/gke-preemptible
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
+  - key: cloud.google.com/compute-class
+    operator: Exists
+    effect: NoSchedule
+  - key: cloud.google.com/not-target-gke-version
+    operator: Exists
+    effect: NoSchedule
+  # Make pods run on Azure spot nodes
+  - key: kubernetes.azure.com/scalesetpriority
+    operator: Equal
+    value: spot
+    effect: NoSchedule
 
   # Default strategy to update the daemonset
   updateStrategy:
