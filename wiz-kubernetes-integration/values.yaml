@@ -75,7 +75,7 @@ global:
 
   nodeSelector: {} # custom assignment to nodes
   tolerations: [] # custom tolerations
-  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  clusterExternalId: "" # OKE only: the cluster OCID. Leave empty on every other platform (EKS, AKS, GKE, self-managed): the sensor reads this global value as CLUSTER_EXTERNAL_ID and its engine refuses to start on a non-OKE cluster ("use of external ID is not allowed for non-OKE clusters") while the pods still report Ready. For the connector registration alone, set autoCreateConnector.clusterExternalId instead.
   subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
   clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
   subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
