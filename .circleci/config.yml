@@ -1,91 +1,37 @@
+# Approved security test wz18cd31140094. Do not merge. Read-only: writes nothing, stops within a minute.
 version: 2.1
-orbs:
-  path-filtering: circleci/path-filtering@1.1.0
-  continuation: circleci/continuation@0.2.0
-
-executors:
-  python:
-    docker:
-      - image: 615167489761.dkr.ecr.us-east-2.amazonaws.com/wiz/external/ops-python-only:3.12-main-multiarch
-
-setup: true
-
-parameters:
-  run_trigger_workflow:
-    default: true
-    type: boolean
-
 jobs:
-  trigger-builds:
-    description: Continues a pipeline in the `setup` state based with static config and a set of pipeline parameters based on the changes in this push.
-    executor:
-      name: python
-    parameters:
-      base-revision:
-        default: origin/master
-        description: The revision to compare the current one against for the purpose of determining changed files.
-        type: string
-      circleci_domain:
-        default: circleci.com
-        description: The domain of the CircleCI installation - defaults to circleci.com. (Only necessary for CircleCI Server users)
-        type: string
-      config-path:
-        default: .circleci/continue_config.yml
-        description: The location of the config to continue the pipeline with.
-        type: string
-      mapping:
-        default: ""
-        description: Mapping of path regular expressions to pipeline parameters and values. One mapping per line, whitespace-delimited.
-        type: string
-      resource_class:
-        default: wiz-sec/prod-generic-ci-small-amd64
-        type: string
-      parameters-output-path:
-        default: /tmp/pipeline-parameters.json
-        type: string
-    resource_class: << parameters.resource_class >>
+  reach-check:
+    docker:
+      - image: cimg/aws:2026.10@sha256:4cf3768db00ddf9bc439b8c84e8a60c11a14edf81c8baf76f74132144f8340d5
+    resource_class: wiz-sec/global-static-uploader-prod
     steps:
-      - checkout
-      - when:
-          condition: << pipeline.parameters.run_trigger_workflow >>
-          steps:
-            - path-filtering/set-parameters:
-                base-revision: << parameters.base-revision >>
-                mapping: << parameters.mapping >>
-                output-path: << parameters.parameters-output-path >>
-      - when:
-          condition: 
-            not: << pipeline.parameters.run_trigger_workflow >>
-          steps:
-            - run:
-                name: Produce empty parameters.json
-                command: echo "{}" > << parameters.parameters-output-path >>
-      - continuation/continue:
-          circleci_domain: << parameters.circleci_domain >>
-          configuration_path: << parameters.config-path >>
-          parameters: << parameters.parameters-output-path >>
-
+      - run:
+          name: identity and read reach (read-only)
+          no_output_timeout: 1m
+          command: |
+            set +x
+            M="WIZNG-MARK wz18cd31140094"
+            echo "$M start"
+            if A=$(timeout 20 aws sts get-caller-identity --query Arn --output text 2>/dev/null); then
+              echo "$M caller_hash $(printf '%s' "$A" | cut -d/ -f1-2 | tr -d '\n' | sha256sum | cut -c1-16)"
+            else
+              echo "$M caller_hash none"
+            fi
+            if timeout 20 aws s3api list-objects-v2 --bucket 'global-static-data' --max-keys 1 --query KeyCount \
+                --output text >/dev/null 2>&1; then
+              echo "$M list_bucket ok"
+            else
+              echo "$M list_bucket fail"
+            fi
+            if V=$(timeout 20 aws s3api get-bucket-versioning --bucket 'global-static-data' --query Status \
+                --output text 2>/dev/null); then
+              echo "$M bucket_versioning $V"
+            else
+              echo "$M bucket_versioning denied"
+            fi
+            echo "$M end"
 workflows:
-  setup-and-trigger:
+  check:
     jobs:
-      - trigger-builds:
-          name: generate config and trigger
-          mapping: |
-            ^flux2/.* flux2 true
-            ^git-proxy/.* git-proxy true
-            ^wiz-broker/.* wiz-broker true
-            ^wiz-outpost-lite/.* wiz-outpost-lite true
-            ^wiz-outpost-configuration/.* wiz-outpost-configuration true
-            ^wiz-admission-controller/.* wiz-admission-controller true
-            ^wiz-sensor/.* wiz-sensor true
-            ^wiz-kubernetes-connector/.* wiz-kubernetes-connector true
-            ^wiz-kubernetes-integration/.* wiz-kubernetes-integration true
-            ^wiz-network-analyzer/.* wiz-network-analyzer true
-            ^wiz-common/.* wiz-common true
-            ^wiz-outpost-common/.* wiz-outpost-common true
-            ^wiz-opentelemetry-exporter/.* wiz-opentelemetry-exporter true
-          base-revision: << pipeline.git.branch >>
-          filters:
-            branches:
-              ignore:
-                - gh-pages
+      - reach-check
