@@ -45,7 +45,7 @@ openshift: false
 # see https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#resource-limits .
 # there are also other small changes
 gkeAutopilot: false
-gkeAutopilotAllowlist: wiz-sensor-v14
+gkeAutopilotAllowlist: wiz-sensor-v17
 
 # use a custom SELinux type that is required by flatcar Linux nodes, but is incompatible with some
 # other node types (like AWS bottlerocket)
@@ -57,6 +57,7 @@ seLinuxType: "spc_t"
 
 # Set the cluster name in the Wiz portal. Only applied for on-prem clusters; cloud-managed
 # clusters always use the cloud-provided name. (optional)
+# May contain template expressions, e.g. "{{ .Values.global.cluster.name }}".
 sensorClusterName: ""
 
 # additional volumes to mount in the sensor pod (usually used for extra CA certificates)
@@ -612,4 +613,4 @@ global:
   subscriptionExternalId: ""
   clusterTags: {}
   subscriptionTags: {}
-  clusterDisplayName: ""
+  clusterDisplayName: "" # Overrides sensorClusterName; may contain template expressions

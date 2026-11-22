@@ -54,6 +54,13 @@ Windows sensor image tag
 {{- end }}
 
 {{/*
+Cluster display name. The value may contain template expressions.
+*/}}
+{{- define "wiz-sensor.clusterName" -}}
+{{- tpl (coalesce .Values.global.clusterDisplayName .Values.sensorClusterName | default "" | toString) . -}}
+{{- end }}
+
+{{/*
 Common labels shared between Linux and Windows
 Includes standard Helm labels and user-defined common labels from Values
 */}}
