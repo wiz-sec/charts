@@ -157,6 +157,10 @@ spec:
                 optional: true
           - name: SSL_CERT_DIR
             value: "/usr/local/share/ca-certificates/:/certificates/"
+          {{- if and .Values.awsCaBundle .Values.httpProxyConfiguration.enabled .Values.httpProxyConfiguration.caCertificate }}
+          - name: AWS_CA_BUNDLE
+            value: "/usr/local/share/ca-certificates/root.crt"
+          {{- end }}
           {{- if .Values.service.enabled }}
           ports:
             - name: metrics

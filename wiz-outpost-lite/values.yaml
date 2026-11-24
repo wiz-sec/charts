@@ -151,6 +151,7 @@ modules:
     enabled: false
     agent:
       mountCredentialsAsFiles: true
+    awsCaBundle: true
     image:
       tag: 0.2-latest
     serviceAccount:

@@ -116,8 +116,10 @@ analyze
 --outpost-id
 "{{ .Values.outpostId }}"
 {{- end }}
+{{- if .Values.wizRegion }}
 --region
 {{ .Values.wizRegion }}
+{{- end }}
 {{- if and .Values.caCertificate.enabled }}
 --proxy-ca-dir
 /usr/local/share/ca-certificates
