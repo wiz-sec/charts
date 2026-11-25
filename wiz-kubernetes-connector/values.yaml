@@ -52,7 +52,7 @@ autoCreateConnector:
   connectorName: "" # Recommended for self-managed clusters to easily identify the connector 
   clusterFlavor: "" # Possible values: EKS, AKS, GKE, OKE, OpenShift, ACK, LKE, RKE, Kubernetes (defaults to Kubernetes)
   apiServerEndpoint: "" # Required when not using Broker. Defaults to https://kubernetes.default.svc.cluster.local
-  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  clusterExternalId: "" # OKE only: the cluster OCID. The connector registration also accepts it under autoCreateConnector.clusterExternalId, which is the place for it on other platforms (the global key is also read by the sensor, whose engine refuses it off OKE).
   subscriptionExternalId: "" # Optional. Used to associate the installation with a Subscription if none can be obtained from IMDS (e.g. on-prem)
   clusterTags: {} # Optional. List of key: value tags to be added to KubernetesCluster object associated with this installation
   subscriptionTags: {} # Optional. List of key: value tags to be added to Subscription object associated with this installation
@@ -294,7 +294,7 @@ global:
   nodeSelector: {} # custom assignment to nodes
   affinity: {} # custom affinity rules for node assignment
   tolerations: [] # custom tolerations
-  clusterExternalId: "" # Required for OKE clusters - specify the cluster's OCID
+  clusterExternalId: "" # OKE only: the cluster OCID. The connector registration also accepts it under autoCreateConnector.clusterExternalId, which is the place for it on other platforms (the global key is also read by the sensor, whose engine refuses it off OKE).
   subscriptionExternalId: ""
   clusterTags: {}
   subscriptionTags: {}
