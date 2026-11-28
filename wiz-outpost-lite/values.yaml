@@ -214,6 +214,8 @@ keda:
   cooldownPeriod: 120
   minReplicaCount: 1
   maxReplicaCount: 20
+  # Optional: KEDA ScaledObject spec.advanced configuration (e.g. horizontalPodAutoscalerConfig.behavior for gradual scaleUp/scaleDown and custom stabilizationWindowSeconds)
+  advanced: {}
   prometheus:
     deploy: false
     port: 9090
